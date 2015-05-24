@@ -56,7 +56,7 @@ public object HCLPsiImplUtils {
       }
       child = child.getNextSibling()
     }
-    return if (result == null) arrayOfNulls<HCLElement>(0) else ArrayUtil.toObjectArray<HCLElement>(result, javaClass<HCLElement>())
+    return if (result == null) emptyArray<HCLElement>() else ArrayUtil.toObjectArray<HCLElement>(result, javaClass<HCLElement>())
   }
 
   public fun getValue(property: HCLProperty): HCLValue? {
