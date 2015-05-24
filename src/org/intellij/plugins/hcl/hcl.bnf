@@ -1,0 +1,36 @@
+{
+  tokens = [
+    space = "regexp:\s+"
+    line_comment = "regexp:(//.*)|(#.*)"
+    block_comment = "regexp:/\*(.|\n)*\*/"
+
+    string = "regexp:\"[^\"]*\""
+    id = "regexp:[a-zA-Z\._]+"
+    boolean = "regexp:(true)|(false)"
+    hex = "regexp:-?0[xX]\d+"
+    integer = "regexp:-?\d+([eE]-?\d+)?"
+    float = "regexp:-?\d+(\.\d+)?([eE]-?\d+)?"
+  ]
+}
+
+root ::= element*
+
+element ::= object | block | assignment
+
+assignment ::= name '=' value
+
+block ::= name+ object
+
+object ::= '{' object_items? '}'
+object_items ::= object_item (','? object_item)* ','?
+object_item ::= assignment | block
+
+array ::= '[' array_items? ']'
+array_items ::= array_item (',' array_item)* ','?
+array_item ::= primitive | array
+
+name ::= id | string
+value ::= primitive | id | array | object
+
+primitive ::= boolean | string | number
+number::= hex | integer | float
