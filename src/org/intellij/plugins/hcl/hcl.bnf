@@ -1,36 +1,132 @@
 {
+//  org.intellij.plugins.hcl
+  parserClass = 'org.intellij.plugins.hcl.HCLParser'
+  parserUtilClass = "org.intellij.plugins.hcl.psi.HCLParserUtil"
+  psiPackage = 'org.intellij.plugins.hcl.psi'
+  psiImplPackage = 'org.intellij.plugins.hcl.psi.impl'
+
+  elementTypeHolderClass = 'org.intellij.plugins.hcl.HCLElementTypes'
+  elementTypeClass = 'org.intellij.plugins.hcl.HCLElementType'
+  psiClassPrefix = 'HCL'
+  psiVisitorName = 'HCLElementVisitor'
+
+  psiImplUtilClass = 'org.intellij.plugins.hcl.psi.impl.HCLPsiImplUtils'
+  tokenTypeClass = 'org.intellij.plugins.hcl.HCLTokenType'
+
+  implements('value') = 'org.intellij.plugins.hcl.psi.HCLElement'
+  extends('value') = 'org.intellij.plugins.hcl.psi.impl.HCLElementImpl'
+
   tokens = [
     space = "regexp:\s+"
     line_comment = "regexp:(//.*)|(#.*)"
     block_comment = "regexp:/\*(.|\n)*\*/"
 
-    string = "regexp:\"[^\"]*\""
-    id = "regexp:[a-zA-Z\._]+"
-    boolean = "regexp:(true)|(false)"
-    hex = "regexp:-?0[xX]\d+"
-    integer = "regexp:-?\d+([eE][-+]?\d+)?"
-    float = "regexp:-?\d+(\.\d+)?([eE][-+]?\d+)?"
+    L_BRACKET='['
+    R_BRACKET=']'
+    L_CURLY='{'
+    R_CURLY='}'
+    COMMA=','
+    EQUALS='='
+
+    DOUBLE_QUOTED_STRING="regexp:\"([^\\\"\r\n]|\\[^\r\n])*\"?"
+    SINGLE_QUOTED_STRING="regexp:'([^\\\'\r\n]|\\[^\r\n])*'?"
+
+    NUMBER='regexp:-?(0x)?(0|[1-9]\d*)(\.\d+)([eE][-+]?\d+)?'
+
+    TRUE='true'
+    FALSE='false'
+    NULL='null'
+
+    IDENTIFIER="regexp:[a-zA-Z\._]+"
+  ]
+
+  extends("container|literal|reference_expression")=value
+  extends("array|object")=container
+  extends("string_literal|number_literal|boolean_literal|null_literal")=literal
+  implements("property")=[
+    "org.intellij.plugins.hcl.psi.HCLElement"
+    "com.intellij.psi.PsiNamedElement"
   ]
 }
 
-root ::= element*
+root ::= root_element*
 
-element ::= object | block | assignment
+private root_element ::= object | block | property
 
-assignment ::= name '=' value
+property ::= property_name ('=' value) {
+  methods=[
+    getName
+    getNameElement
+    getValue
+    // suppress getValueList() accessor
+    value=""
+    getPresentation
+  ]
+  mixin="org.intellij.plugins.hcl.psi.impl.HCLPropertyMixin"
+  pin('.*')=1
+}
 
-block ::= name+ object
+block ::= property_name+ object
 
-object ::= '{' object_items? '}'
-object_items ::= object_item (','? object_item)* ','?
-object_item ::= assignment | block
+object ::= '{' object_items? '}' {
+  pin=1
+  methods=[
+    findProperty
+    getPresentation
+  ]
+}
 
-array ::= '[' array_items? ']'
-array_items ::= array_item (',' array_item)* ','?
-array_item ::= primitive | array
+private object_items ::= object_item (','? object_item)* ','?
+private object_item ::= property | block
 
-name ::= id | string
-value ::= primitive | id | array | object
+array ::= '[' array_items? ']' {
+  methods=[
+    getPresentation
+  ]
+  pin=1
+}
+private array_items ::= array_item (',' array_item)* ','?
+private array_item ::= literal | array
 
-primitive ::= boolean | string | number
-number::= hex | integer | float
+private property_name ::= reference_expression | string_literal
+
+fake container ::= object | literal
+
+value ::= literal | reference_expression | array | object
+
+reference_expression::=IDENTIFIER
+
+literal ::= string_literal | number_literal | boolean_literal | null_literal {
+  methods = [
+    isQuotedString
+  ]
+  mixin = 'org.intellij.plugins.hcl.psi.impl.HCLLiteralMixin'
+}
+
+string_literal::= DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING {
+  methods=[
+    getTextFragments
+    getValue
+    SINGLE_QUOTED_STRING=""
+    DOUBLE_QUOTED_STRING=""
+  ]
+  mixin = 'org.intellij.plugins.hcl.psi.impl.HCLStringLiteralMixin'
+}
+number_literal::= NUMBER {
+  methods=[
+    getValue
+    NUMBER=""
+  ]
+}
+boolean_literal::= TRUE | FALSE {
+  methods=[
+    getValue
+  ]
+}
+null_literal::= NULL
+
+
+// Recoveries
+private not_bracket_or_next_value ::= !(']'|value)
+private not_brace_or_next_value ::= !('}'|value)
+
