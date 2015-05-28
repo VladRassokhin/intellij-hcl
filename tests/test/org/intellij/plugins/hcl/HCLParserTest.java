@@ -42,6 +42,10 @@ public class HCLParserTest extends ParsingTestCase {
     doTest();
   }
 
+  public void testComment_Multiline() throws Exception {
+    doTest();
+  }
+
   public void testSimple_Types() throws Exception {
     doTest();
   }
