@@ -102,7 +102,7 @@ block ::= property_name+ object{
 //  pin=1
 }
 
-object ::= '{' object_items? '}' {
+object ::= '{' object_element* '}' {
   pin=1
   methods=[
     findProperty
@@ -110,17 +110,22 @@ object ::= '{' object_items? '}' {
   ]
 }
 
-private object_items ::= object_item (','? object_item)* ','?
-private object_item ::= block | property
+private object_element ::= (block | property) (','|&'}')? {
+  pin=1
+  recoverWhile = not_brace_or_next_value
+}
 
-array ::= '[' array_items? ']' {
+array ::= '[' array_element* ']'  {
   methods=[
     getPresentation
   ]
   pin=1
 }
-private array_items ::= array_item (',' array_item)* ','?
-private array_item ::= literal | array
+
+private array_element ::= (literal | array) (','|&']') {
+  pin=1
+  recoverWhile = not_bracket_or_next_value
+}
 
 private property_name ::= identifier | string_literal
 
