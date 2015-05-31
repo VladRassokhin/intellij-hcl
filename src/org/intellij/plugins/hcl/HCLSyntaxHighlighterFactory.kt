@@ -15,10 +15,10 @@
  */
 package org.intellij.plugins.hcl
 
-import com.intellij.json.JsonElementTypes
 import com.intellij.lexer.LayeredLexer
 import com.intellij.lexer.Lexer
 import com.intellij.lexer.StringLiteralLexer
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
@@ -30,16 +30,14 @@ import com.intellij.psi.StringEscapesTokenTypes
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import org.intellij.plugins.hcl.psi.HCLLexer
-import java.util.*
-
-import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
+import java.util.HashMap
 
 
 public class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 
 
-  object  MySyntaxHighlighter:SyntaxHighlighterBase(){
-    val ourAttributes:Map<IElementType, TextAttributesKey> = HashMap()
+  object MySyntaxHighlighter : SyntaxHighlighterBase() {
+    val ourAttributes: Map<IElementType, TextAttributesKey> = HashMap()
 
     public val HCL_BRACKETS: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BRACKETS", BRACKETS)
     public val HCL_BRACES: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BRACES", BRACES)
@@ -66,7 +64,7 @@ public class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
       SyntaxHighlighterBase.fillMap(ourAttributes, HCL_BRACES, HCLElementTypes.L_CURLY, HCLElementTypes.R_CURLY)
       SyntaxHighlighterBase.fillMap(ourAttributes, HCL_BRACKETS, HCLElementTypes.L_BRACKET, HCLElementTypes.R_BRACKET)
       SyntaxHighlighterBase.fillMap(ourAttributes, HCL_COMMA, HCLElementTypes.COMMA)
-//      SyntaxHighlighterBase.fillMap(ourAttributes, HCL_COLON, HCLElementTypes.COLON)
+      //      SyntaxHighlighterBase.fillMap(ourAttributes, HCL_COLON, HCLElementTypes.COLON)
       SyntaxHighlighterBase.fillMap(ourAttributes, HCL_STRING, HCLElementTypes.DOUBLE_QUOTED_STRING)
       SyntaxHighlighterBase.fillMap(ourAttributes, HCL_STRING, HCLElementTypes.SINGLE_QUOTED_STRING)
       SyntaxHighlighterBase.fillMap(ourAttributes, HCL_NUMBER, HCLElementTypes.NUMBER)

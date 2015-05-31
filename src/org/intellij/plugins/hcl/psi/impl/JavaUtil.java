@@ -76,8 +76,7 @@ public class JavaUtil {
               pos += 2;
           }
           unescapedSequenceStart = pos;
-        }
-        else {
+        } else {
           pos++;
         }
       }

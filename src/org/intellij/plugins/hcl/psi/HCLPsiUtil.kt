@@ -95,7 +95,7 @@ public object HCLPsiUtil {
           break
         }
       } else if (!HCLParserDefinition.HCL_COMMENTARIES.contains(elementType)
-                || HCLParserDefinition.HCL_COMMENTARIES.contains(expectedType)) {
+          || HCLParserDefinition.HCL_COMMENTARIES.contains(expectedType)) {
         break
       }
       node = if (after) node.getTreeNext() else node.getTreePrev()

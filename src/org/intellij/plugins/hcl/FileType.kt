@@ -18,9 +18,8 @@ package org.intellij.plugins.hcl
 import com.intellij.openapi.fileTypes.FileTypeConsumer
 import com.intellij.openapi.fileTypes.FileTypeFactory
 import com.intellij.openapi.fileTypes.LanguageFileType
-import javax.swing.Icon
 
-object HCLFileType: LanguageFileType(HCLLanguage) {
+object HCLFileType : LanguageFileType(HCLLanguage) {
   public val DEFAULT_EXTENSION: String = "hcl"
 
   override fun getIcon() = null
@@ -33,7 +32,7 @@ object HCLFileType: LanguageFileType(HCLLanguage) {
 
 }
 
-class HCLFileTypeFactory : FileTypeFactory(){
+class HCLFileTypeFactory : FileTypeFactory() {
   override fun createFileTypes(consumer: FileTypeConsumer) {
     consumer.consume(HCLFileType, HCLFileType.DEFAULT_EXTENSION)
   }

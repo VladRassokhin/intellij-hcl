@@ -17,7 +17,6 @@ package org.intellij.plugins.hcl.psi.impl
 
 import com.intellij.icons.AllIcons
 import com.intellij.navigation.ItemPresentation
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
@@ -28,10 +27,7 @@ import com.intellij.util.PlatformIcons
 import com.intellij.util.SmartList
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.psi.*
-
-import javax.swing.*
-import java.util.ArrayList
-import java.util.Collections
+import javax.swing.Icon
 
 public object HCLPsiImplUtils {
   public fun getName(property: HCLProperty): String {

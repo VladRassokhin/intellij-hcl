@@ -22,7 +22,6 @@ import com.intellij.psi.PsiReference
 import com.intellij.util.ArrayUtil
 import com.intellij.util.IncorrectOperationException
 import org.intellij.plugins.hcl.psi.HCLProperty
-import org.intellij.plugins.hcl.psi.HCLValue
 
 /**
  * @author Mikhail Golubev
