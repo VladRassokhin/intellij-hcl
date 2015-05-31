@@ -78,4 +78,8 @@ public class HCLParserTest extends ParsingTestCase {
     doTest();
   }
 
+  public void testComplex() throws Exception {
+    doTest();
+  }
+
 }
