@@ -52,7 +52,7 @@ public object HCLPsiImplUtils {
    */
   public fun getNameElement(property: HCLProperty): HCLValue {
     val firstChild = property.getFirstChild()
-    assert(firstChild is HCLLiteral || firstChild is HCLIdentifier)
+    assert(firstChild is HCLLiteral || firstChild is HCLIdentifier, "Excepted literal or identifier, got ${firstChild.javaClass.getName()}")
     return firstChild as HCLValue
   }
 
