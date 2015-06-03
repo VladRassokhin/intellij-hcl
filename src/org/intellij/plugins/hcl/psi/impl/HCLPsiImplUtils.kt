@@ -129,7 +129,7 @@ public object HCLPsiImplUtils {
   public fun getPresentation(array: HCLArray): ItemPresentation? {
     return object : ItemPresentation {
       override fun getPresentableText(): String? {
-        return ("json.array")
+        return ("hcl.array")
       }
 
       override fun getLocationString(): String? {
@@ -145,7 +145,7 @@ public object HCLPsiImplUtils {
   public fun getPresentation(o: HCLObject): ItemPresentation? {
     return object : ItemPresentation {
       override fun getPresentableText(): String? {
-        return ("json.object")
+        return ("hcl.object")
       }
 
       override fun getLocationString(): String? {
