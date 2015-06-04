@@ -8,7 +8,7 @@
   tokenTypeClass = 'org.intellij.plugins.hcl.terraform.il.TILTokenType'
   elementTypeClass = 'org.intellij.plugins.hcl.terraform.il.TILElementType'
   parserClass = 'org.intellij.plugins.hcl.terraform.il.TILParser'
-  psiVisitorName = 'TILElementVisitor'
+  psiVisitorName = 'ILGeneratedVisitor'
   psiImplUtilClass = 'org.intellij.plugins.hcl.terraform.il.psi.impl.TILPsiImplUtilJ'
 
 //  generateTokens=false
@@ -18,8 +18,8 @@
 //  ]
 
 
-  implements = 'org.intellij.plugins.hcl.terraform.il.psi.TILExpression'
-  extends = 'org.intellij.plugins.hcl.terraform.il.psi.impl.TILExpressionImpl'
+  implements = 'org.intellij.plugins.hcl.terraform.il.psi.ILExpression'
+  extends = 'org.intellij.plugins.hcl.terraform.il.psi.impl.ILExpressionBase'
 
   psiPackage = 'org.intellij.plugins.hcl.terraform.il.psi'
   psiImplPackage = 'org.intellij.plugins.hcl.terraform.il.psi.impl'
@@ -40,6 +40,13 @@
     R_PAREN=')'
     COMMA=','
     EQUALS='='
+
+    // Operators
+    OP_PLUS='+'
+    OP_MINUS='-'
+    OP_MUL='*'
+    OP_DIV='/'
+    OP_MOD='%'
 
     DOUBLE_QUOTED_STRING="regexp:\"([^\\\"\r\n]|\\[^\r\n])*\"?"
 //    SINGLE_QUOTED_STRING="regexp:'([^\\\'\r\n]|\\[^\r\n])*'?"
@@ -64,29 +71,31 @@ private ILExpressionHolder ::= '${' ILExpression '}' {
 
 // Expressions
 ILExpression ::= ILParenthesizedExpression
-               | ILExpressionHolder
-               | ILBinaryAddExpression
-               | ILBinaryMulExpression
-               | ILMethodCallExpression
-               | ILLiteralExpression
-               | ILVariable
+  | ILBinaryAddExpression
+  | ILBinaryMulExpression
+  | ILMethodCallExpression
+  | ILLiteralExpression
+  | ILVariable
 {
   name="expression"
   implements="com.intellij.psi.templateLanguages.OuterLanguageElement"
+  methods =[
+    ILExpression="" // Magic hack
+  ]
 }
 
 ILParenthesizedExpression ::= '(' ILExpression ')'
 
 ILBinaryAddExpression ::= ILExpression AddOp ILExpression
-//{
-//  implements="org.intellij.plugins.hcl.terraform.il.ILBinaryExpression"
-//  mixin="org.intellij.plugins.hcl.terraform.il.impl.ILBinaryExpressionImpl"
-//}
+{
+  implements="org.intellij.plugins.hcl.terraform.il.ILBinaryExpression"
+  mixin="org.intellij.plugins.hcl.terraform.il.psi.impl.ILBinaryExpressionImpl"
+}
 ILBinaryMulExpression ::= ILExpression MulOp ILExpression
-//{
-//  implements="org.intellij.plugins.hcl.terraform.il.ILBinaryExpression"
-//  mixin="org.intellij.plugins.hcl.terraform.il.impl.ILBinaryExpressionImpl"
-//}
+{
+  implements="org.intellij.plugins.hcl.terraform.il.ILBinaryExpression"
+  mixin="org.intellij.plugins.hcl.terraform.il.psi.impl.ILBinaryExpressionImpl"
+}
 ILMethodCallExpression ::= ILExpression ILParameterList
 {
   implements="org.intellij.plugins.hcl.terraform.il.ILCallExpression"
@@ -99,7 +108,7 @@ ILMethodCallExpression ::= ILExpression ILParameterList
 
 ILLiteralExpression ::= literal /*| identifier*/ | number | 'true' | 'false' | 'null' {
    name="Literal"
-   mixin="org.intellij.plugins.hcl.terraform.il.impl.ILExpressionWithReference"
+   mixin="org.intellij.plugins.hcl.terraform.il.psi.impl.ILExpressionWithReference"
    methods=[ getTypeClass ]
 }
 
@@ -109,14 +118,14 @@ ILParameterList ::= '(' (ILExpression? (',' ILExpression )* )?')' {
 }
 
 ILVariable ::= identifier {
-   name="Identifier"
-   implements="com.intellij.psi.PsiNamedElement"
-   mixin="org.intellij.plugins.hcl.terraform.il.impl.ILExpressionWithReference"
-   methods=[
+  name="Identifier"
+  implements="com.intellij.psi.PsiNamedElement"
+  mixin="org.intellij.plugins.hcl.terraform.il.psi.impl.ILExpressionWithReference"
+  methods=[
     getName
     setName
     getUseScope
-   ]
+  ]
 }
 
 // Operators

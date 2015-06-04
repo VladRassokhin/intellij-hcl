@@ -15,6 +15,14 @@
  */
 package org.intellij.plugins.hcl.terraform.il.psi
 
-import com.intellij.psi.templateLanguages.OuterLanguageElement
+import org.intellij.plugins.hcl.terraform.il.ILBinaryExpression
 
-interface TILExpression : OuterLanguageElement {}
+class ILElementVisitor : ILGeneratedVisitor() {
+  fun visitILExpressionHolder(o: ILExpressionHolder) {
+    visitElement(o)
+  }
+
+  fun visitILBinaryExpression(o: ILBinaryExpression) {
+    visitElement(o)
+  }
+}

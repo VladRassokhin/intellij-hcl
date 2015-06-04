@@ -13,22 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.terraform.il
+package org.intellij.plugins.hcl.terraform.il.psi
 
-import com.intellij.psi.tree.IElementType
-import org.intellij.plugins.hcl.terraform.il.psi.ILExpression
-import org.intellij.plugins.hcl.terraform.il.psi.ILParameterList
-import org.intellij.plugins.hcl.terraform.il.psi.ILVariable
+import com.intellij.lexer.FlexAdapter
 
-
-public interface ILCallExpression : ILExpression {
-  public fun getParameterList(): ILParameterList?
-
-  public fun getMethod(): ILVariable
-}
-
-public interface ILBinaryExpression : ILExpression {
-  public fun getLOperand(): ILExpression?
-  public fun getROperand(): ILExpression?
-  public fun getOperationSign(): IElementType?
-}
+public class TILLexer: FlexAdapter(_TILLexer())

@@ -16,8 +16,15 @@
 package org.intellij.plugins.hcl.terraform.il
 
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.tree.TokenSet
 import org.intellij.plugins.hcl.HCLLanguage
+import org.intellij.plugins.hcl.terraform.il.TILElementTypes.*
 
 
-open class TILElementType(debugName: String) : IElementType(debugName, HCLLanguage)
-open class TILTokenType(debugName: String) : IElementType(debugName, HCLLanguage)
+open class TILTokenType(debugName: String) : IElementType(debugName, HCLLanguage) {
+  companion object {
+    public val IL_BINARY_OPERATIONS: TokenSet = TokenSet.create(
+        OP_PLUS, OP_MINUS, OP_MUL, OP_DIV, OP_MOD
+    )
+  }
+}

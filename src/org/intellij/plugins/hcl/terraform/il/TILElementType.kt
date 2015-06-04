@@ -13,12 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.terraform.il.psi.impl
+package org.intellij.plugins.hcl.terraform.il
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement
-import com.intellij.lang.ASTNode
-import org.intellij.plugins.hcl.terraform.il.psi.TILExpression
+import com.intellij.psi.tree.IElementType
+import com.intellij.psi.tree.TokenSet
+import org.intellij.plugins.hcl.HCLLanguage
+import org.intellij.plugins.hcl.terraform.il.TILElementTypes.*
 
-abstract class TILExpressionImpl(node: ASTNode) : ASTWrapperPsiElement(node), TILExpression {
 
+open class TILElementType(debugName: String) : IElementType(debugName, HCLLanguage) {
+  companion object {
+    public val IL_EXPRESSIONS: TokenSet = TokenSet.create(
+        IL_VARIABLE,
+        IL_BINARY_ADD_EXPRESSION,
+        IL_BINARY_MUL_EXPRESSION,
+        IL_LITERAL_EXPRESSION,
+        IL_METHOD_CALL_EXPRESSION
+    )
+  }
 }
+

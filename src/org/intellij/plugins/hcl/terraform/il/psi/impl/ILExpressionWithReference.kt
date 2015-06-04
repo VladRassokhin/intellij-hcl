@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.terraform.il.impl
+package org.intellij.plugins.hcl.terraform.il.psi.impl
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.util.ArrayUtil
-import org.intellij.plugins.hcl.terraform.il.psi.impl.ILExpressionImpl
+import org.intellij.plugins.hcl.terraform.il.psi.ILExpression
+import org.intellij.plugins.hcl.terraform.il.psi.impl.ILExpressionBase
 
 
-open class ILExpressionWithReference(node: ASTNode) : ILExpressionImpl(node) {
+open class ILExpressionWithReference(node: ASTNode) : ILExpressionBase(node) {
 
   public override fun getReferences(): Array<PsiReference> {
     return ReferenceProvidersRegistry.getReferencesFromProviders(this)
