@@ -37,5 +37,6 @@ object HCLFileType : LanguageFileType(HCLLanguage) {
 class HCLFileTypeFactory : FileTypeFactory() {
   override fun createFileTypes(consumer: FileTypeConsumer) {
     consumer.consume(HCLFileType, HCLFileType.DEFAULT_EXTENSION)
+    consumer.consume(HCLFileType, "tf")
   }
 }
