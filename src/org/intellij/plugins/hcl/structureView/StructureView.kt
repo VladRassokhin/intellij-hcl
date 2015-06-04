@@ -38,7 +38,7 @@ public class HCLStructureViewFactory : PsiStructureViewFactory {
 
 class HCLStructureViewModel(file: HCLFile, editor: Editor?) : StructureViewModelBase(file, editor, HCLStructureViewElement(file)), StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
   init {
-    withSuitableClasses(javaClass<HCLFile>(), javaClass<HCLProperty>(), javaClass<HCLObject>(), javaClass<HCLArray>())
+    withSuitableClasses(javaClass<HCLFile>(), javaClass<HCLProperty>(), javaClass<HCLObject>(), javaClass<HCLArray>(), javaClass<HCLBlock>())
   }
 
   override fun isAlwaysLeaf(element: StructureViewTreeElement?): Boolean {
@@ -60,7 +60,7 @@ class HCLStructureViewModel(file: HCLFile, editor: Editor?) : StructureViewModel
 
 class HCLStructureViewElement(val element: HCLElement) : StructureViewTreeElement {
   init {
-    assert(PsiTreeUtil.instanceOf(element, javaClass<HCLFile>(), javaClass<HCLProperty>(), javaClass<HCLObject>(), javaClass<HCLArray>()))
+    assert(PsiTreeUtil.instanceOf(element, javaClass<HCLFile>(), javaClass<HCLProperty>(), javaClass<HCLObject>(), javaClass<HCLArray>(), javaClass<HCLBlock>()))
   }
 
   override fun getValue(): Any? {
@@ -88,6 +88,9 @@ class HCLStructureViewElement(val element: HCLElement) : StructureViewTreeElemen
     if (element is HCLProperty) {
       val v = element.getValue() ?: return emptyArray()
       value = v
+    } else if (element is HCLBlock) {
+      val v = element.getObject() ?: return emptyArray()
+      value = v
     } else {
       value = element
     }
@@ -97,6 +100,7 @@ class HCLStructureViewElement(val element: HCLElement) : StructureViewTreeElemen
         is HCLObject -> HCLStructureViewElement(it)
         is HCLArray -> HCLStructureViewElement(it)
         is HCLProperty -> HCLStructureViewElement(it)
+        is HCLBlock -> HCLStructureViewElement(it)
         else -> null
       }
     }.filterNotNull()
