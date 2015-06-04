@@ -70,13 +70,17 @@
 
 root ::= root_element*
 
-private root_element ::= object | block | property
+private root_element ::= object | block_outer | property_outer
 
 //private property_or_block ::= property_name (property_continue | block_continue)
 //private property_continue ::= '=' value
 //private block_continue ::= property_name* object
 
-property ::= property_name ('=' value) {
+private property_outer ::= property_name property{
+  pin=2
+}
+
+left property ::= '=' value {
   methods=[
     getName
     getNameElement
@@ -89,17 +93,21 @@ property ::= property_name ('=' value) {
   pin('.*')=1
 }
 
-block ::= property_name+ object{
+private block_outer ::= property_name block {
+  pin=2
+}
+
+left block ::= property_name* object {
   methods=[
-    getName
-    getNameElements
-    getObject
-    // suppress getValueList() accessor
-    value=""
-    getPresentation
+      getName
+      getNameElements
+      getObject
+      // suppress getValueList() accessor
+      value=""
+      getPresentation
   ]
   mixin="org.intellij.plugins.hcl.psi.impl.HCLBlockMixin"
-//  pin=1
+  pin=2
 }
 
 object ::= '{' object_element* '}' {
@@ -110,7 +118,7 @@ object ::= '{' object_element* '}' {
   ]
 }
 
-private object_element ::= (block | property) (','|&'}')? {
+private object_element ::= (block_outer | property_outer) (','|&'}')? {
   pin=1
   recoverWhile = not_brace_or_next_value
 }

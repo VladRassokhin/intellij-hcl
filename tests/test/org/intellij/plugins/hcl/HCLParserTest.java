@@ -82,4 +82,11 @@ public class HCLParserTest extends ParsingTestCase {
     doTest();
   }
 
+  public void testIncomplete_Block() throws Exception {
+    doTest();
+  }
+
+  public void testIncomplete_Property_Or_Block() throws Exception {
+    doTest();
+  }
 }
