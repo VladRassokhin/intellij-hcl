@@ -24,7 +24,7 @@
   psiPackage = 'org.intellij.plugins.hcl.terraform.il.psi'
   psiImplPackage = 'org.intellij.plugins.hcl.terraform.il.psi.impl'
 
-  extends(".*Expression|.*Variable")=ILExpression
+  extends(".*Expression|.*Variable|.*Variables")=ILExpression
 
   tokens = [
 //    space = "regexp:\s+"
@@ -40,6 +40,7 @@
     R_PAREN=')'
     COMMA=','
     EQUALS='='
+    POINT='.'
 
     // Operators
     OP_PLUS='+'
@@ -57,7 +58,7 @@
     FALSE='false'
     NULL='null'
 
-    ID="regexp:[a-zA-Z\.\-_*][0-9a-zA-Z\.\-_*]*"
+    ID="regexp:[a-zA-Z\-_*][0-9a-zA-Z\-_*]*"
   ]
 
 }
@@ -71,6 +72,7 @@ private ILExpressionHolder ::= '${' ILExpression '}' {
 
 // Expressions
 ILExpression ::= ILParenthesizedExpression
+  | ILSelectExpression
   | ILBinaryAddExpression
   | ILBinaryMulExpression
   | ILMethodCallExpression
@@ -117,7 +119,14 @@ ILParameterList ::= '(' (ILExpression? (',' ILExpression )* )?')' {
   methods=[ getParameters ]
 }
 
-ILVariable ::= identifier {
+ILSelectExpression ::= ILExpression DotOp ILVariable {
+  methods=[
+    from="ELExpression[0]"
+    getField
+  ]
+}
+
+ILVariable ::= identifier | '*' {
   name="Identifier"
   implements="com.intellij.psi.PsiNamedElement"
   mixin="org.intellij.plugins.hcl.terraform.il.psi.impl.ILExpressionWithReference"
@@ -129,6 +138,7 @@ ILVariable ::= identifier {
 }
 
 // Operators
+private DotOp ::= '.'
 private MulOp ::= '*' | '/' | '%'
 private AddOp ::= '+' | '-'
 

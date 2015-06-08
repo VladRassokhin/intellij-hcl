@@ -24,10 +24,7 @@ import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
 import org.intellij.plugins.hcl.terraform.il.TILLanguage;
-import org.intellij.plugins.hcl.terraform.il.psi.ILExpression;
-import org.intellij.plugins.hcl.terraform.il.psi.ILMethodCallExpression;
-import org.intellij.plugins.hcl.terraform.il.psi.ILParameterList;
-import org.intellij.plugins.hcl.terraform.il.psi.ILVariable;
+import org.intellij.plugins.hcl.terraform.il.psi.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -80,5 +77,10 @@ public class TILPsiImplUtilJ {
   public static ILVariable createVariable(String name, Project project) {
     PsiFile file = PsiFileFactory.getInstance(project).createFileFromText(TILLanguage.INSTANCE$, "${" + name + "}");
     return (ILVariable) file.getFirstChild().getChildren()[0];
+  }
+
+  public static ILVariable getField(ILSelectExpression expression) {
+    List<? extends ILExpression> list = expression.getILExpressionList();
+    return list.size() < 2 ? null : (ILVariable)list.get(1);
   }
 }

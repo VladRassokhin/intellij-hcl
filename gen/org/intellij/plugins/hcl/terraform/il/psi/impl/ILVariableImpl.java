@@ -24,9 +24,9 @@ public class ILVariableImpl extends ILExpressionWithReference implements ILVaria
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiElement getId() {
-    return findNotNullChildByType(ID);
+    return findChildByType(ID);
   }
 
   public String getName() {

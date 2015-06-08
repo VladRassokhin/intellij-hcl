@@ -23,10 +23,10 @@ public class TILParser implements PsiParser {
     b = adapt_builder_(t, b, this, EXTENDS_SETS_);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
     if (t == IL_BINARY_ADD_EXPRESSION) {
-      r = ILExpression(b, 0, 0);
+      r = ILExpression(b, 0, 1);
     }
     else if (t == IL_BINARY_MUL_EXPRESSION) {
-      r = ILExpression(b, 0, 1);
+      r = ILExpression(b, 0, 2);
     }
     else if (t == IL_EXPRESSION) {
       r = ILExpression(b, 0, -1);
@@ -35,13 +35,16 @@ public class TILParser implements PsiParser {
       r = ILLiteralExpression(b, 0);
     }
     else if (t == IL_METHOD_CALL_EXPRESSION) {
-      r = ILExpression(b, 0, 2);
+      r = ILExpression(b, 0, 3);
     }
     else if (t == IL_PARAMETER_LIST) {
       r = ILParameterList(b, 0);
     }
     else if (t == IL_PARENTHESIZED_EXPRESSION) {
       r = ILParenthesizedExpression(b, 0);
+    }
+    else if (t == IL_SELECT_EXPRESSION) {
+      r = ILExpression(b, 0, 0);
     }
     else if (t == IL_VARIABLE) {
       r = ILVariable(b, 0);
@@ -58,7 +61,7 @@ public class TILParser implements PsiParser {
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(IL_BINARY_ADD_EXPRESSION, IL_BINARY_MUL_EXPRESSION, IL_EXPRESSION, IL_LITERAL_EXPRESSION,
-      IL_METHOD_CALL_EXPRESSION, IL_PARENTHESIZED_EXPRESSION, IL_VARIABLE),
+      IL_METHOD_CALL_EXPRESSION, IL_PARENTHESIZED_EXPRESSION, IL_SELECT_EXPRESSION, IL_VARIABLE),
   };
 
   /* ********************************************************** */
@@ -72,6 +75,12 @@ public class TILParser implements PsiParser {
     if (!r) r = consumeToken(b, OP_MINUS);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // '.'
+  static boolean DotOp(PsiBuilder b, int l) {
+    return consumeToken(b, POINT);
   }
 
   /* ********************************************************** */
@@ -201,16 +210,17 @@ public class TILParser implements PsiParser {
   // Expression root: ILExpression
   // Operator priority table:
   // 0: PREFIX(ILParenthesizedExpression)
-  // 1: BINARY(ILBinaryAddExpression)
-  // 2: BINARY(ILBinaryMulExpression)
-  // 3: POSTFIX(ILMethodCallExpression)
-  // 4: ATOM(ILLiteralExpression)
-  // 5: ATOM(ILVariable)
+  // 1: BINARY(ILSelectExpression)
+  // 2: BINARY(ILBinaryAddExpression)
+  // 3: BINARY(ILBinaryMulExpression)
+  // 4: POSTFIX(ILMethodCallExpression)
+  // 5: ATOM(ILLiteralExpression)
+  // 6: ATOM(ILVariable)
   public static boolean ILExpression(PsiBuilder b, int l, int g) {
     if (!recursion_guard_(b, l, "ILExpression")) return false;
-    addVariant(b, "<expression>");
+    addVariant(b, "<Expression>");
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, "<expression>");
+    Marker m = enter_section_(b, l, _NONE_, "<Expression>");
     r = ILParenthesizedExpression(b, l + 1);
     if (!r) r = ILLiteralExpression(b, l + 1);
     if (!r) r = ILVariable(b, l + 1);
@@ -225,15 +235,19 @@ public class TILParser implements PsiParser {
     boolean r = true;
     while (true) {
       Marker m = enter_section_(b, l, _LEFT_, null);
-      if (g < 1 && AddOp(b, l + 1)) {
-        r = ILExpression(b, l, 1);
+      if (g < 1 && DotOp(b, l + 1)) {
+        r = ILExpression(b, l, 5);
+        exit_section_(b, l, m, IL_SELECT_EXPRESSION, r, true, null);
+      }
+      else if (g < 2 && AddOp(b, l + 1)) {
+        r = ILExpression(b, l, 2);
         exit_section_(b, l, m, IL_BINARY_ADD_EXPRESSION, r, true, null);
       }
-      else if (g < 2 && MulOp(b, l + 1)) {
-        r = ILExpression(b, l, 2);
+      else if (g < 3 && MulOp(b, l + 1)) {
+        r = ILExpression(b, l, 3);
         exit_section_(b, l, m, IL_BINARY_MUL_EXPRESSION, r, true, null);
       }
-      else if (g < 3 && ILParameterList(b, l + 1)) {
+      else if (g < 4 && ILParameterList(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, IL_METHOD_CALL_EXPRESSION, r, true, null);
       }
@@ -272,14 +286,15 @@ public class TILParser implements PsiParser {
     return r;
   }
 
-  // identifier
+  // identifier | '*'
   public static boolean ILVariable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ILVariable")) return false;
-    if (!nextTokenIsFast(b, ID)) return false;
+    if (!nextTokenIsFast(b, OP_MUL, ID)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, "<Identifier>");
     r = identifier(b, l + 1);
-    exit_section_(b, m, IL_VARIABLE, r);
+    if (!r) r = consumeTokenSmart(b, OP_MUL);
+    exit_section_(b, l, m, IL_VARIABLE, r, false, null);
     return r;
   }
 

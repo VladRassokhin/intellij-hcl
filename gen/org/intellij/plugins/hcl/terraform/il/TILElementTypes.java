@@ -15,6 +15,7 @@ public interface TILElementTypes {
   IElementType IL_METHOD_CALL_EXPRESSION = new TILElementType("IL_METHOD_CALL_EXPRESSION");
   IElementType IL_PARAMETER_LIST = new TILElementType("IL_PARAMETER_LIST");
   IElementType IL_PARENTHESIZED_EXPRESSION = new TILElementType("IL_PARENTHESIZED_EXPRESSION");
+  IElementType IL_SELECT_EXPRESSION = new TILElementType("IL_SELECT_EXPRESSION");
   IElementType IL_VARIABLE = new TILElementType("IL_VARIABLE");
 
   IElementType COMMA = new TILTokenType(",");
@@ -32,6 +33,7 @@ public interface TILElementTypes {
   IElementType OP_MOD = new TILTokenType("%");
   IElementType OP_MUL = new TILTokenType("*");
   IElementType OP_PLUS = new TILTokenType("+");
+  IElementType POINT = new TILTokenType(".");
   IElementType R_CURLY = new TILTokenType("}");
   IElementType R_PAREN = new TILTokenType(")");
   IElementType TRUE = new TILTokenType("true");
@@ -59,6 +61,9 @@ public interface TILElementTypes {
       }
       else if (type == IL_PARENTHESIZED_EXPRESSION) {
         return new ILParenthesizedExpressionImpl(node);
+      }
+      else if (type == IL_SELECT_EXPRESSION) {
+        return new ILSelectExpressionImpl(node);
       }
       else if (type == IL_VARIABLE) {
         return new ILVariableImpl(node);

@@ -9,7 +9,7 @@ import com.intellij.psi.search.SearchScope;
 
 public interface ILVariable extends ILExpression, PsiNamedElement {
 
-  @NotNull
+  @Nullable
   PsiElement getId();
 
   String getName();
