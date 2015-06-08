@@ -23,7 +23,9 @@ import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralImpl
 
 class ILLanguageInjector : LanguageInjector {
   override fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
-    if (!(host is HCLStringLiteralImpl)) return;
+    if (host !is HCLStringLiteralImpl) return;
+    // Only .tf (Terraform config) files
+    if (!"tf".equals(host.getContainingFile().getVirtualFile().getExtension())) return;
     val text = host.getValue()
     if (text.startsWith("\${") && text.endsWith('}')) {
       if (true) {
