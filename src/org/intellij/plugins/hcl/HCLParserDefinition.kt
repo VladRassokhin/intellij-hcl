@@ -18,6 +18,8 @@ package org.intellij.plugins.hcl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
+import com.intellij.lang.PsiParser
+import com.intellij.lexer.Lexer
 import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
@@ -33,17 +35,29 @@ import org.jetbrains.lang.manifest.psi.ManifestElementType
 
 public open class HCLParserDefinition : ParserDefinition {
 
-  override fun createLexer(project: Project) = HCLLexer()
+  override fun createLexer(project: Project): Lexer {
+    return HCLLexer()
+  }
 
-  override fun createParser(project: Project) = HCLParser()
+  override fun createParser(project: Project): PsiParser {
+    return HCLParser()
+  }
 
-  override fun getFileNodeType() = FILE
+  override fun getFileNodeType(): IFileElementType {
+    return FILE
+  }
 
-  override fun getWhitespaceTokens() = WHITE_SPACES
+  override fun getWhitespaceTokens(): TokenSet {
+    return WHITE_SPACES
+  }
 
-  override fun getCommentTokens() = HCL_COMMENTARIES
+  override fun getCommentTokens(): TokenSet {
+    return HCL_COMMENTARIES
+  }
 
-  override fun getStringLiteralElements() = STRING_LITERALS
+  override fun getStringLiteralElements(): TokenSet {
+    return STRING_LITERALS
+  }
 
   override fun createElement(node: ASTNode): PsiElement? {
     val type = node.getElementType()
