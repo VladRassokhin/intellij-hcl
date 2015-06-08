@@ -15,14 +15,24 @@
  */
 package org.intellij.plugins.hcl.terraform.il
 
-import com.intellij.lang.Language
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.fileTypes.LanguageFileType
+import javax.swing.Icon
 
+object ILFileType: LanguageFileType(TILLanguage) {
+  override fun getIcon(): Icon? {
+    return AllIcons.FileTypes.Custom
+  }
 
-object TILLanguage : Language("Terraform-IL") {
-  override fun isCaseSensitive() = true
-  override fun getAssociatedFileType(): LanguageFileType? {
-    return ILFileType
+  override fun getDefaultExtension(): String {
+    return "terraform.il"
+  }
+
+  override fun getDescription(): String {
+    return "Interpolation Language in Terraform configs"
+  }
+
+  override fun getName(): String {
+    return "Terraform-IL"
   }
 }
-

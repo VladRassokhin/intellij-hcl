@@ -15,13 +15,11 @@
  */
 package org.intellij.plugins.hcl.terraform.il
 
-import com.intellij.extapi.psi.PsiFileBase
+import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.lang.LanguageParserDefinitions
 import com.intellij.lang.ParserDefinition
 import com.intellij.lang.PsiBuilderFactory
-import com.intellij.openapi.fileTypes.FileType
-import com.intellij.openapi.fileTypes.StdFileTypes
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.psi.FileViewProvider
@@ -31,6 +29,7 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.ILazyParseableElementType
 import com.intellij.psi.tree.TokenSet
+import org.intellij.plugins.hcl.terraform.il.psi.ILPsiFile
 import org.intellij.plugins.hcl.terraform.il.psi.TILLexer
 import org.intellij.plugins.hcl.terraform.il.psi.impl.ILExpressionHolderImpl
 
@@ -51,22 +50,21 @@ public class TILParserDefinition : ParserDefinition {
   override fun getStringLiteralElements() = STRING_LITERALS
 
   override fun createElement(node: ASTNode): PsiElement? {
-    if (node.getElementType() == IL_HOLDER) {
+    val type = node.getElementType()
+    if (type == IL_HOLDER) {
       return ILExpressionHolderImpl(node)
     }
-    return TILElementTypes.Factory.createElement(node)
+    if (type is TILElementType) {
+      return TILElementTypes.Factory.createElement(node)
+    }
+    if (type is TILTokenType) {
+      return TILElementTypes.Factory.createElement(node)
+    }
+    return ASTWrapperPsiElement(node)
   }
 
   override fun createFile(viewProvider: FileViewProvider): PsiFile {
-    return object : PsiFileBase(viewProvider, TILLanguage) {
-      init {
-        init(FILE, IL_HOLDER)
-      }
-
-      override fun getFileType(): FileType {
-        return StdFileTypes.JSP
-      }
-    }
+    return ILPsiFile(viewProvider)
   }
 
   override fun spaceExistanceTypeBetweenTokens(left: ASTNode, right: ASTNode) = ParserDefinition.SpaceRequirements.MAY
@@ -84,9 +82,9 @@ public class TILParserDefinition : ParserDefinition {
     public val TIL_LITERALS: TokenSet = TokenSet.create(TILElementTypes.IL_LITERAL_EXPRESSION, TILElementTypes.TRUE, TILElementTypes.FALSE)
     public val TIL_VALUES: TokenSet = TokenSet.orSet(TIL_LITERALS)
 
-    private val ourContextNodeKey: Key<ASTNode> = Key.create("TIL.context.node");
+    private val ourContextNodeKey: Key<ASTNode> = Key.create("Terraform-IL.context.node");
 
-    public val IL_HOLDER:ILazyParseableElementType = object : ILazyParseableElementType("IL_HOLDER", TILLanguage) {
+    public val IL_HOLDER: ILazyParseableElementType = object : ILazyParseableElementType("IL_HOLDER", TILLanguage) {
       override fun parseContents(chameleon: ASTNode?): ASTNode? {
         chameleon!!
         val psi = chameleon.getPsi()

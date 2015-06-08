@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.terraform.il
+package org.intellij.plugins.hcl.terraform.il.psi
 
-import com.intellij.lang.Language
-import com.intellij.openapi.fileTypes.LanguageFileType
+import com.intellij.extapi.psi.PsiFileBase
+import com.intellij.openapi.fileTypes.FileType
+import com.intellij.psi.FileViewProvider
+import org.intellij.plugins.hcl.terraform.il.ILFileType
+import org.intellij.plugins.hcl.terraform.il.TILLanguage
+import org.intellij.plugins.hcl.terraform.il.TILParserDefinition
 
+class ILPsiFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, TILLanguage) {
+  init {
+    init(TILParserDefinition.FILE, TILParserDefinition.IL_HOLDER)
+  }
 
-object TILLanguage : Language("Terraform-IL") {
-  override fun isCaseSensitive() = true
-  override fun getAssociatedFileType(): LanguageFileType? {
+  override fun getFileType(): FileType {
     return ILFileType
   }
 }
-

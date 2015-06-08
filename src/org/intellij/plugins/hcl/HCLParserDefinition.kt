@@ -15,18 +15,23 @@
  */
 package org.intellij.plugins.hcl
 
+import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
 import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
+import com.intellij.psi.util.PsiUtilCore
 import org.intellij.plugins.hcl.HCLElementTypes.*
 import org.intellij.plugins.hcl.psi.HCLLexer
 import org.intellij.plugins.hcl.psi.impl.HCLFileImpl
+import org.jetbrains.lang.manifest.psi.ManifestElementType
 
-public class HCLParserDefinition : ParserDefinition {
+public open class HCLParserDefinition : ParserDefinition {
 
   override fun createLexer(project: Project) = HCLLexer()
 
@@ -40,9 +45,20 @@ public class HCLParserDefinition : ParserDefinition {
 
   override fun getStringLiteralElements() = STRING_LITERALS
 
-  override fun createElement(node: ASTNode) = Factory.createElement(node)
+  override fun createElement(node: ASTNode): PsiElement? {
+    val type = node.getElementType()
+    if (type is HCLElementType) {
+      return Factory.createElement(node)
+    }
+    if (type is HCLTokenType) {
+      return Factory.createElement(node)
+    }
+    return ASTWrapperPsiElement(node)
+  }
 
-  override fun createFile(fileViewProvider: FileViewProvider) = HCLFileImpl(fileViewProvider)
+  override fun createFile(fileViewProvider: FileViewProvider): PsiFile {
+    return HCLFileImpl(fileViewProvider)
+  }
 
   override fun spaceExistanceTypeBetweenTokens(left: ASTNode, right: ASTNode) = ParserDefinition.SpaceRequirements.MAY
 

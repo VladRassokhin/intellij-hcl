@@ -15,14 +15,20 @@
  */
 package org.intellij.plugins.hcl.terraform.il
 
-import com.intellij.lang.Language
-import com.intellij.openapi.fileTypes.LanguageFileType
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.InjectedLanguagePlaces
+import com.intellij.psi.LanguageInjector
+import com.intellij.psi.PsiLanguageInjectionHost
+import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralImpl
 
-
-object TILLanguage : Language("Terraform-IL") {
-  override fun isCaseSensitive() = true
-  override fun getAssociatedFileType(): LanguageFileType? {
-    return ILFileType
+class ILLanguageInjector : LanguageInjector {
+  override fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
+    if (!(host is HCLStringLiteralImpl)) return;
+    val text = host.getValue()
+    if (text.startsWith("\${") && text.endsWith('}')) {
+      if (true) {
+        places.addPlace(TILLanguage, TextRange(1, host.getTextLength() - 1), null, null)
+      }
+    }
   }
 }
-
