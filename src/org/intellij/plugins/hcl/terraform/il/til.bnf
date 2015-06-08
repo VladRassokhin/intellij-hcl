@@ -64,14 +64,11 @@
 }
 
 
-private root ::= (ILExpressionHolder | ILExpression)
-
-private ILExpressionHolder ::= '${' ILExpression '}' {
-  pin = 1
-}
+private root ::= ILExpression
 
 // Expressions
 ILExpression ::= ILParenthesizedExpression
+  | ILExpressionHolder
   | ILSelectExpression
   | ILBinaryAddExpression
   | ILBinaryMulExpression
@@ -84,6 +81,10 @@ ILExpression ::= ILParenthesizedExpression
   methods =[
     ILExpression="" // Magic hack
   ]
+}
+
+ILExpressionHolder ::= '${' ILExpression '}' {
+  extends=ILExpression
 }
 
 ILParenthesizedExpression ::= '(' ILExpression ')'

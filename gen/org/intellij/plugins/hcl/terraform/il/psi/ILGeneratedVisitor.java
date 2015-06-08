@@ -24,6 +24,10 @@ public class ILGeneratedVisitor extends PsiElementVisitor {
     visitOuterLanguageElement(o);
   }
 
+  public void visitILExpressionHolder(@NotNull ILExpressionHolder o) {
+    visitILExpression(o);
+  }
+
   public void visitILLiteralExpression(@NotNull ILLiteralExpression o) {
     visitILExpression(o);
   }

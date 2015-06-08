@@ -23,19 +23,22 @@ public class TILParser implements PsiParser {
     b = adapt_builder_(t, b, this, EXTENDS_SETS_);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
     if (t == IL_BINARY_ADD_EXPRESSION) {
-      r = ILExpression(b, 0, 1);
+      r = ILExpression(b, 0, 2);
     }
     else if (t == IL_BINARY_MUL_EXPRESSION) {
-      r = ILExpression(b, 0, 2);
+      r = ILExpression(b, 0, 3);
     }
     else if (t == IL_EXPRESSION) {
       r = ILExpression(b, 0, -1);
+    }
+    else if (t == IL_EXPRESSION_HOLDER) {
+      r = ILExpressionHolder(b, 0);
     }
     else if (t == IL_LITERAL_EXPRESSION) {
       r = ILLiteralExpression(b, 0);
     }
     else if (t == IL_METHOD_CALL_EXPRESSION) {
-      r = ILExpression(b, 0, 3);
+      r = ILExpression(b, 0, 4);
     }
     else if (t == IL_PARAMETER_LIST) {
       r = ILParameterList(b, 0);
@@ -44,7 +47,7 @@ public class TILParser implements PsiParser {
       r = ILParenthesizedExpression(b, 0);
     }
     else if (t == IL_SELECT_EXPRESSION) {
-      r = ILExpression(b, 0, 0);
+      r = ILExpression(b, 0, 1);
     }
     else if (t == IL_VARIABLE) {
       r = ILVariable(b, 0);
@@ -60,8 +63,9 @@ public class TILParser implements PsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(IL_BINARY_ADD_EXPRESSION, IL_BINARY_MUL_EXPRESSION, IL_EXPRESSION, IL_LITERAL_EXPRESSION,
-      IL_METHOD_CALL_EXPRESSION, IL_PARENTHESIZED_EXPRESSION, IL_SELECT_EXPRESSION, IL_VARIABLE),
+    create_token_set_(IL_BINARY_ADD_EXPRESSION, IL_BINARY_MUL_EXPRESSION, IL_EXPRESSION, IL_EXPRESSION_HOLDER,
+      IL_LITERAL_EXPRESSION, IL_METHOD_CALL_EXPRESSION, IL_PARENTHESIZED_EXPRESSION, IL_SELECT_EXPRESSION,
+      IL_VARIABLE),
   };
 
   /* ********************************************************** */
@@ -81,21 +85,6 @@ public class TILParser implements PsiParser {
   // '.'
   static boolean DotOp(PsiBuilder b, int l) {
     return consumeToken(b, POINT);
-  }
-
-  /* ********************************************************** */
-  // '${' ILExpression '}'
-  static boolean ILExpressionHolder(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ILExpressionHolder")) return false;
-    if (!nextTokenIs(b, INTERPOLATION_START)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
-    r = consumeToken(b, INTERPOLATION_START);
-    p = r; // pin = 1
-    r = r && report_error_(b, ILExpression(b, l + 1, -1));
-    r = p && consumeToken(b, R_CURLY) && r;
-    exit_section_(b, l, m, null, r, p, null);
-    return r || p;
   }
 
   /* ********************************************************** */
@@ -195,33 +184,29 @@ public class TILParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ILExpressionHolder | ILExpression
+  // ILExpression
   static boolean root(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = ILExpressionHolder(b, l + 1);
-    if (!r) r = ILExpression(b, l + 1, -1);
-    exit_section_(b, m, null, r);
-    return r;
+    return ILExpression(b, l + 1, -1);
   }
 
   /* ********************************************************** */
   // Expression root: ILExpression
   // Operator priority table:
   // 0: PREFIX(ILParenthesizedExpression)
-  // 1: BINARY(ILSelectExpression)
-  // 2: BINARY(ILBinaryAddExpression)
-  // 3: BINARY(ILBinaryMulExpression)
-  // 4: POSTFIX(ILMethodCallExpression)
-  // 5: ATOM(ILLiteralExpression)
-  // 6: ATOM(ILVariable)
+  // 1: PREFIX(ILExpressionHolder)
+  // 2: BINARY(ILSelectExpression)
+  // 3: BINARY(ILBinaryAddExpression)
+  // 4: BINARY(ILBinaryMulExpression)
+  // 5: POSTFIX(ILMethodCallExpression)
+  // 6: ATOM(ILLiteralExpression)
+  // 7: ATOM(ILVariable)
   public static boolean ILExpression(PsiBuilder b, int l, int g) {
     if (!recursion_guard_(b, l, "ILExpression")) return false;
-    addVariant(b, "<Expression>");
+    addVariant(b, "<expression>");
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, "<Expression>");
+    Marker m = enter_section_(b, l, _NONE_, "<expression>");
     r = ILParenthesizedExpression(b, l + 1);
+    if (!r) r = ILExpressionHolder(b, l + 1);
     if (!r) r = ILLiteralExpression(b, l + 1);
     if (!r) r = ILVariable(b, l + 1);
     p = r;
@@ -235,19 +220,19 @@ public class TILParser implements PsiParser {
     boolean r = true;
     while (true) {
       Marker m = enter_section_(b, l, _LEFT_, null);
-      if (g < 1 && DotOp(b, l + 1)) {
-        r = ILExpression(b, l, 5);
+      if (g < 2 && DotOp(b, l + 1)) {
+        r = ILExpression(b, l, 6);
         exit_section_(b, l, m, IL_SELECT_EXPRESSION, r, true, null);
       }
-      else if (g < 2 && AddOp(b, l + 1)) {
-        r = ILExpression(b, l, 2);
+      else if (g < 3 && AddOp(b, l + 1)) {
+        r = ILExpression(b, l, 3);
         exit_section_(b, l, m, IL_BINARY_ADD_EXPRESSION, r, true, null);
       }
-      else if (g < 3 && MulOp(b, l + 1)) {
-        r = ILExpression(b, l, 3);
+      else if (g < 4 && MulOp(b, l + 1)) {
+        r = ILExpression(b, l, 4);
         exit_section_(b, l, m, IL_BINARY_MUL_EXPRESSION, r, true, null);
       }
-      else if (g < 4 && ILParameterList(b, l + 1)) {
+      else if (g < 5 && ILParameterList(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, IL_METHOD_CALL_EXPRESSION, r, true, null);
       }
@@ -269,6 +254,19 @@ public class TILParser implements PsiParser {
     r = p && ILExpression(b, l, 0);
     r = p && report_error_(b, consumeToken(b, R_PAREN)) && r;
     exit_section_(b, l, m, IL_PARENTHESIZED_EXPRESSION, r, p, null);
+    return r || p;
+  }
+
+  public static boolean ILExpressionHolder(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ILExpressionHolder")) return false;
+    if (!nextTokenIsFast(b, INTERPOLATION_START)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = consumeTokenSmart(b, INTERPOLATION_START);
+    p = r;
+    r = p && ILExpression(b, l, 1);
+    r = p && report_error_(b, consumeToken(b, R_CURLY)) && r;
+    exit_section_(b, l, m, IL_EXPRESSION_HOLDER, r, p, null);
     return r || p;
   }
 

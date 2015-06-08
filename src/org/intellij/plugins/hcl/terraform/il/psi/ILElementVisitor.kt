@@ -18,10 +18,6 @@ package org.intellij.plugins.hcl.terraform.il.psi
 import org.intellij.plugins.hcl.terraform.il.ILBinaryExpression
 
 class ILElementVisitor : ILGeneratedVisitor() {
-  fun visitILExpressionHolder(o: ILExpressionHolder) {
-    visitElement(o)
-  }
-
   fun visitILBinaryExpression(o: ILBinaryExpression) {
     visitElement(o)
   }

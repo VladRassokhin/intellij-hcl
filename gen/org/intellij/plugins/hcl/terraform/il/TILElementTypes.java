@@ -11,6 +11,7 @@ public interface TILElementTypes {
   IElementType IL_BINARY_ADD_EXPRESSION = new TILElementType("IL_BINARY_ADD_EXPRESSION");
   IElementType IL_BINARY_MUL_EXPRESSION = new TILElementType("IL_BINARY_MUL_EXPRESSION");
   IElementType IL_EXPRESSION = new TILElementType("IL_EXPRESSION");
+  IElementType IL_EXPRESSION_HOLDER = new TILElementType("IL_EXPRESSION_HOLDER");
   IElementType IL_LITERAL_EXPRESSION = new TILElementType("IL_LITERAL_EXPRESSION");
   IElementType IL_METHOD_CALL_EXPRESSION = new TILElementType("IL_METHOD_CALL_EXPRESSION");
   IElementType IL_PARAMETER_LIST = new TILElementType("IL_PARAMETER_LIST");
@@ -49,6 +50,9 @@ public interface TILElementTypes {
       }
       else if (type == IL_EXPRESSION) {
         return new ILExpressionImpl(node);
+      }
+      else if (type == IL_EXPRESSION_HOLDER) {
+        return new ILExpressionHolderImpl(node);
       }
       else if (type == IL_LITERAL_EXPRESSION) {
         return new ILLiteralExpressionImpl(node);

@@ -54,4 +54,8 @@ public class TILParserTest  extends ParsingTestCase {
   public void testStarVariable() throws Exception {
     doCodeTest("${aws_instance.web.*.id}");
   }
+
+  public void testInception() throws Exception {
+    doCodeTest("${aws_instance.web.${count.index}.id}");
+  }
 }
