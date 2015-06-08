@@ -186,29 +186,13 @@ public class TILParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (ILLiteralExpression | ILExpressionHolder)+
+  // ILExpressionHolder | ILExpression
   static boolean root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = root_0(b, l + 1);
-    int c = current_position_(b);
-    while (r) {
-      if (!root_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "root", c)) break;
-      c = current_position_(b);
-    }
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ILLiteralExpression | ILExpressionHolder
-  private static boolean root_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = ILLiteralExpression(b, l + 1);
-    if (!r) r = ILExpressionHolder(b, l + 1);
+    r = ILExpressionHolder(b, l + 1);
+    if (!r) r = ILExpression(b, l + 1, -1);
     exit_section_(b, m, null, r);
     return r;
   }

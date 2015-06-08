@@ -35,4 +35,23 @@ public class TILParserTest  extends ParsingTestCase {
     doCodeTest("${variable}");
   }
 
+  public void testSimpleNoHolder() throws Exception {
+    doCodeTest("variable");
+  }
+
+  public void testMethodCall() throws Exception {
+    doCodeTest("method(a,v)");
+  }
+
+  public void testOperator() throws Exception {
+    doCodeTest("${count.index+1}");
+  }
+
+  public void testNoOperator() throws Exception {
+    doCodeTest("${var.amis.us-east-1}");
+  }
+
+  public void testStarVariable() throws Exception {
+    doCodeTest("${aws_instance.web.*.id}");
+  }
 }
