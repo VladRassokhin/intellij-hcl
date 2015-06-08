@@ -25,12 +25,20 @@ class ILLanguageInjector : LanguageInjector {
   override fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
     if (host !is HCLStringLiteralImpl) return;
     // Only .tf (Terraform config) files
-    if (!"tf".equals(host.getContainingFile().getVirtualFile().getExtension())) return;
+    val file = host.getContainingFile() ?: return
+    val virtualFile = file.getVirtualFile() ?: return
+    if (!"tf".equals(virtualFile.getExtension())) return;
     val text = host.getValue()
-    if (text.startsWith("\${") && text.endsWith('}')) {
-      if (true) {
-        places.addPlace(TILLanguage, TextRange(1, host.getTextLength() - 1), null, null)
+    var start = text.indexOf("\${")
+    while (start != -1) {
+      var end = text.indexOf('}', start + 2)
+      if (end == -1) {
+        break;
+      } else {
+        // shift for '"'
+        places.addPlace(TILLanguage, TextRange(start, end + 1).shiftRight(1), null, null)
       }
+      start = text.indexOf("\${", end + 1)
     }
   }
 }
