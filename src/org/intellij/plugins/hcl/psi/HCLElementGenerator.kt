@@ -52,10 +52,8 @@ public class HCLElementGenerator(private val myProject: Project) {
    * @see .createStringLiteral
    */
   public fun <T : HCLValue> createValue(content: String): T {
-    val file = createDummyFile("{\"foo\": " + content + "}")
-    //noinspection unchecked,ConstantConditions
-    val property = (file.getFirstChild() as HCLObject).getPropertyList().get(0)
-    return (property as HCLProperty).getValue() as T
+    val file = createDummyFile("foo=" + content)
+    return (file.getFirstChild() as HCLProperty).getValue() as T
   }
 
   public fun createObject(content: String): HCLObject {
@@ -72,6 +70,9 @@ public class HCLElementGenerator(private val myProject: Project) {
    * @return JSON string literal created from given text
    */
   public fun createStringLiteral(unescapedContent: String): HCLStringLiteral {
+    if (unescapedContent.startsWith('"') ||unescapedContent.startsWith('\'')) {
+      return createValue(unescapedContent);
+    }
     return createValue('"' + StringUtil.escapeStringCharacters(unescapedContent) + '"')
   }
 
@@ -84,5 +85,10 @@ public class HCLElementGenerator(private val myProject: Project) {
   public fun createComma(): PsiElement {
     val jsonArray1 = createValue<HCLArray>("[1, 2]")
     return jsonArray1.getValueList().get(0).getNextSibling()
+  }
+
+  public fun createIdentifier(name: String): HCLIdentifier {
+    val file = createDummyFile(name +"=true");
+    return (file.getFirstChild() as HCLProperty).getNameElement() as HCLIdentifier
   }
 }

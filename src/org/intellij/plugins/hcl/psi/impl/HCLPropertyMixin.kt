@@ -23,7 +23,9 @@ import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.util.ArrayUtil
 import com.intellij.util.IncorrectOperationException
 import org.intellij.plugins.hcl.psi.HCLElementGenerator
+import org.intellij.plugins.hcl.psi.HCLIdentifier
 import org.intellij.plugins.hcl.psi.HCLProperty
+import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.jetbrains.annotations.NonNls
 
 abstract class HCLPropertyMixin(node: ASTNode) : HCLElementImpl(node), HCLProperty {
@@ -32,7 +34,16 @@ abstract class HCLPropertyMixin(node: ASTNode) : HCLElementImpl(node), HCLProper
   override fun setName(NonNls name: String): PsiElement {
     val generator = HCLElementGenerator(getProject())
     // Strip only both quotes in case user wants some exotic name like key'
-    getNameElement().replace(generator.createStringLiteral(StringUtil.unquoteString(name)))
+    val element = getNameElement()
+    val rep:PsiElement;
+    if (element is HCLStringLiteral) {
+      rep = generator.createStringLiteral(StringUtil.unquoteString(name))
+    } else if (element is HCLIdentifier) {
+      rep = generator.createIdentifier(StringUtil.unquoteString(name));
+    } else {
+      throw IllegalStateException("Unexpected property name element type ${element.javaClass.getName()}")
+    }
+    element.replace(rep)
     return this
   }
 
