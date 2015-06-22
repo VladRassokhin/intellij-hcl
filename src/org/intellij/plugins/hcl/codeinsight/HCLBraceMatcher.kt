@@ -31,7 +31,7 @@ public class HCLBraceMatcher : PairedBraceMatcher {
   }
 
   companion object {
-    private val BRACE_PAIRS = arrayOf(BracePair(L_CURLY, R_CURLY, false), BracePair(L_BRACKET, L_BRACKET, false))
+    private val BRACE_PAIRS = arrayOf(BracePair(L_CURLY, R_CURLY, true), BracePair(L_BRACKET, R_BRACKET, true))
   }
 
   override fun getPairs(): Array<out BracePair>? {
