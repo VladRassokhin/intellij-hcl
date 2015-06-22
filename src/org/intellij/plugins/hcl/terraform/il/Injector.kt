@@ -30,15 +30,29 @@ class ILLanguageInjector : LanguageInjector {
     if (!"tf".equals(virtualFile.getExtension())) return;
     val text = host.getValue()
     var start = text.indexOf("\${")
-    while (start != -1) {
-      var end = text.indexOf('}', start + 2)
-      if (end == -1) {
-        break;
-      } else {
-        // shift for '"'
-        places.addPlace(TILLanguage, TextRange(start, end + 1).shiftRight(1), null, null)
+    out@ while (start != -1) {
+      // Take as much as we can
+      var b = false;
+      var level = 1;
+      for (i in start + 1..text.lastIndex) {
+        val c = text[i];
+        if (c == '}') {
+          level--;
+        }
+        if (c == '{' && b) {
+          level++;
+        }
+        b = c == '$'
+
+        if (level == 0) {
+          val end = i;
+          // shift for '"'
+          places.addPlace(TILLanguage, TextRange(start, end + 1).shiftRight(1), null, null)
+          start = text.indexOf("\${", end + 1)
+          continue@out;
+        }
       }
-      start = text.indexOf("\${", end + 1)
+      break@out;
     }
   }
 }
