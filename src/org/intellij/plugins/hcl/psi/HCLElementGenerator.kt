@@ -25,7 +25,7 @@ import org.intellij.plugins.hcl.HCLFileType
 /**
  * @author Mikhail Golubev
  */
-public class HCLElementGenerator(private val myProject: Project) {
+public class HCLElementGenerator(private val project: Project) {
 
   /**
    * Create lightweight in-memory [org.intellij.plugins.hcl.psi.HCLFile] filled with `content`.
@@ -35,16 +35,16 @@ public class HCLElementGenerator(private val myProject: Project) {
    * @return created file
    */
   public fun createDummyFile(content: String): PsiFile {
-    val psiFileFactory = PsiFileFactory.getInstance(myProject)
+    val psiFileFactory = PsiFileFactory.getInstance(project)
     return psiFileFactory.createFileFromText("dummy." + HCLFileType.getDefaultExtension(), HCLFileType, content)
   }
 
   /**
-   * Create JSON value from supplied content.
+   * Create HCL value from supplied content.
 
-   * @param content properly escaped text of JSON value, e.g. Java literal `&quot;\&quot;new\\nline\&quot;&quot;` if you want to create string literal
+   * @param content properly escaped text of HCL value, e.g. Java literal `&quot;\&quot;new\\nline\&quot;&quot;` if you want to create string literal
    * *
-   * @param type of the JSON value desired
+   * @param type of the HCL value desired
    * *
    * @return element created from given text
    * *
@@ -52,43 +52,38 @@ public class HCLElementGenerator(private val myProject: Project) {
    * @see .createStringLiteral
    */
   public fun <T : HCLValue> createValue(content: String): T {
-    val file = createDummyFile("foo=" + content)
-    return (file.getFirstChild() as HCLProperty).getValue() as T
+    val property = createProperty("foo", content)
+    return property.getValue() as T
   }
 
   public fun createObject(content: String): HCLObject {
-    val file = createDummyFile("{" + content + "}")
-    //noinspection unchecked,ConstantConditions
-    return file.getFirstChild() as HCLObject
+    val file = createDummyFile("foo {$content}")
+    val block = file.getFirstChild() as HCLBlock
+    return block.getObject() as HCLObject
   }
 
   /**
-   * Create JSON string literal from supplied *unescaped* content.
+   * Create HCL string literal from supplied *unescaped* content.
 
    * @param unescapedContent unescaped content of string literal, e.g. Java literal `&quot;new\nline&quot;` (compare with [.createValue]).
    * *
-   * @return JSON string literal created from given text
+   * @return HCL string literal created from given text
    */
   public fun createStringLiteral(unescapedContent: String): HCLStringLiteral {
-    if (unescapedContent.startsWith('"') ||unescapedContent.startsWith('\'')) {
-      return createValue(unescapedContent);
-    }
     return createValue('"' + StringUtil.escapeStringCharacters(unescapedContent) + '"')
   }
 
   public fun createProperty(name: String, value: String): HCLProperty {
-    val file = createDummyFile("{\"" + name + "\": " + value + "}")
-    //noinspection unchecked,ConstantConditions
-    return (file.getFirstChild() as HCLObject).getPropertyList().get(0)
+    val file = createDummyFile("\"$name\"=$value")
+    return file.getFirstChild() as HCLProperty
   }
 
   public fun createComma(): PsiElement {
-    val jsonArray1 = createValue<HCLArray>("[1, 2]")
-    return jsonArray1.getValueList().get(0).getNextSibling()
+    val array = createValue<HCLArray>("[1, 2]")
+    return array.getValueList().get(0).getNextSibling()
   }
 
   public fun createIdentifier(name: String): HCLIdentifier {
-    val file = createDummyFile(name +"=true");
-    return (file.getFirstChild() as HCLProperty).getNameElement() as HCLIdentifier
+    return createProperty(name, "true").getNameElement() as HCLIdentifier
   }
 }
