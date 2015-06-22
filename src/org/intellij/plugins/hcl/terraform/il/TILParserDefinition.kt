@@ -85,13 +85,9 @@ public class TILParserDefinition : ParserDefinition {
     private val ourContextNodeKey: Key<ASTNode> = Key.create("Terraform-IL.context.node");
 
     public val IL_HOLDER: ILazyParseableElementType = object : ILazyParseableElementType("IL_HOLDER", TILLanguage) {
-      override fun parseContents(chameleon: ASTNode?): ASTNode? {
-        chameleon!!
-        val psi = chameleon.getPsi()
-        assert (psi != null, chameleon)
-        psi!!
+      override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
         val project = psi.getProject()
-        val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon)
+        val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, TILLexer(), TILLanguage, chameleon.getChars())
         val parser = LanguageParserDefinitions.INSTANCE.forLanguage(getLanguage()).createParser(project)
 
         builder.putUserData(ourContextNodeKey, chameleon.getTreeParent())
