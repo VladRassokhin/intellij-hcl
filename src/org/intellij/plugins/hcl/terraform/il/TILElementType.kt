@@ -21,7 +21,7 @@ import org.intellij.plugins.hcl.HCLLanguage
 import org.intellij.plugins.hcl.terraform.il.TILElementTypes.*
 
 
-open class TILElementType(debugName: String) : IElementType(debugName, HCLLanguage) {
+open class TILElementType(debugName: String) : IElementType(debugName, TILLanguage) {
   companion object {
     public val IL_EXPRESSIONS: TokenSet = TokenSet.create(
         IL_VARIABLE,
