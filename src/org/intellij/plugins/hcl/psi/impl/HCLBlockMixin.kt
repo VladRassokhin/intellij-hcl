@@ -25,11 +25,11 @@ abstract class HCLBlockMixin(node: ASTNode) : HCLElementImpl(node), HCLBlock {
 
   throws(IncorrectOperationException::class)
   override fun setName(name: String): PsiElement {
-    val generator = HCLElementGenerator(getProject())
+//    val generator = HCLElementGenerator(getProject())
     // Strip only both quotes in case user wants some exotic name like key
     // TODO: do something
     //    getNameElement().replace(generator.createStringLiteral(StringUtil.unquoteString(name)));
-    return this
+    throw IncorrectOperationException("Not supported for blocks")
   }
 
   // TODO: Add proper references
