@@ -58,4 +58,8 @@ public class TILParserTest  extends ParsingTestCase {
   public void testInception() throws Exception {
     doCodeTest("${aws_instance.web.${count.index}.id}");
   }
+
+  public void testString() throws Exception {
+    doCodeTest("${file(\"ecs-container-definitions.json\")}");
+  }
 }
