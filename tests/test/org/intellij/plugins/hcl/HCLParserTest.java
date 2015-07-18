@@ -21,7 +21,7 @@ import com.intellij.testFramework.TestDataPath;
 @TestDataPath("$CONTENT_ROOT/data/psi/")
 public class HCLParserTest extends ParsingTestCase {
   public HCLParserTest() {
-    super("psi", "hcl", true, new HCLParserDefinition());
+    super("psi", "hcl", false, new HCLParserDefinition());
   }
 
   @Override
