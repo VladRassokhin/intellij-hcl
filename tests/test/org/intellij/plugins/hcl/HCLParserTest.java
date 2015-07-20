@@ -89,4 +89,8 @@ public class HCLParserTest extends ParsingTestCase {
   public void testIncomplete_Property_Or_Block() throws Exception {
     doTest();
   }
+
+  public void testTerraform_With_String_In_IL() throws Exception {
+    doTest();
+  }
 }
