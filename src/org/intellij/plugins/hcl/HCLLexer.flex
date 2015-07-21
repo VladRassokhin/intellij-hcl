@@ -3,6 +3,7 @@ import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import java.util.EnumSet;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
 
 %%
 
@@ -66,7 +67,7 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
    \$ {;}
    \{ {;}
    \} {;}
-   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
+   [^] { return BAD_CHARACTER; }
 }
 
 <S_STRING> {
@@ -76,7 +77,7 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
    \$ {;}
    \{ {;}
    \} {;}
-   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
+   [^] { return BAD_CHARACTER; }
 }
 
 
@@ -86,7 +87,7 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
   \' {}
   \" {}
   {TIL_ELEMENT} {;}
-  [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
+  [^] { return BAD_CHARACTER; }
 }
 
 
@@ -113,7 +114,7 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
                                 yybegin(IN_NUMBER); yypushback(yylength());}
   {ID}                        { return ID; }
 
-  [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
+  [^] { return BAD_CHARACTER; }
 }
 
 <IN_NUMBER> {
