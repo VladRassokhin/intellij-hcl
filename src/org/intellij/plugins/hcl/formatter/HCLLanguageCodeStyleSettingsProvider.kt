@@ -23,21 +23,34 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import org.intellij.plugins.hcl.HCLLanguage
 
-public open class HCLLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
-  override fun getLanguage(): Language = HCLLanguage
+public open class HCLLanguageCodeStyleSettingsProvider(val _language:Language = HCLLanguage) : LanguageCodeStyleSettingsProvider() {
+  override fun getLanguage(): Language = _language;
+
+  companion object {
+    val SAMPLE = """
+    name = value
+    block 'name' {
+      long_array = [ 'a', 100, "b", 1234567890, 1234567890, 1234567890, 1234567890, 10e100, true, false ]
+      arr = []
+      empty_object = {}
+      object = {
+        something = "Yep!"
+      }
+    }
+    some_object = {
+      echo = true
+    }
+    """
+  }
 
   override fun getCodeSample(settingsType: LanguageCodeStyleSettingsProvider.SettingsType): String {
-    // TODO: Improve sample
-    return "name = value\n" +
-        "resource 'a' {\n" +
-        "  \"x\" = [1e-9,]\n" +
-        "}"
+    return SAMPLE
   }
 
   override fun getIndentOptionsEditor(): IndentOptionsEditor? = SmartIndentOptionsEditor()
 
   override fun getDefaultCommonSettings(): CommonCodeStyleSettings? {
-    val commonSettings = CommonCodeStyleSettings(HCLLanguage)
+    val commonSettings = CommonCodeStyleSettings(_language)
     val indentOptions = commonSettings.initIndentOptions()
     indentOptions.INDENT_SIZE = 2
     return commonSettings
