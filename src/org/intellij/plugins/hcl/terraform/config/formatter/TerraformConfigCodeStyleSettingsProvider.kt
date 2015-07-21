@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.psi.impl
+package org.intellij.plugins.hcl.terraform.config.formatter
 
-import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.lang.Language
-import com.intellij.openapi.fileTypes.FileType
-import com.intellij.psi.FileViewProvider
-import org.intellij.plugins.hcl.psi.HCLFile
+import org.intellij.plugins.hcl.formatter.HCLLanguageCodeStyleSettingsProvider
+import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 
-public class HCLFileImpl(fileViewProvider: FileViewProvider, language: Language) : PsiFileBase(fileViewProvider, language), HCLFile {
-
-  override fun getFileType(): FileType {
-    return getViewProvider().getVirtualFile().getFileType()
-  }
-
-  override fun toString(): String {
-    val virtualFile = getVirtualFile()
-    return "HCLFile: " + (if (virtualFile != null) virtualFile.getName() else "<unknown>")
+public class TerraformConfigCodeStyleSettingsProvider: HCLLanguageCodeStyleSettingsProvider() {
+  override fun getLanguage(): Language {
+    return TerraformLanguage;
   }
 }

@@ -20,14 +20,14 @@ import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralImpl
+import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 
 class ILLanguageInjector : LanguageInjector {
   override fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
     if (host !is HCLStringLiteralImpl) return;
     // Only .tf (Terraform config) files
     val file = host.getContainingFile() ?: return
-    val virtualFile = file.getVirtualFile() ?: return
-    if (!"tf".equals(virtualFile.getExtension())) return;
+    if (file.getFileType() !is TerraformFileType) return;
     val text = host.getValue()
     var start = text.indexOf("\${")
     out@ while (start != -1) {

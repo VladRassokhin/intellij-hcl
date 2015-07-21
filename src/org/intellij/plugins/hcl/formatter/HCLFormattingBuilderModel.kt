@@ -17,6 +17,7 @@ package org.intellij.plugins.hcl.formatter
 
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
+import com.intellij.lang.Language
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -25,7 +26,7 @@ import org.intellij.plugins.hcl.HCLElementTypes.*
 import org.intellij.plugins.hcl.HCLLanguage
 
 
-public class HCLFormattingBuilderModel : FormattingModelBuilder {
+public open class HCLFormattingBuilderModel(val language: Language = HCLLanguage) : FormattingModelBuilder {
   override fun createModel(element: PsiElement?, settings: CodeStyleSettings?): FormattingModel {
     assert(element != null)
     assert(settings != null)
@@ -36,22 +37,20 @@ public class HCLFormattingBuilderModel : FormattingModelBuilder {
     return FormattingModelProvider.createFormattingModelForPsiFile(element.getContainingFile(), block, settings)
   }
 
-  companion object {
-    private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
-//      val hclSettings = settings.getCustomSettings(javaClass<HCLCodeStyleSettings>())
-      val commonSettings = settings.getCommonSettings(HCLLanguage)
+  private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
+    //      val hclSettings = settings.getCustomSettings(javaClass<HCLCodeStyleSettings>())
+    val commonSettings = settings.getCommonSettings(language)
 
-      val spacesBeforeComma = if (commonSettings.SPACE_BEFORE_COMMA) 1 else 0
-      val spacesAroundAssignment = if (commonSettings.SPACE_AROUND_ASSIGNMENT_OPERATORS) 1 else 0
+    val spacesBeforeComma = if (commonSettings.SPACE_BEFORE_COMMA) 1 else 0
+    val spacesAroundAssignment = if (commonSettings.SPACE_AROUND_ASSIGNMENT_OPERATORS) 1 else 0
 
-      return SpacingBuilder(settings, HCLLanguage)
-          .before(EQUALS).spacing(spacesAroundAssignment, spacesAroundAssignment, 0, false, 0)
-          .after(EQUALS).spacing(spacesAroundAssignment, spacesAroundAssignment, 0, false, 0)
-          .withinPair(L_BRACKET, R_BRACKET).spaceIf(commonSettings.SPACE_WITHIN_BRACKETS) //, true
-          .withinPair(L_CURLY, R_CURLY).spaceIf(commonSettings.SPACE_WITHIN_BRACES) //, true
-          .before(COMMA).spacing(spacesBeforeComma, spacesBeforeComma, 0, false, 0)
-          .after(COMMA).spaceIf(commonSettings.SPACE_AFTER_COMMA)
-    }
+    return SpacingBuilder(settings, language)
+        .before(EQUALS).spacing(spacesAroundAssignment, spacesAroundAssignment, 0, false, 0)
+        .after(EQUALS).spacing(spacesAroundAssignment, spacesAroundAssignment, 0, false, 0)
+        .withinPair(L_BRACKET, R_BRACKET).spaceIf(commonSettings.SPACE_WITHIN_BRACKETS) //, true
+        .withinPair(L_CURLY, R_CURLY).spaceIf(commonSettings.SPACE_WITHIN_BRACES) //, true
+        .before(COMMA).spacing(spacesBeforeComma, spacesBeforeComma, 0, false, 0)
+        .after(COMMA).spaceIf(commonSettings.SPACE_AFTER_COMMA)
   }
 
   override fun getRangeAffectingIndent(file: PsiFile?, offset: Int, elementAtOffset: ASTNode?): TextRange? {

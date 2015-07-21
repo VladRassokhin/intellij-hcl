@@ -21,13 +21,14 @@ import com.intellij.xml.breadcrumbs.BreadcrumbsInfoProvider;
 import org.intellij.plugins.hcl.HCLLanguage;
 import org.intellij.plugins.hcl.psi.HCLBlock;
 import org.intellij.plugins.hcl.psi.HCLProperty;
+import org.intellij.plugins.hcl.terraform.config.TerraformLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class HCLBreadcrumbsInfoProvider extends BreadcrumbsInfoProvider {
   @Override
   public Language[] getLanguages() {
-    return new HCLLanguage[]{HCLLanguage.INSTANCE$};
+    return new Language[]{HCLLanguage.INSTANCE$, TerraformLanguage.INSTANCE$};
   }
 
   @Override

@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl
+package org.intellij.plugins.hcl.terraform.config.formatter
 
-import com.intellij.lang.Language
-import com.intellij.psi.tree.IElementType
+import org.intellij.plugins.hcl.formatter.HCLFormattingBuilderModel
+import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 
-open class HCLElementType(debugName: String) : IElementType(debugName, HCLLanguage)
-open class HCLTokenType(debugName: String) : IElementType(debugName, HCLLanguage)
-
+public class TerraformFormattingBuilderModel : HCLFormattingBuilderModel(TerraformLanguage) {
+}

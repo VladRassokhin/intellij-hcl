@@ -23,7 +23,7 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import org.intellij.plugins.hcl.HCLLanguage
 
-public class HCLLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
+public open class HCLLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
   override fun getLanguage(): Language = HCLLanguage
 
   override fun getCodeSample(settingsType: LanguageCodeStyleSettingsProvider.SettingsType): String {

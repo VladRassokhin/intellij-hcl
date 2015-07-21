@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.formatter
+package org.intellij.plugins.hcl.terraform.config.formatter
 
 import com.intellij.application.options.CodeStyleAbstractConfigurable
 import com.intellij.application.options.CodeStyleAbstractPanel
 import com.intellij.application.options.TabbedLanguageCodeStylePanel
-import com.intellij.lang.Language
 import com.intellij.openapi.options.Configurable
 import com.intellij.psi.codeStyle.CodeStyleSettings
-import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings
-import org.intellij.plugins.hcl.HCLLanguage
+import org.intellij.plugins.hcl.formatter.HCLCodeStylePanel
+import org.intellij.plugins.hcl.formatter.HCLCodeStyleSettings
+import org.intellij.plugins.hcl.formatter.HCLCodeStyleSettingsProvider
+import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 
-public open class HCLCodeStyleSettingsProvider(val _language:Language = HCLLanguage) : CodeStyleSettingsProvider() {
+public class TerraformCodeStyleSettingsProvider : HCLCodeStyleSettingsProvider(TerraformLanguage) {
   override fun createSettingsPage(settings: CodeStyleSettings, originalSettings: CodeStyleSettings): Configurable {
-    return object : CodeStyleAbstractConfigurable(settings, originalSettings, "HCL") {
+    return object : CodeStyleAbstractConfigurable(settings, originalSettings, "Terraform") {
       override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
         val currentSettings = getCurrentSettings()
         return object : TabbedLanguageCodeStylePanel(_language, currentSettings, settings) {
@@ -46,12 +47,5 @@ public open class HCLCodeStyleSettingsProvider(val _language:Language = HCLLangu
       }
     }
   }
-
-  override fun getLanguage(): Language? {
-    return _language;
-  }
-
-  override fun createCustomSettings(settings: CodeStyleSettings?): CustomCodeStyleSettings? {
-    return HCLCodeStyleSettings(settings!!, _language);
-  }
 }
+

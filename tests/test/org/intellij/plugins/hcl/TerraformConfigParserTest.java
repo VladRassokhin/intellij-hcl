@@ -13,11 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl
+package org.intellij.plugins.hcl;
 
-import com.intellij.lang.Language
-import com.intellij.psi.tree.IElementType
+import com.intellij.testFramework.TestDataPath;
+import org.intellij.plugins.hcl.terraform.config.TerraformParserDefinition;
 
-open class HCLElementType(debugName: String) : IElementType(debugName, HCLLanguage)
-open class HCLTokenType(debugName: String) : IElementType(debugName, HCLLanguage)
+@TestDataPath("$CONTENT_ROOT/data/psi/")
+public class TerraformConfigParserTest extends HCLParserTest {
+  public TerraformConfigParserTest() {
+    super("psi", "hcl", false, new TerraformParserDefinition());
+  }
 
+  @Override
+  protected String getTestDataPath() {
+    return "data/";
+  }
+
+  private void doTest() {
+    doTest(true);
+  }
+
+  public void testTerraform_With_String_In_IL() throws Exception {
+    doTest();
+  }
+}

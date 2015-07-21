@@ -15,10 +15,10 @@
  */
 package org.intellij.plugins.hcl.formatter;
 
+import com.intellij.lang.Language;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
-import org.intellij.plugins.hcl.HCLLanguage;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -45,8 +45,8 @@ public class HCLCodeStyleSettings extends CustomCodeStyleSettings {
   // CHOP_DOWN_IF_LONG seems more appropriate however for short arrays.
   public int ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS;
 
-  public HCLCodeStyleSettings(CodeStyleSettings container) {
-    super(HCLLanguage.INSTANCE$.getID(), container);
+  public HCLCodeStyleSettings(CodeStyleSettings container, Language language) {
+    super(language.getID(), container);
   }
 
   public enum PropertyAlignment {

@@ -71,7 +71,7 @@ public open class HCLParserDefinition : ParserDefinition {
   }
 
   override fun createFile(fileViewProvider: FileViewProvider): PsiFile {
-    return HCLFileImpl(fileViewProvider)
+    return HCLFileImpl(fileViewProvider, HCLLanguage)
   }
 
   override fun spaceExistanceTypeBetweenTokens(left: ASTNode, right: ASTNode) = ParserDefinition.SpaceRequirements.MAY
