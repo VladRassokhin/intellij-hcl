@@ -16,60 +16,24 @@
 package org.intellij.plugins.hcl;
 
 import com.intellij.lexer.Lexer;
-import com.intellij.testFramework.LexerTestCase;
 
-public class HCLLexerTest extends LexerTestCase {
+import java.util.EnumSet;
+
+public class TerraformConfigLexerTest extends HCLLexerTest {
   @Override
   protected Lexer createLexer() {
-    return new HCLLexer();
-  }
-
-  @Override
-  protected String getDirPath() {
-    return "data/hcl/lexer";
-  }
-
-  public void testSimple() throws Exception {
-    doTest("a=1", "ID ('a')\n" +
-        "= ('=')\n" +
-        "NUMBER ('1')");
+    return new HCLLexer(EnumSet.allOf(HCLCapability.class));
   }
 
   public void testNumberWithSuffix() throws Exception {
-    doTest("a=[1k, 1Kb]", "ID ('a')\n" +
+    doTest("arr=[1k, 1Kb]", "ID ('arr')\n" +
         "= ('=')\n" +
         "[ ('[')\n" +
-        "NUMBER ('1')\n" +
-        "ID ('k')\n" +
+        "NUMBER ('1k')\n" +
         ", (',')\n" +
         "WHITE_SPACE (' ')\n" +
-        "NUMBER ('1')\n" +
-        "ID ('Kb')\n" +
+        "NUMBER ('1Kb')\n" +
         "] (']')");
-  }
-
-  public void testStringWithCurves() throws Exception {
-    doTest("a=\"{}\"", "ID ('a')\n" +
-        "= ('=')\n" +
-        "DOUBLE_QUOTED_STRING ('\"{}\"')");
-  }
-
-  public void testStringWith$() throws Exception {
-    doTest("dollar=\"$\"", "ID ('dollar')\n" +
-        "= ('=')\n" +
-        "DOUBLE_QUOTED_STRING ('\"$\"')");
-  }
-
-  public void testQuotes1() throws Exception {
-    doTest("a='\"1\"'", "ID ('a')\n" +
-        "= ('=')\n" +
-        "SINGLE_QUOTED_STRING (''\"1\"'')");
-  }
-
-  public void testQuotes2() throws Exception {
-    doTest("a=\"'1'\"", "ID ('a')\n" +
-        "= ('=')\n" +
-        "DOUBLE_QUOTED_STRING ('\"'1'\"')");
   }
 
   public void testTerraformIL() throws Exception {

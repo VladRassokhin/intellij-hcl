@@ -29,7 +29,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.StringEscapesTokenTypes
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
-import org.intellij.plugins.hcl.psi.HCLLexer
+import org.intellij.plugins.hcl.HCLLexer
 import java.util.HashMap
 
 

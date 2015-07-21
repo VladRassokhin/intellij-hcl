@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.psi
+package org.intellij.plugins.hcl;
 
-import com.intellij.lexer.FlexAdapter
-
-public class HCLLexer : FlexAdapter(_HCLLexer())
+public enum HCLCapability {
+  NUMBERS_WITH_BYTES_POSTFIX,
+  INTERPOLATION_LANGUAGE
+}

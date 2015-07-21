@@ -1,15 +1,10 @@
-package org.intellij.plugins.hcl.psi;
+package org.intellij.plugins.hcl;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
+import java.util.EnumSet;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 
 %%
-
-%{
-  public _HCLLexer() {
-    this((java.io.Reader)null);
-  }
-%}
 
 %public
 %class _HCLLexer
@@ -33,10 +28,18 @@ D_STRING_ELEMENT=([^\"\r\n\$\{\}]|\\[^\r\n])*
 S_STRING_ELEMENT=([^\'\r\n\$\{\}]|\\[^\r\n])*
 TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 
-%state D_STRING, S_STRING, TIL_EXPRESSION
+%state D_STRING, S_STRING, TIL_EXPRESSION, IN_NUMBER
 %{
+    private boolean withNumbersWithBytesPostfix;
+    private boolean withInterpolationLanguage;
+
+    public _HCLLexer(EnumSet<HCLCapability> capabilities) {
+      this((java.io.Reader)null);
+      this.withNumbersWithBytesPostfix = capabilities.contains(HCLCapability.NUMBERS_WITH_BYTES_POSTFIX);
+      this.withInterpolationLanguage = capabilities.contains(HCLCapability.INTERPOLATION_LANGUAGE);
+    }
     enum StringType {
-    None, SingleQ, DoubleQ
+      None, SingleQ, DoubleQ
     }
     // TODO: Store all state variables in zzLexicalState
     // TODO: Optionally disable IL detection
@@ -80,8 +83,8 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 <TIL_EXPRESSION> {
   {TIL_START} { assert stringType != StringType.None : "Not expected"; til_inc();}
   {TIL_STOP} { assert stringType != StringType.None : "Not expected"; if (til_dec() <= 0) yybegin(stringType == StringType.SingleQ ? S_STRING: D_STRING); }
-  \' {debug=1;}
-  \" {debug=2;}
+  \' {}
+  \" {}
   {TIL_ELEMENT} {;}
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
@@ -106,8 +109,14 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 
   {LINE_COMMENT}              { return LINE_COMMENT; }
   {BLOCK_COMMENT}             { return BLOCK_COMMENT; }
-  {NUMBER}                    { return NUMBER; }
+  {NUMBER}                    { if (!withNumbersWithBytesPostfix) return NUMBER;
+                                yybegin(IN_NUMBER); yypushback(yylength());}
   {ID}                        { return ID; }
 
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
+}
+
+<IN_NUMBER> {
+  {NUMBER} ([(kKmMgG]b?) { yybegin(YYINITIAL); return NUMBER; }
+  {NUMBER} { yybegin(YYINITIAL); return NUMBER; }
 }

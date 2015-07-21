@@ -29,7 +29,7 @@ import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.PsiUtilCore
 import org.intellij.plugins.hcl.HCLElementTypes.*
-import org.intellij.plugins.hcl.psi.HCLLexer
+import org.intellij.plugins.hcl.HCLLexer
 import org.intellij.plugins.hcl.psi.impl.HCLFileImpl
 import org.jetbrains.lang.manifest.psi.ManifestElementType
 

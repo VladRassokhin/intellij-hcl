@@ -13,17 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.findUsages;
+package org.intellij.plugins.hcl
 
-import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
-import com.intellij.psi.tree.TokenSet;
-import org.intellij.plugins.hcl.HCLElementTypes;
-import org.intellij.plugins.hcl.HCLParserDefinition;
-import org.intellij.plugins.hcl.HCLLexer;
+import com.intellij.lexer.FlexAdapter
+import org.intellij.plugins.hcl.HCLCapability
+import org.intellij.plugins.hcl._HCLLexer
+import java.util.EnumSet
 
-public class HCLWordsScanner extends DefaultWordsScanner {
-  public HCLWordsScanner() {
-    super(new HCLLexer(), TokenSet.create(HCLElementTypes.IDENTIFIER), HCLParserDefinition.HCL_COMMENTARIES, HCLParserDefinition.HCL_LITERALS);
-    setMayHaveFileRefsInLiterals(true);
-  }
-}
+public class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(javaClass<HCLCapability>())) : FlexAdapter(_HCLLexer(capabilities))
