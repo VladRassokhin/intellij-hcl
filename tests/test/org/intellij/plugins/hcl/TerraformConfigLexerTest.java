@@ -44,6 +44,22 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${count()}\"')");
   }
 
+  public void testTerraformILWithSpecials() throws Exception {
+    doTest("a = \"${$()}\"", "ID ('a')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"${$()}\"')");
+  }
+
+  public void testTerraformILWithSpecials2() throws Exception {
+    doTest("a = \"${{$}$}}\"", "ID ('a')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"${{$}$}}\"')");
+  }
+
   public void testTerraformILInception() throws Exception {
     doTest("count = \"${foo(${bar()})}\"", "ID ('count')\n" +
         "WHITE_SPACE (' ')\n" +
@@ -68,12 +84,46 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${call(\"count\")}\"')");
   }
 
+  public void testTerraformILWithIncorrectString() throws Exception {
+    doTest("count = \"${call(incomplete\")}\"", "ID ('count')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"${call(incomplete\")}\"')");
+  }
+
   public void testTerraformILWithString2() throws Exception {
     doTest("count = '${call(\"count\")}'", "ID ('count')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
         "WHITE_SPACE (' ')\n" +
         "SINGLE_QUOTED_STRING (''${call(\"count\")}'')");
+  }
+
+  public void testTerraformILWithString_Unfinished() throws Exception {
+    doTest("a = '${\"uf)}'", "ID ('a')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "SINGLE_QUOTED_STRING (''${\"uf)}'')");
+  }
+
+  public void testTerraformILWithString_Unfinished2() throws Exception {
+    doTest("a = \"${\"uf)}\"", "ID ('a')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"${\"uf)}\"')");
+  }
+
+  public void testTerraformILWithString_Unfinished3() throws Exception {
+    doTest("c{a = \"${f(\"b.json\")}\"\'}", "ID ('c')\n" +
+        "{ ('{')\n" +
+        "ID ('a')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"${f(\"b.json\")}\"')");
   }
 
   public void testComplicatedTerraformConfigWithILStings() throws Exception {
