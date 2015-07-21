@@ -21,38 +21,58 @@ import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralImpl
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
+import java.util.ArrayList
 
-class ILLanguageInjector : LanguageInjector {
+public class ILLanguageInjector : LanguageInjector {
   override fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
     if (host !is HCLStringLiteralImpl) return;
     // Only .tf (Terraform config) files
     val file = host.getContainingFile() ?: return
     if (file.getFileType() !is TerraformFileType) return;
-    val text = host.getValue()
-    var start = text.indexOf("\${")
-    out@ while (start != -1) {
-      // Take as much as we can
-      var b = false;
-      var level = 1;
-      for (i in start + 1..text.lastIndex) {
-        val c = text[i];
-        if (c == '}') {
-          level--;
-        }
-        if (c == '{' && b) {
-          level++;
-        }
-        b = c == '$'
-
-        if (level == 0) {
-          val end = i;
-          // shift for '"'
-          places.addPlace(TILLanguage, TextRange(start, end + 1).shiftRight(1), null, null)
-          start = text.indexOf("\${", end + 1)
-          continue@out;
-        }
-      }
-      break@out;
+    val text = host.getText()
+    val ranges = getILRangesInText(text)
+    for (range in ranges) {
+      places.addPlace(TILLanguage, range, null, null)
     }
+  }
+
+  companion object {
+    public fun getILRangesInText(text: String): ArrayList<TextRange> {
+      val ranges: ArrayList<TextRange> = ArrayList()
+      var start = text.indexOf("\${")
+      out@ while (start != -1) {
+        // Take as much as we can
+        var b = false;
+        var level = 1;
+        for (i in start + 1..text.lastIndex) {
+          val c = text[i];
+          if (c == '}') {
+            level--;
+          }
+          if (c == '{' && b) {
+            level++;
+          }
+          b = c == '$'
+
+          if (level == 0) {
+            val end = i;
+            val range = TextRange(start, end + 1)
+            ranges.add(range);
+            start = text.indexOf("\${", end + 1)
+            continue@out;
+          }
+        }
+        if (level != 0) {
+          // Unexpected EOF, mark everything as ranges
+          val end = text.lastIndexOf('}');
+          if (end != -1) {
+            ranges.add(TextRange(start, end + 1));
+          }
+        }
+        break@out;
+      }
+      return ranges;
+    }
+
   }
 }
