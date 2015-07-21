@@ -15,13 +15,20 @@
  */
 package org.intellij.plugins.hcl;
 
+import com.intellij.lang.ParserDefinition;
 import com.intellij.testFramework.ParsingTestCase;
 import com.intellij.testFramework.TestDataPath;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 @TestDataPath("$CONTENT_ROOT/data/psi/")
 public class HCLParserTest extends ParsingTestCase {
+  protected HCLParserTest(@NonNls @NotNull String dataPath, @NotNull String fileExt, final boolean lowercaseFirstLetter, @NotNull ParserDefinition... definitions) {
+    super(dataPath, fileExt, lowercaseFirstLetter, definitions);
+  }
+
   public HCLParserTest() {
-    super("psi", "hcl", false, new HCLParserDefinition());
+    this("psi", "hcl", false, new HCLParserDefinition());
   }
 
   @Override
@@ -87,10 +94,6 @@ public class HCLParserTest extends ParsingTestCase {
   }
 
   public void testIncomplete_Property_Or_Block() throws Exception {
-    doTest();
-  }
-
-  public void testTerraform_With_String_In_IL() throws Exception {
     doTest();
   }
 }

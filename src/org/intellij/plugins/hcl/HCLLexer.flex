@@ -61,7 +61,7 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 %%
 
 <D_STRING> {
-   {TIL_START} { til_inc(); yybegin(TIL_EXPRESSION); }
+   {TIL_START} { if (withInterpolationLanguage) {til_inc(); yybegin(TIL_EXPRESSION);} }
    \"          { yybegin(YYINITIAL); assert til == 0;stringType = StringType.None; zzStartRead = stringStart; return DOUBLE_QUOTED_STRING; }
    {D_STRING_ELEMENT} {;}
    \$ {;}
@@ -71,7 +71,7 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 }
 
 <S_STRING> {
-   {TIL_START} { til_inc(); yybegin(TIL_EXPRESSION); }
+   {TIL_START} { if (withInterpolationLanguage) {til_inc(); yybegin(TIL_EXPRESSION);} }
    \'          { yybegin(YYINITIAL); assert til == 0;stringType = StringType.None; zzStartRead = stringStart; return SINGLE_QUOTED_STRING; }
    {S_STRING_ELEMENT} {;}
    \$ {;}

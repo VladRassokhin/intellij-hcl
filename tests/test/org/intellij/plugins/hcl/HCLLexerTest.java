@@ -101,7 +101,9 @@ public class HCLLexerTest extends LexerTestCase {
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
         "WHITE_SPACE (' ')\n" +
-        "DOUBLE_QUOTED_STRING ('\"${call(\"count\")}\"')");
+        "DOUBLE_QUOTED_STRING ('\"${call(\"')\n" +
+        "ID ('count')\n" +
+        "DOUBLE_QUOTED_STRING ('\")}\"')");
   }
 
   public void testTerraformILWithString2() throws Exception {
@@ -117,6 +119,8 @@ public class HCLLexerTest extends LexerTestCase {
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
         "WHITE_SPACE (' ')\n" +
-        "DOUBLE_QUOTED_STRING ('\"${file(\"ecs-container-definitions.json\")}\"')");
+        "DOUBLE_QUOTED_STRING ('\"${file(\"')\n" +
+        "ID ('ecs-container-definitions.json')\n" +
+        "DOUBLE_QUOTED_STRING ('\")}\"')");
   }
 }
