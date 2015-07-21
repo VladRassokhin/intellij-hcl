@@ -25,12 +25,11 @@ ID=[a-zA-Z\.\-_][0-9a-zA-Z\.\-_]*
 
 TIL_START=(\$\{)
 TIL_STOP=(\})
-D_STRING_ELEMENT=([^\"\r\n\$\{\}]|\\[^\r\n])*
-S_STRING_ELEMENT=([^\'\r\n\$\{\}]|\\[^\r\n])*
 TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 
 %state D_STRING, S_STRING, TIL_EXPRESSION, IN_NUMBER
 %{
+  // This parameters can be getted from capabilities
     private boolean withNumbersWithBytesPostfix;
     private boolean withInterpolationLanguage;
 
@@ -42,8 +41,7 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
     enum StringType {
       None, SingleQ, DoubleQ
     }
-    // TODO: Store all state variables in zzLexicalState
-    // TODO: Optionally disable IL detection
+  // State data
     StringType stringType = StringType.None;
     int stringStart = -1;
     int til = 0;
@@ -52,6 +50,7 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
       til++;
     }
     private int til_dec() {
+      assert til > 0;
       til--;
       return til;
     }
@@ -62,31 +61,36 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 
 <D_STRING> {
    {TIL_START} { if (withInterpolationLanguage) {til_inc(); yybegin(TIL_EXPRESSION);} }
-   \"          { yybegin(YYINITIAL); assert til == 0;stringType = StringType.None; zzStartRead = stringStart; return DOUBLE_QUOTED_STRING; }
-   {D_STRING_ELEMENT} {;}
+   \"          { yybegin(YYINITIAL); stringType = StringType.None; zzStartRead = stringStart; return DOUBLE_QUOTED_STRING; }
+   {TIL_ELEMENT} {;}
    \$ {;}
    \{ {;}
    \} {;}
+   \' {;}
    [^] { return BAD_CHARACTER; }
 }
 
 <S_STRING> {
    {TIL_START} { if (withInterpolationLanguage) {til_inc(); yybegin(TIL_EXPRESSION);} }
-   \'          { yybegin(YYINITIAL); assert til == 0;stringType = StringType.None; zzStartRead = stringStart; return SINGLE_QUOTED_STRING; }
-   {S_STRING_ELEMENT} {;}
+   \'          { yybegin(YYINITIAL); stringType = StringType.None; zzStartRead = stringStart; return SINGLE_QUOTED_STRING; }
+   {TIL_ELEMENT} {;}
    \$ {;}
    \{ {;}
    \} {;}
+   \" {;}
    [^] { return BAD_CHARACTER; }
 }
 
 
 <TIL_EXPRESSION> {
-  {TIL_START} { assert stringType != StringType.None : "Not expected"; til_inc();}
-  {TIL_STOP} { assert stringType != StringType.None : "Not expected"; if (til_dec() <= 0) yybegin(stringType == StringType.SingleQ ? S_STRING: D_STRING); }
+  {TIL_START} {til_inc();}
+  {TIL_STOP} {if (til_dec() <= 0) yybegin(stringType == StringType.SingleQ ? S_STRING: D_STRING); }
+  {TIL_ELEMENT} {;}
   \' {}
   \" {}
-  {TIL_ELEMENT} {;}
+  \$ {}
+  \{ {}
+  \} {}
   [^] { return BAD_CHARACTER; }
 }
 
