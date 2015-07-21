@@ -25,9 +25,9 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings
 import org.intellij.plugins.hcl.HCLLanguage
 
-public open class HCLCodeStyleSettingsProvider(val _language:Language = HCLLanguage) : CodeStyleSettingsProvider() {
+public open class HCLCodeStyleSettingsProvider(val _language: Language = HCLLanguage) : CodeStyleSettingsProvider() {
   override fun createSettingsPage(settings: CodeStyleSettings, originalSettings: CodeStyleSettings): Configurable {
-    return object : CodeStyleAbstractConfigurable(settings, originalSettings, "HCL") {
+    return object : CodeStyleAbstractConfigurable(settings, originalSettings, _language.getDisplayName()) {
       override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
         val currentSettings = getCurrentSettings()
         return object : TabbedLanguageCodeStylePanel(_language, currentSettings, settings) {
@@ -36,7 +36,7 @@ public open class HCLCodeStyleSettingsProvider(val _language:Language = HCLLangu
             addSpacesTab(settings)
             addBlankLinesTab(settings)
             addWrappingAndBracesTab(settings)
-            addTab(HCLCodeStylePanel(settings))
+            addTab(HCLCodeStylePanel(_language, settings))
           }
         }
       }

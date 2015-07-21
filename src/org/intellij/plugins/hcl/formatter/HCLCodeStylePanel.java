@@ -16,6 +16,7 @@
 package org.intellij.plugins.hcl.formatter;
 
 import com.intellij.application.options.CodeStyleAbstractPanel;
+import com.intellij.lang.Language;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.openapi.editor.highlighter.EditorHighlighter;
 import com.intellij.openapi.editor.highlighter.EditorHighlighterFactory;
@@ -25,7 +26,6 @@ import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.ui.ListCellRendererWrapper;
 import org.intellij.plugins.hcl.HCLFileType;
-import org.intellij.plugins.hcl.HCLLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,8 +49,8 @@ public class HCLCodeStylePanel extends CodeStyleAbstractPanel {
   private JPanel myPanel;
 
   @SuppressWarnings("unchecked")
-  public HCLCodeStylePanel(@NotNull CodeStyleSettings settings) {
-    super(HCLLanguage.INSTANCE$, null, settings);
+  public HCLCodeStylePanel(@NotNull Language language, @NotNull CodeStyleSettings settings) {
+    super(language, null, settings);
     addPanelToWatch(myPanel);
     installPreviewPanel(myPreviewPanel);
 
@@ -66,13 +66,14 @@ public class HCLCodeStylePanel extends CodeStyleAbstractPanel {
     });
     myPropertiesAlignmentCombo.addItemListener(new ItemListener() {
       @Override
-      public void itemStateChanged(ItemEvent e) {
+      public void itemStateChanged(@NotNull ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
           somethingChanged();
         }
       }
     });
   }
+
 
   @Override
   protected int getRightMargin() {

@@ -15,37 +15,9 @@
  */
 package org.intellij.plugins.hcl.terraform.config.formatter
 
-import com.intellij.application.options.CodeStyleAbstractConfigurable
-import com.intellij.application.options.CodeStyleAbstractPanel
-import com.intellij.application.options.TabbedLanguageCodeStylePanel
-import com.intellij.openapi.options.Configurable
-import com.intellij.psi.codeStyle.CodeStyleSettings
-import com.intellij.psi.codeStyle.CustomCodeStyleSettings
-import org.intellij.plugins.hcl.formatter.HCLCodeStylePanel
-import org.intellij.plugins.hcl.formatter.HCLCodeStyleSettings
 import org.intellij.plugins.hcl.formatter.HCLCodeStyleSettingsProvider
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 
 public class TerraformCodeStyleSettingsProvider : HCLCodeStyleSettingsProvider(TerraformLanguage) {
-  override fun createSettingsPage(settings: CodeStyleSettings, originalSettings: CodeStyleSettings): Configurable {
-    return object : CodeStyleAbstractConfigurable(settings, originalSettings, "Terraform") {
-      override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
-        val currentSettings = getCurrentSettings()
-        return object : TabbedLanguageCodeStylePanel(_language, currentSettings, settings) {
-          override fun initTabs(settings: CodeStyleSettings) {
-            addIndentOptionsTab(settings)
-            addSpacesTab(settings)
-            addBlankLinesTab(settings)
-            addWrappingAndBracesTab(settings)
-            addTab(HCLCodeStylePanel(settings))
-          }
-        }
-      }
-
-      override fun getHelpTopic(): String? {
-        return null
-      }
-    }
-  }
 }
 
