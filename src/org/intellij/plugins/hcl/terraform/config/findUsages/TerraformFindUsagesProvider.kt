@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.findUsages;
+package org.intellij.plugins.hcl.terraform.config.findUsages
 
-import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
-import com.intellij.psi.tree.TokenSet;
-import org.intellij.plugins.hcl.HCLElementTypes;
-import org.intellij.plugins.hcl.HCLParserDefinition;
-import org.intellij.plugins.hcl.HCLLexer;
+import com.intellij.lang.cacheBuilder.WordsScanner
+import org.intellij.plugins.hcl.HCLLexer
+import org.intellij.plugins.hcl.findUsages.HCLFindUsagesProvider
+import org.intellij.plugins.hcl.findUsages.HCLWordsScanner
+import org.intellij.plugins.hcl.terraform.config.TerraformParserDefinition
 
-public class HCLWordsScanner extends DefaultWordsScanner {
-  public HCLWordsScanner(HCLLexer lexer) {
-    super(lexer, TokenSet.create(HCLElementTypes.IDENTIFIER), HCLParserDefinition.HCL_COMMENTARIES, HCLParserDefinition.HCL_LITERALS);
-    setMayHaveFileRefsInLiterals(true);
+public class TerraformFindUsagesProvider : HCLFindUsagesProvider() {
+  override fun getWordsScanner(): WordsScanner? {
+    return HCLWordsScanner(HCLLexer(TerraformParserDefinition.LexerCapabilities))
   }
 }

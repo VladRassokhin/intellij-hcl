@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.findUsages;
+package org.intellij.plugins.hcl.terraform.config
 
-import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
-import com.intellij.psi.tree.TokenSet;
-import org.intellij.plugins.hcl.HCLElementTypes;
-import org.intellij.plugins.hcl.HCLParserDefinition;
-import org.intellij.plugins.hcl.HCLLexer;
+import com.intellij.openapi.fileTypes.SyntaxHighlighter
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import org.intellij.plugins.hcl.HCLLexer
+import org.intellij.plugins.hcl.HCLSyntaxHighlighterFactory
 
-public class HCLWordsScanner extends DefaultWordsScanner {
-  public HCLWordsScanner(HCLLexer lexer) {
-    super(lexer, TokenSet.create(HCLElementTypes.IDENTIFIER), HCLParserDefinition.HCL_COMMENTARIES, HCLParserDefinition.HCL_LITERALS);
-    setMayHaveFileRefsInLiterals(true);
+public class TerraformSyntaxHighlighterFactory : HCLSyntaxHighlighterFactory() {
+  override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): SyntaxHighlighter {
+    return HCLSyntaxHighlighterFactory.MySyntaxHighlighter(HCLLexer(TerraformParserDefinition.LexerCapabilities))
   }
 }

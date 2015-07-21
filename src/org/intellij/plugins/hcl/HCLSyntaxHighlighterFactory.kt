@@ -33,10 +33,10 @@ import org.intellij.plugins.hcl.HCLLexer
 import java.util.HashMap
 
 
-public class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
+public open class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 
 
-  object MySyntaxHighlighter : SyntaxHighlighterBase() {
+  open class MySyntaxHighlighter(val lexer: HCLLexer) : SyntaxHighlighterBase() {
     val ourAttributes: Map<IElementType, TextAttributesKey> = HashMap()
 
     public val HCL_BRACKETS: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BRACKETS", BRACKETS)
@@ -86,7 +86,7 @@ public class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
     }
 
     override fun getHighlightingLexer(): Lexer {
-      val layeredLexer = LayeredLexer(HCLLexer())
+      val layeredLexer = LayeredLexer(lexer)
 
       layeredLexer.registerSelfStoppingLayer(StringLiteralLexer('\"', HCLElementTypes.DOUBLE_QUOTED_STRING, false, "/", false, false), arrayOf(HCLElementTypes.DOUBLE_QUOTED_STRING), IElementType.EMPTY_ARRAY)
       layeredLexer.registerSelfStoppingLayer(StringLiteralLexer('\'', HCLElementTypes.SINGLE_QUOTED_STRING, false, "/", false, false), arrayOf(HCLElementTypes.SINGLE_QUOTED_STRING), IElementType.EMPTY_ARRAY)
@@ -96,6 +96,6 @@ public class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
   }
 
   override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): SyntaxHighlighter {
-    return MySyntaxHighlighter
+    return MySyntaxHighlighter(HCLLexer())
   }
 }

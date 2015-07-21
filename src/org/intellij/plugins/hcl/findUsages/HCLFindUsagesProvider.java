@@ -19,6 +19,7 @@ import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import org.intellij.plugins.hcl.HCLLexer;
 import org.intellij.plugins.hcl.psi.HCLBlock;
 import org.intellij.plugins.hcl.psi.HCLProperty;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ public class HCLFindUsagesProvider implements FindUsagesProvider {
   @Nullable
   @Override
   public WordsScanner getWordsScanner() {
-    return new HCLWordsScanner();
+    return new HCLWordsScanner(new HCLLexer());
   }
 
   @Override
