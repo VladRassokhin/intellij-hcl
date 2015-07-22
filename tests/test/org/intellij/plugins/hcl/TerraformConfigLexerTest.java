@@ -134,4 +134,24 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "WHITE_SPACE (' ')\n" +
         "DOUBLE_QUOTED_STRING ('\"${file(\"ecs-container-definitions.json\")}\"')");
   }
+
+  public void testUnfinishedInterpolation() throws Exception {
+    doTest("a = \"${b(\"c\")}${{}}\"", "ID ('a')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"${b(\"c\")}${{}}\"')");
+  }
+
+  public void testUnfinishedInterpolation2() throws Exception {
+    doTest("a = \"${b(\"c\")}${\"\nx=y", "ID ('a')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"${b(\"c\")}${\"')\n" +
+        "WHITE_SPACE ('\\n')\n" +
+        "ID ('x')\n" +
+        "= ('=')\n" +
+        "ID ('y')");
+  }
 }

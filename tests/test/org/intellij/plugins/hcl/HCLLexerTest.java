@@ -128,7 +128,19 @@ public class HCLLexerTest extends LexerTestCase {
     doTest("a=\"x\"\"\n", "ID ('a')\n" +
         "= ('=')\n" +
         "DOUBLE_QUOTED_STRING ('\"x\"')\n" +
-        "DOUBLE_QUOTED_STRING ('\"\\n')");
+        "DOUBLE_QUOTED_STRING ('\"')\n" +
+        "WHITE_SPACE ('\\n')");
+  }
+
+  public void testUnfinishedString2() throws Exception {
+    doTest("a=\r\n\"x\"\"\r\n", "ID ('a')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE ('\n" +
+        "\\n')\n" +
+        "DOUBLE_QUOTED_STRING ('\"x\"')\n" +
+        "DOUBLE_QUOTED_STRING ('\"')\n" +
+        "WHITE_SPACE ('\n" +
+        "\\n')");
   }
 
   public void testUnfinishedStringInObjectSingleLine() throws Exception {
@@ -153,7 +165,32 @@ public class HCLLexerTest extends LexerTestCase {
         "= ('=')\n" +
         "WHITE_SPACE (' ')\n" +
         "DOUBLE_QUOTED_STRING ('\"x\"')\n" +
-        "DOUBLE_QUOTED_STRING ('\"\\n')\n" +
+        "DOUBLE_QUOTED_STRING ('\"')\n" +
+        "WHITE_SPACE ('\\n')\n" +
         "} ('}')");
+  }
+
+  public void testUnfinishedInterpolation() throws Exception {
+    doTest("a = \"${b(\"c\")}${{}}\"", "ID ('a')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"${b(\"')\n" +
+        "ID ('c')\n" +
+        "DOUBLE_QUOTED_STRING ('\")}${{}}\"')");
+  }
+
+  public void testUnfinishedInterpolation2() throws Exception {
+    doTest("a = \"${b(\"c\")}${{}}\"\nx=y", "ID ('a')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"${b(\"')\n" +
+        "ID ('c')\n" +
+        "DOUBLE_QUOTED_STRING ('\")}${{}}\"')\n" +
+        "WHITE_SPACE ('\\n')\n" +
+        "ID ('x')\n" +
+        "= ('=')\n" +
+        "ID ('y')");
   }
 }

@@ -36,4 +36,8 @@ public class TerraformConfigParserTest extends HCLParserTest {
   public void testTerraform_With_Extra_Quote() throws Exception {
     doTest();
   }
+
+  public void testUnfinished_Interpolation() throws Exception {
+    doTest();
+  }
 }

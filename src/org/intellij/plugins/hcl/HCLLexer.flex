@@ -15,7 +15,7 @@ import static com.intellij.psi.TokenType.BAD_CHARACTER;
 %type IElementType
 %unicode
 
-EOL="\r"|"\n"|"\r\n"
+EOL="\r\n"|"\r"|"\n"
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
@@ -57,6 +57,12 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
       til--;
       return til;
     }
+    private void push_eol() {
+      if ((yylength() > 1) && yycharat(yylength() - 2) == '\r') {
+        yypushback(1);
+      }
+      yypushback(1);
+    }
     private IElementType eods() {
       yybegin(YYINITIAL); stringType = StringType.None; zzStartRead = stringStart; return DOUBLE_QUOTED_STRING;
     }
@@ -64,7 +70,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
       yybegin(YYINITIAL); stringType = StringType.None; zzStartRead = stringStart; return SINGLE_QUOTED_STRING;
     }
     private IElementType eoil() {
-      yybegin(YYINITIAL); return stringType == StringType.SingleQ ? SINGLE_QUOTED_STRING: DOUBLE_QUOTED_STRING;
+      til=0; return stringType == StringType.SingleQ ? eoss(): eods();
     }
 %}
 
@@ -78,7 +84,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
   \{ {}
   \} {}
   \' {}
-  {EOL} { return eods(); }
+  {EOL} { push_eol(); return eods(); }
   <<EOF>> { return eods(); }
   [^] { return BAD_CHARACTER; }
 }
@@ -91,7 +97,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
   \{ {}
   \} {}
   \" {}
-  {EOL} { return eoss(); }
+  {EOL} { push_eol(); return eoss(); }
   <<EOF>> { return eoss(); }
   [^] { return BAD_CHARACTER; }
 }
@@ -105,7 +111,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
   \" {}
   \$ {}
   \{ {}
-  {EOL} { return eoil(); }
+  {EOL} { push_eol(); return eoil(); }
   <<EOF>> { return eoil(); }
   [^] { return BAD_CHARACTER; }
 }
