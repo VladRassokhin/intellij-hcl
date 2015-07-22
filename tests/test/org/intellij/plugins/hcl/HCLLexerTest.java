@@ -123,4 +123,37 @@ public class HCLLexerTest extends LexerTestCase {
         "ID ('ecs-container-definitions.json')\n" +
         "DOUBLE_QUOTED_STRING ('\")}\"')");
   }
+
+  public void testUnfinishedString() throws Exception {
+    doTest("a=\"x\"\"\n", "ID ('a')\n" +
+        "= ('=')\n" +
+        "DOUBLE_QUOTED_STRING ('\"x\"')\n" +
+        "DOUBLE_QUOTED_STRING ('\"\\n')");
+  }
+
+  public void testUnfinishedStringInObjectSingleLine() throws Exception {
+    doTest("a={y = \"x\"\"}", "ID ('a')\n" +
+        "= ('=')\n" +
+        "{ ('{')\n" +
+        "ID ('y')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"x\"')\n" +
+        "DOUBLE_QUOTED_STRING ('\"}')");
+  }
+
+  public void testUnfinishedStringInObjectMultiLine() throws Exception {
+    doTest("a={\ny = \"x\"\"\n}", "ID ('a')\n" +
+        "= ('=')\n" +
+        "{ ('{')\n" +
+        "WHITE_SPACE ('\\n')\n" +
+        "ID ('y')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"x\"')\n" +
+        "DOUBLE_QUOTED_STRING ('\"\\n')\n" +
+        "} ('}')");
+  }
 }

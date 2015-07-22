@@ -123,7 +123,8 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
         "WHITE_SPACE (' ')\n" +
-        "DOUBLE_QUOTED_STRING ('\"${f(\"b.json\")}\"')");
+        "DOUBLE_QUOTED_STRING ('\"${f(\"b.json\")}\"')\n" +
+        "SINGLE_QUOTED_STRING (''}')");
   }
 
   public void testComplicatedTerraformConfigWithILStings() throws Exception {

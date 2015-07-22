@@ -36,7 +36,7 @@ public class HCLParserTest extends ParsingTestCase {
     return "data/";
   }
 
-  private void doTest() {
+  protected void doTest() {
     doTest(true);
   }
 
@@ -94,6 +94,14 @@ public class HCLParserTest extends ParsingTestCase {
   }
 
   public void testIncomplete_Property_Or_Block() throws Exception {
+    doTest();
+  }
+
+  public void testExtraQuote() throws Exception {
+    doTest();
+  }
+
+  public void testExtraQuoteNoNewLine() throws Exception {
     doTest();
   }
 }

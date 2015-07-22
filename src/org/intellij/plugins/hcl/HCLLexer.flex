@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 
+@SuppressWarnings({"ALL"})
 %%
 
 %public
@@ -54,30 +55,42 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
       til--;
       return til;
     }
-
+    private IElementType eods() {
+      yybegin(YYINITIAL); stringType = StringType.None; zzStartRead = stringStart; return DOUBLE_QUOTED_STRING;
+    }
+    private IElementType eoss() {
+      yybegin(YYINITIAL); stringType = StringType.None; zzStartRead = stringStart; return SINGLE_QUOTED_STRING;
+    }
+    private IElementType eoil() {
+      yybegin(YYINITIAL); return stringType == StringType.SingleQ ? SINGLE_QUOTED_STRING: DOUBLE_QUOTED_STRING;
+    }
 %}
 
 %%
 
 <D_STRING> {
    {TIL_START} { if (withInterpolationLanguage) {til_inc(); yybegin(TIL_EXPRESSION);} }
-   \"          { yybegin(YYINITIAL); stringType = StringType.None; zzStartRead = stringStart; return DOUBLE_QUOTED_STRING; }
+   \"          { return eods(); }
    {TIL_ELEMENT} {;}
    \$ {;}
    \{ {;}
    \} {;}
    \' {;}
+  {EOL} { return eods(); }
+  <<EOF>> { return eods(); }
    [^] { return BAD_CHARACTER; }
 }
 
 <S_STRING> {
    {TIL_START} { if (withInterpolationLanguage) {til_inc(); yybegin(TIL_EXPRESSION);} }
-   \'          { yybegin(YYINITIAL); stringType = StringType.None; zzStartRead = stringStart; return SINGLE_QUOTED_STRING; }
+   \'          { return eoss(); }
    {TIL_ELEMENT} {;}
    \$ {;}
    \{ {;}
    \} {;}
    \" {;}
+  {EOL} { return eoss(); }
+  <<EOF>> { return eoss(); }
    [^] { return BAD_CHARACTER; }
 }
 
@@ -91,6 +104,8 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
   \$ {}
   \{ {}
   \} {}
+  {EOL} { return eoil(); }
+  <<EOF>> { return eoil(); }
   [^] { return BAD_CHARACTER; }
 }
 
