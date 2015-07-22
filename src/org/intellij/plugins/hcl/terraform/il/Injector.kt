@@ -21,6 +21,9 @@ import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralImpl
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
+import org.intellij.plugins.hcl.terraform.il.TILElementTypes.INTERPOLATION_END
+import org.intellij.plugins.hcl.terraform.il.TILElementTypes.INTERPOLATION_START
+import org.intellij.plugins.hcl.terraform.il.psi.TILLexer
 import java.util.ArrayList
 
 public class ILLanguageInjector : LanguageInjector {
@@ -30,46 +33,73 @@ public class ILLanguageInjector : LanguageInjector {
     val file = host.getContainingFile() ?: return
     if (file.getFileType() !is TerraformFileType) return;
     val text = host.getText()
-    val ranges = getILRangesInText(text)
+    val value = host.getValue()
+    val ranges = getILRangesInText(value)
     for (range in ranges) {
-      places.addPlace(TILLanguage, range, null, null)
+      val rng = if (value != text) range.shiftRight(1) else range
+      places.addPlace(TILLanguage, rng, null, null)
     }
   }
 
   companion object {
     public fun getILRangesInText(text: String): ArrayList<TextRange> {
-      val ranges: ArrayList<TextRange> = ArrayList()
-      var start = text.indexOf("\${")
-      out@ while (start != -1) {
-        // Take as much as we can
-        var b = false;
-        var level = 1;
-        for (i in start + 1..text.lastIndex) {
-          val c = text[i];
-          if (c == '}') {
-            level--;
-          }
-          if (c == '{' && b) {
-            level++;
-          }
-          b = c == '$'
+      if (!text.contains("${"$"}{")) return arrayListOf();
 
-          if (level == 0) {
-            val end = i;
-            val range = TextRange(start, end + 1)
-            ranges.add(range);
-            start = text.indexOf("\${", end + 1)
-            continue@out;
+      val ranges: ArrayList<TextRange> = ArrayList()
+      var skip = text.indexOf("\${");
+      out@ while (true) {
+        if (skip >= text.length()) break;
+
+        val lexer = TILLexer()
+        lexer.start(text, skip, text.length());
+        var level = 0
+        var start = -1;
+        while (true) {
+          val type = lexer.getTokenType()
+          when (type) {
+            INTERPOLATION_START -> {
+              if (level == 0) {
+                start = lexer.getTokenStart()
+              }
+              level++;
+            }
+            INTERPOLATION_END -> {
+              if (level <= 0) {
+                // Incorrect state, probably just '}' in text retry from current position.
+                skip = lexer.getTokenStart() + 1;
+                continue@out;
+              }
+              level--;
+              if (level == 0) {
+                ranges.add(TextRange(start, lexer.getTokenEnd()));
+                skip = lexer.getTokenEnd();
+                continue@out;
+              }
+            }
+            null -> {
+              if (lexer.getTokenEnd() >= text.length()) {
+                // Real end of string
+                if (level > 0) {
+                  // Non finished interpolation
+                  ranges.add(TextRange(start, Math.min(lexer.getTokenEnd(), text.length())));
+                }
+                break@out;
+              } else {
+                // Non-parsable, probably not IL, retry from current position.
+                skip = lexer.getTokenStart() + 1;
+                continue@out;
+              }
+            }
+            else -> {
+              if (level == 0) {
+                // Non-parsable, probably not IL, retry from current position.
+                skip = lexer.getTokenStart() + 1;
+                continue@out;
+              }
+            }
           }
+          lexer.advance();
         }
-        if (level != 0) {
-          // Unexpected EOF, mark everything as ranges
-          val end = text.lastIndexOf('}');
-          if (end != -1) {
-            ranges.add(TextRange(start, end + 1));
-          }
-        }
-        break@out;
       }
       return ranges;
     }

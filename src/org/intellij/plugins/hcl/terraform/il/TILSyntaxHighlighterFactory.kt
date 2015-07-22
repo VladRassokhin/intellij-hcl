@@ -17,6 +17,7 @@ package org.intellij.plugins.hcl.terraform.il
 
 import com.intellij.lexer.LayeredLexer
 import com.intellij.lexer.Lexer
+import com.intellij.lexer.StringLiteralLexer
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
@@ -55,7 +56,7 @@ public class TILSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 
 
     init {
-      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_BRACES, INTERPOLATION_START, L_CURLY, R_CURLY)
+      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_BRACES, INTERPOLATION_START, INTERPOLATION_END)
       SyntaxHighlighterBase.fillMap(ourAttributes, TIL_PARENS, L_PAREN, R_PAREN)
       SyntaxHighlighterBase.fillMap(ourAttributes, TIL_COMMA, COMMA)
       SyntaxHighlighterBase.fillMap(ourAttributes, TIL_EQUALS, EQUALS)
@@ -80,9 +81,7 @@ public class TILSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 
     override fun getHighlightingLexer(): Lexer {
       val layeredLexer = LayeredLexer(TILLexer())
-
-      //      layeredLexer.registerSelfStoppingLayer(StringLiteralLexer('\"', DOUBLE_QUOTED_STRING, false, "/", false, false), arrayOf(DOUBLE_QUOTED_STRING), IElementType.EMPTY_ARRAY)
-      //      layeredLexer.registerSelfStoppingLayer(StringLiteralLexer('\'', SINGLE_QUOTED_STRING, false, "/", false, false), arrayOf(SINGLE_QUOTED_STRING), IElementType.EMPTY_ARRAY)
+      layeredLexer.registerSelfStoppingLayer(StringLiteralLexer('\"', DOUBLE_QUOTED_STRING, false, "/", false, false), arrayOf(DOUBLE_QUOTED_STRING), IElementType.EMPTY_ARRAY)
       return layeredLexer
     }
   }

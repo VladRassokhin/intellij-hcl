@@ -266,7 +266,7 @@ public class TILParser implements PsiParser, LightPsiParser {
     r = consumeTokenSmart(b, INTERPOLATION_START);
     p = r;
     r = p && ILExpression(b, l, 1);
-    r = p && report_error_(b, consumeToken(b, R_CURLY)) && r;
+    r = p && report_error_(b, consumeToken(b, INTERPOLATION_END)) && r;
     exit_section_(b, l, m, IL_EXPRESSION_HOLDER, r, p, null);
     return r || p;
   }

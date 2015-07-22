@@ -75,7 +75,7 @@ public class TILParserDefinition : ParserDefinition {
 
     public val FILE: IFileElementType = IFileElementType(TILLanguage)
 
-    public val TIL_BRACES: TokenSet = TokenSet.create(TILElementTypes.L_CURLY, TILElementTypes.R_CURLY)
+    public val TIL_BRACES: TokenSet = TokenSet.create(TILElementTypes.INTERPOLATION_START, TILElementTypes.INTERPOLATION_END)
     public val TIL_PARENS: TokenSet = TokenSet.create(TILElementTypes.L_PAREN, TILElementTypes.R_PAREN)
     public val TIL_BOOLEANS: TokenSet = TokenSet.create(TILElementTypes.TRUE, TILElementTypes.FALSE)
     public val TIL_KEYWORDS: TokenSet = TokenSet.create(TILElementTypes.TRUE, TILElementTypes.FALSE, TILElementTypes.NULL)

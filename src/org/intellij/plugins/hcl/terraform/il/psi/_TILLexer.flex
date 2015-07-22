@@ -31,8 +31,7 @@ ID=[a-zA-Z\-_*][0-9a-zA-Z\-_*]*
   {WHITE_SPACE}               { return com.intellij.psi.TokenType.WHITE_SPACE; }
 
   "${"                        { return INTERPOLATION_START; }
-  "{"                         { return L_CURLY; }
-  "}"                         { return R_CURLY; }
+  "}"                         { return INTERPOLATION_END; }
   "("                         { return L_PAREN; }
   ")"                         { return R_PAREN; }
   ","                         { return COMMA; }

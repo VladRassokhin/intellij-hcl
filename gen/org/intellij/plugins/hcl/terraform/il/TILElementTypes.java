@@ -24,8 +24,8 @@ public interface TILElementTypes {
   IElementType EQUALS = new TILTokenType("=");
   IElementType FALSE = new TILTokenType("false");
   IElementType ID = new TILTokenType("ID");
+  IElementType INTERPOLATION_END = new TILTokenType("}");
   IElementType INTERPOLATION_START = new TILTokenType("${");
-  IElementType L_CURLY = new TILTokenType("{");
   IElementType L_PAREN = new TILTokenType("(");
   IElementType NULL = new TILTokenType("null");
   IElementType NUMBER = new TILTokenType("NUMBER");
@@ -35,7 +35,6 @@ public interface TILElementTypes {
   IElementType OP_MUL = new TILTokenType("*");
   IElementType OP_PLUS = new TILTokenType("+");
   IElementType POINT = new TILTokenType(".");
-  IElementType R_CURLY = new TILTokenType("}");
   IElementType R_PAREN = new TILTokenType(")");
   IElementType TRUE = new TILTokenType("true");
 

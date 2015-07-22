@@ -33,7 +33,7 @@ public class TILBraceMatcher : PairedBraceMatcher {
   }
 
   companion object {
-    private val BRACE_PAIRS = arrayOf(BracePair(INTERPOLATION_START, R_CURLY, true), BracePair(L_PAREN, R_PAREN, true))
+    private val BRACE_PAIRS = arrayOf(BracePair(INTERPOLATION_START, INTERPOLATION_END, true), BracePair(L_PAREN, R_PAREN, true))
   }
 
   override fun getPairs(): Array<BracePair> {

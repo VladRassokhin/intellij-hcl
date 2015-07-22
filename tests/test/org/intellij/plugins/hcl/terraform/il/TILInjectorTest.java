@@ -37,9 +37,9 @@ public class TILInjectorTest extends UsefulTestCase {
 
   public void testIncorrectInceptionInjection() throws Exception {
     doTestRanges("${${}", 0, 5);
-    doTestRanges("  ${${}  ", 2, 5);
-    doTestRanges("'${${}'", 1, 5);
-    doTestRanges("\"${${}\"", 1, 5);
+    doTestRanges("  ${${}  ", 2, 7);
+    doTestRanges("'${${}'", 1, 6);
+    doTestRanges("\"${${}\"", 1, 6);
     doTestRanges("${${}${}", 0, 8);
   }
 
@@ -52,7 +52,9 @@ public class TILInjectorTest extends UsefulTestCase {
     doTestRanges("\"${}' '${}\"", 1, 3, 7, 3);
   }
 
-
+  public void testComplexInjection() throws Exception {
+    doTestRanges("${a(\"b\",12)}", 0, 12);
+  }
 
   /**
    * @param range pairs of [start, length]
