@@ -19,14 +19,16 @@ EOL="\r"|"\n"|"\r\n"
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
-LINE_COMMENT=("//".*)|(#.*)
-BLOCK_COMMENT="/"\*([^*]|\*[^/])*\*?(\*"/")?
-NUMBER=-?(0x)?(0|[1-9])[0-9]*(\.[0-9]+)?([eE][-+]?[0-9]+)?
+LINE_COMMENT=("/""/"|"#")[^\r\n]*
+BLOCK_COMMENT="/*"([^"*"]|"*"[^/])*("*/")?
+
+NUMBER=-?(0[xX])?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?
 ID=[a-zA-Z\.\-_][0-9a-zA-Z\.\-_]*
 
 TIL_START=(\$\{)
 TIL_STOP=(\})
-TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
+
+STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 
 %state D_STRING, S_STRING, TIL_EXPRESSION, IN_NUMBER
 %{
@@ -69,41 +71,40 @@ TIL_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 %%
 
 <D_STRING> {
-   {TIL_START} { if (withInterpolationLanguage) {til_inc(); yybegin(TIL_EXPRESSION);} }
-   \"          { return eods(); }
-   {TIL_ELEMENT} {;}
-   \$ {;}
-   \{ {;}
-   \} {;}
-   \' {;}
+  {TIL_START} { if (withInterpolationLanguage) {til_inc(); yybegin(TIL_EXPRESSION);} }
+  \"          { return eods(); }
+  {STRING_ELEMENT} {}
+  \$ {}
+  \{ {}
+  \} {}
+  \' {}
   {EOL} { return eods(); }
   <<EOF>> { return eods(); }
-   [^] { return BAD_CHARACTER; }
+  [^] { return BAD_CHARACTER; }
 }
 
 <S_STRING> {
-   {TIL_START} { if (withInterpolationLanguage) {til_inc(); yybegin(TIL_EXPRESSION);} }
-   \'          { return eoss(); }
-   {TIL_ELEMENT} {;}
-   \$ {;}
-   \{ {;}
-   \} {;}
-   \" {;}
+  {TIL_START} { if (withInterpolationLanguage) {til_inc(); yybegin(TIL_EXPRESSION);} }
+  \'          { return eoss(); }
+  {STRING_ELEMENT} {}
+  \$ {}
+  \{ {}
+  \} {}
+  \" {}
   {EOL} { return eoss(); }
   <<EOF>> { return eoss(); }
-   [^] { return BAD_CHARACTER; }
+  [^] { return BAD_CHARACTER; }
 }
 
 
 <TIL_EXPRESSION> {
   {TIL_START} {til_inc();}
   {TIL_STOP} {if (til_dec() <= 0) yybegin(stringType == StringType.SingleQ ? S_STRING: D_STRING); }
-  {TIL_ELEMENT} {;}
+  {STRING_ELEMENT} {}
   \' {}
   \" {}
   \$ {}
   \{ {}
-  \} {}
   {EOL} { return eoil(); }
   <<EOF>> { return eoil(); }
   [^] { return BAD_CHARACTER; }
