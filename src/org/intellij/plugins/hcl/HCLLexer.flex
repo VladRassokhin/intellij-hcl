@@ -144,6 +144,6 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 }
 
 <IN_NUMBER> {
-  {NUMBER} ([(kKmMgG]b?) { yybegin(YYINITIAL); return NUMBER; }
+  {NUMBER} ([kKmMgG][bB]?) { yybegin(YYINITIAL); return NUMBER; }
   {NUMBER} { yybegin(YYINITIAL); return NUMBER; }
 }
