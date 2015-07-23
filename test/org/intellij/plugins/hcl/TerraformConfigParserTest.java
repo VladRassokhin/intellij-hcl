@@ -18,15 +18,10 @@ package org.intellij.plugins.hcl;
 import com.intellij.testFramework.TestDataPath;
 import org.intellij.plugins.hcl.terraform.config.TerraformParserDefinition;
 
-@TestDataPath("$CONTENT_ROOT/data/psi/")
+@TestDataPath("$CONTENT_ROOT/test-data/psi/")
 public class TerraformConfigParserTest extends HCLParserTest {
   public TerraformConfigParserTest() {
     super("psi", "hcl", false, new TerraformParserDefinition(), new HCLParserDefinition());
-  }
-
-  @Override
-  protected String getTestDataPath() {
-    return "data/";
   }
 
   public void testTerraform_With_String_In_IL() throws Exception {

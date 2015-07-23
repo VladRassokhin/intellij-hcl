@@ -24,7 +24,7 @@ public class TILParserTest  extends ParsingTestCase {
 
   @Override
   protected String getTestDataPath() {
-    return "data/";
+    return "test-data/";
   }
 
   private void doTest() {

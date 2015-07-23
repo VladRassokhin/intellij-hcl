@@ -21,7 +21,7 @@ import com.intellij.testFramework.TestDataPath;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-@TestDataPath("$CONTENT_ROOT/data/psi/")
+@TestDataPath("$CONTENT_ROOT/test-data/psi/")
 public class HCLParserTest extends ParsingTestCase {
   protected HCLParserTest(@NonNls @NotNull String dataPath, @NotNull String fileExt, final boolean lowercaseFirstLetter, @NotNull ParserDefinition... definitions) {
     super(dataPath, fileExt, lowercaseFirstLetter, definitions);
@@ -33,7 +33,7 @@ public class HCLParserTest extends ParsingTestCase {
 
   @Override
   protected String getTestDataPath() {
-    return "data/";
+    return "test-data/";
   }
 
   protected void doTest() {
