@@ -28,7 +28,7 @@ import org.intellij.plugins.hcl.psi.HCLProperty
 /**
  * Based on com.intellij.json.codeinsight.JsonCompletionContributor
  */
-public class HCLCompletionProvider : CompletionContributor() {
+public open class HCLCompletionProvider : CompletionContributor() {
   private val LOG = Logger.getInstance(javaClass<JsonCompletionContributor>())
 
   private val AFTER_EQUALS_IN_PROPERTY = psiElement().afterLeaf("=").withSuperParent(2, javaClass<HCLProperty>())
