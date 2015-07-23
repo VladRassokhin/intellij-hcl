@@ -13,15 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+buildscript {
+    ext.kotlinVersion='0.12.1218'
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
+    }
+}
+
 plugins {
-    id "org.jetbrains.intellij" version "0.0.10"
+    id "org.jetbrains.intellij" version "0.0.9"
+}
+ext.kotlinVersion='0.12.1218'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "http://repository.jetbrains.com/repo/"}
+//    maven { url "http://repo.labs.intellij.net/hub"}
 }
 
 apply plugin: 'org.jetbrains.intellij'
+apply plugin: "kotlin"
 
 intellij {
-    version '14.1.4'
+    version '141.1531.2'
 //    plugins 'coverage'
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
 }
 
 sourceSets {
@@ -29,16 +53,19 @@ sourceSets {
         java {
             srcDirs 'src', 'gen'
         }
+        kotlin {
+            srcDir 'src'
+        }
 //        resources {
 //            srcDir 'resources'
 //        }
     }
     test {
         java {
-            srcDir 'tests/test'
+            srcDir 'test'
         }
         resources {
-            srcDir 'test/data'
+            srcDir 'test-data'
         }
     }
 }
@@ -48,4 +75,8 @@ test {
     minHeapSize = '256m'
     enableAssertions = true
     jvmArgs '-XX:MaxPermSize=250m', '-Didea.system.path=system-test', '-Didea.config.path=config-test'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.5'
 }
