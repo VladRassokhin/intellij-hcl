@@ -17,6 +17,7 @@ package org.intellij.plugins.hcl.psi.impl
 
 import com.intellij.icons.AllIcons
 import com.intellij.navigation.ItemPresentation
+import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
@@ -94,10 +95,10 @@ public object HCLPsiImplUtils {
 
       override fun getIcon(unused: Boolean): Icon? {
         if (property.getValue() is HCLArray) {
-          return AllIcons.Json.Property_brackets
+          return IconLoader.getIcon("/hcl/property_brackets.png")
         }
         if (property.getValue() is HCLObject) {
-          return AllIcons.Json.Property_braces
+          return IconLoader.getIcon("/hcl/property_braces.png")
         }
         return PlatformIcons.PROPERTY_ICON
       }
@@ -116,10 +117,10 @@ public object HCLPsiImplUtils {
 
       override fun getIcon(unused: Boolean): Icon? {
         if (block.getObject() is HCLArray) {
-          return AllIcons.Json.Property_brackets
+          return IconLoader.getIcon("/hcl/property_brackets.png")
         }
         if (block.getObject() is HCLObject) {
-          return AllIcons.Json.Property_braces
+          return IconLoader.getIcon("/hcl/property_braces.png")
         }
         return PlatformIcons.PROPERTY_ICON
       }
