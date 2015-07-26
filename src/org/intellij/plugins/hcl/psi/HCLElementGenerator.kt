@@ -24,8 +24,9 @@ import org.intellij.plugins.hcl.HCLFileType
 
 /**
  * @author Mikhail Golubev
+ * @author Vladislav Rassokhin
  */
-public class HCLElementGenerator(private val project: Project) {
+public open class HCLElementGenerator(private val project: Project) {
 
   /**
    * Create lightweight in-memory [org.intellij.plugins.hcl.psi.HCLFile] filled with `content`.
@@ -34,7 +35,7 @@ public class HCLElementGenerator(private val project: Project) {
    * *
    * @return created file
    */
-  public fun createDummyFile(content: String): PsiFile {
+  public open fun createDummyFile(content: String): PsiFile {
     val psiFileFactory = PsiFileFactory.getInstance(project)
     return psiFileFactory.createFileFromText("dummy." + HCLFileType.getDefaultExtension(), HCLFileType, content)
   }
@@ -78,12 +79,19 @@ public class HCLElementGenerator(private val project: Project) {
     return file.getFirstChild() as HCLProperty
   }
 
+  public fun createBlock(name: String): HCLBlock {
+    val file = createDummyFile("\"$name\" {}")
+    return file.getFirstChild() as HCLBlock
+  }
+
   public fun createComma(): PsiElement {
     val array = createValue<HCLArray>("[1, 2]")
     return array.getValueList().get(0).getNextSibling()
   }
 
   public fun createIdentifier(name: String): HCLIdentifier {
-    return createProperty(name, "true").getNameElement() as HCLIdentifier
+    val file = createDummyFile("$name=true")
+    val property = file.getFirstChild() as HCLProperty
+    return property.getNameElement() as HCLIdentifier
   }
 }
