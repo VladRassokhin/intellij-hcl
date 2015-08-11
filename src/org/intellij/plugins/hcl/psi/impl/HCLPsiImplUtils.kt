@@ -185,8 +185,48 @@ public object HCLPsiImplUtils {
   }
 
   public fun getValue(literal: HCLNumberLiteral): Double {
-    return java.lang.Double.parseDouble(literal.getText())
+    val text = literal.getText()
+    val index = text.indexOfAny("KMGB".toCharArray(), 0, true)
+    if (index != -1) {
+      val base = java.lang.Double.parseDouble(text.substring(0, index));
+      val suffixValue = getSuffixValue(text.substring(index));
+      return base * suffixValue;
+    } else {
+      return java.lang.Double.parseDouble(text)
+    }
   }
+
+  private fun getSuffixValue(suffix: String): Long {
+    val base: Int
+    when(suffix.length()) {
+      0 -> return 1;
+      1 -> {
+        base = 1000;
+      }
+      2 -> {
+        assert(suffix.get(1).toLowerCase().equals('b'))
+        base = 1024;
+      }
+      else -> throw IllegalArgumentException("Unsupported suffix '${suffix}'")
+    }
+    when (suffix.get(0).toLowerCase()) {
+      'b' -> return 1;
+      'k' -> return pow(base, 1);
+      'm' -> return pow(base, 2);
+      'g' -> return pow(base, 3);
+      else -> throw IllegalArgumentException("Unsupported suffix '${suffix}'")
+    }
+  }
+
+  private fun pow(a: Int, b: Int): Long {
+    if (b == 0) return 1;
+    var result = a.toLong()
+    for (i in 1.rangeTo(b)) {
+      result *= result
+    }
+    return result;
+  }
+
 
   public fun getId(identifier: HCLIdentifier): String {
     return identifier.getText()
