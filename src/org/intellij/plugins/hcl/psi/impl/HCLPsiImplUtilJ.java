@@ -51,7 +51,7 @@ public class HCLPsiImplUtilJ {
   }
 
   @Nullable
-  public static HCLValue getObject(@NotNull HCLBlock block) {
+  public static HCLObject getObject(@NotNull HCLBlock block) {
     return HCLPsiImplUtils.INSTANCE$.getObject(block);
   }
 

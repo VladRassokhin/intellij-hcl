@@ -75,7 +75,7 @@ public object HCLPsiImplUtils {
     return PsiTreeUtil.getNextSiblingOfType<HCLValue>(getNameElement(property), javaClass<HCLValue>())
   }
 
-  public fun getObject(block: HCLBlock): HCLValue? {
+  public fun getObject(block: HCLBlock): HCLObject? {
     return PsiTreeUtil.getNextSiblingOfType<HCLObject>(block.getFirstChild(), javaClass<HCLObject>())
   }
 

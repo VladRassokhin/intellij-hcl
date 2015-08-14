@@ -33,7 +33,7 @@ public class HCLBlockImpl extends HCLBlockMixin implements HCLBlock {
   }
 
   @Nullable
-  public HCLValue getObject() {
+  public HCLObject getObject() {
     return HCLPsiImplUtilJ.getObject(this);
   }
 
