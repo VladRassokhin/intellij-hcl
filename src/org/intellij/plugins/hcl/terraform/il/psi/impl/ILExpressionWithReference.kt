@@ -29,7 +29,7 @@ open class ILExpressionWithReference(node: ASTNode) : ILExpressionBase(node) {
     return ReferenceProvidersRegistry.getReferencesFromProviders(this)
   }
 
-  public override fun getReference(): PsiReference {
+  public override fun getReference(): PsiReference? {
     return ArrayUtil.getFirstElement<PsiReference>(getReferences())
   }
 

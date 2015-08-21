@@ -49,7 +49,7 @@ public class TILParserDefinition : ParserDefinition {
 
   override fun getStringLiteralElements() = STRING_LITERALS
 
-  override fun createElement(node: ASTNode): PsiElement? {
+  override fun createElement(node: ASTNode): PsiElement {
     val type = node.getElementType()
     if (type == IL_HOLDER) {
       return ILExpressionHolderImpl(node)
