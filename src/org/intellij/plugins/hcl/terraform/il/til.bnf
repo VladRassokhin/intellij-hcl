@@ -24,7 +24,7 @@
   psiPackage = 'org.intellij.plugins.hcl.terraform.il.psi'
   psiImplPackage = 'org.intellij.plugins.hcl.terraform.il.psi.impl'
 
-  extends(".*Expression|.*Variable|.*Variables")=ILExpression
+  extends(".*Expression|.*Variable")=ILExpression
 
   tokens = [
 //    space = "regexp:\s+"
@@ -116,12 +116,16 @@ ILLiteralExpression ::= literal /*| identifier*/ | number | 'true' | 'false' | '
 
 ILParameterList ::= '(' (ILExpression? (',' ILExpression )* )?')' {
   pin(".*")=1
-  methods=[ getParameters ]
+  methods=[
+    ILExpression=""
+    getParameters
+  ]
 }
 
 ILSelectExpression ::= ILExpression DotOp ILVariable {
   methods=[
-    from="ELExpression[0]"
+    ILExpression=""
+    from="ILExpression[0]"
     getField
   ]
 }

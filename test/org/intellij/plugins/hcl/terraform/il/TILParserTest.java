@@ -43,6 +43,10 @@ public class TILParserTest  extends ParsingTestCase {
     doCodeTest("method(a,v)");
   }
 
+  public void testLongMethodCall() throws Exception {
+    doCodeTest("foo.bar.baz.method(a,v)");
+  }
+
   public void testOperator() throws Exception {
     doCodeTest("${count.index+1}");
   }

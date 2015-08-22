@@ -12,10 +12,12 @@ public interface ILVariable extends ILExpression, PsiNamedElement {
   @Nullable
   PsiElement getId();
 
+  @NotNull
   String getName();
 
   PsiNamedElement setName(String name);
 
+  @NotNull
   SearchScope getUseScope();
 
 }

@@ -29,6 +29,7 @@ public class ILVariableImpl extends ILExpressionWithReference implements ILVaria
     return findChildByType(ID);
   }
 
+  @NotNull
   public String getName() {
     return TILPsiImplUtilJ.getName(this);
   }
@@ -37,6 +38,7 @@ public class ILVariableImpl extends ILExpressionWithReference implements ILVaria
     return TILPsiImplUtilJ.setName(this, name);
   }
 
+  @NotNull
   public SearchScope getUseScope() {
     return TILPsiImplUtilJ.getUseScope(this);
   }

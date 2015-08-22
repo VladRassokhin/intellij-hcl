@@ -22,20 +22,24 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.intellij.plugins.hcl.terraform.il.TILLanguage;
 import org.intellij.plugins.hcl.terraform.il.psi.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class TILPsiImplUtilJ {
   public static Class getTypeClass(ILLiteralExpressionImpl expression) {
+    // TODO use type classes from TIL model
     return String.class;
   }
 
+  @NotNull
   public static ILExpression[] getParameters(ILParameterList list) {
-    final List<ILExpression> expressions = list.getILExpressionList();
+    final List<ILExpression> expressions = PsiTreeUtil.getChildrenOfTypeAsList(list, ILExpression.class);
     return expressions.toArray(new ILExpression[expressions.size()]);
   }
 
@@ -58,17 +62,19 @@ public class TILPsiImplUtilJ {
   }
 
 
+  @NotNull
   public static String getName(ILVariableImpl variable) {
     return variable.getText();
   }
 
-  public static PsiNamedElement setName(ILVariableImpl variable, String name) throws IncorrectOperationException {
+  public static PsiNamedElement setName(ILVariableImpl variable, @NotNull String name) throws IncorrectOperationException {
     ILVariable newElement = createVariable(name, variable.getProject());
     if (newElement == null) throw new IncorrectOperationException("Cannot create variable with name '" + name + "'");
     variable.replace(newElement);
     return newElement;
   }
 
+  @NotNull
   public static SearchScope getUseScope(ILVariableImpl variable) {
     return new LocalSearchScope(variable.getContainingFile());
   }
@@ -79,8 +85,9 @@ public class TILPsiImplUtilJ {
     return (ILVariable) file.getFirstChild().getChildren()[0];
   }
 
+  @Nullable
   public static ILVariable getField(ILSelectExpression expression) {
-    List<? extends ILExpression> list = expression.getILExpressionList();
+    List<? extends ILExpression> list = PsiTreeUtil.getChildrenOfTypeAsList(expression, ILExpression.class);
     return list.size() < 2 ? null : (ILVariable)list.get(1);
   }
 }

@@ -8,8 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface ILSelectExpression extends ILExpression {
 
   @NotNull
-  List<ILExpression> getILExpressionList();
+  ILExpression getFrom();
 
+  @Nullable
   ILVariable getField();
 
 }

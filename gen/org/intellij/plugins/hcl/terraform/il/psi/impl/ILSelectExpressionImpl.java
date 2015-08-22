@@ -23,10 +23,12 @@ public class ILSelectExpressionImpl extends ILExpressionImpl implements ILSelect
 
   @Override
   @NotNull
-  public List<ILExpression> getILExpressionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ILExpression.class);
+  public ILExpression getFrom() {
+    List<ILExpression> p1 = PsiTreeUtil.getChildrenOfTypeAsList(this, ILExpression.class);
+    return p1.get(0);
   }
 
+  @Nullable
   public ILVariable getField() {
     return TILPsiImplUtilJ.getField(this);
   }
