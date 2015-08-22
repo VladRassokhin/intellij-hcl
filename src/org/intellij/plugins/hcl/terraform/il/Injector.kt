@@ -19,7 +19,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
-import org.intellij.plugins.hcl.psi.HCLHeredocLine
 import org.intellij.plugins.hcl.psi.HCLHeredocLiteral
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
@@ -34,22 +33,33 @@ public class ILLanguageInjector : LanguageInjector {
     // Only .tf (Terraform config) files
     val file = host.getContainingFile() ?: return
     if (file.getFileType() !is TerraformFileType) return;
+    if (host is HCLStringLiteral) return getStringLiteralInjections(host, places);
+    if (host is HCLHeredocLiteral) return getHeredocLiteralInjections(host, places);
+    return;
+  }
+
+  private fun getStringLiteralInjections(host: HCLStringLiteral, places: InjectedLanguagePlaces) {
     val text = host.getText()
-    val value = when (host) {
-      is HCLStringLiteral -> host.getValue()
-      is HCLHeredocLiteral -> host.getValue()
-      else -> return;
-    };
-    val offset = when (host) {
-      is HCLStringLiteral -> if (value != text) 1 else 0
-      is HCLHeredocLiteral ->
-        if (!host.getLinesList().isEmpty()) host.getLinesList().get(0).getStartOffsetInParent() else return
-      else -> return;
-    };
+    val value = host.getValue()
+    val offset = if (value != text) 1 else 0
     val ranges = getILRangesInText(value)
     for (range in ranges) {
       val rng = range.shiftRight(offset)
       places.addPlace(TILLanguage, rng, null, null)
+    }
+  }
+
+  private fun getHeredocLiteralInjections(host: HCLHeredocLiteral, places: InjectedLanguagePlaces) {
+    val lines = host.getLinesList()
+    if (lines.isEmpty()) return
+    for (line in lines) {
+      val ranges = getILRangesInText(line.getValue())
+      if (ranges.isEmpty()) continue
+      val offset = line.getStartOffsetInParent()
+      for (range in ranges) {
+        val rng = range.shiftRight(offset)
+        places.addPlace(TILLanguage, rng, null, null)
+      }
     }
   }
 
