@@ -19,7 +19,9 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
-import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralImpl
+import org.intellij.plugins.hcl.psi.HCLHeredocLine
+import org.intellij.plugins.hcl.psi.HCLHeredocLiteral
+import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.il.TILElementTypes.INTERPOLATION_END
 import org.intellij.plugins.hcl.terraform.il.TILElementTypes.INTERPOLATION_START
@@ -28,15 +30,25 @@ import java.util.ArrayList
 
 public class ILLanguageInjector : LanguageInjector {
   override fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
-    if (host !is HCLStringLiteralImpl) return;
+    if (host !is HCLStringLiteral && host !is HCLHeredocLiteral) return;
     // Only .tf (Terraform config) files
     val file = host.getContainingFile() ?: return
     if (file.getFileType() !is TerraformFileType) return;
     val text = host.getText()
-    val value = host.getValue()
+    val value = when (host) {
+      is HCLStringLiteral -> host.getValue()
+      is HCLHeredocLiteral -> host.getValue()
+      else -> return;
+    };
+    val offset = when (host) {
+      is HCLStringLiteral -> if (value != text) 1 else 0
+      is HCLHeredocLiteral ->
+        if (!host.getLinesList().isEmpty()) host.getLinesList().get(0).getStartOffsetInParent() else return
+      else -> return;
+    };
     val ranges = getILRangesInText(value)
     for (range in ranges) {
-      val rng = if (value != text) range.shiftRight(1) else range
+      val rng = range.shiftRight(offset)
       places.addPlace(TILLanguage, rng, null, null)
     }
   }
