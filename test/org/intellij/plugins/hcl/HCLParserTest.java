@@ -120,4 +120,7 @@ public class HCLParserTest extends ParsingTestCase {
   public void testExtraQuoteNoNewLine() throws Exception {
     doTest();
   }
+  public void testIAM_Role_Policy() throws Exception {
+    doTest();
+  }
 }
