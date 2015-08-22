@@ -230,6 +230,19 @@ public class HCLLexerTest extends LexerTestCase {
             "WHITE_SPACE ('\\n')");
   }
 
+  public void testHereDoc_Empty() throws Exception {
+    doTest("foo = <<EOF\n" +
+            "EOF",
+        "ID ('foo')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "= ('=')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "HD_START ('<<')\n" +
+            "HD_MARKER ('EOF')\n" +
+            "WHITE_SPACE ('\\n')\n" +
+            "HD_MARKER ('EOF')\n");
+  }
+
   public void testHereDoc_Incomplete() throws Exception {
     doTest("foo = <<EOF\n" +
             "bar\n",

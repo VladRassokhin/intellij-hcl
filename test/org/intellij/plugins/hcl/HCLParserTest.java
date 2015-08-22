@@ -76,9 +76,15 @@ public class HCLParserTest extends ParsingTestCase {
   public void testHereDoc() throws Exception {
     doTest();
   }
+
+  public void testHereDoc_Empty() throws Exception {
+    doTest();
+  }
+
   public void testHereDoc_Incomplete() throws Exception {
     doTest();
   }
+
   public void testHereDoc_Missing_Marker() throws Exception {
     doTest();
   }

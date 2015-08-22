@@ -206,7 +206,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // HD_START heredoc_marker heredoc_line+ heredoc_marker
+  // HD_START heredoc_marker heredoc_line* heredoc_marker
   static boolean heredoc(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "heredoc")) return false;
     if (!nextTokenIs(b, HD_START)) return false;
@@ -220,20 +220,16 @@ public class HCLParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // heredoc_line+
+  // heredoc_line*
   private static boolean heredoc_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "heredoc_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = heredoc_line(b, l + 1);
     int c = current_position_(b);
-    while (r) {
+    while (true) {
       if (!heredoc_line(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "heredoc_2", c)) break;
       c = current_position_(b);
     }
-    exit_section_(b, m, null, r);
-    return r;
+    return true;
   }
 
   /* ********************************************************** */
