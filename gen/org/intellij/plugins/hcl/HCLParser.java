@@ -32,6 +32,15 @@ public class HCLParser implements PsiParser, LightPsiParser {
     else if (t == BOOLEAN_LITERAL) {
       r = boolean_literal(b, 0);
     }
+    else if (t == HEREDOC_CONTENT) {
+      r = heredoc_content(b, 0);
+    }
+    else if (t == HEREDOC_LITERAL) {
+      r = heredoc_literal(b, 0);
+    }
+    else if (t == HEREDOC_MARKER) {
+      r = heredoc_marker(b, 0);
+    }
     else if (t == IDENTIFIER) {
       r = identifier(b, 0);
     }
@@ -68,11 +77,11 @@ public class HCLParser implements PsiParser, LightPsiParser {
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(ARRAY, OBJECT),
-    create_token_set_(BOOLEAN_LITERAL, LITERAL, NULL_LITERAL, NUMBER_LITERAL,
-      STRING_LITERAL),
-    create_token_set_(ARRAY, BOOLEAN_LITERAL, IDENTIFIER, LITERAL,
-      NULL_LITERAL, NUMBER_LITERAL, OBJECT, STRING_LITERAL,
-      VALUE),
+    create_token_set_(BOOLEAN_LITERAL, HEREDOC_LITERAL, LITERAL, NULL_LITERAL,
+      NUMBER_LITERAL, STRING_LITERAL),
+    create_token_set_(ARRAY, BOOLEAN_LITERAL, HEREDOC_LITERAL, IDENTIFIER,
+      LITERAL, NULL_LITERAL, NUMBER_LITERAL, OBJECT,
+      STRING_LITERAL, VALUE),
   };
 
   /* ********************************************************** */
@@ -197,6 +206,63 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // HD_START heredoc_marker heredoc_content heredoc_marker
+  static boolean heredoc(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "heredoc")) return false;
+    if (!nextTokenIs(b, HD_START)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, HD_START);
+    r = r && heredoc_marker(b, l + 1);
+    r = r && heredoc_content(b, l + 1);
+    r = r && heredoc_marker(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // HD_LINE+
+  public static boolean heredoc_content(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "heredoc_content")) return false;
+    if (!nextTokenIs(b, HD_LINE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, HD_LINE);
+    int c = current_position_(b);
+    while (r) {
+      if (!consumeToken(b, HD_LINE)) break;
+      if (!empty_element_parsed_guard_(b, "heredoc_content", c)) break;
+      c = current_position_(b);
+    }
+    exit_section_(b, m, HEREDOC_CONTENT, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // heredoc
+  public static boolean heredoc_literal(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "heredoc_literal")) return false;
+    if (!nextTokenIs(b, HD_START)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = heredoc(b, l + 1);
+    exit_section_(b, m, HEREDOC_LITERAL, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // HD_MARKER
+  public static boolean heredoc_marker(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "heredoc_marker")) return false;
+    if (!nextTokenIs(b, HD_MARKER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, HD_MARKER);
+    exit_section_(b, m, HEREDOC_MARKER, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // ID
   public static boolean identifier(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "identifier")) return false;
@@ -209,7 +275,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // string_literal | number_literal | boolean_literal | null_literal
+  // string_literal | number_literal | boolean_literal | null_literal | heredoc_literal
   public static boolean literal(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "literal")) return false;
     boolean r;
@@ -218,6 +284,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
     if (!r) r = number_literal(b, l + 1);
     if (!r) r = boolean_literal(b, l + 1);
     if (!r) r = null_literal(b, l + 1);
+    if (!r) r = heredoc_literal(b, l + 1);
     exit_section_(b, l, m, LITERAL, r, false, null);
     return r;
   }

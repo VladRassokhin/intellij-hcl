@@ -57,7 +57,7 @@
 
   extends("container|literal|identifier")=value
   extends("array|object")=container
-  extends("string_literal|number_literal|boolean_literal|null_literal")=literal
+  extends(".*_literal")=literal
   implements("property")=[
     "org.intellij.plugins.hcl.psi.HCLElement"
     "com.intellij.psi.PsiNamedElement"
@@ -154,7 +154,7 @@ identifier ::= ID {
 }
 
 
-literal ::= string_literal | number_literal | boolean_literal | null_literal {
+literal ::= string_literal | number_literal | boolean_literal | null_literal | heredoc_literal {
   methods = [
     isQuotedString
   ]
@@ -182,6 +182,17 @@ boolean_literal::= TRUE | FALSE {
   ]
 }
 null_literal::= NULL
+
+heredoc_literal::= heredoc {
+  methods=[
+    getValue
+    heredoc=""
+  ]
+  mixin = 'org.intellij.plugins.hcl.psi.impl.HCLStringLiteralMixin'
+}
+private heredoc::= HD_START heredoc_marker heredoc_content heredoc_marker
+heredoc_content::= HD_LINE+
+heredoc_marker::= HD_MARKER
 
 
 // Recoveries

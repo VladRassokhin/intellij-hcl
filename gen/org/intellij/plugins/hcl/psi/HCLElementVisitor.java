@@ -25,6 +25,18 @@ public class HCLElementVisitor extends PsiElementVisitor {
     visitValue(o);
   }
 
+  public void visitHeredocContent(@NotNull HCLHeredocContent o) {
+    visitPsiElement(o);
+  }
+
+  public void visitHeredocLiteral(@NotNull HCLHeredocLiteral o) {
+    visitLiteral(o);
+  }
+
+  public void visitHeredocMarker(@NotNull HCLHeredocMarker o) {
+    visitPsiElement(o);
+  }
+
   public void visitIdentifier(@NotNull HCLIdentifier o) {
     visitValue(o);
   }

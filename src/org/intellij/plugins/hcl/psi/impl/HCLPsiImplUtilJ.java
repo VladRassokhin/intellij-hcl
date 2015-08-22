@@ -94,6 +94,11 @@ public class HCLPsiImplUtilJ {
     return HCLPsiImplUtils.INSTANCE$.getValue(literal);
   }
 
+  @NotNull
+  public static String getValue(@NotNull HCLHeredocLiteral literal) {
+    return HCLPsiImplUtils.INSTANCE$.getValue(literal);
+  }
+
   public static boolean getValue(@NotNull HCLBooleanLiteral literal) {
     return HCLPsiImplUtils.INSTANCE$.getValue(literal);
   }

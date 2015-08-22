@@ -180,6 +180,10 @@ public object HCLPsiImplUtils {
     return StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(literal.getText()))
   }
 
+  public fun getValue(literal: HCLHeredocLiteral): String {
+    return StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(literal.getHeredocContent().getText()))
+  }
+
   public fun getValue(literal: HCLBooleanLiteral): Boolean {
     return literal.textMatches("true")
   }

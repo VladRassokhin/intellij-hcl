@@ -17,6 +17,7 @@ package org.intellij.plugins.hcl;
 
 import com.intellij.lexer.Lexer;
 import com.intellij.testFramework.LexerTestCase;
+import org.junit.Test;
 
 public class HCLLexerTest extends LexerTestCase {
   @Override
@@ -192,5 +193,67 @@ public class HCLLexerTest extends LexerTestCase {
         "ID ('x')\n" +
         "= ('=')\n" +
         "ID ('y')");
+  }
+
+  public void testHereDoc() throws Exception {
+    doTest("foo = <<EOF\n" +
+            "bar\n" +
+            "baz\n" +
+            "EOF",
+        "ID ('foo')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "= ('=')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "HD_START ('<<')\n" +
+            "HD_MARKER ('EOF')\n" +
+            "WHITE_SPACE ('\\n')\n" +
+            "HD_LINE ('bar\\n')\n" +
+            "HD_LINE ('baz\\n')\n" +
+            "HD_MARKER ('EOF')\n");
+  }
+
+  public void testHereDoc2() throws Exception {
+    doTest("foo = <<EOF\n" +
+            "bar\n" +
+            "baz\n" +
+            "EOF\n",
+        "ID ('foo')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "= ('=')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "HD_START ('<<')\n" +
+            "HD_MARKER ('EOF')\n" +
+            "WHITE_SPACE ('\\n')\n" +
+            "HD_LINE ('bar\\n')\n" +
+            "HD_LINE ('baz\\n')\n" +
+            "HD_MARKER ('EOF')\n" +
+            "WHITE_SPACE ('\\n')");
+  }
+
+  public void testHereDoc_Incomplete() throws Exception {
+    doTest("foo = <<EOF\n" +
+            "bar\n",
+        "ID ('foo')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "= ('=')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "HD_START ('<<')\n" +
+            "HD_MARKER ('EOF')\n" +
+            "WHITE_SPACE ('\\n')\n" +
+            "HD_LINE ('bar\\n')\n" +
+            "BAD_CHARACTER ('')");
+  }
+
+  public void testHereDoc_IncompleteStart() throws Exception {
+    doTest("foo = <<\n" +
+            "bar\n",
+        "ID ('foo')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "= ('=')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "HD_START ('<<')\n" +
+            "BAD_CHARACTER ('\\n')\n" +
+            "ID ('bar')\n" +
+            "WHITE_SPACE ('\\n')");
   }
 }
