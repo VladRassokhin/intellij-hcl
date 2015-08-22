@@ -44,6 +44,10 @@ public object HCLPsiImplUtils {
     return sb.toString().trim()
   }
 
+  public fun getName(marker: HCLHeredocMarker): String {
+    return marker.firstChild.text
+  }
+
   /**
    * Actually only JSON string literal should be accepted as valid name of property according to standard,
    * but for compatibility with JavaScript integration any JSON literals as well as identifiers (unquoted words)
@@ -181,7 +185,13 @@ public object HCLPsiImplUtils {
   }
 
   public fun getValue(literal: HCLHeredocLiteral): String {
-    return StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(literal.getHeredocContent().getText()))
+    val builder = StringBuilder()
+    literal.linesList.forEach {builder.append(it.text)}
+    return builder.toString()
+  }
+
+  public fun getValue(line: HCLHeredocLine): String {
+    return line.text
   }
 
   public fun getValue(literal: HCLBooleanLiteral): Boolean {

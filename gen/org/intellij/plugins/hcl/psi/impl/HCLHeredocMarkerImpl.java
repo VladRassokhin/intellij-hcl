@@ -22,4 +22,9 @@ public class HCLHeredocMarkerImpl extends ASTWrapperPsiElement implements HCLHer
     else super.accept(visitor);
   }
 
+  @NotNull
+  public String getName() {
+    return HCLPsiImplUtilJ.getName(this);
+  }
+
 }

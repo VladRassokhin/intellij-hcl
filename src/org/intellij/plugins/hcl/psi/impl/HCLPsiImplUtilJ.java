@@ -99,6 +99,16 @@ public class HCLPsiImplUtilJ {
     return HCLPsiImplUtils.INSTANCE$.getValue(literal);
   }
 
+  @NotNull
+  public static String getValue(@NotNull HCLHeredocLine line) {
+    return HCLPsiImplUtils.INSTANCE$.getValue(line);
+  }
+
+  @NotNull
+  public static String getName(@NotNull HCLHeredocMarker marker) {
+    return HCLPsiImplUtils.INSTANCE$.getName(marker);
+  }
+
   public static boolean getValue(@NotNull HCLBooleanLiteral literal) {
     return HCLPsiImplUtils.INSTANCE$.getValue(literal);
   }

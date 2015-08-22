@@ -8,12 +8,15 @@ import com.intellij.psi.PsiElement;
 public interface HCLHeredocLiteral extends HCLLiteral {
 
   @NotNull
-  HCLHeredocContent getHeredocContent();
-
-  @NotNull
-  List<HCLHeredocMarker> getHeredocMarkerList();
-
-  @NotNull
   String getValue();
+
+  @NotNull
+  List<HCLHeredocLine> getLinesList();
+
+  @NotNull
+  HCLHeredocMarker getMarkerStart();
+
+  @Nullable
+  HCLHeredocMarker getMarkerEnd();
 
 }

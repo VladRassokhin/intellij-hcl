@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
 
-public class HCLHeredocLiteralImpl extends HCLStringLiteralMixin implements HCLHeredocLiteral {
+public class HCLHeredocLiteralImpl extends HCLHeredocLiteralMixin implements HCLHeredocLiteral {
 
   public HCLHeredocLiteralImpl(ASTNode node) {
     super(node);
@@ -21,21 +21,29 @@ public class HCLHeredocLiteralImpl extends HCLStringLiteralMixin implements HCLH
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public HCLHeredocContent getHeredocContent() {
-    return findNotNullChildByClass(HCLHeredocContent.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HCLHeredocMarker> getHeredocMarkerList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLHeredocMarker.class);
-  }
-
   @NotNull
   public String getValue() {
     return HCLPsiImplUtilJ.getValue(this);
+  }
+
+  @Override
+  @NotNull
+  public List<HCLHeredocLine> getLinesList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLHeredocLine.class);
+  }
+
+  @Override
+  @NotNull
+  public HCLHeredocMarker getMarkerStart() {
+    List<HCLHeredocMarker> p1 = PsiTreeUtil.getChildrenOfTypeAsList(this, HCLHeredocMarker.class);
+    return p1.get(0);
+  }
+
+  @Override
+  @Nullable
+  public HCLHeredocMarker getMarkerEnd() {
+    List<HCLHeredocMarker> p1 = PsiTreeUtil.getChildrenOfTypeAsList(this, HCLHeredocMarker.class);
+    return p1.size() < 2 ? null : p1.get(1);
   }
 
 }

@@ -94,4 +94,17 @@ public open class HCLElementGenerator(private val project: Project) {
     val property = file.getFirstChild() as HCLProperty
     return property.getNameElement() as HCLIdentifier
   }
+
+  public fun createHeredocLine(text: String): HCLHeredocLine {
+    return createHeredocLines(arrayListOf(text)).get(0)
+  }
+
+  public fun createHeredocLines(lines: List<String>): List<HCLHeredocLine> {
+    var text = "x=<<___EOF___\n"
+    lines.forEach { text += it + '\n' }
+    text += "___EOF___"
+    val file = createDummyFile(text)
+    val property = file.getFirstChild() as HCLProperty
+    return (property.getValue() as HCLHeredocLiteral).linesList
+  }
 }

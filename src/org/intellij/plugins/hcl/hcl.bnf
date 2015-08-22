@@ -187,12 +187,25 @@ heredoc_literal::= heredoc {
   methods=[
     getValue
     heredoc=""
+    heredoc_marker=""
+    heredoc_content=""
+    lines="heredoc_line"
+    marker-start="heredoc_marker[0]"
+    marker-end="heredoc_marker[1]"
   ]
-  mixin = 'org.intellij.plugins.hcl.psi.impl.HCLStringLiteralMixin'
+  mixin = 'org.intellij.plugins.hcl.psi.impl.HCLHeredocLiteralMixin'
 }
-private heredoc::= HD_START heredoc_marker heredoc_content heredoc_marker
-heredoc_content::= HD_LINE+
-heredoc_marker::= HD_MARKER
+private heredoc::= HD_START heredoc_marker heredoc_line+ heredoc_marker
+heredoc_line::= HD_LINE {
+  methods=[
+    getValue
+  ]
+}
+heredoc_marker::= HD_MARKER {
+  methods=[
+    getName
+  ]
+}
 
 
 // Recoveries

@@ -11,15 +11,20 @@ import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import org.intellij.plugins.hcl.psi.*;
 
-public class HCLHeredocContentImpl extends ASTWrapperPsiElement implements HCLHeredocContent {
+public class HCLHeredocLineImpl extends ASTWrapperPsiElement implements HCLHeredocLine {
 
-  public HCLHeredocContentImpl(ASTNode node) {
+  public HCLHeredocLineImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HCLElementVisitor) ((HCLElementVisitor)visitor).visitHeredocContent(this);
+    if (visitor instanceof HCLElementVisitor) ((HCLElementVisitor)visitor).visitHeredocLine(this);
     else super.accept(visitor);
+  }
+
+  @NotNull
+  public String getValue() {
+    return HCLPsiImplUtilJ.getValue(this);
   }
 
 }
