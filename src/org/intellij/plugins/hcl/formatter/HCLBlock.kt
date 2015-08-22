@@ -34,11 +34,10 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
   val myPropertyValueAlignment: Alignment?
 
   init {
-    val psi = node.getPsi()
-    myPropertyValueAlignment = if (psi is HCLObject || psi is HCLFile) Alignment.createAlignment(true) else null
-    myChildWrap = when (psi) {
-      is HCLObject -> Wrap.createWrap(getCustomSettings().OBJECT_WRAPPING, true)
-      is HCLArray -> Wrap.createWrap(getCustomSettings().ARRAY_WRAPPING, true)
+    myPropertyValueAlignment = if (getCustomSettings().PROPERTY_ALIGNMENT == HCLCodeStyleSettings.DO_NOT_ALIGN_PROPERTY || !isElementType(node, OBJECT, HCLParserDefinition.FILE)) null else Alignment.createAlignment(true)
+    myChildWrap = when (node.getElementType()) {
+      OBJECT -> Wrap.createWrap(getCustomSettings().OBJECT_WRAPPING, true)
+      ARRAY -> Wrap.createWrap(getCustomSettings().ARRAY_WRAPPING, true)
       else -> null
     }
   }
@@ -80,18 +79,64 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
       assert(parent != null)
       parent!!;
       val pva = parent.myPropertyValueAlignment
-      assert(pva != null, "Expected not null PVA, node ${getNode().getElementType()}, parent ${parent.getNode().getElementType()}")
       if (isElementType(childNode, EQUALS) && customSettings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_EQUALS) {
+        assert(pva != null, "Expected not null PVA, node ${getNode().getElementType()}, parent ${parent.getNode().getElementType()}")
         alignment = pva
       } else if (HCLPsiUtil.isPropertyValue(childNode.getPsi()) && customSettings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_VALUE) {
+        assert(pva != null, "Expected not null PVA, node ${getNode().getElementType()}, parent ${parent.getNode().getElementType()}")
         if (!isElementType(childNode, HCLParserDefinition.HCL_CONTAINERS)) {
+          // WEB-13587 Align compound values on opening brace/bracket, not the whole block
           alignment = pva
+        }
+      }
+    } else if (isElementType(myNode, HEREDOC_LITERAL)) {
+      if (this.getTextRange().equals(myNode.getTextRange())) {
+        if (isElementType(childNode, HEREDOC_LINE, HEREDOC_MARKER)) {
+          wrap = Wrap.createWrap(WrapType.NONE, false)
+          indent = Indent.getAbsoluteNoneIndent();
+        } else if (isElementType(childNode, HD_START)) {
+          wrap = Wrap.createWrap(WrapType.NONE, false)
+          indent = Indent.getNoneIndent();
         }
       }
     }
     return HCLBlock(this, childNode, wrap, alignment, spacingBuilder, indent, settings)
   }
 
+  override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
+    return ChildAttributes(getChildIndent(), getFirstChildAlignment(newChildIndex))
+  }
+
+  override fun getChildIndent(): Indent? {
+    if (isElementType(myNode, HEREDOC_LITERAL, HEREDOC_MARKER, HEREDOC_LINE, HD_MARKER, HD_LINE, HD_START)) {
+      return Indent.getAbsoluteNoneIndent();
+    }
+    if (isElementType(myNode, OBJECT, HCLParserDefinition.FILE)) {
+      return Indent.getNormalIndent();
+    }
+    if (isElementType(myNode, ARRAY)) {
+      return Indent.getNormalIndent();
+    }
+    return null;
+  }
+
+  fun getFirstChildAlignment(newChildIndex: Int): Alignment? {
+    if (isElementType(myNode, OBJECT, HCLParserDefinition.FILE)) {
+      return null;
+    }
+    if (isElementType(myNode, PROPERTY)) {
+      val customSettings = getCustomSettings()
+      if (newChildIndex == 1 && customSettings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_EQUALS) {
+        // equals
+        return myPropertyValueAlignment;
+      }
+      if (newChildIndex == 2 && customSettings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_VALUE) {
+        // Property value
+        return myPropertyValueAlignment;
+      }
+    }
+    return null;
+  }
 
   private fun getCustomSettings(): HCLCodeStyleSettings {
     return settings.getCustomSettings(javaClass<HCLCodeStyleSettings>())
@@ -114,6 +159,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
   }
 
   override fun isLeaf(): Boolean {
+    if (isElementType(myNode, HEREDOC_LINE, HEREDOC_MARKER)) return true;
     return myNode.getFirstChildNode() == null
   }
 
