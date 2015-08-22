@@ -51,8 +51,8 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
     StringType stringType = StringType.None;
     int stringStart = -1;
     int til = 0;
-    int myEOLMark;
-    CharSequence myHereDocMarker;
+    int myHereDocMarkerLength = 0;
+    int myHereDocMarkerWeakHash = 0;
 
     private void til_inc() {
       til++;
@@ -81,6 +81,24 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
     private IElementType eoil() {
       til=0; return stringType == StringType.SingleQ ? eoss(): eods();
     }
+    private void setHereDocMarker(CharSequence marker) {
+      myHereDocMarkerLength = marker.length() & 0xFF;
+      int hash = marker.toString().hashCode();
+      myHereDocMarkerWeakHash = hash & 0xFFFF;
+    }
+    private void resetHereDocMarker() {
+      myHereDocMarkerLength = 0;
+      myHereDocMarkerWeakHash = 0;
+    }
+    private boolean isHereDocMarkerDefined() {
+      return myHereDocMarkerLength != 0 && myHereDocMarkerWeakHash != 0;
+    }
+    private boolean isHereDocMarker(CharSequence input) {
+      if ((input.length() & 0xFF) != myHereDocMarkerLength) return false;
+      int hash = input.toString().hashCode();
+      return myHereDocMarkerWeakHash == (hash & 0xFFFF);
+    }
+
 %}
 
 %%
@@ -128,11 +146,11 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 <S_HEREDOC_MARKER> {
   ([^\r\n]|\\[^\r\n])+ {EOL}? {
     yypushback(getEOLLength());
-    myHereDocMarker = yytext();
+    setHereDocMarker(yytext());
     return HD_MARKER;
   }
   {EOL} {
-    if (myHereDocMarker == null) {
+    if (!isHereDocMarkerDefined()) {
       yybegin(YYINITIAL);
       return BAD_CHARACTER;
     }
@@ -149,12 +167,12 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
     int len = yylength();
     int len_eff = len - eol;
     assert len_eff >= 0;
-    if(len_eff == myHereDocMarker.length()
-       && yytext().subSequence(0, len_eff).equals(myHereDocMarker)) {
+    if((len_eff & 0xFF) == myHereDocMarkerLength
+       && isHereDocMarker(yytext().subSequence(0, len_eff))) {
       // End of HereDoc
       yypushback(eol);
       yybegin(YYINITIAL);
-      myHereDocMarker = null;
+      resetHereDocMarker();
       return HD_MARKER;
     } else {
       return HD_LINE;

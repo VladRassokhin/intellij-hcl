@@ -26,6 +26,9 @@ public class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(
     private val IN_STRING = 1 shl 14
     private val TIL_MASK = 0x00003F00 // 8-13
 
+    private val HEREDOC_MARKER_LENGTH: Int = 0xFF00 // 0-255
+    private val HEREDOC_MARKER_WEAK_HASH: Int = STRING_START_MASK // half of int
+
     private val JFLEX_STATE_MASK: Int = 0xFF
   }
 
@@ -35,8 +38,11 @@ public class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(
 
   override fun start(buffer: CharSequence, startOffset: Int, endOffset: Int, state: Int) {
     val lexer = getFlex()
-    if (capabilities.contains(HCLCapability.INTERPOLATION_LANGUAGE)) {
-      if (state and IN_STRING == 0) {
+    if (isLexerInHereDocLineState(state)) {
+      lexer.myHereDocMarkerLength = (state and HEREDOC_MARKER_LENGTH) ushr 0x8;
+      lexer.myHereDocMarkerWeakHash = (state and HEREDOC_MARKER_WEAK_HASH) ushr 0x10;
+    } else if (capabilities.contains(HCLCapability.INTERPOLATION_LANGUAGE)) {
+      if (!isLexerInStringOrTILState(state) || state and IN_STRING == 0) {
         lexer.stringType = _HCLLexer.StringType.None
         lexer.stringStart = -1;
         lexer.til = 0;
@@ -49,10 +55,28 @@ public class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(
     super.start(buffer, startOffset, endOffset, state and JFLEX_STATE_MASK)
   }
 
+  private fun isLexerInHereDocLineState(state: Int): Boolean {
+    return state and JFLEX_STATE_MASK == _HCLLexer.S_HEREDOC_LINE
+  }
+
+  private fun isLexerInStringOrTILState(state: Int): Boolean {
+    return when (state and JFLEX_STATE_MASK) {
+      _HCLLexer.S_STRING -> true
+      _HCLLexer.D_STRING -> true
+      _HCLLexer.TIL_EXPRESSION -> true
+      else -> false
+    }
+  }
+
   override fun getState(): Int {
     val lexer = getFlex()
     var state = super.getState()
-    if (capabilities.contains(HCLCapability.INTERPOLATION_LANGUAGE)) {
+    assert(state and (JFLEX_STATE_MASK.inv()) == 0, "State outside JFLEX_STATE_MASK ($JFLEX_STATE_MASK) should not be used by JFLex lexer")
+    state = state and JFLEX_STATE_MASK;
+    if (isLexerInHereDocLineState(state)) {
+      state = state or (((lexer.myHereDocMarkerLength and 0xFF) shl 0x8 ) and HEREDOC_MARKER_LENGTH);
+      state = state or (((lexer.myHereDocMarkerWeakHash and 0xFFFF) shl 0x10 ) and HEREDOC_MARKER_WEAK_HASH);
+    } else if (capabilities.contains(HCLCapability.INTERPOLATION_LANGUAGE)) {
       val type = lexer.stringType!!
       if (type != _HCLLexer.StringType.None) {
         state = state or IN_STRING;
