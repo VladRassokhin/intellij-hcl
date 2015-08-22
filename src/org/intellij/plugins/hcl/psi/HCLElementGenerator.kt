@@ -105,6 +105,6 @@ public open class HCLElementGenerator(private val project: Project) {
     text += "___EOF___"
     val file = createDummyFile(text)
     val property = file.getFirstChild() as HCLProperty
-    return (property.getValue() as HCLHeredocLiteral).linesList
+    return (property.getValue() as HCLHeredocLiteral).getLinesList()
   }
 }

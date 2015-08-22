@@ -45,7 +45,7 @@ public object HCLPsiImplUtils {
   }
 
   public fun getName(marker: HCLHeredocMarker): String {
-    return marker.firstChild.text
+    return marker.getFirstChild().getText()
   }
 
   /**
@@ -186,12 +186,12 @@ public object HCLPsiImplUtils {
 
   public fun getValue(literal: HCLHeredocLiteral): String {
     val builder = StringBuilder()
-    literal.linesList.forEach {builder.append(it.text)}
+    literal.getLinesList().forEach {builder.append(it.getText())}
     return builder.toString()
   }
 
   public fun getValue(line: HCLHeredocLine): String {
-    return line.text
+    return line.getText()
   }
 
   public fun getValue(literal: HCLBooleanLiteral): Boolean {
