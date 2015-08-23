@@ -15,26 +15,27 @@
  */
 package org.intellij.plugins.hcl.terraform;
 
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.DebugUtil;
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
+import com.intellij.lang.Language;
+import org.intellij.plugins.hcl.CompletionTestCase;
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-public class TerraformConfigCompletionTest extends LightCodeInsightFixtureTestCase {
-  private static final Logger LOG = Logger.getInstance(TerraformConfigCompletionTest.class);
+public class TerraformConfigCompletionTest extends CompletionTestCase {
 
   @Override
   protected String getTestDataPath() {
     return "tests/data";
+  }
+
+  @Override
+  protected String getFileName() {
+    return "a.tf";
+  }
+
+  @Override
+  protected Language getExpectedLanguage() {
+    return TerraformLanguage.INSTANCE$;
   }
 
   public void testBlockKeywordCompletion() throws Exception {
@@ -49,32 +50,10 @@ public class TerraformConfigCompletionTest extends LightCodeInsightFixtureTestCa
   }
 
   public void testResourceCommonPropertyCompletion() throws Exception {
-    doBasicCompletionTest("resource abc {<caret>}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PARAMETERS);
+    doBasicCompletionTest("resource abc {\n<caret>\n}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PARAMETERS);
     final HashSet<String> set = new HashSet<String>(TerraformConfigCompletionProvider.COMMON_RESOURCE_PARAMETERS);
     set.remove("id");
     doBasicCompletionTest("resource \"x\" {\nid='a'\n<caret>\n}", set);
   }
 
-  private void doBasicCompletionTest(String text, Set<String> expected) {
-    doBasicCompletionTest(text, expected.size(), expected.toArray(new String[expected.size()]));
-  }
-
-  private void doBasicCompletionTest(String text, int expectedAllSize, String... expected) {
-    final PsiFile psiFile = myFixture.configureByText("a.tf", text);
-    System.out.println("PsiFile = " + DebugUtil.psiToString(psiFile, true));
-    assertEquals(TerraformLanguage.INSTANCE$, psiFile.getLanguage());
-    final LookupElement[] elements = myFixture.completeBasic();
-    System.out.println("LookupElements = " + Arrays.toString(elements));
-    final List<String> strings = myFixture.getLookupElementStrings();
-    assertNotNull(strings);
-    System.out.println("LookupStrings = " + strings);
-    assertContainsElements(strings, expected);
-    assertEquals("Actual lookup elements: " + strings, expectedAllSize, strings.size());
-  }
-
-  protected void createFile(String text) {
-    PsiFile psiFile = myFixture.configureByText("text.tf", text);
-    Document document = myFixture.getDocument(psiFile);
-    final Project project = getProject();
-  }
 }

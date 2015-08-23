@@ -15,18 +15,12 @@
  */
 package org.intellij.plugins.hcl.terraform.il;
 
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.lang.Language;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.DebugUtil;
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
-import org.intellij.plugins.hcl.terraform.config.TerraformLanguage;
+import org.intellij.plugins.hcl.CompletionTestCase;
+import org.intellij.plugins.hcl.terraform.il.codeinsight.TILCompletionProvider;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class TILCompletionTest extends LightCodeInsightFixtureTestCase {
+public class TILCompletionTest extends CompletionTestCase {
   private static final Logger LOG = Logger.getInstance(TILCompletionTest.class);
 
   @Override
@@ -34,17 +28,26 @@ public class TILCompletionTest extends LightCodeInsightFixtureTestCase {
     return "tests/data";
   }
 
-  public void testMethodCompletion() throws Exception {
-    final PsiFile psiFile = myFixture.configureByText("a.tf", "a='${<caret>}'");
-    assertEquals(TILLanguage.INSTANCE$, psiFile.getLanguage());
-    System.out.println("PsiFile = " + DebugUtil.psiToString(psiFile, true));
-//    myFixture.configureByFiles("CompleteTestData.java", "DefaultTestData.simple");
-    final LookupElement[] elements = myFixture.complete(CompletionType.BASIC, 1);
-    System.out.println("LookupElements = " + Arrays.toString(elements));
-    final List<String> strings = myFixture.getLookupElementStrings();
-    assertNotNull(strings);
-    System.out.println("LookupStrings = " + strings);
-    assertContainsElements(strings, "concat", "file");
-    assertEquals(12, strings.size());
+  @Override
+  protected String getFileName() {
+    return "a.tf";
+  }
+
+  @Override
+  protected Language getExpectedLanguage() {
+    return TILLanguage.INSTANCE$;
+  }
+
+  public void testMethodCompletion_BeginOnInterpolation() throws Exception {
+    doBasicCompletionTest("a='${<caret>}'", TILCompletionProvider.TERRAFORM_METHODS);
+  }
+
+  public void testMethodCompletion_AsParameter() throws Exception {
+    doBasicCompletionTest("a='${foo(<caret>)}'", TILCompletionProvider.TERRAFORM_METHODS);
+    doBasicCompletionTest("a='${foo(true,<caret>)}'", TILCompletionProvider.TERRAFORM_METHODS);
+  }
+
+  public void testNoMethodCompletion_InSelect() throws Exception {
+    doBasicCompletionTest("a='${foo.<caret>}'", 0);
   }
 }

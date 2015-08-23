@@ -18,37 +18,29 @@ package org.intellij.plugins.hcl.terraform.il.codeinsight
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.StringPattern
-import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
-import org.intellij.plugins.hcl.HCLLanguage
-import org.intellij.plugins.hcl.codeinsight.HCLCompletionProvider
-import org.intellij.plugins.hcl.psi.HCLProperty
-import org.intellij.plugins.hcl.terraform.TerraformConfigCompletionProvider
 import org.intellij.plugins.hcl.terraform.getPrevSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.terraform.il.TILLanguage
-import org.intellij.plugins.hcl.terraform.il.psi.ILExpressionHolder
+import org.intellij.plugins.hcl.terraform.il.psi.ILSelectExpression
+import org.intellij.plugins.hcl.terraform.il.psi.ILVariable
+import java.util.*
 
 public class TILCompletionProvider : CompletionContributor() {
   init {
-    extend(CompletionType.BASIC, FIRST_CHILD_OF_EXPRESSION_HOLDER, MethodsCompletionProvider)
+    extend(CompletionType.BASIC, METHOD_POSITION, MethodsCompletionProvider)
   }
 
   companion object {
-    private val FIRST_CHILD_OF_EXPRESSION_HOLDER = PlatformPatterns.psiElement().withLanguage(TILLanguage)
-    //        .with(object : PatternCondition<PsiElement>("FirstChildOfILExpressionHolder") {
-    //      override fun accepts(t: PsiElement, context: ProcessingContext?): Boolean {
-    //        return t.getParent() is ILExpressionHolder
-    //      }
-    //    }
-    //  );
+    public val TERRAFORM_METHODS: TreeSet<String> = sortedSetOf("concat", "file", "format", "formatlist", "join", "element", "replace", "split", "length", "lookup", "keys", "values")
+    private val METHOD_POSITION = PlatformPatterns.psiElement().withLanguage(TILLanguage)
+        .withParent(javaClass<ILVariable>())
+        .andNot(PlatformPatterns.psiElement().withSuperParent(2, javaClass<ILSelectExpression>()))
+
     private val LOG = Logger.getInstance(javaClass<TILCompletionProvider>())
   }
 
   private object MethodsCompletionProvider : CompletionProvider<CompletionParameters>() {
-    private val TERRAFORM_METHODS = sortedSetOf("concat", "file", "format", "formatlist", "join", "element", "replace", "split", "length", "lookup", "keys", "values")
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
       LOG.debug("TIL.MethodsCompletionProvider")

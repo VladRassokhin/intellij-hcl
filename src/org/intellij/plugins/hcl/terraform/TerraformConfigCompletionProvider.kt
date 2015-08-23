@@ -24,26 +24,27 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.impl.DebugUtil
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.HCLElementTypes
-import org.intellij.plugins.hcl.HCLLanguage
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionProvider
 import org.intellij.plugins.hcl.psi.*
-import java.util.TreeSet
+import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
+import java.util.*
 
 public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
   init {
     // TODO: Narrow down pattern to start of property(due to grammar)/block
-    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(HCLLanguage)
-        .inVirtualFile(PlatformPatterns.virtualFile().withExtension("tf"))
-//        .withParents(javaClass<HCLProperty>(), javaClass<HCLFile>())
+    extend(CompletionType.BASIC, PlatformPatterns.psiElement(HCLElementTypes.ID)
+        .inFile(PlatformPatterns.psiFile(javaClass<HCLFile>()).withLanguage(TerraformLanguage))
+        .withParent(javaClass<HCLFile>())
         , BlockKeywordCompletionProvider);
 
     // TODO: Provide data from all resources in folder (?)
-    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(HCLLanguage)
-        .inVirtualFile(PlatformPatterns.virtualFile().withExtension("tf"))
-        //        .withParent(javaClass<HCLObject>())
-        //        .withSuperParent(2, javaClass<HCLBlock>())
+    extend(CompletionType.BASIC, PlatformPatterns.psiElement(HCLElementTypes.ID)
+        .inFile(PlatformPatterns.psiFile(javaClass<HCLFile>()).withLanguage(TerraformLanguage))
+        .withParent(javaClass<HCLObject>())
+        .withSuperParent(2, javaClass<HCLBlock>())
         , ResourcePropertiesCompletionProvider);
   }
 
@@ -94,7 +95,12 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
         val pp = parent.getParent()
         if (pp is HCLBlock) {
           val type = pp.getNameElements().iterator().next()
-          if (type.getName() == "resource") {
+          val tt = when (type) {
+            is HCLIdentifier -> type.id
+            is HCLStringLiteral -> type.value
+            else -> return
+          }
+          if (tt == "resource") {
             result.addAllElements(COMMON_RESOURCE_PARAMETERS.filter { parent.findProperty(it) == null }.map { LookupElementBuilder.create(it) })
           }
         }
