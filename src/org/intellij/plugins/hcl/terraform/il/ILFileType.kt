@@ -16,16 +16,20 @@
 package org.intellij.plugins.hcl.terraform.il
 
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.fileTypes.FileTypeConsumer
+import com.intellij.openapi.fileTypes.FileTypeFactory
 import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon
 
 object ILFileType: LanguageFileType(TILLanguage) {
+  public val DEFAULT_EXTENSION: String = "terraform.il";
+
   override fun getIcon(): Icon? {
     return AllIcons.FileTypes.Custom
   }
 
   override fun getDefaultExtension(): String {
-    return "terraform.il"
+    return DEFAULT_EXTENSION
   }
 
   override fun getDescription(): String {
@@ -34,5 +38,11 @@ object ILFileType: LanguageFileType(TILLanguage) {
 
   override fun getName(): String {
     return "Terraform-IL"
+  }
+}
+
+class ILFileTypeFactory : FileTypeFactory() {
+  override fun createFileTypes(consumer: FileTypeConsumer) {
+    consumer.consume(ILFileType, ILFileType.DEFAULT_EXTENSION)
   }
 }
