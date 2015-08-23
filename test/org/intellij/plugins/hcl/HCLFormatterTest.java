@@ -15,11 +15,17 @@
  */
 package org.intellij.plugins.hcl;
 
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
+import org.intellij.plugins.hcl.formatter.HCLCodeStyleSettings;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
 
 public class HCLFormatterTest extends LightCodeInsightFixtureTestCase {
   private static final Logger LOG = Logger.getInstance(HCLFormatterTest.class);
@@ -30,21 +36,47 @@ public class HCLFormatterTest extends LightCodeInsightFixtureTestCase {
     return "tests/data";
   }
 
-  public void testFormatter() throws Exception {
-//    doTest("", "");
-    doTest("a=1\n", "a = 1");
-    doTest("'a'=1", "'a' = 1");
+  public void testBasicFormatting() throws Exception {
+    doSimpleTest("a=1", "a = 1");
+    doSimpleTest("'a'=1", "'a' = 1");
   }
 
-  public void doTest(String input, String expected) throws Exception {
+  public void testFormatBlock() throws Exception {
+    doSimpleTest("block x{}", "block x {\n}");
+    doSimpleTest("block x{a=true}", "block x {\n  a = true\n}");
+  }
+
+  public void testAlignPropertiesOnEquals() throws Exception {
+    CodeStyleSettingsManager.getSettings(getProject()).getCustomSettings(HCLCodeStyleSettings.class).PROPERTY_ALIGNMENT = HCLCodeStyleSettings.ALIGN_PROPERTY_ON_EQUALS;
+    doSimpleTest("a=true\nbaz=42", "a   = true\nbaz = 42");
+    doSimpleTest("a = true\nbaz=42", "a   = true\nbaz = 42");
+    doSimpleTest("a = true\nbaz = 42", "a   = true\nbaz = 42");
+    doSimpleTest("a=true\nbaz = 42", "a   = true\nbaz = 42");
+  }
+
+  public void testAlignPropertiesOnValue() throws Exception {
+    CodeStyleSettingsManager.getSettings(getProject()).getCustomSettings(HCLCodeStyleSettings.class).PROPERTY_ALIGNMENT = HCLCodeStyleSettings.ALIGN_PROPERTY_ON_VALUE;
+    doSimpleTest("a=true\nbaz=42", "a =   true\nbaz = 42");
+    doSimpleTest("a = true\nbaz=42", "a =   true\nbaz = 42");
+    doSimpleTest("a = true\nbaz = 42", "a =   true\nbaz = 42");
+    doSimpleTest("a=true\nbaz = 42", "a =   true\nbaz = 42");
+  }
+
+  public void doSimpleTest(String input, String expected) throws Exception {
+    doSimpleTest(input, expected, null);
+  }
+
+  public void doSimpleTest(String input, String expected, @Nullable Runnable setupSettings) throws Exception {
     myFixture.configureByText(HCLFileType.INSTANCE$, input);
-    CodeStyleSettingsManager.getSettings(getProject()).SPACE_AROUND_ASSIGNMENT_OPERATORS = true;
-    ApplicationManager.getApplication().runWriteAction(new Runnable() {
+    final Project project = getProject();
+    final PsiFile file = myFixture.getFile();
+    if (setupSettings != null) setupSettings.run();
+    new WriteCommandAction.Simple(project, file) {
       @Override
       public void run() {
-        CodeStyleManager.getInstance(getProject()).reformat(myFixture.getFile(), true);
+        CodeStyleManager.getInstance(project).reformatText(file, Collections.singleton(file.getTextRange()));
       }
-    });
+    }.execute().throwException();
     myFixture.checkResult(expected);
   }
 }
