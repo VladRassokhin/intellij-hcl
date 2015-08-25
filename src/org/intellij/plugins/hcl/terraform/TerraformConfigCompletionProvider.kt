@@ -21,28 +21,62 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.patterns.PlatformPatterns
+import com.intellij.patterns.ElementPattern
+import com.intellij.patterns.PatternCondition
+import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.patterns.PlatformPatterns.psiFile
+import com.intellij.patterns.PsiElementPattern
+import com.intellij.patterns.StandardPatterns.not
+import com.intellij.patterns.StandardPatterns.or
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.impl.DebugUtil
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionProvider
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
+import org.intellij.plugins.hcl.terraform.config.model.Model
 import java.util.*
 
 public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
   init {
-    // TODO: Narrow down pattern to start of property(due to grammar)/block
-    extend(CompletionType.BASIC, PlatformPatterns.psiElement(HCLElementTypes.ID)
-        .inFile(PlatformPatterns.psiFile(javaClass<HCLFile>()).withLanguage(TerraformLanguage))
-        .withParent(javaClass<HCLFile>())
-        , BlockKeywordCompletionProvider);
+    val WhiteSpace = psiElement(javaClass<PsiWhiteSpace>())
+    val ID = psiElement(HCLElementTypes.ID)
+
+    val Identifier = psiElement(javaClass<HCLIdentifier>())
+    val File = psiElement(javaClass<HCLFile>())
+    val Block = psiElement(javaClass<HCLBlock>())
+
+    val TerraformConfigFile = psiFile(javaClass<HCLFile>()).withLanguage(TerraformLanguage)
+
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformConfigFile)
+        .withParent(File)
+        .andNot(psiElement().afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))),
+        BlockKeywordCompletionProvider);
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformConfigFile)
+        .withParent(Identifier).withSuperParent(2, Block)
+        .withParent(not(psiElement(javaClass<HCLIdentifier>()).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))),
+        BlockKeywordCompletionProvider);
 
     // TODO: Provide data from all resources in folder (?)
-    extend(CompletionType.BASIC, PlatformPatterns.psiElement(HCLElementTypes.ID)
-        .inFile(PlatformPatterns.psiFile(javaClass<HCLFile>()).withLanguage(TerraformLanguage))
+
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformConfigFile)
+        .withParent(not(Identifier))
+        .andOr(psiElement().withSuperParent(1, File), psiElement().withSuperParent(1, Block))
+        .afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))
+        , BlockTypeOrNameCompletionProvider);
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformConfigFile)
+        .withParent(psiElement(javaClass<HCLIdentifier>()).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
+        .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
+        , BlockTypeOrNameCompletionProvider);
+
+
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(psiFile(javaClass<HCLFile>()).withLanguage(TerraformLanguage))
         .withParent(javaClass<HCLObject>())
         .withSuperParent(2, javaClass<HCLBlock>())
         , ResourcePropertiesCompletionProvider);
@@ -75,9 +109,40 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
       LOG.debug("leftNWS = $leftNWS")
       if (leftNWS is HCLIdentifier || leftNWS?.getNode()?.getElementType() == HCLElementTypes.ID) {
-        return
+        return assert(false)
       }
       result.addAllElements(BLOCK_KEYWORDS.map { LookupElementBuilder.create(it) })
+    }
+  }
+
+  private object BlockTypeOrNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      LOG.debug("TF.BlockTypeOrNameCompletionProvider")
+      val position = parameters.getPosition()
+      LOG.debug("position = $position")
+      val parent = position.getParent()
+      LOG.debug("parent = $parent")
+      val obj = when {
+        parent is HCLIdentifier -> parent
+        position.node.elementType == HCLElementTypes.ID -> position // In case of two IDs (not Identifiers) nearby (start of block in empty file)
+        else -> return assert(false)
+      }
+      LOG.debug("obj = $obj")
+      val leftNWS = obj.getPrevSiblingNonWhiteSpace()
+      LOG.debug("leftNWS = $leftNWS")
+      val type: String = when {
+        leftNWS is HCLIdentifier -> leftNWS.id
+        leftNWS?.getNode()?.getElementType() == HCLElementTypes.ID -> leftNWS!!.text
+        else -> return assert(false)
+      }
+      when (type) {
+        "resource" ->
+          result.addAllElements(Model.resources.map { LookupElementBuilder.create(it.type) })
+
+        "provider" ->
+          result.addAllElements(Model.providers.map { LookupElementBuilder.create(it.type) })
+      }
+      return
     }
   }
 
@@ -115,4 +180,20 @@ fun PsiElement.getPrevSiblingNonWhiteSpace(): PsiElement? {
     prev = prev.getPrevSibling()
   }
   return prev;
+}
+
+
+public fun <T : PsiElement, Self : PsiElementPattern<T, Self>> PsiElementPattern<T, Self>.afterSiblingSkipping2(skip: ElementPattern<out Any>, pattern: ElementPattern<out PsiElement>): Self {
+  return with(object : PatternCondition<T>("afterSiblingSkipping2") {
+    override fun accepts(t: T, context: ProcessingContext): Boolean {
+      var o = t.prevSibling
+      while (o != null) {
+        if (!skip.accepts(o, context)) {
+          return pattern.accepts(o, context)
+        }
+        o = o.prevSibling
+      }
+      return false
+    }
+  })
 }

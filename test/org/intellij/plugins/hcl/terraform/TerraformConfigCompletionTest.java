@@ -18,8 +18,11 @@ package org.intellij.plugins.hcl.terraform;
 import com.intellij.lang.Language;
 import org.intellij.plugins.hcl.CompletionTestCase;
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage;
+import org.intellij.plugins.hcl.terraform.config.model.Model;
+import org.intellij.plugins.hcl.terraform.config.model.ResourceType;
 
 import java.util.HashSet;
+import java.util.TreeSet;
 
 public class TerraformConfigCompletionTest extends CompletionTestCase {
 
@@ -39,14 +42,24 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
   }
 
   public void testBlockKeywordCompletion() throws Exception {
-    doBasicCompletionTest("<caret> ", TerraformConfigCompletionProvider.BLOCK_KEYWORDS);
-    doBasicCompletionTest("a=1\n<caret> ", TerraformConfigCompletionProvider.BLOCK_KEYWORDS);
+//    doBasicCompletionTest("<caret> ", TerraformConfigCompletionProvider.BLOCK_KEYWORDS);
+//    doBasicCompletionTest("a=1\n<caret> ", TerraformConfigCompletionProvider.BLOCK_KEYWORDS);
+    doBasicCompletionTest("<caret> {}", TerraformConfigCompletionProvider.BLOCK_KEYWORDS);
+    doBasicCompletionTest("a=1\n<caret> {}", TerraformConfigCompletionProvider.BLOCK_KEYWORDS);
   }
 
   public void testNoBlockKeywordCompletion() throws Exception {
     doBasicCompletionTest("a={\n<caret>\n}", 0);
-    doBasicCompletionTest("resource <caret> \"aaa\" {}", 0);
-    doBasicCompletionTest("resource <caret>", 0);
+  }
+
+  public void testResourceTypeCompletion() throws Exception {
+    final TreeSet<String> set = new TreeSet<String>();
+    for (ResourceType resource : Model.resources) {
+      set.add(resource.getType());
+    }
+    doBasicCompletionTest("resource <caret>", set);
+    doBasicCompletionTest("resource <caret> {}", set);
+    doBasicCompletionTest("resource <caret> \"aaa\" {}", set);
   }
 
   public void testResourceCommonPropertyCompletion() throws Exception {
