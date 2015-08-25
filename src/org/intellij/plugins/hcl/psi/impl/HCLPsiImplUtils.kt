@@ -65,7 +65,7 @@ public object HCLPsiImplUtils {
     var result: MutableList<HCLElement>? = null
     var child: PsiElement? = block.getFirstChild()
     while (child != null) {
-      if ((child is HCLIdentifier || child is HCLLiteral)) {
+      if (child is HCLIdentifier || child is HCLStringLiteral) {
         if (result == null) result = SmartList<HCLElement>()
         //noinspection unchecked
         result.add(child as HCLElement)
