@@ -67,6 +67,8 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     final HashSet<String> set = new HashSet<String>(TerraformConfigCompletionProvider.COMMON_RESOURCE_PARAMETERS);
     set.remove("id");
     doBasicCompletionTest("resource \"x\" {\nid='a'\n<caret>\n}", set);
+    doBasicCompletionTest("resource abc {\n<caret> = true\n}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PARAMETERS);
+    doBasicCompletionTest("resource abc {\n<caret> {}\n}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PARAMETERS);
   }
 
 }

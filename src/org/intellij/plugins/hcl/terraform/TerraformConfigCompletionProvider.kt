@@ -30,6 +30,7 @@ import com.intellij.patterns.StandardPatterns.not
 import com.intellij.patterns.StandardPatterns.or
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.impl.DebugUtil
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionProvider
@@ -46,6 +47,8 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
     val Identifier = psiElement(javaClass<HCLIdentifier>())
     val File = psiElement(javaClass<HCLFile>())
     val Block = psiElement(javaClass<HCLBlock>())
+    val Property = psiElement(javaClass<HCLProperty>())
+    val Object = psiElement(javaClass<HCLObject>())
 
     val TerraformConfigFile = psiFile(javaClass<HCLFile>()).withLanguage(TerraformLanguage)
 
@@ -56,7 +59,9 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
         BlockKeywordCompletionProvider);
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
-        .withParent(Identifier).withSuperParent(2, Block)
+        .withParent(Identifier)
+        .withSuperParent(2, Block)
+        .withSuperParent(3, File)
         .withParent(not(psiElement(javaClass<HCLIdentifier>()).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))),
         BlockKeywordCompletionProvider);
 
@@ -76,9 +81,24 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
 
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-        .inFile(psiFile(javaClass<HCLFile>()).withLanguage(TerraformLanguage))
-        .withParent(javaClass<HCLObject>())
-        .withSuperParent(2, javaClass<HCLBlock>())
+        .inFile(TerraformConfigFile)
+        .withParent(Object)
+        .withSuperParent(2, Block)
+        , ResourcePropertiesCompletionProvider);
+
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformConfigFile)
+        .withParent(Identifier)
+        .withSuperParent(2, Property)
+        .withSuperParent(3, Object)
+        .withSuperParent(4, Block)
+        , ResourcePropertiesCompletionProvider);
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformConfigFile)
+        .withParent(Identifier)
+        .withSuperParent(2, Block)
+        .withSuperParent(3, Object)
+        .withSuperParent(4, Block)
         , ResourcePropertiesCompletionProvider);
   }
 
@@ -96,6 +116,9 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
         "count"
     )
     private val LOG = Logger.getInstance(javaClass<TerraformConfigCompletionProvider>())
+    fun DumpPsiFileModel(element: PsiElement): () -> String {
+      return { DebugUtil.psiToString(element.getContainingFile(), true) }
+    }
   }
 
   private object BlockKeywordCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -109,7 +132,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
       LOG.debug("leftNWS = $leftNWS")
       if (leftNWS is HCLIdentifier || leftNWS?.getNode()?.getElementType() == HCLElementTypes.ID) {
-        return assert(false)
+        return assert(false, { DumpPsiFileModel(position) })
       }
       result.addAllElements(BLOCK_KEYWORDS.map { LookupElementBuilder.create(it) })
     }
@@ -125,7 +148,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       val obj = when {
         parent is HCLIdentifier -> parent
         position.node.elementType == HCLElementTypes.ID -> position // In case of two IDs (not Identifiers) nearby (start of block in empty file)
-        else -> return assert(false)
+        else -> return assert(false, { DumpPsiFileModel(position) })
       }
       LOG.debug("obj = $obj")
       val leftNWS = obj.getPrevSiblingNonWhiteSpace()
@@ -133,7 +156,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       val type: String = when {
         leftNWS is HCLIdentifier -> leftNWS.id
         leftNWS?.getNode()?.getElementType() == HCLElementTypes.ID -> leftNWS!!.text
-        else -> return assert(false)
+        else -> return assert(false, { DumpPsiFileModel(position) })
       }
       when (type) {
         "resource" ->
@@ -150,12 +173,11 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       LOG.debug("TF.ResourcePropertiesCompletionProvider")
       val position = parameters.getPosition()
-      LOG.debug("position = $position")
-      val parent = position.getParent()
-      LOG.debug("parent = $parent")
-      LOG.debug("left = ${position.getPrevSibling()}")
-      val leftNWS = position.getPrevSiblingNonWhiteSpace()
-      LOG.debug("leftNWS = $leftNWS")
+      var _parent: PsiElement? = position.parent
+      LOG.debug("_parent = $_parent")
+      if (_parent is HCLIdentifier) _parent = _parent.parent?.parent
+      val parent: PsiElement = _parent ?: return assert(false, { DumpPsiFileModel(position) });
+      assert(parent is HCLObject, { DumpPsiFileModel(position) })
       if (parent is HCLObject) {
         val pp = parent.getParent()
         if (pp is HCLBlock) {
