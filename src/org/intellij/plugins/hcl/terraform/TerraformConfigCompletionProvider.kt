@@ -197,19 +197,13 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
           if (tt == "resource") {
             val type = pp.getNameElementUnquoted(1)
             val resourceType = if (type != null) Model.getResourceType(type) else null
-            if (resourceType != null) {
-              result.addAllElements (resourceType.properties
-                  .filter { (isProperty && it.property != null && it.property.type == right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
-                  .map { if (it.property != null) it.property.name else it.block!!.literal }
-                  .filter { parent.findProperty(it) == null }
-                  .map { LookupElementBuilder.create(it) })
-            } else {
-              result.addAllElements (DefaultResourceTypeProperties
-                  .filter { (isProperty && it.property != null && it.property.type == right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
-                  .map { if (it.property != null) it.property.name else it.block!!.literal }
-                  .filter { parent.findProperty(it) == null }
-                  .map { LookupElementBuilder.create(it) })
-            }
+            val properties = resourceType?.properties ?: DefaultResourceTypeProperties
+            result.addAllElements (properties
+                .filter { (isProperty && it.property != null && it.property.type == right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
+                .map { it.name }
+                .filter { parent.findProperty(it) == null }
+                // TODO: Better renderer for properties/blocks
+                .map { LookupElementBuilder.create(it) })
           }
         }
       }
@@ -230,7 +224,7 @@ fun HCLBlock.getNameElementUnquoted(i: Int): String? {
 
 fun PsiElement.getPrevSiblingNonWhiteSpace(): PsiElement? {
   var prev = this.getPrevSibling()
-  while(prev != null && prev is PsiWhiteSpace) {
+  while (prev != null && prev is PsiWhiteSpace) {
     prev = prev.getPrevSibling()
   }
   return prev;
