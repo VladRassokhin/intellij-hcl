@@ -15,10 +15,14 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
+import org.intellij.plugins.hcl.psi.*
+
 public open class Type(val name: String)
 public open class PropertyType(val name: String, val type: Type, val typeHint: String? = null, val description: String? = null)
 public open class BlockType(val literal: String, val args: Int = 0, vararg val properties: PropertyOrBlockType = arrayOf())
 public class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
+  val name: String = if (property != null) property.name else block!!.literal
+
   init {
     assert(property != null || block != null);
   }
@@ -37,9 +41,11 @@ public fun BlockType.toPOBT(): PropertyOrBlockType {
 }
 
 object Types {
+  val Identifier = Type("Identifier")
   val String = Type("String")
   val Number = Type("Number")
   val Boolean = Type("Boolean")
+  val Null = Type("Null")
   val Array = Type("Array")
   val Object = Type("Object")
 }
@@ -67,7 +73,9 @@ public class Provider(type: ProviderType, val name: String, vararg properties: P
 // VariableType from name or use default one
 public class Variable(type: VariableType, val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(type, *properties)
 
-val DefaultResourceTypeProperties: Array<PropertyOrBlockType> = arrayOf()
+val DefaultResourceTypeProperties: Array<PropertyOrBlockType> = arrayOf(
+    PropertyType("count", Types.Number).toPOBT()
+)
 val DefaultProviderTypeProperties: Array<PropertyOrBlockType> = arrayOf()
 
 public object Model {
@@ -104,5 +112,20 @@ public object Model {
         "resource",
         "variable"
     )
+  }
+
+  fun getValueType(value: HCLValue?): Type? {
+    if (value == null) return null
+    return when (value) {
+      is HCLObject -> Types.Object
+      is HCLArray -> Types.Array
+      is HCLIdentifier -> Types.Identifier
+      is HCLStringLiteral -> Types.String
+      is HCLHeredocLiteral -> Types.String
+      is HCLNumberLiteral -> Types.Number
+      is HCLBooleanLiteral -> Types.Boolean
+      is HCLNullLiteral -> Types.Null
+      else -> null
+    }
   }
 }

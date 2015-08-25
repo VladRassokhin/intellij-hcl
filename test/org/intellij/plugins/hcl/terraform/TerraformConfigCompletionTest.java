@@ -21,8 +21,7 @@ import org.intellij.plugins.hcl.terraform.config.TerraformLanguage;
 import org.intellij.plugins.hcl.terraform.config.model.Model;
 import org.intellij.plugins.hcl.terraform.config.model.ResourceType;
 
-import java.util.HashSet;
-import java.util.TreeSet;
+import java.util.*;
 
 public class TerraformConfigCompletionTest extends CompletionTestCase {
 
@@ -63,12 +62,22 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
   }
 
   public void testResourceCommonPropertyCompletion() throws Exception {
-    doBasicCompletionTest("resource abc {\n<caret>\n}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PARAMETERS);
-    final HashSet<String> set = new HashSet<String>(TerraformConfigCompletionProvider.COMMON_RESOURCE_PARAMETERS);
+    doBasicCompletionTest("resource abc {\n<caret>\n}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PROPERTIES);
+    final HashSet<String> set = new HashSet<String>(TerraformConfigCompletionProvider.COMMON_RESOURCE_PROPERTIES);
     set.remove("id");
     doBasicCompletionTest("resource \"x\" {\nid='a'\n<caret>\n}", set);
-    doBasicCompletionTest("resource abc {\n<caret> = true\n}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PARAMETERS);
-    doBasicCompletionTest("resource abc {\n<caret> {}\n}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PARAMETERS);
+    doBasicCompletionTest("resource abc {\n<caret> = true\n}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PROPERTIES);
+    doBasicCompletionTest("resource abc {\n<caret> {}\n}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PROPERTIES);
+  }
+
+  public void testResourceCommonPropertyCompletionFromModel() throws Exception {
+    final List<String> specific = Arrays.asList("name", "availability_zones", "instances");
+    final HashSet<String> base = new HashSet<String>(TerraformConfigCompletionProvider.COMMON_RESOURCE_PROPERTIES);
+    base.addAll(specific);
+    doBasicCompletionTest("resource aws_elb x {\n<caret>\n}", base);
+    doBasicCompletionTest("resource aws_elb x {\n<caret> = \"name\"\n}", Collections.singleton("name"));
+    doBasicCompletionTest("resource aws_elb x {\n<caret> = true\n}", 0);
+    doBasicCompletionTest("resource aws_elb x {\n<caret> {}\n}", 0);
   }
 
 }

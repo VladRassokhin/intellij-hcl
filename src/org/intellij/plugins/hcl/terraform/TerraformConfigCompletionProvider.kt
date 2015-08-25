@@ -36,7 +36,9 @@ import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionProvider
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
+import org.intellij.plugins.hcl.terraform.config.model.DefaultResourceTypeProperties
 import org.intellij.plugins.hcl.terraform.config.model.Model
+import org.intellij.plugins.hcl.terraform.config.model.Type
 import java.util.*
 
 public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
@@ -111,10 +113,8 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
         "resource",
         "variable"
     )
-    public val COMMON_RESOURCE_PARAMETERS: TreeSet<String> = sortedSetOf(
-        "id",
-        "count"
-    )
+    public val COMMON_RESOURCE_PROPERTIES: SortedSet<String> = DefaultResourceTypeProperties.map { it.name }.toSortedSet()
+
     private val LOG = Logger.getInstance(javaClass<TerraformConfigCompletionProvider>())
     fun DumpPsiFileModel(element: PsiElement): () -> String {
       return { DebugUtil.psiToString(element.getContainingFile(), true) }
@@ -132,7 +132,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
       LOG.debug("leftNWS = $leftNWS")
       if (leftNWS is HCLIdentifier || leftNWS?.getNode()?.getElementType() == HCLElementTypes.ID) {
-        return assert(false, { DumpPsiFileModel(position) })
+        return assert(false, DumpPsiFileModel(position))
       }
       result.addAllElements(BLOCK_KEYWORDS.map { LookupElementBuilder.create(it) })
     }
@@ -148,7 +148,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       val obj = when {
         parent is HCLIdentifier -> parent
         position.node.elementType == HCLElementTypes.ID -> position // In case of two IDs (not Identifiers) nearby (start of block in empty file)
-        else -> return assert(false, { DumpPsiFileModel(position) })
+        else -> return assert(false, DumpPsiFileModel(position))
       }
       LOG.debug("obj = $obj")
       val leftNWS = obj.getPrevSiblingNonWhiteSpace()
@@ -156,7 +156,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       val type: String = when {
         leftNWS is HCLIdentifier -> leftNWS.id
         leftNWS?.getNode()?.getElementType() == HCLElementTypes.ID -> leftNWS!!.text
-        else -> return assert(false, { DumpPsiFileModel(position) })
+        else -> return assert(false, DumpPsiFileModel(position))
       }
       when (type) {
         "resource" ->
@@ -175,24 +175,56 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       val position = parameters.getPosition()
       var _parent: PsiElement? = position.parent
       LOG.debug("_parent = $_parent")
-      if (_parent is HCLIdentifier) _parent = _parent.parent?.parent
-      val parent: PsiElement = _parent ?: return assert(false, { DumpPsiFileModel(position) });
-      assert(parent is HCLObject, { DumpPsiFileModel(position) })
+      var right: Type? = null;
+      var isProperty = false;
+      var isBlock = false;
+      if (_parent is HCLIdentifier) {
+        val pob = _parent.parent // Property or Block
+        if (pob is HCLProperty) {
+          right = Model.getValueType(pob.value)
+          isProperty = true
+        } else if (pob is HCLBlock) {
+          isBlock = true
+        }
+        _parent = pob?.parent // Object
+      }
+      val parent: PsiElement = _parent ?: return assert(false, DumpPsiFileModel(position));
+      assert(parent is HCLObject, DumpPsiFileModel(position))
       if (parent is HCLObject) {
         val pp = parent.getParent()
         if (pp is HCLBlock) {
-          val type = pp.getNameElements().iterator().next()
-          val tt = when (type) {
-            is HCLIdentifier -> type.id
-            is HCLStringLiteral -> type.value
-            else -> return
-          }
+          val tt = pp.getNameElementUnquoted(0)
           if (tt == "resource") {
-            result.addAllElements(COMMON_RESOURCE_PARAMETERS.filter { parent.findProperty(it) == null }.map { LookupElementBuilder.create(it) })
+            val type = pp.getNameElementUnquoted(1)
+            val resourceType = if (type != null) Model.getResourceType(type) else null
+            if (resourceType != null) {
+              result.addAllElements (resourceType.properties
+                  .filter { (isProperty && it.property != null && it.property.type == right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
+                  .map { if (it.property != null) it.property.name else it.block!!.literal }
+                  .filter { parent.findProperty(it) == null }
+                  .map { LookupElementBuilder.create(it) })
+            } else {
+              result.addAllElements (DefaultResourceTypeProperties
+                  .filter { (isProperty && it.property != null && it.property.type == right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
+                  .map { if (it.property != null) it.property.name else it.block!!.literal }
+                  .filter { parent.findProperty(it) == null }
+                  .map { LookupElementBuilder.create(it) })
+            }
           }
         }
       }
     }
+  }
+}
+
+fun HCLBlock.getNameElementUnquoted(i: Int): String? {
+  val elements = this.nameElements
+  if (elements.size() < i - 1) return null
+  val element = elements.get(i)
+  return when (element) {
+    is HCLIdentifier -> element.id
+    is HCLStringLiteral -> element.value
+    else -> null
   }
 }
 
