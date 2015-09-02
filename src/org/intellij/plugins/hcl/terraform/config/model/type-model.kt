@@ -15,8 +15,6 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
-import org.intellij.plugins.hcl.psi.*
-
 // Model for element types
 
 public open class Type(val name: String)

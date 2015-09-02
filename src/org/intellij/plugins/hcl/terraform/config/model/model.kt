@@ -15,8 +15,6 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
-import org.intellij.plugins.hcl.psi.*
-
 // Actual model
 public open class Property(val type: PropertyType, val value: Any?)
 public open class Block(val type: BlockType, vararg val properties: PropertyOrBlock = arrayOf())

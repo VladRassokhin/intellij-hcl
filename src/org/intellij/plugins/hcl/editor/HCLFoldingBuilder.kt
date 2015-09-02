@@ -20,7 +20,7 @@ import com.intellij.lang.folding.FoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import org.intellij.plugins.hcl.HCLElementTypes
-import java.util.ArrayList
+import java.util.*
 
 public class HCLFoldingBuilder : FoldingBuilder {
   override fun isCollapsedByDefault(node: ASTNode): Boolean {

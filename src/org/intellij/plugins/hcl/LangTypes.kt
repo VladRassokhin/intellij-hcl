@@ -15,7 +15,6 @@
  */
 package org.intellij.plugins.hcl
 
-import com.intellij.lang.Language
 import com.intellij.psi.tree.IElementType
 
 open class HCLElementType(debugName: String) : IElementType(debugName, HCLLanguage)

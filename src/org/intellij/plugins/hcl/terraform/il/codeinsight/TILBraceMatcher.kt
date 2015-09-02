@@ -19,8 +19,10 @@ import com.intellij.lang.BracePair
 import com.intellij.lang.PairedBraceMatcher
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IElementType
-import org.intellij.plugins.hcl.HCLElementTypes
-import org.intellij.plugins.hcl.terraform.il.TILElementTypes.*
+import org.intellij.plugins.hcl.terraform.il.TILElementTypes.INTERPOLATION_END
+import org.intellij.plugins.hcl.terraform.il.TILElementTypes.INTERPOLATION_START
+import org.intellij.plugins.hcl.terraform.il.TILElementTypes.L_PAREN
+import org.intellij.plugins.hcl.terraform.il.TILElementTypes.R_PAREN
 
 public class TILBraceMatcher : PairedBraceMatcher {
 

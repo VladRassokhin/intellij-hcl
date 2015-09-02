@@ -31,7 +31,7 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import org.intellij.plugins.hcl.terraform.il.TILElementTypes.*
 import org.intellij.plugins.hcl.terraform.il.psi.TILLexer
-import java.util.HashMap
+import java.util.*
 
 public class TILSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 

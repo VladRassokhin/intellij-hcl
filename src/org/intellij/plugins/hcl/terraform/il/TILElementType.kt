@@ -17,7 +17,6 @@ package org.intellij.plugins.hcl.terraform.il
 
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
-import org.intellij.plugins.hcl.HCLLanguage
 import org.intellij.plugins.hcl.terraform.il.TILElementTypes.*
 
 

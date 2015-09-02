@@ -24,7 +24,7 @@ import org.intellij.plugins.hcl.HCLCapability
 import org.intellij.plugins.hcl.HCLLexer
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.psi.impl.HCLFileImpl
-import java.util.EnumSet
+import java.util.*
 
 public open class TerraformParserDefinition : HCLParserDefinition() {
   companion object {

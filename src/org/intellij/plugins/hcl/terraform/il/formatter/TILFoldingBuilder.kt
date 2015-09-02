@@ -20,7 +20,7 @@ import com.intellij.lang.folding.FoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import org.intellij.plugins.hcl.terraform.il.TILElementTypes
-import java.util.ArrayList
+import java.util.*
 
 public class TILFoldingBuilder : FoldingBuilder {
   override fun isCollapsedByDefault(node: ASTNode): Boolean {

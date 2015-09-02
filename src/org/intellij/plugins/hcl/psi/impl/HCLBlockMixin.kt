@@ -19,7 +19,6 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.util.IncorrectOperationException
 import org.intellij.plugins.hcl.psi.HCLBlock
-import org.intellij.plugins.hcl.psi.HCLElementGenerator
 
 abstract class HCLBlockMixin(node: ASTNode) : HCLElementImpl(node), HCLBlock {
 

@@ -23,7 +23,6 @@ import org.intellij.plugins.hcl.terraform.il.TILElementType
 import org.intellij.plugins.hcl.terraform.il.TILTokenType
 import org.intellij.plugins.hcl.terraform.il.psi.ILElementVisitor
 import org.intellij.plugins.hcl.terraform.il.psi.ILExpression
-import org.intellij.plugins.hcl.terraform.il.psi.impl.ILExpressionImpl
 
 public open class ILBinaryExpressionImpl(node: ASTNode) : ILExpressionImpl(node), ILBinaryExpression {
   override fun getLOperand(): ILExpression? {

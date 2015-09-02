@@ -25,7 +25,7 @@ import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.il.TILElementTypes.INTERPOLATION_END
 import org.intellij.plugins.hcl.terraform.il.TILElementTypes.INTERPOLATION_START
 import org.intellij.plugins.hcl.terraform.il.psi.TILLexer
-import java.util.ArrayList
+import java.util.*
 
 public class ILLanguageInjector : LanguageInjector {
   override fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {

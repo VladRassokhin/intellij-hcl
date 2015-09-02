@@ -19,8 +19,6 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.util.ArrayUtil
-import org.intellij.plugins.hcl.terraform.il.psi.ILExpression
-import org.intellij.plugins.hcl.terraform.il.psi.impl.ILExpressionBase
 
 
 open class ILExpressionWithReference(node: ASTNode) : ILExpressionBase(node) {

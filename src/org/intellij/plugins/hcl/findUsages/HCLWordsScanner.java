@@ -18,8 +18,8 @@ package org.intellij.plugins.hcl.findUsages;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.psi.tree.TokenSet;
 import org.intellij.plugins.hcl.HCLElementTypes;
-import org.intellij.plugins.hcl.HCLParserDefinition;
 import org.intellij.plugins.hcl.HCLLexer;
+import org.intellij.plugins.hcl.HCLParserDefinition;
 
 public class HCLWordsScanner extends DefaultWordsScanner {
   public HCLWordsScanner(HCLLexer lexer) {
