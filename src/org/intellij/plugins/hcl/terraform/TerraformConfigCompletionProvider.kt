@@ -38,6 +38,7 @@ import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hcl.terraform.config.model.DefaultResourceTypeProperties
 import org.intellij.plugins.hcl.terraform.config.model.Model
+import org.intellij.plugins.hcl.terraform.config.model.ModelUtil
 import org.intellij.plugins.hcl.terraform.config.model.Type
 import java.util.*
 
@@ -181,7 +182,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       if (_parent is HCLIdentifier) {
         val pob = _parent.parent // Property or Block
         if (pob is HCLProperty) {
-          right = Model.getValueType(pob.value)
+          right = ModelUtil.getValueType(pob.value)
           isProperty = true
         } else if (pob is HCLBlock) {
           isBlock = true

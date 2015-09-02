@@ -17,23 +17,52 @@ package org.intellij.plugins.hcl.terraform.config.model
 
 import org.intellij.plugins.hcl.psi.*
 
-// Actual model
-public open class Property(val type: PropertyType, val value: Any?)
-public open class Block(val type: BlockType, vararg val properties: PropertyOrBlock = arrayOf())
-public class PropertyOrBlock(val property: Property? = null, val block: Block? = null) {
+// Model for element types
+
+public open class Type(val name: String)
+public open class PropertyType(val name: String, val type: Type, val typeHint: String? = null, val description: String? = null)
+public open class BlockType(val literal: String, val args: Int = 0, vararg val properties: PropertyOrBlockType = arrayOf())
+public class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
+  val name: String = if (property != null) property.name else block!!.literal
+
   init {
     assert(property != null || block != null);
   }
+
+  constructor(property: PropertyType) : this(property, null)
+
+  constructor(block: BlockType) : this(null, block)
 }
 
-public class Resource(type: ResourceType, val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(type, *properties)
-// ProviderType from name
-public class Provider(type: ProviderType, val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(type, *properties)
+public fun PropertyType.toPOBT(): PropertyOrBlockType {
+  return PropertyOrBlockType(this)
+}
 
-// VariableType from name or use default one
-public class Variable(type: VariableType, val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(type, *properties)
+public fun BlockType.toPOBT(): PropertyOrBlockType {
+  return PropertyOrBlockType(this)
+}
 
-public object Model {
+object Types {
+  val Identifier = Type("Identifier")
+  val String = Type("String")
+  val Number = Type("Number")
+  val Boolean = Type("Boolean")
+  val Null = Type("Null")
+  val Array = Type("Array")
+  val Object = Type("Object")
+}
+
+public class ResourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, *properties)
+public class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, *properties)
+public class VariableType(vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("variable", 1, *properties)
+
+val DefaultResourceTypeProperties: Array<PropertyOrBlockType> = arrayOf(
+    PropertyType("count", Types.Number).toPOBT()
+)
+val DefaultProviderTypeProperties: Array<PropertyOrBlockType> = arrayOf()
+
+
+public object TypeModel {
   val resources: List<ResourceType> = listOf(
       ResourceType("aws_elb",
           PropertyType("name", Types.String).toPOBT(),
@@ -68,4 +97,6 @@ public object Model {
         "variable"
     )
   }
+
+
 }
