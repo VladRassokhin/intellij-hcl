@@ -29,10 +29,10 @@ import org.intellij.plugins.hcl.psi.HCLProperty
  * Based on com.intellij.json.codeinsight.JsonCompletionContributor
  */
 public open class HCLCompletionProvider : CompletionContributor() {
-  private val LOG = Logger.getInstance(javaClass<JsonCompletionContributor>())
+  private val LOG = Logger.getInstance(JsonCompletionContributor::class.java)
 
-  private val AFTER_EQUALS_IN_PROPERTY = psiElement().afterLeaf("=").withSuperParent(2, javaClass<HCLProperty>())
-  private val AFTER_COMMA_OR_BRACKET_IN_ARRAY = psiElement().afterLeaf(",", "[").withSuperParent(2, javaClass<HCLArray>())
+  private val AFTER_EQUALS_IN_PROPERTY = psiElement().afterLeaf("=").withSuperParent(2, HCLProperty::class.java)
+  private val AFTER_COMMA_OR_BRACKET_IN_ARRAY = psiElement().afterLeaf(",", "[").withSuperParent(2, HCLArray::class.java)
 
   init {
     extend(CompletionType.BASIC, AFTER_EQUALS_IN_PROPERTY, MyKeywordsCompletionProvider)

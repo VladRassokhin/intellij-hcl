@@ -72,15 +72,15 @@ public object HCLPsiImplUtils {
       }
       child = child.getNextSibling()
     }
-    return if (result == null) emptyArray<HCLElement>() else ArrayUtil.toObjectArray<HCLElement>(result, javaClass<HCLElement>())
+    return if (result == null) emptyArray<HCLElement>() else ArrayUtil.toObjectArray<HCLElement>(result, HCLElement::class.java)
   }
 
   public fun getValue(property: HCLProperty): HCLValue? {
-    return PsiTreeUtil.getNextSiblingOfType<HCLValue>(getNameElement(property), javaClass<HCLValue>())
+    return PsiTreeUtil.getNextSiblingOfType<HCLValue>(getNameElement(property), HCLValue::class.java)
   }
 
   public fun getObject(block: HCLBlock): HCLObject? {
-    return PsiTreeUtil.getNextSiblingOfType<HCLObject>(block.getFirstChild(), javaClass<HCLObject>())
+    return PsiTreeUtil.getNextSiblingOfType<HCLObject>(block.getFirstChild(), HCLObject::class.java)
   }
 
   public fun isQuotedString(literal: HCLLiteral): Boolean {
@@ -171,7 +171,7 @@ public object HCLPsiImplUtils {
   //  }
 
   public fun findProperty(`object`: HCLObject, name: String): HCLProperty? {
-    val properties = PsiTreeUtil.findChildrenOfType<HCLProperty>(`object`, javaClass<HCLProperty>())
+    val properties = PsiTreeUtil.findChildrenOfType<HCLProperty>(`object`, HCLProperty::class.java)
     for (property in properties) {
       if (property.getName() == name) {
         return property

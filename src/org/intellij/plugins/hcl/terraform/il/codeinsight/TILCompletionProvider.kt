@@ -34,10 +34,10 @@ public class TILCompletionProvider : CompletionContributor() {
   companion object {
     public val TERRAFORM_METHODS: TreeSet<String> = sortedSetOf("concat", "file", "format", "formatlist", "join", "element", "replace", "split", "length", "lookup", "keys", "values")
     private val METHOD_POSITION = PlatformPatterns.psiElement().withLanguage(TILLanguage)
-        .withParent(javaClass<ILVariable>())
-        .andNot(PlatformPatterns.psiElement().withSuperParent(2, javaClass<ILSelectExpression>()))
+        .withParent(ILVariable::class.java)
+        .andNot(PlatformPatterns.psiElement().withSuperParent(2, ILSelectExpression::class.java))
 
-    private val LOG = Logger.getInstance(javaClass<TILCompletionProvider>())
+    private val LOG = Logger.getInstance(TILCompletionProvider::class.java)
   }
 
   private object MethodsCompletionProvider : CompletionProvider<CompletionParameters>() {

@@ -38,7 +38,7 @@ public class HCLStructureViewFactory : PsiStructureViewFactory {
 
 class HCLStructureViewModel(file: HCLFile, editor: Editor?) : StructureViewModelBase(file, editor, HCLStructureViewElement(file)), StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
   init {
-    withSuitableClasses(javaClass<HCLFile>(), javaClass<HCLProperty>(), javaClass<HCLObject>(), javaClass<HCLArray>(), javaClass<HCLBlock>())
+    withSuitableClasses(HCLFile::class.java, HCLProperty::class.java, HCLObject::class.java, HCLArray::class.java, HCLBlock::class.java)
   }
 
   override fun isAlwaysLeaf(element: StructureViewTreeElement?): Boolean {
@@ -60,7 +60,7 @@ class HCLStructureViewModel(file: HCLFile, editor: Editor?) : StructureViewModel
 
 class HCLStructureViewElement(val element: HCLElement) : StructureViewTreeElement {
   init {
-    assert(PsiTreeUtil.instanceOf(element, javaClass<HCLFile>(), javaClass<HCLProperty>(), javaClass<HCLObject>(), javaClass<HCLArray>(), javaClass<HCLBlock>()))
+    assert(PsiTreeUtil.instanceOf(element, HCLFile::class.java, HCLProperty::class.java, HCLObject::class.java, HCLArray::class.java, HCLBlock::class.java))
   }
 
   override fun getValue(): Any? {

@@ -16,9 +16,9 @@
 package org.intellij.plugins.hcl
 
 import com.intellij.lexer.FlexAdapter
-import java.util.EnumSet
+import java.util.*
 
-public class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(javaClass<HCLCapability>())) : FlexAdapter(_HCLLexer(capabilities)) {
+public class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(HCLCapability::class.java)) : FlexAdapter(_HCLLexer(capabilities)) {
 
   companion object {
     private val STRING_START_MASK: Int = 0xFFFF shl 0x10 // 0xFFFF0000

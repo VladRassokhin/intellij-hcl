@@ -68,8 +68,8 @@ public open class HCLLanguageCodeStyleSettingsProvider(val _language:Language = 
       }
       LanguageCodeStyleSettingsProvider.SettingsType.WRAPPING_AND_BRACES_SETTINGS -> {
         consumer.showStandardOptions("RIGHT_MARGIN", "KEEP_LINE_BREAKS", "WRAP_LONG_LINES")
-        consumer.showCustomOption(javaClass<HCLCodeStyleSettings>(), "ARRAY_WRAPPING", "Arrays", null, CodeStyleSettingsCustomizable.WRAP_OPTIONS, CodeStyleSettingsCustomizable.WRAP_VALUES)
-        consumer.showCustomOption(javaClass<HCLCodeStyleSettings>(), "OBJECT_WRAPPING", "Objects", null, CodeStyleSettingsCustomizable.WRAP_OPTIONS, CodeStyleSettingsCustomizable.WRAP_VALUES)
+        consumer.showCustomOption(HCLCodeStyleSettings::class.java, "ARRAY_WRAPPING", "Arrays", null, CodeStyleSettingsCustomizable.WRAP_OPTIONS, CodeStyleSettingsCustomizable.WRAP_VALUES)
+        consumer.showCustomOption(HCLCodeStyleSettings::class.java, "OBJECT_WRAPPING", "Objects", null, CodeStyleSettingsCustomizable.WRAP_OPTIONS, CodeStyleSettingsCustomizable.WRAP_VALUES)
       }
     }
   }

@@ -44,16 +44,16 @@ import java.util.*
 
 public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
   init {
-    val WhiteSpace = psiElement(javaClass<PsiWhiteSpace>())
+    val WhiteSpace = psiElement(PsiWhiteSpace::class.java)
     val ID = psiElement(HCLElementTypes.ID)
 
-    val Identifier = psiElement(javaClass<HCLIdentifier>())
-    val File = psiElement(javaClass<HCLFile>())
-    val Block = psiElement(javaClass<HCLBlock>())
-    val Property = psiElement(javaClass<HCLProperty>())
-    val Object = psiElement(javaClass<HCLObject>())
+    val Identifier = psiElement(HCLIdentifier::class.java)
+    val File = psiElement(HCLFile::class.java)
+    val Block = psiElement(HCLBlock::class.java)
+    val Property = psiElement(HCLProperty::class.java)
+    val Object = psiElement(HCLObject::class.java)
 
-    val TerraformConfigFile = psiFile(javaClass<HCLFile>()).withLanguage(TerraformLanguage)
+    val TerraformConfigFile = psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
 
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
@@ -65,7 +65,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
         .withParent(Identifier)
         .withSuperParent(2, Block)
         .withSuperParent(3, File)
-        .withParent(not(psiElement(javaClass<HCLIdentifier>()).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))),
+        .withParent(not(psiElement(HCLIdentifier::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))),
         BlockKeywordCompletionProvider);
 
     // TODO: Provide data from all resources in folder (?)
@@ -78,7 +78,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
         , BlockTypeOrNameCompletionProvider);
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
-        .withParent(psiElement(javaClass<HCLIdentifier>()).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
+        .withParent(psiElement(HCLIdentifier::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
         .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
         , BlockTypeOrNameCompletionProvider);
 
@@ -116,7 +116,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
     )
     public val COMMON_RESOURCE_PROPERTIES: SortedSet<String> = DefaultResourceTypeProperties.map { it.name }.toSortedSet()
 
-    private val LOG = Logger.getInstance(javaClass<TerraformConfigCompletionProvider>())
+    private val LOG = Logger.getInstance(TerraformConfigCompletionProvider::class.java)
     fun DumpPsiFileModel(element: PsiElement): () -> String {
       return { DebugUtil.psiToString(element.getContainingFile(), true) }
     }

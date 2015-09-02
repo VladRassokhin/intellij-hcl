@@ -24,9 +24,6 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import org.intellij.plugins.hcl.HCLElementTypes.*
 import org.intellij.plugins.hcl.HCLParserDefinition
-import org.intellij.plugins.hcl.psi.HCLArray
-import org.intellij.plugins.hcl.psi.HCLFile
-import org.intellij.plugins.hcl.psi.HCLObject
 import org.intellij.plugins.hcl.psi.HCLPsiUtil
 
 class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Alignment?, val spacingBuilder: SpacingBuilder, val _indent: Indent?, val settings: CodeStyleSettings) : AbstractBlock(node, wrap, alignment) {
@@ -139,7 +136,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
   }
 
   private fun getCustomSettings(): HCLCodeStyleSettings {
-    return settings.getCustomSettings(javaClass<HCLCodeStyleSettings>())
+    return settings.getCustomSettings(HCLCodeStyleSettings::class.java)
   }
 
   private fun isElementType(node: ASTNode, set: TokenSet): Boolean {
