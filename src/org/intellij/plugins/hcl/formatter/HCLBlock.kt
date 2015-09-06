@@ -108,11 +108,14 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     if (isElementType(myNode, HEREDOC_LITERAL, HEREDOC_MARKER, HEREDOC_LINE, HD_MARKER, HD_LINE, HD_START)) {
       return Indent.getAbsoluteNoneIndent();
     }
-    if (isElementType(myNode, OBJECT, HCLParserDefinition.FILE)) {
+    if (isElementType(myNode, OBJECT)) {
       return Indent.getNormalIndent();
     }
     if (isElementType(myNode, ARRAY)) {
       return Indent.getNormalIndent();
+    }
+    if (isElementType(myNode, HCLParserDefinition.FILE)) {
+      return Indent.getNoneIndent();
     }
     return null;
   }
