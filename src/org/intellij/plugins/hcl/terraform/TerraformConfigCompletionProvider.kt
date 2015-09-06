@@ -20,6 +20,7 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.PatternCondition
@@ -70,39 +71,43 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
     // TODO: Provide data from all resources in folder (?)
 
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-        .inFile(TerraformConfigFile)
-        .withParent(not(Identifier))
-        .andOr(psiElement().withSuperParent(1, File), psiElement().withSuperParent(1, Block))
-        .afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))
-        , BlockTypeOrNameCompletionProvider);
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-        .inFile(TerraformConfigFile)
-        .withParent(psiElement(HCLIdentifier::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
-        .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
-        , BlockTypeOrNameCompletionProvider);
+    if (MODEL_BASED_COMPLETION_ENABLED) {
+
+      extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+          .inFile(TerraformConfigFile)
+          .withParent(not(Identifier))
+          .andOr(psiElement().withSuperParent(1, File), psiElement().withSuperParent(1, Block))
+          .afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))
+          , BlockTypeOrNameCompletionProvider);
+      extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+          .inFile(TerraformConfigFile)
+          .withParent(psiElement(HCLIdentifier::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
+          .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
+          , BlockTypeOrNameCompletionProvider);
 
 
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-        .inFile(TerraformConfigFile)
-        .withParent(Object)
-        .withSuperParent(2, Block)
-        , ResourcePropertiesCompletionProvider);
+      extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+          .inFile(TerraformConfigFile)
+          .withParent(Object)
+          .withSuperParent(2, Block)
+          , ResourcePropertiesCompletionProvider);
 
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-        .inFile(TerraformConfigFile)
-        .withParent(Identifier)
-        .withSuperParent(2, Property)
-        .withSuperParent(3, Object)
-        .withSuperParent(4, Block)
-        , ResourcePropertiesCompletionProvider);
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-        .inFile(TerraformConfigFile)
-        .withParent(Identifier)
-        .withSuperParent(2, Block)
-        .withSuperParent(3, Object)
-        .withSuperParent(4, Block)
-        , ResourcePropertiesCompletionProvider);
+      extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+          .inFile(TerraformConfigFile)
+          .withParent(Identifier)
+          .withSuperParent(2, Property)
+          .withSuperParent(3, Object)
+          .withSuperParent(4, Block)
+          , ResourcePropertiesCompletionProvider);
+      extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+          .inFile(TerraformConfigFile)
+          .withParent(Identifier)
+          .withSuperParent(2, Block)
+          .withSuperParent(3, Object)
+          .withSuperParent(4, Block)
+          , ResourcePropertiesCompletionProvider);
+
+    }
   }
 
   companion object {
@@ -114,6 +119,12 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
         "resource",
         "variable"
     )
+
+    val MODEL_BASED_COMPLETION_ENABLED: Boolean by lazy {
+      val application = ApplicationManager.getApplication()
+      application.isUnitTestMode || application.isInternal
+    }
+
     public val COMMON_RESOURCE_PROPERTIES: SortedSet<String> = DefaultResourceTypeProperties.map { it.name }.toSortedSet()
 
     private val LOG = Logger.getInstance(TerraformConfigCompletionProvider::class.java)
