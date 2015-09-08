@@ -21,6 +21,7 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import org.intellij.plugins.hcl.HCLElementTypes.*
 import org.intellij.plugins.hcl.HCLParserDefinition
@@ -114,7 +115,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     if (isElementType(myNode, ARRAY)) {
       return Indent.getNormalIndent();
     }
-    if (isElementType(myNode, HCLParserDefinition.FILE)) {
+    if (myNode.getElementType() is IFileElementType) {
       return Indent.getNoneIndent();
     }
     return null;
