@@ -21,6 +21,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.PatternCondition
@@ -37,10 +38,7 @@ import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionProvider
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
-import org.intellij.plugins.hcl.terraform.config.model.DefaultResourceTypeProperties
-import org.intellij.plugins.hcl.terraform.config.model.Model
-import org.intellij.plugins.hcl.terraform.config.model.ModelUtil
-import org.intellij.plugins.hcl.terraform.config.model.Type
+import org.intellij.plugins.hcl.terraform.config.model.*
 import java.util.*
 
 public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
@@ -133,7 +131,14 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
     }
   }
 
-  private object BlockKeywordCompletionProvider : CompletionProvider<CompletionParameters>() {
+  private abstract class OurCompletionProvider : CompletionProvider<CompletionParameters>() {
+    protected fun getTypeModel(): TypeModel {
+      val provider = ServiceManager.getService(TypeModelProvider::class.java)
+      return provider.get()
+    }
+  }
+
+  private object BlockKeywordCompletionProvider : OurCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       LOG.debug("TF.BlockKeywordCompletionProvider")
       val position = parameters.getPosition()
@@ -150,7 +155,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
     }
   }
 
-  private object BlockTypeOrNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+  private object  BlockTypeOrNameCompletionProvider : OurCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       LOG.debug("TF.BlockTypeOrNameCompletionProvider")
       val position = parameters.getPosition()
@@ -172,16 +177,16 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       }
       when (type) {
         "resource" ->
-          result.addAllElements(Model.resources.map { LookupElementBuilder.create(it.type) })
+          result.addAllElements(getTypeModel().resources.map { LookupElementBuilder.create(it.type) })
 
         "provider" ->
-          result.addAllElements(Model.providers.map { LookupElementBuilder.create(it.type) })
+          result.addAllElements(getTypeModel().providers.map { LookupElementBuilder.create(it.type) })
       }
       return
     }
   }
 
-  private object ResourcePropertiesCompletionProvider : CompletionProvider<CompletionParameters>() {
+  private object ResourcePropertiesCompletionProvider : OurCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       LOG.debug("TF.ResourcePropertiesCompletionProvider")
       val position = parameters.getPosition()
@@ -208,8 +213,12 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
           val tt = pp.getNameElementUnquoted(0)
           if (tt == "resource") {
             val type = pp.getNameElementUnquoted(1)
-            val resourceType = if (type != null) Model.getResourceType(type) else null
-            val properties = resourceType?.properties ?: DefaultResourceTypeProperties
+            val resourceType = if (type != null) getTypeModel().getResourceType(type) else null
+            val properties = ArrayList<PropertyOrBlockType>()
+            properties.addAll(DefaultResourceTypeProperties)
+            if (resourceType?.properties != null) {
+              properties.addAll(resourceType?.properties)
+            }
             result.addAllElements (properties
                 .filter { (isProperty && it.property != null && it.property.type == right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
                 .map { it.name }

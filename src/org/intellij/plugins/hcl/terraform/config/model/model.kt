@@ -32,38 +32,4 @@ public class Provider(type: ProviderType, val name: String, vararg properties: P
 public class Variable(type: VariableType, val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(type, *properties)
 
 public object Model {
-  val resources: List<ResourceType> = listOf(
-      ResourceType("aws_elb",
-          PropertyType("name", Types.String).toPOBT(),
-          PropertyType("availability_zones", Types.Array, "String").toPOBT(),
-          PropertyType("instances", Types.Array, "String").toPOBT(),
-          *DefaultResourceTypeProperties),
-      ResourceType("aws_instance",
-          PropertyType("instance_type", Types.String).toPOBT(),
-          PropertyType("ami", Types.String).toPOBT(),
-          *DefaultResourceTypeProperties)
-  )
-  val providers: List<ProviderType> = listOf(
-      ProviderType("aws", PropertyOrBlockType(PropertyType("region", Types.String)), *DefaultProviderTypeProperties)
-  )
-  val variables: List<VariableType> = listOf()
-
-  fun getResourceType(name: String): ResourceType? {
-    return resources.firstOrNull { it.type == name }
-  }
-
-  fun getProviderType(name: String): ProviderType? {
-    return providers.firstOrNull { it.type == name }
-  }
-
-  fun getBlockTypeNames(): List<String> {
-    return listOf(
-        "atlas",
-        "module",
-        "output",
-        "provider",
-        "resource",
-        "variable"
-    )
-  }
 }

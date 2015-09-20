@@ -16,10 +16,11 @@
 package org.intellij.plugins.hcl.terraform;
 
 import com.intellij.lang.Language;
+import com.intellij.openapi.components.ServiceManager;
 import org.intellij.plugins.hcl.CompletionTestCase;
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage;
-import org.intellij.plugins.hcl.terraform.config.model.Model;
 import org.intellij.plugins.hcl.terraform.config.model.ResourceType;
+import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider;
 
 import java.util.*;
 
@@ -53,7 +54,8 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
 
   public void testResourceTypeCompletion() throws Exception {
     final TreeSet<String> set = new TreeSet<String>();
-    for (ResourceType resource : Model.resources) {
+    final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
+    for (ResourceType resource : provider.get().getResources()) {
       set.add(resource.getType());
     }
     doBasicCompletionTest("resource <caret>", set);
