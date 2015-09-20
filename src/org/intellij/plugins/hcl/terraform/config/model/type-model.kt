@@ -61,6 +61,9 @@ object Types {
   val Array = Type("Array")
   val Object = Type("Object")
   val Invalid = Type("Invalid")
+
+  // Separate, as could be used as String, Number, Boolean, etc
+  val StringWithInjection = Type("String")
 }
 
 public class ResourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, *properties)

@@ -20,6 +20,7 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
@@ -31,6 +32,8 @@ import com.intellij.patterns.PsiElementPattern
 import com.intellij.patterns.StandardPatterns.not
 import com.intellij.patterns.StandardPatterns.or
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.DebugUtil
 import com.intellij.util.ProcessingContext
@@ -39,6 +42,7 @@ import org.intellij.plugins.hcl.codeinsight.HCLCompletionProvider
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hcl.terraform.config.model.*
+import org.intellij.plugins.hcl.terraform.il.ILFileType
 import java.util.*
 
 public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
@@ -155,7 +159,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
     }
   }
 
-  private object  BlockTypeOrNameCompletionProvider : OurCompletionProvider() {
+  private object BlockTypeOrNameCompletionProvider : OurCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       LOG.debug("TF.BlockTypeOrNameCompletionProvider")
       val position = parameters.getPosition()
@@ -198,7 +202,18 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       if (_parent is HCLIdentifier) {
         val pob = _parent.parent // Property or Block
         if (pob is HCLProperty) {
-          right = ModelUtil.getValueType(pob.value)
+          val value = pob.value
+          right = ModelUtil.getValueType(value)
+          if (right == Types.String && value is PsiLanguageInjectionHost) {
+            // Check for Injection
+            InjectedLanguageManager.getInstance(pob.project).enumerate(value, object: PsiLanguageInjectionHost.InjectedPsiVisitor {
+              override fun visit(injectedPsi: PsiFile, places: MutableList<PsiLanguageInjectionHost.Shred>) {
+                if (injectedPsi.fileType == ILFileType) {
+                  right = Types.StringWithInjection;
+                }
+              }
+            })
+          }
           isProperty = true
         } else if (pob is HCLBlock) {
           isBlock = true
@@ -220,7 +235,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
               properties.addAll(resourceType?.properties)
             }
             result.addAllElements (properties
-                .filter { (isProperty && it.property != null && it.property.type == right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
+                .filter { isRightOfPropertyWithCompatibleType(isProperty, it, right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
                 .map { it.name }
                 .filter { parent.findProperty(it) == null }
                 // TODO: Better renderer for properties/blocks
@@ -228,6 +243,17 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
           }
         }
       }
+    }
+
+    private fun isRightOfPropertyWithCompatibleType(isProperty: Boolean, it: PropertyOrBlockType, right: Type?): Boolean {
+      if (!isProperty) return false
+      if (it.property == null) return false
+      if (right == Types.StringWithInjection) {
+        // StringWithInjection may be anything
+        // TODO: Check interpolation result
+        return true;
+      }
+      return it.property.type == right
     }
   }
 }
