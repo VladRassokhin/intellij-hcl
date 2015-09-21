@@ -30,7 +30,7 @@ import java.util.regex.Pattern
 // Model for element types
 
 public open class Type(val name: String)
-public open class PropertyType(val name: String, val type: Type, val typeHint: String? = null, val description: String? = null)
+public open class PropertyType(val name: String, val type: Type, val typeHint: String? = null, val description: String? = null, val required: Boolean = false)
 public open class BlockType(val literal: String, val args: Int = 0, vararg val properties: PropertyOrBlockType = arrayOf())
 public class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
   val name: String = if (property != null) property.name else block!!.literal
@@ -204,9 +204,11 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
       // ?? return BlockType(name).toPOBT()
     }
+    val required = (m.get("Required")?.string("value")?.toLowerCase() ?: "false").toBoolean()
+
     val fqn = "$providerName.$name"
     val additional = external.get(fqn) ?: TypeModelProvider.Additional(name);
-    return PropertyType(name, type, additional.hint, additional.description).toPOBT()
+    return PropertyType(name, type, additional.hint, additional.description, required).toPOBT()
   }
 
   private fun parseType(attribute: JsonObject?): Type {
