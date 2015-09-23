@@ -12,6 +12,7 @@ Provides [HCL language](https://github.com/hashicorp/hcl) and [Terraform](https:
 
 #### Terraform configs (.tf) files
 * Interpolations syntax highlighting
+* (WIP) Properties validation (according to required properties for resource/provider, type checking)
 
 #### Terraform configs Interpolation Language
 * Syntax highlighting
@@ -22,7 +23,6 @@ Provides [HCL language](https://github.com/hashicorp/hcl) and [Terraform](https:
 #### Terraform configs (.tf) files
 * Go to definition from resource to provider
 * Find usages for resources, providers, variables
-* Properties validation (according to required properties for resource/provider, type checking)
 
 #### Terraform configs Interpolation Language
 * [Predefined methods](https://www.terraform.io/docs/configuration/interpolation.html) autocompletion
