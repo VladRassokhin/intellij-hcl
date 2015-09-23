@@ -171,9 +171,8 @@ public object HCLPsiImplUtils {
   //  }
 
   public fun findProperty(`object`: HCLObject, name: String): HCLProperty? {
-    val properties = PsiTreeUtil.findChildrenOfType<HCLProperty>(`object`, HCLProperty::class.java)
-    for (property in properties) {
-      if (property.getName() == name) {
+    for (property in `object`.propertyList) {
+      if (property.name == name) {
         return property
       }
     }

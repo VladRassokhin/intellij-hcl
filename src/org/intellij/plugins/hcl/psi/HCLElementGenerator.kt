@@ -75,8 +75,18 @@ public open class HCLElementGenerator(private val project: Project) {
   }
 
   public fun createProperty(name: String, value: String): HCLProperty {
-    val file = createDummyFile("\"$name\"=$value")
+    val s: String
+    if (isIdentifier(name)) {
+      s = "$name = $value"
+    } else {
+      s = "\"$name\" = $value"
+    }
+    val file = createDummyFile(s)
     return file.getFirstChild() as HCLProperty
+  }
+
+  private fun isIdentifier(name: String): Boolean {
+    return name.matches("\\w*".toRegex())
   }
 
   public fun createBlock(name: String): HCLBlock {
