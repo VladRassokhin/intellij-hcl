@@ -258,7 +258,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
   }
 }
 
-fun HCLBlock.getNameElementUnquoted(i: Int): String? {
+public fun HCLBlock.getNameElementUnquoted(i: Int): String? {
   val elements = this.nameElements
   if (elements.size() < i - 1) return null
   val element = elements.get(i)
