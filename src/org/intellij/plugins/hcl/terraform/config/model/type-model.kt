@@ -31,9 +31,11 @@ import java.util.regex.Pattern
 
 public open class Type(val name: String)
 public open class PropertyType(val name: String, val type: Type, val typeHint: String? = null, val description: String? = null, val required: Boolean = false)
-public open class BlockType(val literal: String, val args: Int = 0, vararg val properties: PropertyOrBlockType = arrayOf())
+public open class BlockType(val literal: String, val args: Int = 0, val required: Boolean = false, vararg val properties: PropertyOrBlockType = arrayOf())
+
 public class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
   val name: String = if (property != null) property.name else block!!.literal
+  val required: Boolean = if (property != null) property.required else block!!.required
 
   init {
     assert(property != null || block != null);
@@ -66,15 +68,15 @@ object Types {
   val StringWithInjection = Type("String")
 }
 
-public class ResourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, *properties)
-public class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, *properties)
-public class VariableType(vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("variable", 1, *properties)
+public class ResourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, false, *properties)
+public class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, false, *properties)
+public class VariableType(vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("variable", 1, false, *properties)
 
 val DefaultResourceTypeProperties: Array<PropertyOrBlockType> = arrayOf(
     PropertyType("count", Types.Number).toPOBT(),
     PropertyType("depends_on", Types.Array, "String").toPOBT(),
     PropertyType("provider", Types.String, "(provider.type|provider.alias)").toPOBT(),
-    BlockType("lifecycle", 0,
+    BlockType("lifecycle", 0, false,
         PropertyType("create_before_destroy", Types.Boolean).toPOBT(),
         PropertyType("prevent_destroy", Types.Boolean).toPOBT()
     ).toPOBT()
