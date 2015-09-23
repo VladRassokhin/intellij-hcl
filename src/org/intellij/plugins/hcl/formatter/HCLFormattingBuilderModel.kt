@@ -47,6 +47,7 @@ public open class HCLFormattingBuilderModel(val language: Language = HCLLanguage
     return SpacingBuilder(settings, language)
         .before(EQUALS).spacing(spacesAroundAssignment, spacesAroundAssignment, 0, false, 0)
         .after(EQUALS).spacing(spacesAroundAssignment, spacesAroundAssignment, 0, false, 0)
+        .withinPairInside(L_CURLY, R_CURLY, OBJECT).lineBreakInCode()
         .withinPair(L_BRACKET, R_BRACKET).spaceIf(commonSettings.SPACE_WITHIN_BRACKETS) //, true
         .withinPair(L_CURLY, R_CURLY).spaceIf(commonSettings.SPACE_WITHIN_BRACES) //, true
         .before(COMMA).spacing(spacesBeforeComma, spacesBeforeComma, 0, false, 0)
