@@ -24,15 +24,22 @@ public class TerraformConfigParserTest extends HCLParserTest {
     super("psi", "hcl", false, new TerraformParserDefinition(), new HCLParserDefinition());
   }
 
+  private void setTerraformExtension() {
+    myFileExt = "tf";
+  }
+
   public void testTerraform_With_String_In_IL() throws Exception {
+    setTerraformExtension();
     doTest();
   }
 
   public void testTerraform_With_Extra_Quote() throws Exception {
+    setTerraformExtension();
     doTest();
   }
 
   public void testUnfinished_Interpolation() throws Exception {
+    setTerraformExtension();
     doTest();
   }
 }
