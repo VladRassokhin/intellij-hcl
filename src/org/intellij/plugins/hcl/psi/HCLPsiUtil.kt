@@ -29,7 +29,7 @@ import org.intellij.plugins.hcl.HCLParserDefinition
 
  * @author Mikhail Golubev
  */
-SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings("UnusedDeclaration")
 public object HCLPsiUtil {
 
 

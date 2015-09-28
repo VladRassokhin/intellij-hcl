@@ -40,12 +40,12 @@ public class HCLPropertyNameReference(private val myProperty: HCLProperty) : Psi
 
   override fun getCanonicalText(): String = myProperty.name
 
-  throws(IncorrectOperationException::class)
+  @Throws(IncorrectOperationException::class)
   override fun handleElementRename(newElementName: String): PsiElement {
     return myProperty.setName(newElementName)
   }
 
-  throws(IncorrectOperationException::class)
+  @Throws(IncorrectOperationException::class)
   override fun bindToElement(element: PsiElement): PsiElement? {
     return null
   }
