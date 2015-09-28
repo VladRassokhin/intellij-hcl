@@ -109,6 +109,7 @@ public class TypeModelProvider {
 private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   public fun load(): TypeModel? {
     val model = TypeModel()
+    val application = ApplicationManager.getApplication()
     try {
       val reflections = Reflections(ConfigurationBuilder()
           .setUrls(ClasspathHelper.forPackage("terraform.model", TypeModelLoader::class.java.classLoader))
@@ -125,7 +126,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
         } else {
           val msg = "Failed to load provider model from file '$file'"
           LOG.error(msg)
-          if (ApplicationManager.getApplication().isUnitTestMode) {
+          if (application.isUnitTestMode) {
             assert(false) { msg }
           }
         }
@@ -134,7 +135,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       // TODO: Load & parse provisioners
       // TODO: Fetch latest model from github (?)
     } catch(e: Exception) {
-      if (ApplicationManager.getApplication().isUnitTestMode) {
+      if (application.isUnitTestMode || application.isInternal) {
         LOG.error(e);
         assert(false) { "In unit test mode exceptions not tolerated. Exception: ${e.getMessage()}" }
       }
