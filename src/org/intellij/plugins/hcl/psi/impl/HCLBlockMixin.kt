@@ -22,7 +22,7 @@ import org.intellij.plugins.hcl.psi.HCLBlock
 
 abstract class HCLBlockMixin(node: ASTNode) : HCLElementImpl(node), HCLBlock {
 
-  throws(IncorrectOperationException::class)
+  @Throws(IncorrectOperationException::class)
   override fun setName(name: String): PsiElement {
 //    val generator = HCLElementGenerator(getProject())
     // Strip only both quotes in case user wants some exotic name like key

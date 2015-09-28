@@ -30,8 +30,8 @@ import org.jetbrains.annotations.NonNls
 
 abstract class HCLPropertyMixin(node: ASTNode) : HCLElementImpl(node), HCLProperty {
 
-  throws(IncorrectOperationException::class)
-  override fun setName(NonNls name: String): PsiElement {
+  @Throws(IncorrectOperationException::class)
+  override fun setName(@NonNls name: String): PsiElement {
     val generator = HCLElementGenerator(project)
     // Strip only both quotes in case user wants some exotic name like key'
     val element = nameElement
