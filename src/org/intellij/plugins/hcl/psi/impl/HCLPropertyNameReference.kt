@@ -31,14 +31,14 @@ public class HCLPropertyNameReference(private val myProperty: HCLProperty) : Psi
   override fun getElement(): PsiElement = myProperty
 
   override fun getRangeInElement(): TextRange {
-    val nameElement = myProperty.getNameElement()
+    val nameElement = myProperty.nameElement
     // Either value of string with quotes stripped or element's text as is
     return ElementManipulators.getValueTextRange(nameElement)
   }
 
   override fun resolve(): PsiElement? = myProperty
 
-  override fun getCanonicalText(): String = myProperty.getName()
+  override fun getCanonicalText(): String = myProperty.name
 
   throws(IncorrectOperationException::class)
   override fun handleElementRename(newElementName: String): PsiElement {
@@ -56,7 +56,7 @@ public class HCLPropertyNameReference(private val myProperty: HCLProperty) : Psi
     }
     // May reference to the property with the same name for compatibility with JavaScript JSON support
     val selfResolve = resolve()
-    return element.getName() == getCanonicalText() && selfResolve != element
+    return element.name == canonicalText && selfResolve != element
   }
 
   override fun getVariants(): Array<Any> = ArrayUtil.EMPTY_OBJECT_ARRAY

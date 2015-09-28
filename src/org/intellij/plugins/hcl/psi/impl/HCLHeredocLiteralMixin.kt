@@ -30,12 +30,12 @@ public abstract class HCLHeredocLiteralMixin(node: ASTNode?) : HCLLiteralImpl(no
 
   override fun updateText(text: String): PsiLanguageInjectionHost {
     val newLines = text.lines()
-    val hclLines = ArrayList(this.getLinesList())
+    val hclLines = ArrayList(this.linesList)
     var i = 0;
     while (i < Math.min(newLines.size(), hclLines.size())) {
       val hclHeredocLine = hclLines.get(i)!!
       // TODO: use origin EOL
-      (hclHeredocLine.getNode() as LeafElement).replaceWithText(newLines.get(0) + "\n");
+      (hclHeredocLine.node as LeafElement).replaceWithText(newLines.get(0) + "\n");
       ++i;
     }
     var j = i;
@@ -57,7 +57,7 @@ public abstract class HCLHeredocLiteralMixin(node: ASTNode?) : HCLLiteralImpl(no
   }
 
   private fun createHeredocLinePsi(line: String): HCLHeredocLine {
-    val generator = HCLElementGenerator(getProject())
+    val generator = HCLElementGenerator(project)
     return generator.createHeredocLine(line)
   }
 

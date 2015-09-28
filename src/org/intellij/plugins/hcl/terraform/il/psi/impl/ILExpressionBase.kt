@@ -25,7 +25,7 @@ import org.intellij.plugins.hcl.terraform.il.psi.ILExpression
 
 abstract class ILExpressionBase(node: ASTNode) : ASTWrapperPsiElement(node), ILExpression {
   override fun getLanguage(): Language {
-    return getParent().getLanguage()
+    return parent.language
   }
 
   override fun accept(visitor: PsiElementVisitor) {
@@ -41,7 +41,7 @@ abstract class ILExpressionBase(node: ASTNode) : ASTWrapperPsiElement(node), ILE
   }
 
   override fun toString(): String {
-    val name = this.javaClass.getSimpleName()
+    val name = this.javaClass.simpleName
     val trimmed = StringUtil.trimEnd(name, "Impl");
     if (trimmed.startsWith("ILBinary")) return "ILBinaryExpression"
     if ("ILLiteralExpression".equals(trimmed) || "ILParameterListExpression".equals(trimmed)) return StringUtil.trimEnd(trimmed, "Expression")

@@ -26,18 +26,18 @@ import org.intellij.plugins.hcl.terraform.il.psi.ILExpression
 
 public open class ILBinaryExpressionImpl(node: ASTNode) : ILExpressionImpl(node), ILBinaryExpression {
   override fun getLOperand(): ILExpression? {
-    val nodes = getNode().getChildren(TILElementType.IL_EXPRESSIONS)
-    return (if (nodes.size() > 0) nodes[0].getPsi() else null) as ILExpression
+    val nodes = node.getChildren(TILElementType.IL_EXPRESSIONS)
+    return (if (nodes.size() > 0) nodes[0].psi else null) as ILExpression
   }
 
   override fun getROperand(): ILExpression? {
-    val nodes = getNode().getChildren(TILElementType.IL_EXPRESSIONS)
-    return (if (nodes.size() > 2) nodes[2].getPsi() else null) as ILExpression
+    val nodes = node.getChildren(TILElementType.IL_EXPRESSIONS)
+    return (if (nodes.size() > 2) nodes[2].psi else null) as ILExpression
   }
 
   override fun getOperationSign(): IElementType? {
-    val nodes = getNode().getChildren(TILTokenType.IL_BINARY_OPERATIONS)
-    return if (nodes.size() == 1) nodes[0].getElementType() else null
+    val nodes = node.getChildren(TILTokenType.IL_BINARY_OPERATIONS)
+    return if (nodes.size() == 1) nodes[0].elementType else null
   }
 
   public override fun toString(): String {

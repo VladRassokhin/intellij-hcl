@@ -27,7 +27,7 @@ public abstract class HCLLiteralMixin(node: ASTNode) : HCLElementImpl(node), HCL
 
 
   override fun getReferences(): Array<out PsiReference> {
-    val count = getManager().getModificationTracker().getModificationCount()
+    val count = manager.modificationTracker.modificationCount
     if (count != myModCount) {
       synchronized(myRefLock) {
         myRefs = ReferenceProvidersRegistry.getReferencesFromProviders(this);

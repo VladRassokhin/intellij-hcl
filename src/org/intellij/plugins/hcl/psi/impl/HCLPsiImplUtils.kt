@@ -32,20 +32,20 @@ import javax.swing.Icon
 
 public object HCLPsiImplUtils {
   public fun getName(property: HCLProperty): String {
-    return StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(property.getNameElement().getText()))
+    return StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(property.nameElement.text))
   }
 
   public fun getName(block: HCLBlock): String {
-    val elements = block.getNameElements()
+    val elements = block.nameElements
     val sb = StringBuilder()
     for (element in elements) {
-      sb.append(StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(element.getText()))).append(' ')
+      sb.append(StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(element.text))).append(' ')
     }
     return sb.toString().trim()
   }
 
   public fun getName(marker: HCLHeredocMarker): String {
-    return marker.getFirstChild().getText()
+    return marker.firstChild.text
   }
 
   /**
@@ -56,21 +56,21 @@ public object HCLPsiImplUtils {
    * @see HCLStandardComplianceInspection
    */
   public fun getNameElement(property: HCLProperty): HCLValue {
-    val firstChild = property.getFirstChild()
-    assert(firstChild is HCLLiteral || firstChild is HCLIdentifier, "Excepted literal or identifier, got ${firstChild.javaClass.getName()}")
+    val firstChild = property.firstChild
+    assert(firstChild is HCLLiteral || firstChild is HCLIdentifier, "Excepted literal or identifier, got ${firstChild.javaClass.name}")
     return firstChild as HCLValue
   }
 
   public fun getNameElements(block: HCLBlock): Array<HCLElement> {
     var result: MutableList<HCLElement>? = null
-    var child: PsiElement? = block.getFirstChild()
+    var child: PsiElement? = block.firstChild
     while (child != null) {
       if (child is HCLIdentifier || child is HCLStringLiteral) {
         if (result == null) result = SmartList<HCLElement>()
         //noinspection unchecked
         result.add(child as HCLElement)
       }
-      child = child.getNextSibling()
+      child = child.nextSibling
     }
     return if (result == null) emptyArray<HCLElement>() else ArrayUtil.toObjectArray<HCLElement>(result, HCLElement::class.java)
   }
@@ -80,17 +80,17 @@ public object HCLPsiImplUtils {
   }
 
   public fun getObject(block: HCLBlock): HCLObject? {
-    return PsiTreeUtil.getNextSiblingOfType<HCLObject>(block.getFirstChild(), HCLObject::class.java)
+    return PsiTreeUtil.getNextSiblingOfType<HCLObject>(block.firstChild, HCLObject::class.java)
   }
 
   public fun isQuotedString(literal: HCLLiteral): Boolean {
-    return literal.getNode().findChildByType(HCLParserDefinition.STRING_LITERALS) != null
+    return literal.node.findChildByType(HCLParserDefinition.STRING_LITERALS) != null
   }
 
   public fun getPresentation(property: HCLProperty): ItemPresentation? {
     return object : ItemPresentation {
       override fun getPresentableText(): String? {
-        return property.getName()
+        return property.name
       }
 
       override fun getLocationString(): String? {
@@ -98,10 +98,10 @@ public object HCLPsiImplUtils {
       }
 
       override fun getIcon(unused: Boolean): Icon? {
-        if (property.getValue() is HCLArray) {
+        if (property.value is HCLArray) {
           return IconLoader.getIcon("/hcl/property_brackets.png")
         }
-        if (property.getValue() is HCLObject) {
+        if (property.value is HCLObject) {
           return IconLoader.getIcon("/hcl/property_braces.png")
         }
         return PlatformIcons.PROPERTY_ICON
@@ -112,7 +112,7 @@ public object HCLPsiImplUtils {
   public fun getPresentation(block: HCLBlock): ItemPresentation? {
     return object : ItemPresentation {
       override fun getPresentableText(): String? {
-        return block.getName()
+        return block.name
       }
 
       override fun getLocationString(): String? {
@@ -120,10 +120,10 @@ public object HCLPsiImplUtils {
       }
 
       override fun getIcon(unused: Boolean): Icon? {
-        if (block.getObject() is HCLArray) {
+        if (block.`object` is HCLArray) {
           return IconLoader.getIcon("/hcl/property_brackets.png")
         }
-        if (block.getObject() is HCLObject) {
+        if (block.`object` is HCLObject) {
           return IconLoader.getIcon("/hcl/property_braces.png")
         }
         return PlatformIcons.PROPERTY_ICON
@@ -180,17 +180,17 @@ public object HCLPsiImplUtils {
   }
 
   public fun getValue(literal: HCLStringLiteral): String {
-    return StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(literal.getText()))
+    return StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(literal.text))
   }
 
   public fun getValue(literal: HCLHeredocLiteral): String {
     val builder = StringBuilder()
-    literal.getLinesList().forEach {builder.append(it.getText())}
+    literal.linesList.forEach {builder.append(it.text)}
     return builder.toString()
   }
 
   public fun getValue(line: HCLHeredocLine): String {
-    return line.getText()
+    return line.text
   }
 
   public fun getValue(literal: HCLBooleanLiteral): Boolean {
@@ -198,7 +198,7 @@ public object HCLPsiImplUtils {
   }
 
   public fun getValue(literal: HCLNumberLiteral): Double {
-    val text = literal.getText()
+    val text = literal.text
     val index = text.indexOfAny("KMGB".toCharArray(), 0, true)
     if (index != -1) {
       val base = java.lang.Double.parseDouble(text.substring(0, index));
@@ -242,6 +242,6 @@ public object HCLPsiImplUtils {
 
 
   public fun getId(identifier: HCLIdentifier): String {
-    return identifier.getText()
+    return identifier.text
   }
 }

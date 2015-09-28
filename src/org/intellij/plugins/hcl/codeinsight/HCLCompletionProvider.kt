@@ -41,7 +41,7 @@ public open class HCLCompletionProvider : CompletionContributor() {
   }
 
   override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
-    LOG.debug(DebugUtil.psiToString(parameters.getPosition().getContainingFile(), true))
+    LOG.debug(DebugUtil.psiToString(parameters.position.containingFile, true))
     super.fillCompletionVariants(parameters, result)
   }
 

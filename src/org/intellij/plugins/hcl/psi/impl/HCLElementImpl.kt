@@ -26,7 +26,7 @@ import org.intellij.plugins.hcl.psi.HCLElement
 public open class HCLElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), HCLElement {
 
   override fun toString(): String {
-    val className = javaClass.getSimpleName()
+    val className = javaClass.simpleName
     return StringUtil.trimEnd(className, "Impl")
   }
 }

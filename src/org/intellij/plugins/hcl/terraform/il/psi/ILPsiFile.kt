@@ -32,7 +32,7 @@ class ILPsiFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, TILL
   }
 
   override fun toString(): String {
-    val virtualFile = getVirtualFile()
-    return "TILFile: " + (if (virtualFile != null) virtualFile.getName() else "<unknown>")
+    val virtualFile = virtualFile
+    return "TILFile: " + (if (virtualFile != null) virtualFile.name else "<unknown>")
   }
 }

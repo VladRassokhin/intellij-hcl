@@ -34,10 +34,10 @@ public class TILFoldingBuilder : FoldingBuilder {
   }
 
   private fun collect(node: ASTNode, document: Document, descriptors: ArrayList<FoldingDescriptor>) {
-    when (node.getElementType()) {
-      TILElementTypes.IL_PARENTHESIZED_EXPRESSION -> descriptors.add(FoldingDescriptor(node, node.getTextRange()))
-      TILElementTypes.IL_PARAMETER_LIST -> descriptors.add(FoldingDescriptor(node, node.getTextRange()))
-      TILElementTypes.IL_EXPRESSION_HOLDER -> descriptors.add(FoldingDescriptor(node, node.getTextRange()))
+    when (node.elementType) {
+      TILElementTypes.IL_PARENTHESIZED_EXPRESSION -> descriptors.add(FoldingDescriptor(node, node.textRange))
+      TILElementTypes.IL_PARAMETER_LIST -> descriptors.add(FoldingDescriptor(node, node.textRange))
+      TILElementTypes.IL_EXPRESSION_HOLDER -> descriptors.add(FoldingDescriptor(node, node.textRange))
     }
     for (c in node.getChildren(null)) {
       collect(c, document, descriptors)
@@ -45,7 +45,7 @@ public class TILFoldingBuilder : FoldingBuilder {
   }
 
   override fun getPlaceholderText(node: ASTNode): String? {
-    return when (node.getElementType()) {
+    return when (node.elementType) {
       TILElementTypes.IL_PARENTHESIZED_EXPRESSION -> "(...)"
       TILElementTypes.IL_PARAMETER_LIST -> "(...)"
       TILElementTypes.IL_EXPRESSION_HOLDER -> "\${...}"

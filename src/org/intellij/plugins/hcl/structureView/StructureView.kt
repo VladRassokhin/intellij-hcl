@@ -50,7 +50,7 @@ class HCLStructureViewModel(file: HCLFile, editor: Editor?) : StructureViewModel
   }
 
   override fun isAutoExpand(element: StructureViewTreeElement): Boolean {
-    return element.getValue() is PsiFile || ApplicationManager.getApplication().isUnitTestMode()
+    return element.value is PsiFile || ApplicationManager.getApplication().isUnitTestMode
   }
 
   override fun isSmartExpand(): Boolean {
@@ -80,22 +80,22 @@ class HCLStructureViewElement(val element: HCLElement) : StructureViewTreeElemen
   }
 
   override fun getPresentation(): ItemPresentation {
-    return element.getPresentation()!!;
+    return element.presentation!!;
   }
 
   override fun getChildren(): Array<out TreeElement> {
     var value: HCLElement
     if (element is HCLProperty) {
-      val v = element.getValue() ?: return emptyArray()
+      val v = element.value ?: return emptyArray()
       value = v
     } else if (element is HCLBlock) {
-      val v = element.getObject() ?: return emptyArray()
+      val v = element.`object` ?: return emptyArray()
       value = v
     } else {
       value = element
     }
 
-    val list: List<HCLStructureViewElement> = value.getChildren().map {
+    val list: List<HCLStructureViewElement> = value.children.map {
       when (it) {
         is HCLObject -> HCLStructureViewElement(it)
         is HCLArray -> HCLStructureViewElement(it)

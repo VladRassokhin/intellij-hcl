@@ -41,7 +41,7 @@ public object HCLPsiUtil {
    * @return whether this PSI element is array element
    */
   public fun isArrayElement(element: PsiElement): Boolean {
-    return element is HCLValue && element.getParent() is HCLArray
+    return element is HCLValue && element.parent is HCLArray
   }
 
   /**
@@ -52,8 +52,8 @@ public object HCLPsiUtil {
    * @return whether this PSI element is property key
    */
   public fun isPropertyKey(element: PsiElement): Boolean {
-    val parent = element.getParent()
-    return parent is HCLProperty && element == parent.getNameElement()
+    val parent = element.parent
+    return parent is HCLProperty && element == parent.nameElement
   }
 
   /**
@@ -64,8 +64,8 @@ public object HCLPsiUtil {
    * @return whether this PSI element is property value
    */
   public fun isPropertyValue(element: PsiElement): Boolean {
-    val parent = element.getParent()
-    return parent is HCLProperty && element == parent.getValue()
+    val parent = element.parent
+    return parent is HCLProperty && element == parent.value
   }
 
   /**
@@ -82,25 +82,25 @@ public object HCLPsiUtil {
    * @return described element or anchor if search stops immediately
    */
   public fun findFurthestSiblingOfSameType(anchor: PsiElement, after: Boolean): PsiElement {
-    var node: ASTNode? = anchor.getNode()
+    var node: ASTNode? = anchor.node
     // Compare by node type to distinguish between different types of comments
-    val expectedType = node!!.getElementType()
+    val expectedType = node!!.elementType
     var lastSeen: ASTNode = node
     while (node != null) {
-      val elementType = node.getElementType()
+      val elementType = node.elementType
       if (elementType == expectedType) {
         lastSeen = node
       } else if (elementType == TokenType.WHITE_SPACE) {
-        if (expectedType == HCLElementTypes.LINE_COMMENT && node.getText().indexOf('\n', 1) != -1) {
+        if (expectedType == HCLElementTypes.LINE_COMMENT && node.text.indexOf('\n', 1) != -1) {
           break
         }
       } else if (!HCLParserDefinition.HCL_COMMENTARIES.contains(elementType)
           || HCLParserDefinition.HCL_COMMENTARIES.contains(expectedType)) {
         break
       }
-      node = if (after) node.getTreeNext() else node.getTreePrev()
+      node = if (after) node.treeNext else node.treePrev
     }
-    return lastSeen.getPsi()
+    return lastSeen.psi
   }
 
   /**
@@ -111,7 +111,7 @@ public object HCLPsiUtil {
    * allow check ASTNode/PsiElement against both concrete element types and token sets in uniform way.
    */
   public fun hasElementType(node: ASTNode, set: TokenSet): Boolean {
-    return set.contains(node.getElementType())
+    return set.contains(node.elementType)
   }
 
   /**
@@ -125,14 +125,14 @@ public object HCLPsiUtil {
    * @see .hasElementType
    */
   public fun hasElementType(element: PsiElement, set: TokenSet): Boolean {
-    return element.getNode() != null && hasElementType(element.getNode(), set)
+    return element.node != null && hasElementType(element.node, set)
   }
 
   /**
    * @see .hasElementType
    */
   public fun hasElementType(element: PsiElement, vararg types: IElementType): Boolean {
-    return element.getNode() != null && hasElementType(element.getNode(), *types)
+    return element.node != null && hasElementType(element.node, *types)
   }
 
   /**
@@ -144,11 +144,11 @@ public object HCLPsiUtil {
    * @return text of the element with any host escaping removed
    */
   public fun getElementTextWithoutHostEscaping(element: PsiElement): String {
-    val manager = InjectedLanguageManager.getInstance(element.getProject())
-    if (manager.isInjectedFragment(element.getContainingFile())) {
+    val manager = InjectedLanguageManager.getInstance(element.project)
+    if (manager.isInjectedFragment(element.containingFile)) {
       return manager.getUnescapedText(element)
     } else {
-      return element.getText()
+      return element.text
     }
   }
 

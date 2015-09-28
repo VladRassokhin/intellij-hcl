@@ -33,8 +33,8 @@ public open class HCLFormattingBuilderModel(val language: Language = HCLLanguage
     element!!;
     settings!!;
     val builder = createSpacingBuilder(settings)
-    val block = HCLBlock(null, element.getNode(), null, null, builder, Indent.getNoneIndent(), settings);
-    return FormattingModelProvider.createFormattingModelForPsiFile(element.getContainingFile(), block, settings)
+    val block = HCLBlock(null, element.node, null, null, builder, Indent.getNoneIndent(), settings);
+    return FormattingModelProvider.createFormattingModelForPsiFile(element.containingFile, block, settings)
   }
 
   private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {

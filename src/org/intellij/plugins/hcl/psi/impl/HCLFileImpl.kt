@@ -24,11 +24,11 @@ import org.intellij.plugins.hcl.psi.HCLFile
 public class HCLFileImpl(fileViewProvider: FileViewProvider, language: Language) : PsiFileBase(fileViewProvider, language), HCLFile {
 
   override fun getFileType(): FileType {
-    return getViewProvider().getVirtualFile().getFileType()
+    return viewProvider.virtualFile.fileType
   }
 
   override fun toString(): String {
-    val virtualFile = getVirtualFile()
-    return "HCLFile: " + (if (virtualFile != null) virtualFile.getName() else "<unknown>")
+    val virtualFile = virtualFile
+    return "HCLFile: " + (if (virtualFile != null) virtualFile.name else "<unknown>")
   }
 }

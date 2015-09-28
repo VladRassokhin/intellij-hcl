@@ -25,7 +25,7 @@ public abstract class HCLStringLiteralMixin(node: ASTNode?) : HCLLiteralImpl(nod
   override fun isValidHost() = true
 
   override fun updateText(text: String): PsiLanguageInjectionHost {
-    val vNode = getNode().getFirstChildNode() as LeafElement
+    val vNode = node.firstChildNode as LeafElement
     vNode.replaceWithText(text)
     return this
   }

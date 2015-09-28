@@ -44,11 +44,11 @@ public class TILCompletionProvider : CompletionContributor() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
       LOG.debug("TIL.MethodsCompletionProvider")
-      val position = parameters.getPosition()
+      val position = parameters.position
       LOG.debug("position = $position")
-      val parent = position.getParent()
+      val parent = position.parent
       LOG.debug("parent = $parent")
-      LOG.debug("left = ${position.getPrevSibling()}")
+      LOG.debug("left = ${position.prevSibling}")
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
       LOG.debug("leftNWS = $leftNWS")
       for (keyword in TERRAFORM_METHODS) {

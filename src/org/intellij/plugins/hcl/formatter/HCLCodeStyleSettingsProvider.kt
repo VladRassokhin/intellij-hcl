@@ -27,9 +27,9 @@ import org.intellij.plugins.hcl.HCLLanguage
 
 public open class HCLCodeStyleSettingsProvider(val _language: Language = HCLLanguage) : CodeStyleSettingsProvider() {
   override fun createSettingsPage(settings: CodeStyleSettings, originalSettings: CodeStyleSettings): Configurable {
-    return object : CodeStyleAbstractConfigurable(settings, originalSettings, _language.getDisplayName()) {
+    return object : CodeStyleAbstractConfigurable(settings, originalSettings, _language.displayName) {
       override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
-        val currentSettings = getCurrentSettings()
+        val currentSettings = currentSettings
         return object : TabbedLanguageCodeStylePanel(_language, currentSettings, settings) {
           override fun initTabs(settings: CodeStyleSettings) {
             addIndentOptionsTab(settings)

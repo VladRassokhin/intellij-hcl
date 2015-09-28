@@ -37,7 +37,7 @@ public open class HCLElementGenerator(private val project: Project) {
    */
   public open fun createDummyFile(content: String): PsiFile {
     val psiFileFactory = PsiFileFactory.getInstance(project)
-    return psiFileFactory.createFileFromText("dummy." + HCLFileType.getDefaultExtension(), HCLFileType, content)
+    return psiFileFactory.createFileFromText("dummy." + HCLFileType.defaultExtension, HCLFileType, content)
   }
 
   /**
@@ -54,13 +54,13 @@ public open class HCLElementGenerator(private val project: Project) {
    */
   public fun <T : HCLValue> createValue(content: String): T {
     val property = createProperty("foo", content)
-    return property.getValue() as T
+    return property.value as T
   }
 
   public fun createObject(content: String): HCLObject {
     val file = createDummyFile("foo {$content}")
-    val block = file.getFirstChild() as HCLBlock
-    return block.getObject() as HCLObject
+    val block = file.firstChild as HCLBlock
+    return block.`object` as HCLObject
   }
 
   /**
@@ -82,7 +82,7 @@ public open class HCLElementGenerator(private val project: Project) {
       s = "\"$name\" = $value"
     }
     val file = createDummyFile(s)
-    return file.getFirstChild() as HCLProperty
+    return file.firstChild as HCLProperty
   }
 
   private fun isIdentifier(name: String): Boolean {
@@ -91,18 +91,18 @@ public open class HCLElementGenerator(private val project: Project) {
 
   public fun createBlock(name: String): HCLBlock {
     val file = createDummyFile("\"$name\" {}")
-    return file.getFirstChild() as HCLBlock
+    return file.firstChild as HCLBlock
   }
 
   public fun createComma(): PsiElement {
     val array = createValue<HCLArray>("[1, 2]")
-    return array.getValueList().get(0).getNextSibling()
+    return array.valueList.get(0).nextSibling
   }
 
   public fun createIdentifier(name: String): HCLIdentifier {
     val file = createDummyFile("$name=true")
-    val property = file.getFirstChild() as HCLProperty
-    return property.getNameElement() as HCLIdentifier
+    val property = file.firstChild as HCLProperty
+    return property.nameElement as HCLIdentifier
   }
 
   public fun createHeredocLine(text: String): HCLHeredocLine {
@@ -114,7 +114,7 @@ public open class HCLElementGenerator(private val project: Project) {
     lines.forEach { text += it + '\n' }
     text += "___EOF___"
     val file = createDummyFile(text)
-    val property = file.getFirstChild() as HCLProperty
-    return (property.getValue() as HCLHeredocLiteral).getLinesList()
+    val property = file.firstChild as HCLProperty
+    return (property.value as HCLHeredocLiteral).linesList
   }
 }

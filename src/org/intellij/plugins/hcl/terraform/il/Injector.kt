@@ -31,16 +31,16 @@ public class ILLanguageInjector : LanguageInjector {
   override fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
     if (host !is HCLStringLiteral && host !is HCLHeredocLiteral) return;
     // Only .tf (Terraform config) files
-    val file = host.getContainingFile() ?: return
-    if (file.getFileType() !is TerraformFileType) return;
+    val file = host.containingFile ?: return
+    if (file.fileType !is TerraformFileType) return;
     if (host is HCLStringLiteral) return getStringLiteralInjections(host, places);
     if (host is HCLHeredocLiteral) return getHeredocLiteralInjections(host, places);
     return;
   }
 
   private fun getStringLiteralInjections(host: HCLStringLiteral, places: InjectedLanguagePlaces) {
-    val text = host.getText()
-    val value = host.getValue()
+    val text = host.text
+    val value = host.value
     val offset = if (value != text) 1 else 0
     val ranges = getILRangesInText(value)
     for (range in ranges) {
@@ -50,12 +50,12 @@ public class ILLanguageInjector : LanguageInjector {
   }
 
   private fun getHeredocLiteralInjections(host: HCLHeredocLiteral, places: InjectedLanguagePlaces) {
-    val lines = host.getLinesList()
+    val lines = host.linesList
     if (lines.isEmpty()) return
     for (line in lines) {
-      val ranges = getILRangesInText(line.getValue())
+      val ranges = getILRangesInText(line.value)
       if (ranges.isEmpty()) continue
-      val offset = line.getStartOffsetInParent()
+      val offset = line.startOffsetInParent
       for (range in ranges) {
         val rng = range.shiftRight(offset)
         places.addPlace(TILLanguage, rng, null, null)
@@ -77,45 +77,45 @@ public class ILLanguageInjector : LanguageInjector {
         var level = 0
         var start = -1;
         while (true) {
-          val type = lexer.getTokenType()
+          val type = lexer.tokenType
           when (type) {
             INTERPOLATION_START -> {
               if (level == 0) {
-                start = lexer.getTokenStart()
+                start = lexer.tokenStart
               }
               level++;
             }
             INTERPOLATION_END -> {
               if (level <= 0) {
                 // Incorrect state, probably just '}' in text retry from current position.
-                skip = lexer.getTokenStart() + 1;
+                skip = lexer.tokenStart + 1;
                 continue@out;
               }
               level--;
               if (level == 0) {
-                ranges.add(TextRange(start, lexer.getTokenEnd()));
-                skip = lexer.getTokenEnd();
+                ranges.add(TextRange(start, lexer.tokenEnd));
+                skip = lexer.tokenEnd;
                 continue@out;
               }
             }
             null -> {
-              if (lexer.getTokenEnd() >= text.length()) {
+              if (lexer.tokenEnd >= text.length()) {
                 // Real end of string
                 if (level > 0) {
                   // Non finished interpolation
-                  ranges.add(TextRange(start, Math.min(lexer.getTokenEnd(), text.length())));
+                  ranges.add(TextRange(start, Math.min(lexer.tokenEnd, text.length())));
                 }
                 break@out;
               } else {
                 // Non-parsable, probably not IL, retry from current position.
-                skip = lexer.getTokenStart() + 1;
+                skip = lexer.tokenStart + 1;
                 continue@out;
               }
             }
             else -> {
               if (level == 0) {
                 // Non-parsable, probably not IL, retry from current position.
-                skip = lexer.getTokenStart() + 1;
+                skip = lexer.tokenStart + 1;
                 continue@out;
               }
             }

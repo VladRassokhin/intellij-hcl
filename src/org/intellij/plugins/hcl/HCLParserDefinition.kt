@@ -57,7 +57,7 @@ public open class HCLParserDefinition : ParserDefinition {
   }
 
   override fun createElement(node: ASTNode): PsiElement {
-    val type = node.getElementType()
+    val type = node.elementType
     if (type is HCLElementType) {
       return Factory.createElement(node)
     }

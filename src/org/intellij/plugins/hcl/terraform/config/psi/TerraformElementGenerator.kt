@@ -24,6 +24,6 @@ import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 public class TerraformElementGenerator(val project: Project) : HCLElementGenerator(project) {
   override fun createDummyFile(content: String): PsiFile {
     val psiFileFactory = PsiFileFactory.getInstance(project)
-    return psiFileFactory.createFileFromText("dummy." + TerraformFileType.getDefaultExtension(), TerraformFileType, content)
+    return psiFileFactory.createFileFromText("dummy." + TerraformFileType.defaultExtension, TerraformFileType, content)
   }
 }

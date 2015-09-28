@@ -131,7 +131,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
     private val LOG = Logger.getInstance(TerraformConfigCompletionProvider::class.java)
     fun DumpPsiFileModel(element: PsiElement): () -> String {
-      return { DebugUtil.psiToString(element.getContainingFile(), true) }
+      return { DebugUtil.psiToString(element.containingFile, true) }
     }
   }
 
@@ -145,14 +145,14 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
   private object BlockKeywordCompletionProvider : OurCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       LOG.debug("TF.BlockKeywordCompletionProvider")
-      val position = parameters.getPosition()
+      val position = parameters.position
       LOG.debug("position = $position")
-      val parent = position.getParent()
+      val parent = position.parent
       LOG.debug("parent = $parent")
-      LOG.debug("left = ${position.getPrevSibling()}")
+      LOG.debug("left = ${position.prevSibling}")
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
       LOG.debug("leftNWS = $leftNWS")
-      if (leftNWS is HCLIdentifier || leftNWS?.getNode()?.getElementType() == HCLElementTypes.ID) {
+      if (leftNWS is HCLIdentifier || leftNWS?.node?.elementType == HCLElementTypes.ID) {
         return assert(false, DumpPsiFileModel(position))
       }
       result.addAllElements(BLOCK_KEYWORDS.map { LookupElementBuilder.create(it) })
@@ -162,9 +162,9 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
   private object BlockTypeOrNameCompletionProvider : OurCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       LOG.debug("TF.BlockTypeOrNameCompletionProvider")
-      val position = parameters.getPosition()
+      val position = parameters.position
       LOG.debug("position = $position")
-      val parent = position.getParent()
+      val parent = position.parent
       LOG.debug("parent = $parent")
       val obj = when {
         parent is HCLIdentifier -> parent
@@ -176,7 +176,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       LOG.debug("leftNWS = $leftNWS")
       val type: String = when {
         leftNWS is HCLIdentifier -> leftNWS.id
-        leftNWS?.getNode()?.getElementType() == HCLElementTypes.ID -> leftNWS!!.text
+        leftNWS?.node?.elementType == HCLElementTypes.ID -> leftNWS!!.text
         else -> return assert(false, DumpPsiFileModel(position))
       }
       when (type) {
@@ -193,7 +193,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
   private object ResourcePropertiesCompletionProvider : OurCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       LOG.debug("TF.ResourcePropertiesCompletionProvider")
-      val position = parameters.getPosition()
+      val position = parameters.position
       var _parent: PsiElement? = position.parent
       LOG.debug("_parent = $_parent")
       var right: Type? = null;
@@ -223,7 +223,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       val parent: PsiElement = _parent ?: return assert(false, DumpPsiFileModel(position));
       assert(parent is HCLObject, DumpPsiFileModel(position))
       if (parent is HCLObject) {
-        val pp = parent.getParent()
+        val pp = parent.parent
         if (pp is HCLBlock) {
           val tt = pp.getNameElementUnquoted(0)
           if (tt == "resource") {
@@ -270,9 +270,9 @@ public fun HCLBlock.getNameElementUnquoted(i: Int): String? {
 }
 
 fun PsiElement.getPrevSiblingNonWhiteSpace(): PsiElement? {
-  var prev = this.getPrevSibling()
+  var prev = this.prevSibling
   while (prev != null && prev is PsiWhiteSpace) {
-    prev = prev.getPrevSibling()
+    prev = prev.prevSibling
   }
   return prev;
 }

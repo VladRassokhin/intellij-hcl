@@ -34,13 +34,13 @@ public class HCLFoldingBuilder : FoldingBuilder {
   }
 
   private fun collect(node: ASTNode, document: Document, descriptors: ArrayList<FoldingDescriptor>) {
-    when (node.getElementType()) {
+    when (node.elementType) {
       HCLElementTypes.ARRAY, HCLElementTypes.OBJECT -> if (isSpanMultipleLines(node, document)) {
-        descriptors.add(FoldingDescriptor(node, node.getTextRange()))
+        descriptors.add(FoldingDescriptor(node, node.textRange))
       }
-      HCLElementTypes.BLOCK_COMMENT -> descriptors.add(FoldingDescriptor(node, node.getTextRange()))
+      HCLElementTypes.BLOCK_COMMENT -> descriptors.add(FoldingDescriptor(node, node.textRange))
     // TODO: multiple single comments into one folding block
-      HCLElementTypes.LINE_COMMENT -> descriptors.add(FoldingDescriptor(node, node.getTextRange()))
+      HCLElementTypes.LINE_COMMENT -> descriptors.add(FoldingDescriptor(node, node.textRange))
     }
     for (c in node.getChildren(null)) {
       collect(c, document, descriptors)
@@ -48,7 +48,7 @@ public class HCLFoldingBuilder : FoldingBuilder {
   }
 
   override fun getPlaceholderText(node: ASTNode): String? {
-    return when (node.getElementType()) {
+    return when (node.elementType) {
       HCLElementTypes.ARRAY -> "[...]"
       HCLElementTypes.OBJECT -> "{...}"
       HCLElementTypes.BLOCK_COMMENT -> "/*...*/"
@@ -58,7 +58,7 @@ public class HCLFoldingBuilder : FoldingBuilder {
   }
 
   private fun isSpanMultipleLines(node: ASTNode, document: Document): Boolean {
-    val range = node.getTextRange()
-    return document.getLineNumber(range.getStartOffset()) < document.getLineNumber(range.getEndOffset())
+    val range = node.textRange
+    return document.getLineNumber(range.startOffset) < document.getLineNumber(range.endOffset)
   }
 }

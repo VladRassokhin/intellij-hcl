@@ -50,7 +50,7 @@ public class TILParserDefinition : ParserDefinition {
   override fun getStringLiteralElements() = STRING_LITERALS
 
   override fun createElement(node: ASTNode): PsiElement {
-    val type = node.getElementType()
+    val type = node.elementType
     if (type == IL_HOLDER) {
       return ILExpressionHolderImpl(node)
     }
@@ -86,12 +86,12 @@ public class TILParserDefinition : ParserDefinition {
 
     public val IL_HOLDER: ILazyParseableElementType = object : ILazyParseableElementType("IL_HOLDER", TILLanguage) {
       override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
-        val project = psi.getProject()
-        val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, TILLexer(), TILLanguage, chameleon.getChars())
-        val parser = LanguageParserDefinitions.INSTANCE.forLanguage(getLanguage()).createParser(project)
+        val project = psi.project
+        val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, TILLexer(), TILLanguage, chameleon.chars)
+        val parser = LanguageParserDefinitions.INSTANCE.forLanguage(language).createParser(project)
 
-        builder.putUserData(ourContextNodeKey, chameleon.getTreeParent())
-        val node = parser.parse(this, builder).getFirstChildNode()
+        builder.putUserData(ourContextNodeKey, chameleon.treeParent)
+        val node = parser.parse(this, builder).firstChildNode
         builder.putUserData(ourContextNodeKey, null)
         return node;
       }

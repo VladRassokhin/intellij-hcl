@@ -32,16 +32,16 @@ abstract class HCLPropertyMixin(node: ASTNode) : HCLElementImpl(node), HCLProper
 
   throws(IncorrectOperationException::class)
   override fun setName(NonNls name: String): PsiElement {
-    val generator = HCLElementGenerator(getProject())
+    val generator = HCLElementGenerator(project)
     // Strip only both quotes in case user wants some exotic name like key'
-    val element = getNameElement()
+    val element = nameElement
     val rep:PsiElement;
     if (element is HCLStringLiteral) {
       rep = generator.createStringLiteral(StringUtil.unquoteString(name))
     } else if (element is HCLIdentifier) {
       rep = generator.createIdentifier(StringUtil.unquoteString(name));
     } else {
-      throw IllegalStateException("Unexpected property name element type ${element.javaClass.getName()}")
+      throw IllegalStateException("Unexpected property name element type ${element.javaClass.name}")
     }
     element.replace(rep)
     return this
