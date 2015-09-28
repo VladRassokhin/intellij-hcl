@@ -57,6 +57,7 @@ public open class HCLLanguageCodeStyleSettingsProvider(val _language:Language = 
   }
 
   override fun customizeSettings(consumer: CodeStyleSettingsCustomizable, settingsType: LanguageCodeStyleSettingsProvider.SettingsType) {
+    @Suppress("NON_EXHAUSTIVE_WHEN")
     when (settingsType) {
       LanguageCodeStyleSettingsProvider.SettingsType.SPACING_SETTINGS -> {
         consumer.showStandardOptions("SPACE_WITHIN_BRACKETS", "SPACE_WITHIN_BRACES", "SPACE_AFTER_COMMA", "SPACE_BEFORE_COMMA", "SPACE_AROUND_ASSIGNMENT_OPERATORS")

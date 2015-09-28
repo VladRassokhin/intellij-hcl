@@ -54,6 +54,7 @@ public open class HCLElementGenerator(private val project: Project) {
    */
   public fun <T : HCLValue> createValue(content: String): T {
     val property = createProperty("foo", content)
+    @Suppress("UNCHECKED_CAST")
     return property.value as T
   }
 
@@ -71,7 +72,7 @@ public open class HCLElementGenerator(private val project: Project) {
    * @return HCL string literal created from given text
    */
   public fun createStringLiteral(unescapedContent: String): HCLStringLiteral {
-    return createValue('"' + StringUtil.escapeStringCharacters(unescapedContent) + '"')
+    return createValue("\"${StringUtil.escapeStringCharacters(unescapedContent)}\"")
   }
 
   public fun createProperty(name: String, value: String): HCLProperty {

@@ -120,8 +120,9 @@ class AddResourcePropertiesFix(val add: Collection<PropertyOrBlockType>) : Local
           if (it.property != null) generator.createProperty(it.name, "\"\"");
           else generator.createBlock(it.name)
         }
+        @Suppress("UNUSED_VARIABLE")
         val added = elements.map { obj.addBefore(it, obj.lastChild) }
-        // TODO: Investigate why reformat failes
+        // TODO: Investigate why reformat fails
         // CodeStyleManager.getInstance(project).reformat(block, true)
         // TODO: Navigate cursor to added.last() or added.first()
       }
