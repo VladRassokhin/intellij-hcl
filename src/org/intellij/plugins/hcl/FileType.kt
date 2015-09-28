@@ -16,9 +16,7 @@
 package org.intellij.plugins.hcl
 
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.fileTypes.FileTypeConsumer
-import com.intellij.openapi.fileTypes.FileTypeFactory
-import com.intellij.openapi.fileTypes.LanguageFileType
+import com.intellij.openapi.fileTypes.*
 
 object HCLFileType : LanguageFileType(HCLLanguage) {
   public val DEFAULT_EXTENSION: String = "hcl"
@@ -37,5 +35,9 @@ object HCLFileType : LanguageFileType(HCLLanguage) {
 class HCLFileTypeFactory : FileTypeFactory() {
   override fun createFileTypes(consumer: FileTypeConsumer) {
     consumer.consume(HCLFileType, HCLFileType.DEFAULT_EXTENSION)
+    // Nomad
+    consumer.consume(HCLFileType, "nomad")
+    // Otto
+    consumer.consume(HCLFileType, ExactFileNameMatcher("Appfile", false))
   }
 }
