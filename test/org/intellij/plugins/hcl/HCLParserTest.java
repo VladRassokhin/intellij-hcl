@@ -105,6 +105,10 @@ public class HCLParserTest extends ParsingTestCase {
     doTest();
   }
 
+  public void testArrayTailComment() throws Exception {
+    doTest();
+  }
+
   public void testIncomplete_Block() throws Exception {
     doTest();
   }
