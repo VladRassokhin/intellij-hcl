@@ -71,7 +71,7 @@ public class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(
   override fun getState(): Int {
     val lexer = flex
     var state = super.getState()
-    assert(state and (JFLEX_STATE_MASK.inv()) == 0, "State outside JFLEX_STATE_MASK ($JFLEX_STATE_MASK) should not be used by JFLex lexer")
+    assert(state and (JFLEX_STATE_MASK.inv()) == 0) { "State outside JFLEX_STATE_MASK ($JFLEX_STATE_MASK) should not be used by JFLex lexer" }
     state = state and JFLEX_STATE_MASK;
     if (isLexerInHereDocLineState(state)) {
       state = state or (((lexer.myHereDocMarkerLength and 0xFF) shl 0x8 ) and HEREDOC_MARKER_LENGTH);

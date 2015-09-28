@@ -58,7 +58,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
 
     val customSettings = getCustomSettings()
     if (isElementType(myNode, HCLParserDefinition.HCL_CONTAINERS)) {
-      assert(myChildWrap != null, "myChildWrap should not be null for container, ${myNode.elementType}")
+      assert(myChildWrap != null) { "myChildWrap should not be null for container, ${myNode.elementType}" }
 
       if (isElementType(childNode, COMMA)) {
         wrap = Wrap.createWrap(WrapType.NONE, true)
@@ -78,10 +78,10 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
       parent!!;
       val pva = parent.myPropertyValueAlignment
       if (isElementType(childNode, EQUALS) && customSettings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_EQUALS) {
-        assert(pva != null, "Expected not null PVA, node ${node.elementType}, parent ${parent.node.elementType}")
+        assert(pva != null) { "Expected not null PVA, node ${node.elementType}, parent ${parent.node.elementType}" }
         alignment = pva
       } else if (HCLPsiUtil.isPropertyValue(childNode.psi) && customSettings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_VALUE) {
-        assert(pva != null, "Expected not null PVA, node ${node.elementType}, parent ${parent.node.elementType}")
+        assert(pva != null) { "Expected not null PVA, node ${node.elementType}, parent ${parent.node.elementType}" }
         if (!isElementType(childNode, HCLParserDefinition.HCL_CONTAINERS)) {
           // WEB-13587 Align compound values on opening brace/bracket, not the whole block
           alignment = pva
