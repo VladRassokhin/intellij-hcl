@@ -124,7 +124,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
     val MODEL_BASED_COMPLETION_ENABLED: Boolean by lazy {
       val application = ApplicationManager.getApplication()
-      application.isUnitTestMode || application.isInternal
+      true || application.isUnitTestMode || application.isInternal
     }
 
     public val COMMON_RESOURCE_PROPERTIES: SortedSet<String> = DefaultResourceTypeProperties.map { it.name }.toSortedSet()
