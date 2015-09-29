@@ -99,7 +99,7 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("resource aws_instance x {\n<caret>\n}", base);
     doBasicCompletionTest("resource aws_instance x {\n<caret> = \"name\"\n}", getPartialMatcher("provider", "ami"));
     doBasicCompletionTest("resource aws_instance x {\n<caret> = true\n}", getPartialMatcher("ebs_optimized", "monitoring"));
-    doBasicCompletionTest("resource aws_instance x {\n<caret> {}\n}", 0);
+    doBasicCompletionTest("resource aws_instance x {\n<caret> {}\n}", getPartialMatcher("lifecycle"));
   }
 
 }

@@ -103,7 +103,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
           .inFile(TerraformConfigFile)
           .withParent(Object)
           .withSuperParent(2, Block)
-          , ResourcePropertiesCompletionProvider);
+          , BlockPropertiesCompletionProvider);
 
       extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
           .inFile(TerraformConfigFile)
@@ -111,14 +111,14 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
           .withSuperParent(2, Property)
           .withSuperParent(3, Object)
           .withSuperParent(4, Block)
-          , ResourcePropertiesCompletionProvider);
+          , BlockPropertiesCompletionProvider);
       extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
           .inFile(TerraformConfigFile)
           .withParent(Identifier)
           .withSuperParent(2, Block)
           .withSuperParent(3, Object)
           .withSuperParent(4, Block)
-          , ResourcePropertiesCompletionProvider);
+          , BlockPropertiesCompletionProvider);
 
     }
   }
@@ -206,9 +206,9 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
     }
   }
 
-  private object ResourcePropertiesCompletionProvider : OurCompletionProvider() {
+  private object BlockPropertiesCompletionProvider : OurCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
-      LOG.debug("TF.ResourcePropertiesCompletionProvider")
+      LOG.debug("TF.BlockPropertiesCompletionProvider")
       val position = parameters.position
       var _parent: PsiElement? = position.parent
       LOG.debug("_parent = $_parent")
@@ -242,23 +242,89 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
         val pp = parent.parent
         if (pp is HCLBlock) {
           val tt = pp.getNameElementUnquoted(0)
-          if (tt == "resource") {
-            val type = pp.getNameElementUnquoted(1)
-            val resourceType = if (type != null) getTypeModel().getResourceType(type) else null
-            val properties = ArrayList<PropertyOrBlockType>()
-            properties.addAll(TypeModel.AbstractResource.properties)
-            if (resourceType?.properties != null) {
-              properties.addAll(resourceType?.properties)
-            }
-            result.addAllElements (properties
-                .filter { isRightOfPropertyWithCompatibleType(isProperty, it, right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
-                .map { it.name }
-                .filter { parent.findProperty(it) == null }
-                // TODO: Better renderer for properties/blocks
-                .map { create(it) })
+          when (tt) {
+            "atlas" -> doAddAtlas(isBlock, isProperty, parent, result, right)
+            "module" -> doAddModule(isBlock, isProperty, parent, result, right)
+            "output" -> doAddOutput(isBlock, isProperty, parent, result, right)
+            "provider" -> doAddProvider(isBlock, isProperty, parent, pp, result, right)
+            "resource" -> doAddResource(isBlock, isProperty, parent, pp, result, right)
+            "variable" -> doAddVariable(isBlock, isProperty, parent, result, right)
+
+          // Inner for 'resource'
+            "lifecycle" -> doAddLifecycle(isBlock, isProperty, parent, result, right)
+            "provisioner" -> doAddProvisioner(isBlock, isProperty, parent, pp, result, right)
+          // Can be inner for both 'resource' and 'provisioner'
+            "connection" -> doAddConnection(isBlock, isProperty, parent, pp, result, right)
           }
         }
       }
+    }
+
+    private fun doAddAtlas(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?) {
+      doAddCompletion(isBlock, isProperty, parent, result, right, TypeModel.Atlas.properties)
+    }
+
+    private fun doAddModule(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?) {
+      doAddCompletion(isBlock, isProperty, parent, result, right, TypeModel.Module.properties)
+    }
+
+    private fun doAddOutput(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?) {
+      doAddCompletion(isBlock, isProperty, parent, result, right, TypeModel.Output.properties)
+    }
+
+    private fun doAddProvider(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, pp: HCLBlock, result: CompletionResultSet, right: Type?) {
+      val type = pp.getNameElementUnquoted(1)
+      val resourceType = if (type != null) getTypeModel().getProviderType(type) else null
+      val properties = ArrayList<PropertyOrBlockType>()
+      properties.addAll(TypeModel.AbstractResource.properties)
+      if (resourceType?.properties != null) {
+        properties.addAll(resourceType?.properties)
+      }
+      doAddCompletion(isBlock, isProperty, parent, result, right, properties.toTypedArray())
+    }
+
+    private fun doAddVariable(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?) {
+      doAddCompletion(isBlock, isProperty, parent, result, right, TypeModel.Variable.properties)
+    }
+
+    private fun doAddLifecycle(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?) {
+      doAddCompletion(isBlock, isProperty, parent, result, right, TypeModel.ResourceLifecycle.properties)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun doAddProvisioner(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, pp: HCLBlock, result: CompletionResultSet, right: Type?) {
+      // TODO: Implement
+      // doAddCompletion(isBlock, isProperty, parent, result, right, TypeModel.ResourceProvisioner.properties)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun doAddConnection(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, pp: HCLBlock, result: CompletionResultSet, right: Type?) {
+      // TODO: Implement
+      // doAddCompletion(isBlock, isProperty, parent, result, right, TypeModel.ResourceConnection.properties)
+    }
+
+    //    private fun doAdd(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, pp: HCLBlock, result: CompletionResultSet, right: Type?) {
+    //      doAddCompletion(isBlock, isProperty, parent, result, right, properties)
+    //    }
+
+    private fun doAddResource(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, pp: HCLBlock, result: CompletionResultSet, right: Type?) {
+      val type = pp.getNameElementUnquoted(1)
+      val resourceType = if (type != null) getTypeModel().getResourceType(type) else null
+      val properties = ArrayList<PropertyOrBlockType>()
+      properties.addAll(TypeModel.AbstractResource.properties)
+      if (resourceType?.properties != null) {
+        properties.addAll(resourceType?.properties)
+      }
+      doAddCompletion(isBlock, isProperty, parent, result, right, properties.toTypedArray())
+    }
+
+    private fun doAddCompletion(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?, properties: Array<out PropertyOrBlockType>) {
+      result.addAllElements (properties
+          .filter { isRightOfPropertyWithCompatibleType(isProperty, it, right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
+          .map { it.name }
+          .filter { parent.findProperty(it) == null }
+          // TODO: Better renderer for properties/blocks
+          .map { create(it) })
     }
 
     private fun isRightOfPropertyWithCompatibleType(isProperty: Boolean, it: PropertyOrBlockType, right: Type?): Boolean {
