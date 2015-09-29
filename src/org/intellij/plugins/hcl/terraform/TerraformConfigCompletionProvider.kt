@@ -15,15 +15,15 @@
  */
 package org.intellij.plugins.hcl.terraform
 
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
-import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns.psiElement
@@ -31,10 +31,7 @@ import com.intellij.patterns.PlatformPatterns.psiFile
 import com.intellij.patterns.PsiElementPattern
 import com.intellij.patterns.StandardPatterns.not
 import com.intellij.patterns.StandardPatterns.or
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiLanguageInjectionHost
-import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.*
 import com.intellij.psi.impl.DebugUtil
 import com.intellij.psi.tree.TokenSet
 import com.intellij.util.ProcessingContext
@@ -147,6 +144,14 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
     fun DumpPsiFileModel(element: PsiElement): () -> String {
       return { DebugUtil.psiToString(element.containingFile, true) }
     }
+
+    fun create(value: String, quote: Boolean = true): LookupElementBuilder {
+      var builder = LookupElementBuilder.create(value)
+      if (quote) {
+        builder = builder.withInsertHandler(QuoteInsertHandler)
+      }
+      return builder
+    }
   }
 
   private abstract class OurCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -169,7 +174,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       if (leftNWS is HCLIdentifier || leftNWS?.node?.elementType == HCLElementTypes.ID) {
         return assert(false, DumpPsiFileModel(position))
       }
-      result.addAllElements(BLOCK_KEYWORDS.map { LookupElementBuilder.create(it) })
+      result.addAllElements(BLOCK_KEYWORDS.map { create(it) })
     }
   }
 
@@ -200,10 +205,10 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       }
       when (type) {
         "resource" ->
-          result.addAllElements(getTypeModel().resources.map { LookupElementBuilder.create(it.type) })
+          result.addAllElements(getTypeModel().resources.map { create(it.type) })
 
         "provider" ->
-          result.addAllElements(getTypeModel().providers.map { LookupElementBuilder.create(it.type) })
+          result.addAllElements(getTypeModel().providers.map { create(it.type) })
       }
       return
     }
@@ -258,7 +263,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
                 .map { it.name }
                 .filter { parent.findProperty(it) == null }
                 // TODO: Better renderer for properties/blocks
-                .map { LookupElementBuilder.create(it) })
+                .map { create(it) })
           }
         }
       }
@@ -274,6 +279,45 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       }
       return it.property.type == right
     }
+  }
+}
+
+object QuoteInsertHandler : BasicInsertHandler<LookupElement>() {
+
+  override fun handleInsert(context: InsertionContext?, item: LookupElement?) {
+    if (context == null || item == null) return
+    val editor = context.editor
+    val file = context.file
+    val element = file.findElementAt(context.startOffset)
+    var c: Char? = null
+    if (element is HCLStringLiteral) {
+      when (element.node.firstChildNode.elementType) {
+        HCLElementTypes.SINGLE_QUOTED_STRING -> c = '\''
+        HCLElementTypes.DOUBLE_QUOTED_STRING -> c = '\"'
+      }
+    } else {
+      when (element?.node?.elementType) {
+        HCLElementTypes.SINGLE_QUOTED_STRING -> c = '\''
+        HCLElementTypes.DOUBLE_QUOTED_STRING -> c = '\"'
+      }
+    }
+    if (c == null) return
+    if (context.completionChar == c) return
+    val project = editor.project
+    if (project == null || project.isDisposed) return
+
+    if (!isCharAtCaret(editor, c)) {
+      EditorModificationUtil.insertStringAtCaret(editor, "$c")
+      PsiDocumentManager.getInstance(project).commitDocument(editor.document)
+    } else {
+      editor.caretModel.moveToOffset(editor.caretModel.offset + 1)
+    }
+  }
+
+  private fun isCharAtCaret(editor: Editor, c: Char): Boolean {
+    val startOffset = editor.caretModel.offset
+    val document = editor.document
+    return document.textLength > startOffset && document.charsSequence.charAt(startOffset) == c
   }
 }
 
