@@ -25,6 +25,7 @@ import com.intellij.psi.PsiElementVisitor
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElementVisitor
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
+import org.intellij.plugins.hcl.terraform.config.model.BlockType
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
@@ -68,21 +69,16 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
   }
 
   private fun doCheckAtlas(block: HCLBlock, holder: ProblemsHolder) {
-    val properties = getTypeModel().Atlas.properties
-
-    doCheck(block, holder, properties)
+    doCheck(block, holder, getTypeModel().Atlas)
   }
 
   private fun doCheckModule(block: HCLBlock, holder: ProblemsHolder) {
-    val properties = getTypeModel().Module.properties
     // TODO: Check module required properties basing on 'source'
-    doCheck(block, holder, properties)
+    doCheck(block, holder, getTypeModel().Module)
   }
 
   private fun doCheckOutput(block: HCLBlock, holder: ProblemsHolder) {
-    val properties = getTypeModel().Output.properties
-
-    doCheck(block, holder, properties)
+    doCheck(block, holder, getTypeModel().Output)
   }
 
   private fun doCheckProvider(block: HCLBlock, holder: ProblemsHolder) {
@@ -90,13 +86,15 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
 
   private fun doCheckResource(block: HCLBlock, holder: ProblemsHolder) {
     val type = block.getNameElementUnquoted(1) ?: return;
-    val rt = getTypeModel().getResourceType(type) ?: return // TODO: report unknown resource type (separate inspection)s
+    val rt = getTypeModel().getResourceType(type) ?: return
+    // TODO: report unknown resource type (separate inspection)s
 
-    doCheck(block, holder, rt.properties)
+    doCheck(block, holder, rt)
   }
 
-  private fun doCheck(block: HCLBlock, holder: ProblemsHolder, properties: Array<out PropertyOrBlockType>) {
+  private fun doCheck(block: HCLBlock, holder: ProblemsHolder, type: BlockType) {
     val obj = block.`object` ?: return
+    val properties = type.properties
     ProgressIndicatorProvider.checkCanceled()
 
     val candidates = ArrayList<PropertyOrBlockType>(properties.filter { it.required })
