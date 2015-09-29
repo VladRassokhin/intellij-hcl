@@ -53,7 +53,8 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
   inner class MyEV(val holder: ProblemsHolder) : HCLElementVisitor() {
     override fun visitBlock(block: HCLBlock) {
       ProgressIndicatorProvider.checkCanceled()
-      val bt = block.getNameElementUnquoted(0);
+      val bt = block.getNameElementUnquoted(0) ?: return
+      block.`object` ?: return
       when (bt) {
         "atlas" -> doCheckAtlas(block, holder)
         "module" -> doCheckModule(block, holder)
@@ -82,6 +83,10 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
   }
 
   private fun doCheckOutput(block: HCLBlock, holder: ProblemsHolder) {
+    val obj = block.`object` ?: return
+    val properties = getTypeModel().Output.properties
+
+    doCheck(block, holder, obj, properties)
   }
 
   private fun doCheckProvider(block: HCLBlock, holder: ProblemsHolder) {

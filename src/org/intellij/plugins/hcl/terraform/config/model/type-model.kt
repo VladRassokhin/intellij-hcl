@@ -75,7 +75,7 @@ public class VariableType(vararg properties: PropertyOrBlockType = arrayOf()) : 
 val DefaultResourceTypeProperties: Array<PropertyOrBlockType> = arrayOf(
     PropertyType("count", Types.Number).toPOBT(),
     PropertyType("depends_on", Types.Array, "String").toPOBT(),
-    PropertyType("provider", Types.String, "(provider.type|provider.alias)").toPOBT(),
+    PropertyType("provider", Types.String, "Reference(provider.type|provider.alias)").toPOBT(),
     BlockType("lifecycle", 0, false,
         PropertyType("create_before_destroy", Types.Boolean).toPOBT(),
         PropertyType("prevent_destroy", Types.Boolean).toPOBT()
@@ -265,6 +265,7 @@ public class TypeModel {
 
   val Atlas: BlockType = BlockType("atlas", 0, false, PropertyType("name", Types.String, required = true, injectionAllowed = false).toPOBT())
   val Module: BlockType = BlockType("module", 1, false, PropertyType("source", Types.String, hint = "Url", required = true).toPOBT())
+  val Output: BlockType = BlockType("output", 1, false, PropertyType("value", Types.String, hint = "Interpolation(Any)", required = true).toPOBT())
 
   fun getResourceType(name: String): ResourceType? {
     return resources.firstOrNull { it.type == name }
