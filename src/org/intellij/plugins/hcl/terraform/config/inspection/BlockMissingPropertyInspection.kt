@@ -62,7 +62,11 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
         "provider" -> doCheckProvider(block, holder)
         "resource" -> doCheckResource(block, holder)
         "variable" -> doCheckVariable(block, holder)
+
+      // Inner for 'resource'
+        "lifecycle" -> doCheckLifecycle(block, holder)
         "provisioner" -> doCheckProvisioner(block, holder)
+      // Can be inner for both 'resource' and 'provisioner'
         "connection" -> doCheckConnection(block, holder)
       }
     }
@@ -120,6 +124,10 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
   }
 
   private fun doCheckVariable(block: HCLBlock, holder: ProblemsHolder) {
+  }
+
+  private fun doCheckLifecycle(block: HCLBlock, holder: ProblemsHolder) {
+    doCheck(block, holder, getTypeModel().ResourceLifecycle)
   }
 
   private fun doCheckProvisioner(block: HCLBlock, holder: ProblemsHolder) {
