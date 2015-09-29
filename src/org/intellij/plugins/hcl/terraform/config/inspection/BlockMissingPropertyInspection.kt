@@ -82,6 +82,11 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
   }
 
   private fun doCheckProvider(block: HCLBlock, holder: ProblemsHolder) {
+    val type = block.getNameElementUnquoted(1) ?: return;
+    val rt = getTypeModel().getProviderType(type) ?: return
+    // TODO: report unknown provider type (separate inspection)s
+
+    doCheck(block, holder, rt)
   }
 
   private fun doCheckResource(block: HCLBlock, holder: ProblemsHolder) {
