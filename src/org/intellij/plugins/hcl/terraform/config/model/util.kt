@@ -35,3 +35,5 @@ public class ModelUtil private constructor() {
     }
   }
 }
+
+fun String.ensureHavePrefix(prefix: String) = if (this.startsWith(prefix)) this else (prefix + this)

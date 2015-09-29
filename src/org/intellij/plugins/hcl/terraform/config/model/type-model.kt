@@ -117,7 +117,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       );
       val resources = reflections.getResources(Pattern.compile(".*\\.json")).filter { it.contains("terraform/model/") };
       resources.forEach { it ->
-        val file = if (it.startsWith('/')) it else "/$it"
+        val file = it.ensureHavePrefix("/")
         val json = getResourceJson(file) as JsonObject?
         if (json != null) {
           val pair = parseFile(json)
