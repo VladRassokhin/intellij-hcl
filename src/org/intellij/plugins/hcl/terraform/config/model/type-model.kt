@@ -72,15 +72,6 @@ public class ResourceType(val type: String, vararg properties: PropertyOrBlockTy
 public class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, false, *properties)
 public class VariableType(vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("variable", 1, false, *properties)
 
-val DefaultResourceTypeProperties: Array<PropertyOrBlockType> = arrayOf(
-    PropertyType("count", Types.Number).toPOBT(),
-    PropertyType("depends_on", Types.Array, "String").toPOBT(),
-    PropertyType("provider", Types.String, "Reference(provider.type|provider.alias)").toPOBT(),
-    TypeModel().ResourceLifecycle.toPOBT()
-    // Also may have connection? and provisioner+ blocks
-)
-val DefaultProviderTypeProperties: Array<PropertyOrBlockType> = arrayOf()
-
 
 public class TypeModelProvider {
   val model: TypeModel by lazy { loadModel() }
@@ -258,19 +249,32 @@ public class TypeModel {
   val providers: MutableList<ProviderType> = arrayListOf(
       //      ProviderType("aws", PropertyOrBlockType(PropertyType("region", Types.String)), *DefaultProviderTypeProperties)
   )
-  val variables: MutableList<VariableType> = arrayListOf()
 
-  val Atlas: BlockType = BlockType("atlas", 0, false, PropertyType("name", Types.String, required = true, injectionAllowed = false).toPOBT())
-  val Module: BlockType = BlockType("module", 1, false, PropertyType("source", Types.String, hint = "Url", required = true).toPOBT())
-  val Output: BlockType = BlockType("output", 1, false, PropertyType("value", Types.String, hint = "Interpolation(Any)", required = true).toPOBT())
-  val Variable: BlockType = BlockType("variable", 1, false,
-      PropertyType("default", Type("String|Object")).toPOBT(),
-      PropertyType("description", Types.String).toPOBT()
-  )
-  val ResourceLifecycle: BlockType = BlockType("lifecycle", 0, false,
-      PropertyType("create_before_destroy", Types.Boolean).toPOBT(),
-      PropertyType("prevent_destroy", Types.Boolean).toPOBT()
-  )
+  companion object {
+    val Atlas: BlockType = BlockType("atlas", 0, false, PropertyType("name", Types.String, required = true, injectionAllowed = false).toPOBT())
+    val Module: BlockType = BlockType("module", 1, false, PropertyType("source", Types.String, hint = "Url", required = true).toPOBT())
+    val Output: BlockType = BlockType("output", 1, false, PropertyType("value", Types.String, hint = "Interpolation(Any)", required = true).toPOBT())
+    val Variable: BlockType = BlockType("variable", 1, false,
+        PropertyType("default", Type("String|Object")).toPOBT(),
+        PropertyType("description", Types.String).toPOBT()
+    )
+
+    val ResourceLifecycle: BlockType = BlockType("lifecycle", 0, false,
+        PropertyType("create_before_destroy", Types.Boolean).toPOBT(),
+        PropertyType("prevent_destroy", Types.Boolean).toPOBT()
+    )
+
+    val AbstractResource: BlockType = BlockType("resource", 2, false,
+        PropertyType("count", Types.Number).toPOBT(),
+        PropertyType("depends_on", Types.Array, "String").toPOBT(),
+        PropertyType("provider", Types.String, "Reference(provider.type|provider.alias)").toPOBT(),
+        TypeModel.ResourceLifecycle.toPOBT()
+        // Also may have connection? and provisioner+ blocks
+    )
+    val AbstractProvider: BlockType = BlockType("provider", 1, false)
+
+    val RootBlocks = listOf(Atlas, Module, Output, Variable, AbstractProvider, AbstractResource)
+  }
 
   fun getResourceType(name: String): ResourceType? {
     return resources.firstOrNull { it.type == name }
@@ -279,17 +283,4 @@ public class TypeModel {
   fun getProviderType(name: String): ProviderType? {
     return providers.firstOrNull { it.type == name }
   }
-
-  fun getBlockTypeNames(): List<String> {
-    return listOf(
-        "atlas",
-        "module",
-        "output",
-        "provider",
-        "resource",
-        "variable"
-    )
-  }
-
-
 }

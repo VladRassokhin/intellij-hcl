@@ -124,21 +124,13 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
   }
 
   companion object {
-    public val BLOCK_KEYWORDS: TreeSet<String> = sortedSetOf(
-        "atlas",
-        "module",
-        "output",
-        "provider",
-        "resource",
-        "variable"
-    )
-
     val MODEL_BASED_COMPLETION_ENABLED: Boolean by lazy {
       val application = ApplicationManager.getApplication()
       true || application.isUnitTestMode || application.isInternal
     }
 
-    public val COMMON_RESOURCE_PROPERTIES: SortedSet<String> = DefaultResourceTypeProperties.map { it.name }.toSortedSet()
+    public val ROOT_BLOCK_KEYWORDS: SortedSet<String> = TypeModel.RootBlocks.map { it -> it.literal }.toSortedSet()
+    public val COMMON_RESOURCE_PROPERTIES: SortedSet<String> = TypeModel.AbstractResource.properties.map { it.name }.toSortedSet()
 
     private val LOG = Logger.getInstance(TerraformConfigCompletionProvider::class.java)
     fun DumpPsiFileModel(element: PsiElement): () -> String {
@@ -174,7 +166,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       if (leftNWS is HCLIdentifier || leftNWS?.node?.elementType == HCLElementTypes.ID) {
         return assert(false, DumpPsiFileModel(position))
       }
-      result.addAllElements(BLOCK_KEYWORDS.map { create(it) })
+      result.addAllElements(ROOT_BLOCK_KEYWORDS.map { LookupElementBuilder.create(it).withInsertHandler(ResourceBlockNameInsertHandler) })
     }
   }
 
@@ -254,7 +246,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
             val type = pp.getNameElementUnquoted(1)
             val resourceType = if (type != null) getTypeModel().getResourceType(type) else null
             val properties = ArrayList<PropertyOrBlockType>()
-            properties.addAll(DefaultResourceTypeProperties)
+            properties.addAll(TypeModel.AbstractResource.properties)
             if (resourceType?.properties != null) {
               properties.addAll(resourceType?.properties)
             }

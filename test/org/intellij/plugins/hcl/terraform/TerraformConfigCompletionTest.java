@@ -43,11 +43,11 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
   }
 
   public void testBlockKeywordCompletion() throws Exception {
-    doBasicCompletionTest("<caret> {}", TerraformConfigCompletionProvider.BLOCK_KEYWORDS);
-    doBasicCompletionTest("a=1\n<caret> {}", TerraformConfigCompletionProvider.BLOCK_KEYWORDS);
+    doBasicCompletionTest("<caret> {}", TerraformConfigCompletionProvider.ROOT_BLOCK_KEYWORDS);
+    doBasicCompletionTest("a=1\n<caret> {}", TerraformConfigCompletionProvider.ROOT_BLOCK_KEYWORDS);
 
-    doBasicCompletionTest("<caret> ", TerraformConfigCompletionProvider.BLOCK_KEYWORDS);
-    doBasicCompletionTest("a=1\n<caret> ", TerraformConfigCompletionProvider.BLOCK_KEYWORDS);
+    doBasicCompletionTest("<caret> ", TerraformConfigCompletionProvider.ROOT_BLOCK_KEYWORDS);
+    doBasicCompletionTest("a=1\n<caret> ", TerraformConfigCompletionProvider.ROOT_BLOCK_KEYWORDS);
   }
 
   public void testNoBlockKeywordCompletion() throws Exception {
@@ -98,7 +98,7 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     }
     doBasicCompletionTest("resource aws_instance x {\n<caret>\n}", base);
     doBasicCompletionTest("resource aws_instance x {\n<caret> = \"name\"\n}", getPartialMatcher("provider", "ami"));
-    doBasicCompletionTest("resource aws_instance x {\n<caret> = true\n}", 0);
+    doBasicCompletionTest("resource aws_instance x {\n<caret> = true\n}", getPartialMatcher("ebs_optimized", "monitoring"));
     doBasicCompletionTest("resource aws_instance x {\n<caret> {}\n}", 0);
   }
 

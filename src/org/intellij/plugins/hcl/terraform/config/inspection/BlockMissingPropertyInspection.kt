@@ -73,16 +73,16 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
   }
 
   private fun doCheckAtlas(block: HCLBlock, holder: ProblemsHolder) {
-    doCheck(block, holder, getTypeModel().Atlas)
+    doCheck(block, holder, TypeModel.Atlas)
   }
 
   private fun doCheckModule(block: HCLBlock, holder: ProblemsHolder) {
     // TODO: Check module required properties basing on 'source'
-    doCheck(block, holder, getTypeModel().Module)
+    doCheck(block, holder, TypeModel.Module)
   }
 
   private fun doCheckOutput(block: HCLBlock, holder: ProblemsHolder) {
-    doCheck(block, holder, getTypeModel().Output)
+    doCheck(block, holder, TypeModel.Output)
   }
 
   private fun doCheckProvider(block: HCLBlock, holder: ProblemsHolder) {
@@ -124,11 +124,11 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
   }
 
   private fun doCheckVariable(block: HCLBlock, holder: ProblemsHolder) {
-    doCheck(block, holder, getTypeModel().Variable)
+    doCheck(block, holder, TypeModel.Variable)
   }
 
   private fun doCheckLifecycle(block: HCLBlock, holder: ProblemsHolder) {
-    doCheck(block, holder, getTypeModel().ResourceLifecycle)
+    doCheck(block, holder, TypeModel.ResourceLifecycle)
   }
 
   private fun doCheckProvisioner(block: HCLBlock, holder: ProblemsHolder) {
