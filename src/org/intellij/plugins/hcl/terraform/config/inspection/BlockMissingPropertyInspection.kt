@@ -24,6 +24,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElementVisitor
+import org.intellij.plugins.hcl.psi.HCLObject
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
@@ -67,9 +68,17 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
   }
 
   private fun doCheckAtlas(block: HCLBlock, holder: ProblemsHolder) {
+    val obj = block.`object` ?: return
+    val properties = getTypeModel().Atlas.properties
+
+    doCheck(block, holder, obj, properties)
   }
 
   private fun doCheckModule(block: HCLBlock, holder: ProblemsHolder) {
+    val obj = block.`object` ?: return
+    val properties = getTypeModel().Module.properties
+    // TODO: Check module required properties basing on 'source'
+    doCheck(block, holder, obj, properties)
   }
 
   private fun doCheckOutput(block: HCLBlock, holder: ProblemsHolder) {
@@ -82,17 +91,27 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
     val type = block.getNameElementUnquoted(1) ?: return;
     val obj = block.`object` ?: return
     val rt = getTypeModel().getResourceType(type) ?: return // TODO: report unknown resource type (separate inspection)s
+
+    doCheck(block, holder, obj, rt.properties)
+  }
+
+  private fun doCheck(block: HCLBlock, holder: ProblemsHolder, obj: HCLObject, properties: Array<out PropertyOrBlockType>) {
     ProgressIndicatorProvider.checkCanceled()
-    val properties = rt.properties
+
     val candidates = ArrayList<PropertyOrBlockType>(properties.filter { it.required })
     if (candidates.isEmpty()) return
     val all = ArrayList<String>()
     all.addAll(obj.propertyList.map { it.name })
     all.addAll(obj.blockList.map { it.name }) // TODO: Better block name selection
 
+    ProgressIndicatorProvider.checkCanceled()
+
     val required = candidates.filterNot { it.name in all }
 
     if (required.isEmpty()) return
+
+    ProgressIndicatorProvider.checkCanceled()
+
     holder.registerProblem(block, "Missing required properties: ${required.map { it.name }.join(", ")}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING, AddResourcePropertiesFix(required))
   }
 

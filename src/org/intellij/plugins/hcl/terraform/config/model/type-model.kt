@@ -30,7 +30,7 @@ import java.util.regex.Pattern
 // Model for element types
 
 public open class Type(val name: String)
-public open class PropertyType(val name: String, val type: Type, val typeHint: String? = null, val description: String? = null, val required: Boolean = false)
+public open class PropertyType(val name: String, val type: Type, val hint: String? = null, val description: String? = null, val required: Boolean = false, val injectionAllowed: Boolean = true)
 public open class BlockType(val literal: String, val args: Int = 0, val required: Boolean = false, vararg val properties: PropertyOrBlockType = arrayOf())
 
 public class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
@@ -262,6 +262,9 @@ public class TypeModel {
       //      ProviderType("aws", PropertyOrBlockType(PropertyType("region", Types.String)), *DefaultProviderTypeProperties)
   )
   val variables: MutableList<VariableType> = arrayListOf()
+
+  val Atlas: BlockType = BlockType("atlas", 0, false, PropertyType("name", Types.String, required = true, injectionAllowed = false).toPOBT())
+  val Module: BlockType = BlockType("module", 1, false, PropertyType("source", Types.String, hint = "Url", required = true).toPOBT())
 
   fun getResourceType(name: String): ResourceType? {
     return resources.firstOrNull { it.type == name }
