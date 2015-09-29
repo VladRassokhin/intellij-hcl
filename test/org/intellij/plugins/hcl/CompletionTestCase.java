@@ -22,6 +22,8 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.DebugUtil;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
+import com.intellij.util.BooleanFunction;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,7 +40,11 @@ public abstract class CompletionTestCase extends LightCodeInsightFixtureTestCase
     doBasicCompletionTest(text, expected.size(), expected.toArray(new String[expected.size()]));
   }
 
-  protected void doBasicCompletionTest(String text, int expectedAllSize, String... expected) {
+  protected void doBasicCompletionTest(String text, final int expectedAllSize, final String... expected) {
+    doBasicCompletionTest(text, getPartialMatcher(expectedAllSize, expected));
+  }
+
+  protected void doBasicCompletionTest(String text, BooleanFunction<Collection<String>> matcher) {
     final PsiFile psiFile = myFixture.configureByText(getFileName(), text);
     System.out.println("PsiFile = " + DebugUtil.psiToString(psiFile, true));
     assertEquals(getExpectedLanguage(), psiFile.getLanguage());
@@ -47,8 +53,29 @@ public abstract class CompletionTestCase extends LightCodeInsightFixtureTestCase
     final List<String> strings = myFixture.getLookupElementStrings();
     assertNotNull(strings);
     System.out.println("LookupStrings = " + strings);
-    assertContainsElements(strings, expected);
-    assertEquals("Actual lookup elements: " + strings, expectedAllSize, strings.size());
+    assertTrue("Mather expected to return true", matcher.fun(strings));
   }
 
+  @NotNull
+  protected BooleanFunction<Collection<String>> getPartialMatcher(final String... expectedPart) {
+    return new BooleanFunction<Collection<String>>() {
+      @Override
+      public boolean fun(Collection<String> strings) {
+        assertContainsElements(strings, expectedPart);
+        return true;
+      }
+    };
+  }
+
+  @NotNull
+  protected BooleanFunction<Collection<String>> getPartialMatcher(final int expectedAllSize, final String... expectedPart) {
+    return new BooleanFunction<Collection<String>>() {
+      @Override
+      public boolean fun(Collection<String> strings) {
+        assertContainsElements(strings, expectedPart);
+        assertEquals("Actual lookup elements: " + strings, expectedAllSize, strings.size());
+        return true;
+      }
+    };
+  }
 }

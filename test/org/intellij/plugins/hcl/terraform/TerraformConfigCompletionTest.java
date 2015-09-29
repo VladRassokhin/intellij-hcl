@@ -19,6 +19,7 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.components.ServiceManager;
 import org.intellij.plugins.hcl.CompletionTestCase;
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage;
+import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType;
 import org.intellij.plugins.hcl.terraform.config.model.ResourceType;
 import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider;
 
@@ -63,23 +64,41 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("resource <caret> \"aaa\" {}", set);
   }
 
+  public void testResourceQuotedTypeCompletion() throws Exception {
+    final TreeSet<String> set = new TreeSet<String>();
+    final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
+    for (ResourceType resource : provider.get().getResources()) {
+      set.add(resource.getType());
+    }
+    doBasicCompletionTest("resource \"<caret>", set);
+    doBasicCompletionTest("resource \'<caret>", set);
+    doBasicCompletionTest("resource \"<caret>\n{}", set);
+    doBasicCompletionTest("resource \'<caret>\n{}", set);
+    doBasicCompletionTest("resource \"<caret>\" {}", set);
+    doBasicCompletionTest("resource \"<caret>\" \"aaa\" {}", set);
+  }
+
   public void testResourceCommonPropertyCompletion() throws Exception {
     doBasicCompletionTest("resource abc {\n<caret>\n}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PROPERTIES);
     final HashSet<String> set = new HashSet<String>(TerraformConfigCompletionProvider.COMMON_RESOURCE_PROPERTIES);
     set.remove("id");
     doBasicCompletionTest("resource \"x\" {\nid='a'\n<caret>\n}", set);
-    doBasicCompletionTest("resource abc {\n<caret> = true\n}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PROPERTIES);
-    doBasicCompletionTest("resource abc {\n<caret> {}\n}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PROPERTIES);
+    doBasicCompletionTest("resource abc {\n<caret> = true\n}", Collections.<String>emptySet());
+    doBasicCompletionTest("resource abc {\n<caret> {}\n}", Collections.singletonList("lifecycle"));
   }
 
   public void testResourceCommonPropertyCompletionFromModel() throws Exception {
-    final List<String> specific = Arrays.asList("name", "availability_zones", "instances");
     final HashSet<String> base = new HashSet<String>(TerraformConfigCompletionProvider.COMMON_RESOURCE_PROPERTIES);
-    base.addAll(specific);
-    doBasicCompletionTest("resource aws_elb x {\n<caret>\n}", base);
-    doBasicCompletionTest("resource aws_elb x {\n<caret> = \"name\"\n}", Collections.singleton("name"));
-    doBasicCompletionTest("resource aws_elb x {\n<caret> = true\n}", 0);
-    doBasicCompletionTest("resource aws_elb x {\n<caret> {}\n}", 0);
+    final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
+    final ResourceType type = provider.get().getResourceType("aws_instance");
+    assertNotNull(type);
+    for (PropertyOrBlockType it : type.getProperties()) {
+      base.add(it.getName());
+    }
+    doBasicCompletionTest("resource aws_instance x {\n<caret>\n}", base);
+    doBasicCompletionTest("resource aws_instance x {\n<caret> = \"name\"\n}", getPartialMatcher("provider", "ami"));
+    doBasicCompletionTest("resource aws_instance x {\n<caret> = true\n}", 0);
+    doBasicCompletionTest("resource aws_instance x {\n<caret> {}\n}", 0);
   }
 
 }
