@@ -263,6 +263,10 @@ public class TypeModel {
   val Atlas: BlockType = BlockType("atlas", 0, false, PropertyType("name", Types.String, required = true, injectionAllowed = false).toPOBT())
   val Module: BlockType = BlockType("module", 1, false, PropertyType("source", Types.String, hint = "Url", required = true).toPOBT())
   val Output: BlockType = BlockType("output", 1, false, PropertyType("value", Types.String, hint = "Interpolation(Any)", required = true).toPOBT())
+  val Variable: BlockType = BlockType("variable", 1, false,
+      PropertyType("default", Type("String|Object")).toPOBT(),
+      PropertyType("description", Types.String).toPOBT()
+  )
   val ResourceLifecycle: BlockType = BlockType("lifecycle", 0, false,
       PropertyType("create_before_destroy", Types.Boolean).toPOBT(),
       PropertyType("prevent_destroy", Types.Boolean).toPOBT()

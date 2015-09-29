@@ -124,6 +124,7 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
   }
 
   private fun doCheckVariable(block: HCLBlock, holder: ProblemsHolder) {
+    doCheck(block, holder, getTypeModel().Variable)
   }
 
   private fun doCheckLifecycle(block: HCLBlock, holder: ProblemsHolder) {
