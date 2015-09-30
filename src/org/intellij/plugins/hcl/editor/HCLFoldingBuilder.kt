@@ -18,8 +18,11 @@ package org.intellij.plugins.hcl.editor
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
+import com.intellij.lang.folding.NamedFoldingDescriptor
 import com.intellij.openapi.editor.Document
 import org.intellij.plugins.hcl.HCLElementTypes
+import org.intellij.plugins.hcl.psi.HCLArray
+import org.intellij.plugins.hcl.psi.HCLObject
 import java.util.*
 
 public class HCLFoldingBuilder : FoldingBuilder {
@@ -35,8 +38,27 @@ public class HCLFoldingBuilder : FoldingBuilder {
 
   private fun collect(node: ASTNode, document: Document, descriptors: ArrayList<FoldingDescriptor>) {
     when (node.elementType) {
-      HCLElementTypes.ARRAY, HCLElementTypes.OBJECT -> if (isSpanMultipleLines(node, document)) {
-        descriptors.add(FoldingDescriptor(node, node.textRange))
+      HCLElementTypes.OBJECT -> {
+        val element = node.psi
+        if (isSpanMultipleLines(node, document) && element is HCLObject) {
+          val props = element.propertyList.size()
+          val blocks = element.blockList.size()
+          val count = props + blocks
+          when (count) {
+            0, 1 -> descriptors.add(NamedFoldingDescriptor(node, node.textRange, null, getCollapsedObjectPlaceholder(element)))
+            else -> descriptors.add(FoldingDescriptor(node, node.textRange))
+          }
+        }
+      }
+      HCLElementTypes.ARRAY -> {
+        val element = node.psi
+        if (isSpanMultipleLines(node, document) && element is HCLArray) {
+          val count = element.valueList.size()
+          when (count) {
+            0, 1 -> descriptors.add(NamedFoldingDescriptor(node, node.textRange, null, getCollapsedArrayPlaceholder(element)))
+            else -> descriptors.add(FoldingDescriptor(node, node.textRange))
+          }
+        }
       }
       HCLElementTypes.BLOCK_COMMENT -> descriptors.add(FoldingDescriptor(node, node.textRange))
     // TODO: multiple single comments into one folding block
@@ -45,6 +67,36 @@ public class HCLFoldingBuilder : FoldingBuilder {
     for (c in node.getChildren(null)) {
       collect(c, document, descriptors)
     }
+  }
+
+  private fun getCollapsedObjectPlaceholder(element: HCLObject, limit: Int = 30): String {
+    val props = element.propertyList.size()
+    val blocks = element.blockList.size()
+    if (props + blocks == 0) return "{}"
+    else if (props + blocks != 1) return "{...}"
+
+    val prop = element.propertyList.firstOrNull()
+    if (prop != null) {
+      if (prop.textLength > limit) return "{...}"
+      return "{" + prop.text + "}";
+    }
+    val bl = element.blockList.firstOrNull()
+    if (bl != null) {
+      if (bl.name.length() > limit) return "{...}"
+      val obj = bl.`object` ?: return "{...}"
+      val inner = getCollapsedObjectPlaceholder(obj, limit - (bl.name.length() + 3))
+      return "{${bl.name} $inner}";
+    }
+    return "{}"
+  }
+
+  private fun getCollapsedArrayPlaceholder(element: HCLArray, limit: Int = 30): String {
+    val vals = element.valueList
+    if (vals.isEmpty()) return "[]"
+    if (vals.size() > 1) return "[...]"
+    val node = vals.first().node
+    if (node.textLength > limit) return "[...]"
+    return "[${node.text}]"
   }
 
   override fun getPlaceholderText(node: ASTNode): String? {
