@@ -33,7 +33,7 @@ public class HCLFoldingBuilder : FoldingBuilder {
   override fun buildFoldRegions(node: ASTNode, document: Document): Array<out FoldingDescriptor> {
     val descriptors = ArrayList<FoldingDescriptor>()
     collect(node, document, descriptors);
-    return descriptors.toArray(emptyArray())
+    return descriptors.toTypedArray()
   }
 
   private fun collect(node: ASTNode, document: Document, descriptors: ArrayList<FoldingDescriptor>) {
