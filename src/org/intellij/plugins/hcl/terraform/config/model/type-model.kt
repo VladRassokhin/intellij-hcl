@@ -71,6 +71,7 @@ object Types {
 public class ResourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, false, *properties)
 public class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, false, *properties)
 public class VariableType(vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("variable", 1, false, *properties)
+public class ProvisionerType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provisioner", 1, false, *properties)
 
 
 public class TypeModelProvider {
@@ -108,11 +109,9 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
         val file = it.ensureHavePrefix("/")
         val json = getResourceJson(file) as JsonObject?
         if (json != null) {
-          val pair = parseFile(json)
-          model.providers.add(pair.first)
-          model.resources.addAll(pair.second)
+          parseFile(json, model)
         } else {
-          val msg = "Failed to load provider model from file '$file'"
+          val msg = "Failed to load anything from file '$file'"
           LOG.error(msg)
           if (application.isUnitTestMode) {
             assert(false) { msg }
@@ -156,15 +155,37 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
     }
   }
 
-  private fun parseFile(json: JsonObject): Pair<ProviderType, List<ResourceType>> {
+  private fun parseFile(json: JsonObject, model: TypeModel) {
+    val type = json.string("type");
+    when (type) {
+      "provisioner" -> return parseProvisionerFile(json, model)
+      "provider", null -> return parseProviderFile(json, model)
+    }
+  }
+
+  private fun parseProviderFile(json: JsonObject, model: TypeModel) {
     val name = json.string("name")!!;
     val provider = json.obj("provider")!!;
     val resources = json.obj("resources")!!;
-    return Pair(parseProviderInfo(name, provider), resources.map { parseResourceInfo(it) })
+    val info = parseProviderInfo(name, provider)
+    val map = resources.map { parseResourceInfo(it) }
+    model.providers.add(info)
+    model.resources.addAll(map)
+  }
+
+  private fun parseProvisionerFile(json: JsonObject, model: TypeModel) {
+    val name = json.string("name")!!;
+    val provisioner = json.obj("provisioner")!!;
+    val info = parseProvisionerInfo(name, provisioner);
+    model.provisioners.add(info)
   }
 
   private fun parseProviderInfo(name: String, obj: JsonObject): ProviderType {
     return ProviderType(name, *obj.map { parseElement(it, name) }.toTypedArray());
+  }
+
+  private fun parseProvisionerInfo(name: String, obj: JsonObject): ProvisionerType {
+    return ProvisionerType(name, *obj.map { parseElement(it, name) }.toTypedArray());
   }
 
   private fun parseResourceInfo(entry: Map.Entry<String, Any?>): ResourceType {
@@ -237,6 +258,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 public class TypeModel {
   val resources: MutableList<ResourceType> = arrayListOf()
   val providers: MutableList<ProviderType> = arrayListOf()
+  val provisioners: MutableList<ProvisionerType> = arrayListOf()
 
   companion object {
     val Atlas: BlockType = BlockType("atlas", 0, false, PropertyType("name", Types.String, required = true, injectionAllowed = false).toPOBT())
