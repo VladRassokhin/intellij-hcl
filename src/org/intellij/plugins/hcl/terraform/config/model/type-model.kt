@@ -322,4 +322,8 @@ public class TypeModel(
   fun getProviderType(name: String): ProviderType? {
     return providers.firstOrNull { it.type == name }
   }
+
+  fun getProvisionerType(name: String): ProvisionerType? {
+    return provisioners.firstOrNull { it.type == name }
+  }
 }

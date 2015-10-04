@@ -132,6 +132,11 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
   }
 
   private fun doCheckProvisioner(block: HCLBlock, holder: ProblemsHolder) {
+    val type = block.getNameElementUnquoted(1) ?: return;
+    val rt = getTypeModel().getProvisionerType(type) ?: return
+    // TODO: report unknown provisioner type (separate inspection)s
+
+    doCheck(block, holder, rt)
   }
 
   private fun doCheckConnection(block: HCLBlock, holder: ProblemsHolder) {

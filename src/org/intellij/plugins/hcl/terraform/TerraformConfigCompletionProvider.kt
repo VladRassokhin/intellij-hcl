@@ -201,6 +201,9 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
         "provider" ->
           result.addAllElements(getTypeModel().providers.map { create(it.type) })
+
+        "provisioner" ->
+          result.addAllElements(getTypeModel().provisioners.map { create(it.type) })
       }
       return
     }
@@ -291,10 +294,11 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       doAddCompletion(isBlock, isProperty, parent, result, right, TypeModel.ResourceLifecycle.properties)
     }
 
-    @Suppress("UNUSED_PARAMETER")
     private fun doAddProvisioner(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, pp: HCLBlock, result: CompletionResultSet, right: Type?) {
-      // TODO: Implement
-      // doAddCompletion(isBlock, isProperty, parent, result, right, TypeModel.ResourceProvisioner.properties)
+      val type = pp.getNameElementUnquoted(1)
+      val resourceType = if (type != null) getTypeModel().getProvisionerType(type) else null
+      val properties = resourceType?.properties ?: return
+      doAddCompletion(isBlock, isProperty, parent, result, right, properties)
     }
 
     @Suppress("UNUSED_PARAMETER")
