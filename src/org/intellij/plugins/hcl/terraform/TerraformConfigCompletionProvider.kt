@@ -144,6 +144,17 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       }
       return builder
     }
+
+    fun create(value: PropertyOrBlockType): LookupElementBuilder {
+      // TODO: Better renderer for properties/blocks (#withRenderer)
+      var builder = LookupElementBuilder.create(value.name)
+      if (value.block != null) {
+        builder = builder.withInsertHandler(ResourceBlockNameInsertHandler)
+      } else if (value.property != null) {
+        builder = builder.withInsertHandler(ResourcePropertyInsertHandler)
+      }
+      return builder
+    }
   }
 
   private abstract class OurCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -325,9 +336,8 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
     private fun doAddCompletion(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?, properties: Array<out PropertyOrBlockType>) {
       result.addAllElements (properties
           .filter { isRightOfPropertyWithCompatibleType(isProperty, it, right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
-          .map { it.name }
-          .filter { parent.findProperty(it) == null }
-          // TODO: Better renderer for properties/blocks
+          // TODO: Filter should be based on 'max-count' model property (?)
+          .filter { (it.property != null && parent.findProperty(it.name) == null) || (it.block != null) }
           .map { create(it) })
     }
 
