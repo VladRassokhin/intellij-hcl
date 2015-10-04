@@ -302,13 +302,15 @@ public class TypeModel(
         PropertyType("create_before_destroy", Types.Boolean).toPOBT(),
         PropertyType("prevent_destroy", Types.Boolean).toPOBT()
     )
+    val AbstractResourceProvisioner: BlockType = BlockType("provisioner", 1, false)
 
     val AbstractResource: BlockType = BlockType("resource", 2, false,
         PropertyType("count", Types.Number).toPOBT(),
         PropertyType("depends_on", Types.Array, "String").toPOBT(),
         PropertyType("provider", Types.String, "Reference(provider.type|provider.alias)").toPOBT(),
-        TypeModel.ResourceLifecycle.toPOBT()
+        TypeModel.ResourceLifecycle.toPOBT(),
         // Also may have connection? and provisioner+ blocks
+        TypeModel.AbstractResourceProvisioner.toPOBT()
     )
     val AbstractProvider: BlockType = BlockType("provider", 1, false)
 
