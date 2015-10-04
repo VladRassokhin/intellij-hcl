@@ -38,7 +38,7 @@ public class PropertyOrBlockType private constructor(val property: PropertyType?
   val required: Boolean = if (property != null) property.required else block!!.required
 
   init {
-    assert(property != null || block != null);
+    assert(property != null || block != null, { "Either property or block expected" });
   }
 
   constructor(property: PropertyType) : this(property, null)
@@ -235,20 +235,8 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 }
 
 public class TypeModel {
-  val resources: MutableList<ResourceType> = arrayListOf(
-      //      ResourceType("aws_elb",
-      //          PropertyType("name", Types.String).toPOBT(),
-      //          PropertyType("availability_zones", Types.Array, "String").toPOBT(),
-      //          PropertyType("instances", Types.Array, "String").toPOBT(),
-      //          *DefaultResourceTypeProperties),
-      //      ResourceType("aws_instance",
-      //          PropertyType("instance_type", Types.String).toPOBT(),
-      //          PropertyType("ami", Types.String).toPOBT(),
-      //          *DefaultResourceTypeProperties)
-  )
-  val providers: MutableList<ProviderType> = arrayListOf(
-      //      ProviderType("aws", PropertyOrBlockType(PropertyType("region", Types.String)), *DefaultProviderTypeProperties)
-  )
+  val resources: MutableList<ResourceType> = arrayListOf()
+  val providers: MutableList<ProviderType> = arrayListOf()
 
   companion object {
     val Atlas: BlockType = BlockType("atlas", 0, false, PropertyType("name", Types.String, required = true, injectionAllowed = false).toPOBT())
