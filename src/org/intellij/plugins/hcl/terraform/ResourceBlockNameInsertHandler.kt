@@ -15,12 +15,17 @@
  */
 package org.intellij.plugins.hcl.terraform
 
-import com.intellij.codeInsight.completion.BasicInsertHandler
-import com.intellij.codeInsight.completion.InsertionContext
+import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.EditorModificationUtil
+import com.intellij.openapi.util.text.StringUtil
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
+import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLIdentifier
+import org.intellij.plugins.hcl.psi.HCLObject
 import org.intellij.plugins.hcl.psi.HCLProperty
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 
@@ -36,44 +41,81 @@ object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {
       "variable" -> TypeModel.Variable
       "resource" -> TypeModel.AbstractResource
       "provider" -> TypeModel.AbstractProvider
+      "provisioner" -> TypeModel.AbstractResourceProvisioner
       else -> return // TODO: Support other block types
     }
 
     val project = editor.project
     if (project == null || project.isDisposed) return
 
-    val element = file.findElementAt(context.startOffset)
-    if (element !is HCLIdentifier) return
+    val element = file.findElementAt(context.startOffset) ?: return
+    val parent: PsiElement
 
-    val parent = element.parent ?: return
+    if (element is HCLIdentifier) {
+      parent = element.parent ?: return
+    } else if (element.node?.elementType == HCLElementTypes.ID) {
+      val p = element.parent
+      parent = if (p is HCLObject) p else p?.parent ?: return
+    } else {
+      return
+    }
+
     if (parent is HCLProperty) {
       // ??? Do nothing
       return
-    } else if (parent is HCLBlock) {
+    }
+    var offset: Int? = null
+    val current: Int
+    val expected = type.args
+    var addBraces = false
+    if (parent is HCLBlock) {
       // Count existing arguments and add missing
-      val current = parent.nameElements.size()
-      val expected = type.args
-      if (current < expected) {
-        addArguments(expected - current, editor);
-      }
+      val elements = parent.nameElements
+      current = elements.size() - 1
+      // Locate caret to latest argument
+      val last = elements.last()
+      // TODO: Move caret to last argument properly
+      editor.caretModel.moveToOffset(last.textRange.endOffset)
     } else {
       // Add arguments and braces
-      val expected = type.args
-      if (0 < expected) {
-        addArguments(expected, editor);
-      }
-      addBraces(editor)
+      current = 0
+      addBraces = true
     }
     // TODO check context.completionChar before adding arguments or braces
+
+    if (current < expected) {
+      offset = editor.caretModel.offset + 2
+      addArguments(expected, editor)
+      scheduleBasicCompletion(context)
+    }
+    if (addBraces) {
+      addBraces(editor)
+    }
+
+    PsiDocumentManager.getInstance(project).commitDocument(editor.document)
+    if (offset != null) {
+      editor.caretModel.moveToOffset(offset)
+    }
   }
 
-  @Suppress("UNUSED_PARAMETER")
+  private fun scheduleBasicCompletion(context: InsertionContext) {
+    context.laterRunnable = object : Runnable {
+      override fun run() {
+        CodeCompletionHandlerBase(CompletionType.BASIC).invokeCompletion(context.project, context.editor)
+      }
+    }
+  }
+
+  private fun addSpace(editor: Editor) {
+    EditorModificationUtil.insertStringAtCaret(editor, " ")
+  }
+
   private fun addArguments(count: Int, editor: Editor) {
-    // TODO: Implement
+    EditorModificationUtil.insertStringAtCaret(editor, "${StringUtil.repeat(" \"\"", count)}")
   }
 
-  @Suppress("UNUSED_PARAMETER")
   private fun addBraces(editor: Editor) {
-    // TODO: Implement
+    EditorModificationUtil.insertStringAtCaret(editor, " {}")
+    editor.caretModel.moveToOffset(editor.caretModel.offset - 1)
   }
 }
