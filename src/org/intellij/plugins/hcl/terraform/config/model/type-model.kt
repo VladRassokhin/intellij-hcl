@@ -109,7 +109,15 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
         val file = it.ensureHavePrefix("/")
         val json = getResourceJson(file) as JsonObject?
         if (json != null) {
-          parseFile(json, model)
+          try {
+            parseFile(json, model)
+          } catch(e: Throwable) {
+            val msg = "Failed to parse file '$file'"
+            LOG.error(msg)
+            if (application.isUnitTestMode) {
+              assert(false) { msg }
+            }
+          }
         } else {
           val msg = "Failed to load anything from file '$file'"
           LOG.error(msg)
@@ -124,7 +132,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
     } catch(e: Exception) {
       if (application.isUnitTestMode || application.isInternal) {
         LOG.error(e);
-        assert(false) { "In unit test mode exceptions not tolerated. Exception: ${e.getMessage()}" }
+        assert(false) { "In unit test mode exceptions are not tolerated. Exception: ${e.getMessage()}" }
       }
       LOG.warn(e)
       return null
@@ -175,7 +183,11 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
   private fun parseProvisionerFile(json: JsonObject, model: TypeModel) {
     val name = json.string("name")!!;
-    val provisioner = json.obj("provisioner")!!;
+    val provisioner = json.obj("provisioner")?:json.obj("ResourceSchemaInfo");
+    if (provisioner == null) {
+      LOG.warn("No provisioner for name '$name'")
+      return
+    }
     val info = parseProvisionerInfo(name, provisioner);
     model.provisioners.add(info)
   }
