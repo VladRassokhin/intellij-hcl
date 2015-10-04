@@ -182,9 +182,9 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
   private fun parseProviderFile(json: JsonObject, file: String) {
     val name = json.string("name")!!;
-    val provider = json.obj("provider");
+    val provider = json.obj("schema");
     if (provider == null) {
-      LOG.warn("No provider in file '$file'")
+      LOG.warn("No provider schema in file '$file'")
       return
     }
     val info = parseProviderInfo(name, provider)
@@ -200,9 +200,9 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
   private fun parseProvisionerFile(json: JsonObject, file: String) {
     val name = json.string("name")!!;
-    val provisioner = json.obj("provisioner");
+    val provisioner = json.obj("schema");
     if (provisioner == null) {
-      LOG.warn("No provisioner in file '$file'")
+      LOG.warn("No provisioner schema in file '$file'")
       return
     }
     val info = parseProvisionerInfo(name, provisioner);
