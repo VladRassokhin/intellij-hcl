@@ -110,7 +110,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
         val json = getResourceJson(file) as JsonObject?
         if (json != null) {
           try {
-            parseFile(json, model)
+            parseFile(json, model, file)
           } catch(e: Throwable) {
             val msg = "Failed to parse file '$file'"
             LOG.error(msg)
@@ -163,29 +163,41 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
     }
   }
 
-  private fun parseFile(json: JsonObject, model: TypeModel) {
+  private fun parseFile(json: JsonObject, model: TypeModel, file: String) {
     val type = json.string("type");
     when (type) {
-      "provisioner" -> return parseProvisionerFile(json, model)
-      "provider", null -> return parseProviderFile(json, model)
+      "provisioner" -> return parseProvisionerFile(json, model, file)
+      "provider" -> return parseProviderFile(json, model, file)
     }
+    // Fallback
+    if (json.obj("provider") != null) return parseProviderFile(json, model, file)
+    if (json.obj("provisioner") != null) return parseProvisionerFile(json, model, file)
+    LOG.warn("Cannot determine model file content, $file")
   }
 
-  private fun parseProviderFile(json: JsonObject, model: TypeModel) {
+  private fun parseProviderFile(json: JsonObject, model: TypeModel, file: String) {
     val name = json.string("name")!!;
-    val provider = json.obj("provider")!!;
-    val resources = json.obj("resources")!!;
+    val provider = json.obj("provider");
+    if (provider == null) {
+      LOG.warn("No provider in file '$file'")
+      return
+    }
     val info = parseProviderInfo(name, provider)
-    val map = resources.map { parseResourceInfo(it) }
     model.providers.add(info)
+    val resources = json.obj("resources");
+    if (resources == null) {
+      LOG.warn("No resources for provider '$name' in file '$file'")
+      return
+    }
+    val map = resources.map { parseResourceInfo(it) }
     model.resources.addAll(map)
   }
 
-  private fun parseProvisionerFile(json: JsonObject, model: TypeModel) {
+  private fun parseProvisionerFile(json: JsonObject, model: TypeModel, file: String) {
     val name = json.string("name")!!;
-    val provisioner = json.obj("provisioner")?:json.obj("ResourceSchemaInfo");
+    val provisioner = json.obj("provisioner");
     if (provisioner == null) {
-      LOG.warn("No provisioner for name '$name'")
+      LOG.warn("No provisioner in file '$file'")
       return
     }
     val info = parseProvisionerInfo(name, provisioner);
