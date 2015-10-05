@@ -314,8 +314,13 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
     private fun getProvisionerProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
       val type = block.getNameElementUnquoted(1)
-      val resourceType = if (type != null) getTypeModel().getProvisionerType(type) else null
-      return resourceType?.properties ?: emptyArray()
+      val provisionerType = if (type != null) getTypeModel().getProvisionerType(type) else null
+      val properties = ArrayList<PropertyOrBlockType>()
+      properties.addAll(TypeModel.AbstractResourceProvisioner.properties)
+      if (provisionerType?.properties != null) {
+        properties.addAll(provisionerType?.properties)
+      }
+      return properties.toTypedArray()
     }
 
     @Suppress("UNUSED_PARAMETER")
