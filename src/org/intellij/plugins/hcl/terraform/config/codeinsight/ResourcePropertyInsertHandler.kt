@@ -20,6 +20,10 @@ import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
+import getNextSiblingNonWhiteSpace
+import org.intellij.plugins.hcl.HCLElementTypes
+import org.intellij.plugins.hcl.psi.HCLIdentifier
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
 import org.intellij.plugins.hcl.terraform.config.model.Type
 import org.intellij.plugins.hcl.terraform.config.model.Types
@@ -31,7 +35,14 @@ object ResourcePropertyInsertHandler : BasicInsertHandler<LookupElement>() {
     val project = context.project
     // Add property name - done by default
 
-    // TODO: Check if right part already exists
+    val element = context.file.findElementAt(context.startOffset)
+
+    // Ensure not modifying existing property
+    if (element is HCLIdentifier) {
+      if (isNextIsEqual(element)) return
+    } else if (element?.node?.elementType == HCLElementTypes.ID) {
+      if (isNextIsEqual(element?.parent)) return
+    }
 
     // Add equals sign
     EditorModificationUtil.insertStringAtCaret(editor, " = ")
@@ -61,5 +72,9 @@ object ResourcePropertyInsertHandler : BasicInsertHandler<LookupElement>() {
       Types.Array -> Pair("[]", 1)
       else -> null
     }
+  }
+
+  private fun isNextIsEqual(element: PsiElement?): Boolean {
+    return element?.getNextSiblingNonWhiteSpace()?.node?.elementType == HCLElementTypes.EQUALS
   }
 }
