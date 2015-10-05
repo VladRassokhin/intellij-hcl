@@ -42,6 +42,8 @@ object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {
       "resource" -> TypeModel.AbstractResource
       "provider" -> TypeModel.AbstractProvider
       "provisioner" -> TypeModel.AbstractResourceProvisioner
+      "connection" -> TypeModel.Connection
+      "lifecycle" -> TypeModel.ResourceLifecycle
       else -> return // TODO: Support other block types
     }
 
