@@ -325,9 +325,23 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
     @Suppress("UNUSED_PARAMETER")
     private fun getConnectionProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
-      // TODO: Implement
-      // return ( TypeModel.ResourceConnection.properties)
-      return emptyArray()
+      val type = block.`object`?.findProperty("type")?.value
+      val properties = ArrayList<PropertyOrBlockType>()
+      properties.addAll(TypeModel.Connection.properties)
+      if (type is HCLStringLiteral) {
+        val v = type.value.toLowerCase().trim()
+        when (v) {
+          "ssh" -> properties.addAll(TypeModel.ConnectionPropertiesSSH)
+          "winrm" -> properties.addAll(TypeModel.ConnectionPropertiesWinRM)
+        // TODO: Support interpolation resolving
+          else -> LOG.warn("Unsupported 'connection' block type '${type.value}'")
+        }
+      }
+      if (type == null) {
+        // ssh by default
+        properties.addAll(TypeModel.ConnectionPropertiesSSH)
+      }
+      return properties.toTypedArray()
     }
 
     private fun getResourceProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
