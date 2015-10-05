@@ -13,19 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.terraform;
+package org.intellij.plugins.hcl.terraform.config.codeinsight;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.intellij.lang.Language;
 import com.intellij.openapi.components.ServiceManager;
 import org.intellij.plugins.hcl.CompletionTestCase;
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage;
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType;
 import org.intellij.plugins.hcl.terraform.config.model.ResourceType;
+import org.intellij.plugins.hcl.terraform.config.model.TypeModel;
 import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class TerraformConfigCompletionTest extends CompletionTestCase {
+
+  public static final Collection<String> COMMON_RESOURCE_PROPERTIES = new TreeSet<String>(Collections2.transform(Arrays.asList(TypeModel.AbstractResource.getProperties()), new Function<PropertyOrBlockType, String>() {
+    @Override
+    public String apply(@SuppressWarnings("NullableProblems") @NotNull PropertyOrBlockType propertyOrBlockType) {
+      return propertyOrBlockType.getName();
+    }
+  }));
+
 
   @Override
   protected String getTestDataPath() {
@@ -80,8 +92,8 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
   }
 
   public void testResourceCommonPropertyCompletion() throws Exception {
-    doBasicCompletionTest("resource abc {\n<caret>\n}", TerraformConfigCompletionProvider.COMMON_RESOURCE_PROPERTIES);
-    final HashSet<String> set = new HashSet<String>(TerraformConfigCompletionProvider.COMMON_RESOURCE_PROPERTIES);
+    doBasicCompletionTest("resource abc {\n<caret>\n}", COMMON_RESOURCE_PROPERTIES);
+    final HashSet<String> set = new HashSet<String>(COMMON_RESOURCE_PROPERTIES);
     set.remove("id");
     doBasicCompletionTest("resource \"x\" {\nid='a'\n<caret>\n}", set);
     doBasicCompletionTest("resource abc {\n<caret> = true\n}", Collections.<String>emptySet());
@@ -89,7 +101,7 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
   }
 
   public void testResourceCommonPropertyCompletionFromModel() throws Exception {
-    final HashSet<String> base = new HashSet<String>(TerraformConfigCompletionProvider.COMMON_RESOURCE_PROPERTIES);
+    final HashSet<String> base = new HashSet<String>(COMMON_RESOURCE_PROPERTIES);
     final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
     final ResourceType type = provider.get().getResourceType("aws_instance");
     assertNotNull(type);
