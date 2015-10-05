@@ -13,28 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.terraform
+package org.intellij.plugins.hcl.terraform.config.codeinsight
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.LookupElement
+import afterSiblingSkipping2
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.EditorModificationUtil
-import com.intellij.patterns.ElementPattern
-import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.PlatformPatterns.psiFile
-import com.intellij.patterns.PsiElementPattern
 import com.intellij.patterns.StandardPatterns.not
 import com.intellij.patterns.StandardPatterns.or
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.DebugUtil
 import com.intellij.psi.tree.TokenSet
 import com.intellij.util.ProcessingContext
+import getNameElementUnquoted
+import getPrevSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionProvider
 import org.intellij.plugins.hcl.psi.*
@@ -352,39 +355,4 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       return it.property.type == right
     }
   }
-}
-
-public fun HCLBlock.getNameElementUnquoted(i: Int): String? {
-  val elements = this.nameElements
-  if (elements.size() < i + 1) return null
-  val element = elements.get(i)
-  return when (element) {
-    is HCLIdentifier -> element.id
-    is HCLStringLiteral -> element.value
-    else -> null
-  }
-}
-
-fun PsiElement.getPrevSiblingNonWhiteSpace(): PsiElement? {
-  var prev = this.prevSibling
-  while (prev != null && prev is PsiWhiteSpace) {
-    prev = prev.prevSibling
-  }
-  return prev;
-}
-
-
-public fun <T : PsiElement, Self : PsiElementPattern<T, Self>> PsiElementPattern<T, Self>.afterSiblingSkipping2(skip: ElementPattern<out Any>, pattern: ElementPattern<out PsiElement>): Self {
-  return with(object : PatternCondition<T>("afterSiblingSkipping2") {
-    override fun accepts(t: T, context: ProcessingContext): Boolean {
-      var o = t.prevSibling
-      while (o != null) {
-        if (!skip.accepts(o, context)) {
-          return pattern.accepts(o, context)
-        }
-        o = o.prevSibling
-      }
-      return false
-    }
-  })
 }

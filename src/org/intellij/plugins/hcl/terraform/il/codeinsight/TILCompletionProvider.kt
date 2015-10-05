@@ -20,7 +20,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.util.ProcessingContext
-import org.intellij.plugins.hcl.terraform.getPrevSiblingNonWhiteSpace
+import getPrevSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.terraform.il.TILLanguage
 import org.intellij.plugins.hcl.terraform.il.psi.ILSelectExpression
 import org.intellij.plugins.hcl.terraform.il.psi.ILVariable

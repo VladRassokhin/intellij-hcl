@@ -30,7 +30,7 @@ import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
-import org.intellij.plugins.hcl.terraform.getNameElementUnquoted
+import getNameElementUnquoted
 import java.util.*
 
 @Suppress("UNUSED_PARAMETER")
