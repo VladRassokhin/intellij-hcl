@@ -303,11 +303,11 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
     private fun getProviderProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
       val type = block.getNameElementUnquoted(1)
-      val resourceType = if (type != null) getTypeModel().getProviderType(type) else null
+      val providerType = if (type != null) getTypeModel().getProviderType(type) else null
       val properties = ArrayList<PropertyOrBlockType>()
-      properties.addAll(TypeModel.AbstractResource.properties)
-      if (resourceType?.properties != null) {
-        properties.addAll(resourceType?.properties)
+      properties.addAll(TypeModel.AbstractProvider.properties)
+      if (providerType?.properties != null) {
+        properties.addAll(providerType?.properties)
       }
       return properties.toTypedArray()
     }
