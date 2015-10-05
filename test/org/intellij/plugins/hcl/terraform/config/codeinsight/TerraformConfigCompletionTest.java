@@ -97,7 +97,7 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     set.remove("id");
     doBasicCompletionTest("resource \"x\" {\nid='a'\n<caret>\n}", set);
     doBasicCompletionTest("resource abc {\n<caret> = true\n}", Collections.<String>emptySet());
-    doBasicCompletionTest("resource abc {\n<caret> {}\n}", Collections.singletonList("lifecycle"));
+    doBasicCompletionTest("resource abc {\n<caret> {}\n}", Arrays.asList("lifecycle", "connection", "provisioner"));
   }
 
   public void testResourceCommonPropertyCompletionFromModel() throws Exception {
