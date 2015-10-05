@@ -298,11 +298,43 @@ public class TypeModel(
         PropertyType("description", Types.String).toPOBT()
     ))
 
-    val ResourceLifecycle: BlockType = BlockType("lifecycle", 0, properties = *arrayOf(
-        PropertyType("create_before_destroy", Types.Boolean).toPOBT(),
-        PropertyType("prevent_destroy", Types.Boolean).toPOBT()
+    val Connection: BlockType = BlockType("connection", 0, properties = *arrayOf(
+        PropertyType("type", Types.String, description = "The connection type that should be used. Valid types are \"ssh\" and \"winrm\" This defaults to \"ssh\".").toPOBT(),
+        PropertyType("user", Types.String).toPOBT(),
+        PropertyType("password", Types.String).toPOBT(),
+        PropertyType("host", Types.String).toPOBT(),
+        PropertyType("port", Types.Number).toPOBT(),
+        PropertyType("timeout", Types.String).toPOBT(),
+        PropertyType("script_path", Types.String).toPOBT()
     ))
-    val AbstractResourceProvisioner: BlockType = BlockType("provisioner", 1)
+    val ConnectionPropertiesSSH: Array<out PropertyOrBlockType> = arrayOf(
+        // ssh
+        PropertyType("key_file", Types.String).toPOBT(),
+        PropertyType("agent", Types.Boolean).toPOBT(),
+
+        // bastion ssh
+        PropertyType("bastion_host", Types.String).toPOBT(),
+        PropertyType("bastion_port", Types.Number).toPOBT(),
+        PropertyType("bastion_user", Types.String).toPOBT(),
+        PropertyType("bastion_password", Types.String).toPOBT(),
+        PropertyType("bastion_key_file", Types.String).toPOBT()
+    );
+    val ConnectionPropertiesWinRM: Array<out PropertyOrBlockType> = arrayOf(
+        // winrm
+        PropertyType("https", Types.Boolean).toPOBT(),
+        PropertyType("insecure", Types.Boolean).toPOBT(),
+        PropertyType("cacert", Types.String).toPOBT()
+    );
+
+    val ResourceLifecycle: BlockType = BlockType("lifecycle", 0,
+        description = "Describe to Terraform how to connect to the resource for provisioning", // TODO: Improve description
+        properties = *arrayOf(
+            PropertyType("create_before_destroy", Types.Boolean).toPOBT(),
+            PropertyType("prevent_destroy", Types.Boolean).toPOBT()
+        ))
+    val AbstractResourceProvisioner: BlockType = BlockType("provisioner", 1, properties = *arrayOf(
+        Connection.toPOBT()
+    ))
 
     val AbstractResource: BlockType = BlockType("resource", 2, properties = *arrayOf(
         PropertyType("count", Types.Number).toPOBT(),
@@ -310,6 +342,7 @@ public class TypeModel(
         PropertyType("provider", Types.String, "Reference(provider.type|provider.alias)").toPOBT(),
         TypeModel.ResourceLifecycle.toPOBT(),
         // Also may have connection? and provisioner+ blocks
+        Connection.toPOBT(),
         TypeModel.AbstractResourceProvisioner.toPOBT()
     ))
     val AbstractProvider: BlockType = BlockType("provider", 1, false)
