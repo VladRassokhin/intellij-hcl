@@ -279,83 +279,14 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       if (parent is HCLObject) {
         val pp = parent.parent
         if (pp is HCLBlock) {
-          val tt = pp.getNameElementUnquoted(0)
-          val props: Array<out PropertyOrBlockType>
-          props = when (tt) {
-            "atlas" -> TypeModel.Atlas.properties
-            "module" -> TypeModel.Module.properties
-            "output" -> TypeModel.Output.properties
-            "provider" -> getProviderProperties(pp)
-            "resource" -> getResourceProperties(pp)
-            "variable" -> TypeModel.Variable.properties
-
-          // Inner for 'resource'
-            "lifecycle" -> TypeModel.ResourceLifecycle.properties
-            "provisioner" -> getProvisionerProperties(pp)
-          // Can be inner for both 'resource' and 'provisioner'
-            "connection" -> getConnectionProperties(pp)
-            else -> return
-          }
+          val props = ModelHelper.getBlockProperties(pp)
           doAddCompletion(isBlock, isProperty, parent, result, right, parameters, props)
         }
       }
     }
 
-    private fun getProviderProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
-      val type = block.getNameElementUnquoted(1)
-      val providerType = if (type != null) getTypeModel().getProviderType(type) else null
-      val properties = ArrayList<PropertyOrBlockType>()
-      properties.addAll(TypeModel.AbstractProvider.properties)
-      if (providerType?.properties != null) {
-        properties.addAll(providerType?.properties)
-      }
-      return properties.toTypedArray()
-    }
-
-    private fun getProvisionerProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
-      val type = block.getNameElementUnquoted(1)
-      val provisionerType = if (type != null) getTypeModel().getProvisionerType(type) else null
-      val properties = ArrayList<PropertyOrBlockType>()
-      properties.addAll(TypeModel.AbstractResourceProvisioner.properties)
-      if (provisionerType?.properties != null) {
-        properties.addAll(provisionerType?.properties)
-      }
-      return properties.toTypedArray()
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    private fun getConnectionProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
-      val type = block.`object`?.findProperty("type")?.value
-      val properties = ArrayList<PropertyOrBlockType>()
-      properties.addAll(TypeModel.Connection.properties)
-      if (type is HCLStringLiteral) {
-        val v = type.value.toLowerCase().trim()
-        when (v) {
-          "ssh" -> properties.addAll(TypeModel.ConnectionPropertiesSSH)
-          "winrm" -> properties.addAll(TypeModel.ConnectionPropertiesWinRM)
-        // TODO: Support interpolation resolving
-          else -> LOG.warn("Unsupported 'connection' block type '${type.value}'")
-        }
-      }
-      if (type == null) {
-        // ssh by default
-        properties.addAll(TypeModel.ConnectionPropertiesSSH)
-      }
-      return properties.toTypedArray()
-    }
-
-    private fun getResourceProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
-      val type = block.getNameElementUnquoted(1)
-      val resourceType = if (type != null) getTypeModel().getResourceType(type) else null
-      val properties = ArrayList<PropertyOrBlockType>()
-      properties.addAll(TypeModel.AbstractResource.properties)
-      if (resourceType?.properties != null) {
-        properties.addAll(resourceType?.properties)
-      }
-      return ( properties.toTypedArray())
-    }
-
     private fun doAddCompletion(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?, parameters: CompletionParameters, properties: Array<out PropertyOrBlockType>) {
+      if (properties.isEmpty()) return
       addResultsWithCustomSorter(result, parameters, properties
           .filter { isRightOfPropertyWithCompatibleType(isProperty, it, right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
           // TODO: Filter should be based on 'max-count' model property (?)
@@ -373,5 +304,89 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       }
       return it.property.type == right
     }
+  }
+}
+
+object ModelHelper {
+  private val LOG = Logger.getInstance(ModelHelper::class.java)
+
+  public fun getBlockProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+    val type = block.getNameElementUnquoted(0)
+    val props: Array<out PropertyOrBlockType>
+    props = when (type) {
+      "atlas" -> TypeModel.Atlas.properties
+      "module" -> TypeModel.Module.properties
+      "output" -> TypeModel.Output.properties
+      "provider" -> getProviderProperties(block)
+      "resource" -> getResourceProperties(block)
+      "variable" -> TypeModel.Variable.properties
+
+    // Inner for 'resource'
+      "lifecycle" -> TypeModel.ResourceLifecycle.properties
+      "provisioner" -> getProvisionerProperties(block)
+    // Can be inner for both 'resource' and 'provisioner'
+      "connection" -> getConnectionProperties(block)
+      else -> return emptyArray()
+    }
+    return props
+  }
+
+  public fun getProviderProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+    val type = block.getNameElementUnquoted(1)
+    val providerType = if (type != null) getTypeModel().getProviderType(type) else null
+    val properties = ArrayList<PropertyOrBlockType>()
+    properties.addAll(TypeModel.AbstractProvider.properties)
+    if (providerType?.properties != null) {
+      properties.addAll(providerType?.properties)
+    }
+    return properties.toTypedArray()
+  }
+
+  public fun getProvisionerProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+    val type = block.getNameElementUnquoted(1)
+    val provisionerType = if (type != null) getTypeModel().getProvisionerType(type) else null
+    val properties = ArrayList<PropertyOrBlockType>()
+    properties.addAll(TypeModel.AbstractResourceProvisioner.properties)
+    if (provisionerType?.properties != null) {
+      properties.addAll(provisionerType?.properties)
+    }
+    return properties.toTypedArray()
+  }
+
+  public fun getConnectionProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+    val type = block.`object`?.findProperty("type")?.value
+    val properties = ArrayList<PropertyOrBlockType>()
+    properties.addAll(TypeModel.Connection.properties)
+    if (type is HCLStringLiteral) {
+      val v = type.value.toLowerCase().trim()
+      when (v) {
+        "ssh" -> properties.addAll(TypeModel.ConnectionPropertiesSSH)
+        "winrm" -> properties.addAll(TypeModel.ConnectionPropertiesWinRM)
+      // TODO: Support interpolation resolving
+        else -> LOG.warn("Unsupported 'connection' block type '${type.value}'")
+      }
+    }
+    if (type == null) {
+      // ssh by default
+      properties.addAll(TypeModel.ConnectionPropertiesSSH)
+    }
+    return properties.toTypedArray()
+  }
+
+  public fun getResourceProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+    val type = block.getNameElementUnquoted(1)
+    val resourceType = if (type != null) getTypeModel().getResourceType(type) else null
+    val properties = ArrayList<PropertyOrBlockType>()
+    properties.addAll(TypeModel.AbstractResource.properties)
+    if (resourceType?.properties != null) {
+      properties.addAll(resourceType?.properties)
+    }
+    return ( properties.toTypedArray())
+  }
+
+
+  protected fun getTypeModel(): TypeModel {
+    val provider = ServiceManager.getService(TypeModelProvider::class.java)
+    return provider.get()
   }
 }

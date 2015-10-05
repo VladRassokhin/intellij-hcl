@@ -18,28 +18,19 @@ package org.intellij.plugins.hcl.terraform.config.inspection
 import com.intellij.codeInspection.*
 import com.intellij.openapi.application.Result
 import com.intellij.openapi.command.WriteCommandAction
-import com.intellij.openapi.components.ServiceManager
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
+import getNameElementUnquoted
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElementVisitor
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
-import org.intellij.plugins.hcl.terraform.config.model.BlockType
+import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
-import org.intellij.plugins.hcl.terraform.config.model.TypeModel
-import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
-import getNameElementUnquoted
-import org.intellij.plugins.hcl.psi.HCLStringLiteral
-import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionProvider
 import java.util.*
 
 public class BlockMissingPropertyInspection : LocalInspectionTool() {
-  companion object {
-    private val LOG = Logger.getInstance(TerraformConfigCompletionProvider::class.java)
-  }
 
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     val ft = holder.file.fileType
@@ -50,67 +41,18 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
     return MyEV(holder)
   }
 
-  protected fun getTypeModel(): TypeModel {
-    val provider = ServiceManager.getService(TypeModelProvider::class.java)
-    return provider.get()
-  }
-
   inner class MyEV(val holder: ProblemsHolder) : HCLElementVisitor() {
     override fun visitBlock(block: HCLBlock) {
       ProgressIndicatorProvider.checkCanceled()
-      val bt = block.getNameElementUnquoted(0) ?: return
+      block.getNameElementUnquoted(0) ?: return
       block.`object` ?: return
-      when (bt) {
-        "atlas" -> doCheckAtlas(block, holder)
-        "module" -> doCheckModule(block, holder)
-        "output" -> doCheckOutput(block, holder)
-        "provider" -> doCheckProvider(block, holder)
-        "resource" -> doCheckResource(block, holder)
-        "variable" -> doCheckVariable(block, holder)
-
-      // Inner for 'resource'
-        "lifecycle" -> doCheckLifecycle(block, holder)
-        "provisioner" -> doCheckProvisioner(block, holder)
-      // Can be inner for both 'resource' and 'provisioner'
-        "connection" -> doCheckConnection(block, holder)
-      }
+      val properties = ModelHelper.getBlockProperties(block);
+      doCheck(block, holder, properties)
     }
   }
 
-  private fun doCheckAtlas(block: HCLBlock, holder: ProblemsHolder) {
-    doCheck(block, holder, TypeModel.Atlas)
-  }
-
-  private fun doCheckModule(block: HCLBlock, holder: ProblemsHolder) {
-    // TODO: Check module required properties basing on 'source'
-    doCheck(block, holder, TypeModel.Module)
-  }
-
-  private fun doCheckOutput(block: HCLBlock, holder: ProblemsHolder) {
-    doCheck(block, holder, TypeModel.Output)
-  }
-
-  private fun doCheckProvider(block: HCLBlock, holder: ProblemsHolder) {
-    val type = block.getNameElementUnquoted(1) ?: return;
-    val rt = getTypeModel().getProviderType(type) ?: return
-    // TODO: report unknown provider type (separate inspection)s
-
-    doCheck(block, holder, rt)
-  }
-
-  private fun doCheckResource(block: HCLBlock, holder: ProblemsHolder) {
-    val type = block.getNameElementUnquoted(1) ?: return;
-    val rt = getTypeModel().getResourceType(type) ?: return
-    // TODO: report unknown resource type (separate inspection)s
-
-    doCheck(block, holder, rt)
-  }
-
-  private fun doCheck(block: HCLBlock, holder: ProblemsHolder, type: BlockType) {
-    doCheck(block, holder, type.properties)
-  }
-
   private fun doCheck(block: HCLBlock, holder: ProblemsHolder, properties: Array<out PropertyOrBlockType>) {
+    if (properties.isEmpty()) return
     val obj = block.`object` ?: return
     ProgressIndicatorProvider.checkCanceled()
 
@@ -129,42 +71,6 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
     ProgressIndicatorProvider.checkCanceled()
 
     holder.registerProblem(block, "Missing required properties: ${required.map { it.name }.join(", ")}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING, AddResourcePropertiesFix(required))
-  }
-
-  private fun doCheckVariable(block: HCLBlock, holder: ProblemsHolder) {
-    doCheck(block, holder, TypeModel.Variable)
-  }
-
-  private fun doCheckLifecycle(block: HCLBlock, holder: ProblemsHolder) {
-    doCheck(block, holder, TypeModel.ResourceLifecycle)
-  }
-
-  private fun doCheckProvisioner(block: HCLBlock, holder: ProblemsHolder) {
-    val type = block.getNameElementUnquoted(1) ?: return;
-    val rt = getTypeModel().getProvisionerType(type) ?: return
-    // TODO: report unknown provisioner type (separate inspection)s
-
-    doCheck(block, holder, rt)
-  }
-
-  private fun doCheckConnection(block: HCLBlock, holder: ProblemsHolder) {
-    val type = block.`object`?.findProperty("type")?.value
-    val properties = ArrayList<PropertyOrBlockType>()
-    properties.addAll(TypeModel.Connection.properties)
-    if (type is HCLStringLiteral) {
-      val v = type.value.toLowerCase().trim()
-      when (v) {
-        "ssh" -> properties.addAll(TypeModel.ConnectionPropertiesSSH)
-        "winrm" -> properties.addAll(TypeModel.ConnectionPropertiesWinRM)
-      // TODO: Support interpolation resolving
-        else -> LOG.warn("Unsupported 'connection' block type '${type.value}'")
-      }
-    }
-    if (type == null) {
-      // ssh by default
-      properties.addAll(TypeModel.ConnectionPropertiesSSH)
-    }
-    doCheck(block, holder, properties.toTypedArray())
   }
 
 }
