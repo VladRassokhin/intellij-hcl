@@ -125,7 +125,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
   companion object {
     public val ROOT_BLOCK_KEYWORDS: SortedSet<String> = TypeModel.RootBlocks.map { it -> it.literal }.toSortedSet()
-    public val COMMON_RESOURCE_PROPERTIES: SortedSet<String> = TypeModel.AbstractResource.properties.map { it.name }.toSortedSet()
+    public val ROOT_BLOCKS_SORTED: List<PropertyOrBlockType> = TypeModel.RootBlocks.map { it.toPOBT() }.sortedBy { it.name }
 
     private val LOG = Logger.getInstance(TerraformConfigCompletionProvider::class.java)
     fun DumpPsiFileModel(element: PsiElement): () -> String {
@@ -179,7 +179,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       if (leftNWS is HCLIdentifier || leftNWS?.node?.elementType == HCLElementTypes.ID) {
         return assert(false, DumpPsiFileModel(position))
       }
-      result.addAllElements(ROOT_BLOCK_KEYWORDS.map { LookupElementBuilder.create(it).withInsertHandler(ResourceBlockNameInsertHandler) })
+      result.addAllElements(ROOT_BLOCKS_SORTED.map { create(it) })
     }
   }
 
