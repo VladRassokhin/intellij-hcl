@@ -31,7 +31,7 @@ import java.util.regex.Pattern
 
 public open class Type(val name: String)
 public open class PropertyType(val name: String, val type: Type, val hint: String? = null, val description: String? = null, val required: Boolean = false, val injectionAllowed: Boolean = true)
-public open class BlockType(val literal: String, val args: Int = 0, val required: Boolean = false, vararg val properties: PropertyOrBlockType = arrayOf())
+public open class BlockType(val literal: String, val args: Int = 0, val required: Boolean = false, val description: String? = null, vararg val properties: PropertyOrBlockType = arrayOf())
 
 public class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
   val name: String = if (property != null) property.name else block!!.literal
@@ -68,10 +68,10 @@ object Types {
   val StringWithInjection = Type("String")
 }
 
-public class ResourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, false, *properties)
-public class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, false, *properties)
-public class VariableType(vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("variable", 1, false, *properties)
-public class ProvisionerType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provisioner", 1, false, *properties)
+public class ResourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, properties = *properties)
+public class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, properties = *properties)
+public class VariableType(vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("variable", 1, properties = *properties)
+public class ProvisionerType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provisioner", 1, properties = *properties)
 
 
 public class TypeModelProvider {
@@ -290,28 +290,28 @@ public class TypeModel(
     val provisioners: List<ProvisionerType> = arrayListOf()
 ) {
   companion object {
-    val Atlas: BlockType = BlockType("atlas", 0, false, PropertyType("name", Types.String, required = true, injectionAllowed = false).toPOBT())
-    val Module: BlockType = BlockType("module", 1, false, PropertyType("source", Types.String, hint = "Url", required = true).toPOBT())
-    val Output: BlockType = BlockType("output", 1, false, PropertyType("value", Types.String, hint = "Interpolation(Any)", required = true).toPOBT())
-    val Variable: BlockType = BlockType("variable", 1, false,
+    val Atlas: BlockType = BlockType("atlas", 0, properties = PropertyType("name", Types.String, required = true, injectionAllowed = false).toPOBT())
+    val Module: BlockType = BlockType("module", 1, properties = PropertyType("source", Types.String, hint = "Url", required = true).toPOBT())
+    val Output: BlockType = BlockType("output", 1, properties = PropertyType("value", Types.String, hint = "Interpolation(Any)", required = true).toPOBT())
+    val Variable: BlockType = BlockType("variable", 1, properties = *arrayOf(
         PropertyType("default", Type("String|Object")).toPOBT(),
         PropertyType("description", Types.String).toPOBT()
-    )
+    ))
 
-    val ResourceLifecycle: BlockType = BlockType("lifecycle", 0, false,
+    val ResourceLifecycle: BlockType = BlockType("lifecycle", 0, properties = *arrayOf(
         PropertyType("create_before_destroy", Types.Boolean).toPOBT(),
         PropertyType("prevent_destroy", Types.Boolean).toPOBT()
-    )
-    val AbstractResourceProvisioner: BlockType = BlockType("provisioner", 1, false)
+    ))
+    val AbstractResourceProvisioner: BlockType = BlockType("provisioner", 1)
 
-    val AbstractResource: BlockType = BlockType("resource", 2, false,
+    val AbstractResource: BlockType = BlockType("resource", 2, properties = *arrayOf(
         PropertyType("count", Types.Number).toPOBT(),
         PropertyType("depends_on", Types.Array, "String").toPOBT(),
         PropertyType("provider", Types.String, "Reference(provider.type|provider.alias)").toPOBT(),
         TypeModel.ResourceLifecycle.toPOBT(),
         // Also may have connection? and provisioner+ blocks
         TypeModel.AbstractResourceProvisioner.toPOBT()
-    )
+    ))
     val AbstractProvider: BlockType = BlockType("provider", 1, false)
 
     val RootBlocks = listOf(Atlas, Module, Output, Variable, AbstractProvider, AbstractResource)
