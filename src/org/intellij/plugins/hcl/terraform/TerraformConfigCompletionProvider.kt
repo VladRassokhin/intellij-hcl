@@ -58,6 +58,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
     val QuotedStringsTokenSet = TokenSet.create(HCLElementTypes.DOUBLE_QUOTED_STRING, HCLElementTypes.SINGLE_QUOTED_STRING)
 
+    // Block first word
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
         .withParent(File)
@@ -73,62 +74,53 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
     // TODO: Provide data from all resources in folder (?)
 
-    if (MODEL_BASED_COMPLETION_ENABLED) {
+    // Block type or name
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformConfigFile)
+        .withParent(not(Identifier))
+        .andOr(psiElement().withSuperParent(1, File), psiElement().withSuperParent(1, Block))
+        .afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))
+        , BlockTypeOrNameCompletionProvider);
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformConfigFile)
+        .withParent(psiElement(HCLIdentifier::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
+        .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
+        , BlockTypeOrNameCompletionProvider);
+    extend(CompletionType.BASIC, psiElement().withElementType(QuotedStringsTokenSet)
+        .inFile(TerraformConfigFile)
+        .withParent(psiElement(HCLStringLiteral::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
+        .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
+        , BlockTypeOrNameCompletionProvider);
+    extend(CompletionType.BASIC, psiElement().withElementType(QuotedStringsTokenSet)
+        .inFile(TerraformConfigFile)
+        .andOr(psiElement().withParent(File), psiElement().withParent(Block))
+        .afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))
+        , BlockTypeOrNameCompletionProvider);
 
-      extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-          .inFile(TerraformConfigFile)
-          .withParent(not(Identifier))
-          .andOr(psiElement().withSuperParent(1, File), psiElement().withSuperParent(1, Block))
-          .afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))
-          , BlockTypeOrNameCompletionProvider);
-      extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-          .inFile(TerraformConfigFile)
-          .withParent(psiElement(HCLIdentifier::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
-          .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
-          , BlockTypeOrNameCompletionProvider);
+    // Block property
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformConfigFile)
+        .withParent(Object)
+        .withSuperParent(2, Block)
+        , BlockPropertiesCompletionProvider);
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformConfigFile)
+        .withParent(Identifier)
+        .withSuperParent(2, Property)
+        .withSuperParent(3, Object)
+        .withSuperParent(4, Block)
+        , BlockPropertiesCompletionProvider);
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformConfigFile)
+        .withParent(Identifier)
+        .withSuperParent(2, Block)
+        .withSuperParent(3, Object)
+        .withSuperParent(4, Block)
+        , BlockPropertiesCompletionProvider);
 
-      extend(CompletionType.BASIC, psiElement().withElementType(QuotedStringsTokenSet)
-          .inFile(TerraformConfigFile)
-          .withParent(psiElement(HCLStringLiteral::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
-          .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
-          , BlockTypeOrNameCompletionProvider);
-      extend(CompletionType.BASIC, psiElement().withElementType(QuotedStringsTokenSet)
-          .inFile(TerraformConfigFile)
-          .andOr(psiElement().withParent(File), psiElement().withParent(Block))
-          .afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))
-          , BlockTypeOrNameCompletionProvider);
-
-
-      extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-          .inFile(TerraformConfigFile)
-          .withParent(Object)
-          .withSuperParent(2, Block)
-          , BlockPropertiesCompletionProvider);
-
-      extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-          .inFile(TerraformConfigFile)
-          .withParent(Identifier)
-          .withSuperParent(2, Property)
-          .withSuperParent(3, Object)
-          .withSuperParent(4, Block)
-          , BlockPropertiesCompletionProvider);
-      extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-          .inFile(TerraformConfigFile)
-          .withParent(Identifier)
-          .withSuperParent(2, Block)
-          .withSuperParent(3, Object)
-          .withSuperParent(4, Block)
-          , BlockPropertiesCompletionProvider);
-
-    }
   }
 
   companion object {
-    val MODEL_BASED_COMPLETION_ENABLED: Boolean by lazy {
-      val application = ApplicationManager.getApplication()
-      true || application.isUnitTestMode || application.isInternal
-    }
-
     public val ROOT_BLOCK_KEYWORDS: SortedSet<String> = TypeModel.RootBlocks.map { it -> it.literal }.toSortedSet()
     public val COMMON_RESOURCE_PROPERTIES: SortedSet<String> = TypeModel.AbstractResource.properties.map { it.name }.toSortedSet()
 
@@ -155,6 +147,17 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       }
       return builder
     }
+
+    private fun failIfInUnitTestsMode(position: PsiElement, addition: String? = null) {
+      assert(!ApplicationManager.getApplication().isUnitTestMode, {
+        var ret: String = ""
+        if (addition != null) {
+          ret = "$addition\n"
+        }
+        ret += " Position: $position\nFile: " + DumpPsiFileModel(position)()
+        ret
+      })
+    }
   }
 
   private abstract class OurCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -166,14 +169,10 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
   private object BlockKeywordCompletionProvider : OurCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
-      LOG.debug("TF.BlockKeywordCompletionProvider")
       val position = parameters.position
-      LOG.debug("position = $position")
       val parent = position.parent
-      LOG.debug("parent = $parent")
-      LOG.debug("left = ${position.prevSibling}")
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
-      LOG.debug("leftNWS = $leftNWS")
+      LOG.debug("TF.BlockKeywordCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
       if (leftNWS is HCLIdentifier || leftNWS?.node?.elementType == HCLElementTypes.ID) {
         return assert(false, DumpPsiFileModel(position))
       }
@@ -183,11 +182,9 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
   private object BlockTypeOrNameCompletionProvider : OurCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
-      LOG.debug("TF.BlockTypeOrNameCompletionProvider")
       val position = parameters.position
-      LOG.debug("position = $position")
       val parent = position.parent
-      LOG.debug("parent = $parent")
+      LOG.debug("TF.BlockTypeOrNameCompletionProvider{position=$position, parent=$parent}")
       val obj = when {
         parent is HCLIdentifier -> parent
         parent is HCLStringLiteral -> parent
@@ -196,15 +193,14 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
         position.node.elementType == HCLElementTypes.STRING_LITERAL -> position
         position.node.elementType == HCLElementTypes.DOUBLE_QUOTED_STRING -> position
         position.node.elementType == HCLElementTypes.SINGLE_QUOTED_STRING -> position
-        else -> return assert(ApplicationManager.getApplication().isUnitTestMode, DumpPsiFileModel(position))
+        else -> return failIfInUnitTestsMode(position)
       }
-      LOG.debug("obj = $obj")
       val leftNWS = obj.getPrevSiblingNonWhiteSpace()
-      LOG.debug("leftNWS = $leftNWS")
+      LOG.debug("TF.BlockTypeOrNameCompletionProvider{position=$position, parent=$parent, obj=$obj, lnws=$leftNWS}")
       val type: String = when {
         leftNWS is HCLIdentifier -> leftNWS.id
         leftNWS?.node?.elementType == HCLElementTypes.ID -> leftNWS!!.text
-        else -> return assert(!ApplicationManager.getApplication().isUnitTestMode, DumpPsiFileModel(position))
+        else -> return failIfInUnitTestsMode(position)
       }
       when (type) {
         "resource" ->
@@ -222,10 +218,8 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
 
   private object BlockPropertiesCompletionProvider : OurCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
-      LOG.debug("TF.BlockPropertiesCompletionProvider")
       val position = parameters.position
       var _parent: PsiElement? = position.parent
-      LOG.debug("_parent = $_parent")
       var right: Type? = null;
       var isProperty = false;
       var isBlock = false;
@@ -236,7 +230,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
           right = ModelUtil.getValueType(value)
           if (right == Types.String && value is PsiLanguageInjectionHost) {
             // Check for Injection
-            InjectedLanguageManager.getInstance(pob.project).enumerate(value, object: PsiLanguageInjectionHost.InjectedPsiVisitor {
+            InjectedLanguageManager.getInstance(pob.project).enumerate(value, object : PsiLanguageInjectionHost.InjectedPsiVisitor {
               override fun visit(injectedPsi: PsiFile, places: MutableList<PsiLanguageInjectionHost.Shred>) {
                 if (injectedPsi.fileType == ILFileType) {
                   right = Types.StringWithInjection;
@@ -249,8 +243,14 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
           isBlock = true
         }
         _parent = pob?.parent // Object
+        LOG.debug("TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, right=$right, isBlock=$isBlock, isProperty=$isProperty}")
+      } else {
+        LOG.debug("TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, no right part}")
       }
-      val parent: PsiElement = _parent ?: return assert(false, DumpPsiFileModel(position));
+      val parent: PsiElement = _parent ?: return failIfInUnitTestsMode(position);
+      if (parent !is HCLObject) {
+        return failIfInUnitTestsMode(position, "Parent should be HCLObject")
+      }
       assert(parent is HCLObject, DumpPsiFileModel(position))
       if (parent is HCLObject) {
         val pp = parent.parent
@@ -351,45 +351,6 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       }
       return it.property.type == right
     }
-  }
-}
-
-object QuoteInsertHandler : BasicInsertHandler<LookupElement>() {
-
-  override fun handleInsert(context: InsertionContext?, item: LookupElement?) {
-    if (context == null || item == null) return
-    val editor = context.editor
-    val file = context.file
-    val element = file.findElementAt(context.startOffset)
-    var c: Char? = null
-    if (element is HCLStringLiteral) {
-      when (element.node.firstChildNode.elementType) {
-        HCLElementTypes.SINGLE_QUOTED_STRING -> c = '\''
-        HCLElementTypes.DOUBLE_QUOTED_STRING -> c = '\"'
-      }
-    } else {
-      when (element?.node?.elementType) {
-        HCLElementTypes.SINGLE_QUOTED_STRING -> c = '\''
-        HCLElementTypes.DOUBLE_QUOTED_STRING -> c = '\"'
-      }
-    }
-    if (c == null) return
-    if (context.completionChar == c) return
-    val project = editor.project
-    if (project == null || project.isDisposed) return
-
-    if (!isCharAtCaret(editor, c)) {
-      EditorModificationUtil.insertStringAtCaret(editor, "$c")
-      PsiDocumentManager.getInstance(project).commitDocument(editor.document)
-    } else {
-      editor.caretModel.moveToOffset(editor.caretModel.offset + 1)
-    }
-  }
-
-  private fun isCharAtCaret(editor: Editor, c: Char): Boolean {
-    val startOffset = editor.caretModel.offset
-    val document = editor.document
-    return document.textLength > startOffset && document.charsSequence.charAt(startOffset) == c
   }
 }
 
