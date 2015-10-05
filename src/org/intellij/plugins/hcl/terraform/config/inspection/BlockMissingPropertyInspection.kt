@@ -19,6 +19,7 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.application.Result
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.ServiceManager
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
@@ -31,10 +32,14 @@ import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
 import getNameElementUnquoted
+import org.intellij.plugins.hcl.psi.HCLStringLiteral
+import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionProvider
 import java.util.*
 
-@Suppress("UNUSED_PARAMETER")
 public class BlockMissingPropertyInspection : LocalInspectionTool() {
+  companion object {
+    private val LOG = Logger.getInstance(TerraformConfigCompletionProvider::class.java)
+  }
 
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     val ft = holder.file.fileType
@@ -102,8 +107,11 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
   }
 
   private fun doCheck(block: HCLBlock, holder: ProblemsHolder, type: BlockType) {
+    doCheck(block, holder, type.properties)
+  }
+
+  private fun doCheck(block: HCLBlock, holder: ProblemsHolder, properties: Array<out PropertyOrBlockType>) {
     val obj = block.`object` ?: return
-    val properties = type.properties
     ProgressIndicatorProvider.checkCanceled()
 
     val candidates = ArrayList<PropertyOrBlockType>(properties.filter { it.required })
@@ -140,6 +148,23 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
   }
 
   private fun doCheckConnection(block: HCLBlock, holder: ProblemsHolder) {
+    val type = block.`object`?.findProperty("type")?.value
+    val properties = ArrayList<PropertyOrBlockType>()
+    properties.addAll(TypeModel.Connection.properties)
+    if (type is HCLStringLiteral) {
+      val v = type.value.toLowerCase().trim()
+      when (v) {
+        "ssh" -> properties.addAll(TypeModel.ConnectionPropertiesSSH)
+        "winrm" -> properties.addAll(TypeModel.ConnectionPropertiesWinRM)
+      // TODO: Support interpolation resolving
+        else -> LOG.warn("Unsupported 'connection' block type '${type.value}'")
+      }
+    }
+    if (type == null) {
+      // ssh by default
+      properties.addAll(TypeModel.ConnectionPropertiesSSH)
+    }
+    doCheck(block, holder, properties.toTypedArray())
   }
 
 }
