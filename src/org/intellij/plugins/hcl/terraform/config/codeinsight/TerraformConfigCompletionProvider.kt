@@ -140,9 +140,9 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       return builder
     }
 
-    fun create(value: PropertyOrBlockType): LookupElementBuilder {
-      // TODO: Better renderer for properties/blocks (#withRenderer)
-      var builder = LookupElementBuilder.create(value.name)
+    fun create(value: PropertyOrBlockType, lookupString: String? = null): LookupElementBuilder {
+      var builder = LookupElementBuilder.create(value, lookupString ?: value.name)
+      builder = builder.withRenderer(TerraformLookupElementRenderer())
       if (value.block != null) {
         builder = builder.withInsertHandler(ResourceBlockNameInsertHandler)
       } else if (value.property != null) {
