@@ -45,20 +45,10 @@ object ResourcePropertyInsertHandler : BasicInsertHandler<LookupElement>() {
     }
 
     // Add equals sign
-
-    if (context.completionChar == '=') {
-      // Add space around equals sign
-      editor.caretModel.moveToOffset(editor.caretModel.offset - 1)
-      EditorModificationUtil.insertStringAtCaret(editor, " ")
-      editor.caretModel.moveToOffset(editor.caretModel.offset + 1)
-      EditorModificationUtil.insertStringAtCaret(editor, " ")
-    } else {
-      val eq = " = "
-      if (context.completionChar == ' ') {
-        eq.trimStart()
-      }
-      EditorModificationUtil.insertStringAtCaret(editor, eq)
+    if (context.completionChar in " =") {
+      context.setAddCompletionChar(false)
     }
+    EditorModificationUtil.insertStringAtCaret(editor, " = ")
 
     // Add value placeholder: "" for string; 0 for int, "${}" for string with IL, etc
     val obj = item.`object`
