@@ -17,16 +17,15 @@ package org.intellij.plugins.hcl.psi.impl
 
 import com.intellij.icons.AllIcons
 import com.intellij.navigation.ItemPresentation
-import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ArrayUtil
-import com.intellij.util.PlatformIcons
 import com.intellij.util.SmartList
 import org.intellij.plugins.hcl.HCLParserDefinition
+import org.intellij.plugins.hcl.Icons
 import org.intellij.plugins.hcl.psi.*
 import javax.swing.Icon
 
@@ -99,12 +98,12 @@ public object HCLPsiImplUtils {
 
       override fun getIcon(unused: Boolean): Icon? {
         if (property.value is HCLArray) {
-          return IconLoader.getIcon("/hcl/property_brackets.png")
+          return Icons.PropertyBrackets
         }
         if (property.value is HCLObject) {
-          return IconLoader.getIcon("/hcl/property_braces.png")
+          return Icons.PropertyBraces
         }
-        return PlatformIcons.PROPERTY_ICON
+        return Icons.Property
       }
     }
   }
@@ -121,12 +120,12 @@ public object HCLPsiImplUtils {
 
       override fun getIcon(unused: Boolean): Icon? {
         if (block.`object` is HCLArray) {
-          return IconLoader.getIcon("/hcl/property_brackets.png")
+          return Icons.PropertyBrackets
         }
         if (block.`object` is HCLObject) {
-          return IconLoader.getIcon("/hcl/property_braces.png")
+          return Icons.PropertyBraces
         }
-        return PlatformIcons.PROPERTY_ICON
+        return Icons.Property
       }
     }
   }
