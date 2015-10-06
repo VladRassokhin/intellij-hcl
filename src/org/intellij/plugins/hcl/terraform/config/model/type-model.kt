@@ -30,7 +30,8 @@ import java.util.regex.Pattern
 // Model for element types
 
 public open class Type(val name: String)
-public open class PropertyType(val name: String, val type: Type, val hint: String? = null, val description: String? = null, val required: Boolean = false, val injectionAllowed: Boolean = true)
+// Hint may be: String, PropertyOrBlockType, List<PropertyOrBlockType>
+public open class PropertyType(val name: String, val type: Type, val hint: Any? = null, val description: String? = null, val required: Boolean = false, val injectionAllowed: Boolean = true)
 public open class BlockType(val literal: String, val args: Int = 0, val required: Boolean = false, val description: String? = null, vararg val properties: PropertyOrBlockType = arrayOf())
 
 public class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
@@ -131,7 +132,6 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
         }
       }
 
-      // TODO: Load & parse provisioners
       // TODO: Fetch latest model from github (?)
 
       return TypeModel(this.resources, this.providers, this.provisioners)
@@ -210,24 +210,27 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
   }
 
   private fun parseProviderInfo(name: String, obj: JsonObject): ProviderType {
-    return ProviderType(name, *obj.map { parseElement(it, name) }.toTypedArray());
+    return ProviderType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray());
   }
 
   private fun parseProvisionerInfo(name: String, obj: JsonObject): ProvisionerType {
-    return ProvisionerType(name, *obj.map { parseElement(it, name) }.toTypedArray());
+    return ProvisionerType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray());
   }
 
   private fun parseResourceInfo(entry: Map.Entry<String, Any?>): ResourceType {
     val name = entry.key
     assert(entry.value is JsonObject, { "Right part of provider should be object" })
     val obj = entry.value as JsonObject
-    return ResourceType(name, *obj.map { parseElement(it, name) }.toTypedArray());
+    return ResourceType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray());
   }
 
-  private fun parseElement(entry: Map.Entry<String, Any?>, providerName: String): PropertyOrBlockType {
-    val name = entry.key;
-    assert(entry.value is JsonArray<*>, { "Right part of provider resource should be array" })
-    val obj = (entry.value as JsonArray<*>).filterIsInstance(JsonObject::class.java)
+  private fun parseSchemaElement(entry: Map.Entry<String, Any?>, providerName: String): PropertyOrBlockType {
+    return parseSchemaElement(entry.key, entry.value, providerName)
+  }
+
+  private fun parseSchemaElement(name: String, value: Any?, providerName: String): PropertyOrBlockType {
+    assert(value is JsonArray<*>, { "Right part of schema element (field parameters) should be array" })
+    val obj = (value as JsonArray<*>).filterIsInstance(JsonObject::class.java)
     val m = HashMap<String, JsonObject>();
     for (it in obj) {
       val n = it.string("name")
@@ -236,20 +239,41 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       }
     }
 
+    val fqn = "$providerName.$name"
+
+    var hint: Any? = null
+
     val type = parseType(m.get("Type"))
     val elem = m.get("Elem")
     if (elem != null) {
       // Valid only for TypeSet and TypeList, should parse internal structure
-      // TODO: parse internal resource/schemas
-      // populate typeHint using parsed value
-
+      // TODO: ensure set only for TypeSet and TypeList
+      val et = elem.string("type")
+      if (et == "ResourceSchemaElements") {
+        val a = elem.array<Any>("value")
+        if (a != null) {
+          val parsed = parseSchemaElement("__inner__", a, "$fqn.__inner__")
+          val t = parsed.property!!.type
+          hint = t
+        }
+      }
+      if (et == "ResourceSchemaInfo") {
+        val o = elem.obj("value")
+        if (o != null) {
+          val innerTypeProperties = o.map { parseSchemaElement(it, "$fqn.__inner__") }
+          hint = innerTypeProperties
+        }
+      }
       // ?? return BlockType(name).toPOBT()
     }
     val required = (m.get("Required")?.string("value")?.toLowerCase() ?: "false").toBoolean()
 
-    val fqn = "$providerName.$name"
     val additional = external.get(fqn) ?: TypeModelProvider.Additional(name);
-    return PropertyType(name, type, additional.hint, additional.description, required).toPOBT()
+
+    // External description and hint overrides one from model
+    return PropertyType(name, type, required = required,
+        hint = additional.hint ?: hint,
+        description = additional.description ?: m.get("Description")?.string("value") ?: null).toPOBT()
   }
 
   private fun parseType(attribute: JsonObject?): Type {
