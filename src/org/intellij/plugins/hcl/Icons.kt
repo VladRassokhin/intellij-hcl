@@ -15,12 +15,21 @@
  */
 package org.intellij.plugins.hcl
 
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.util.IconLoader
 import com.intellij.util.PlatformIcons
 import javax.swing.Icon
 
 object Icons {
+  object FileTypes {
+    // TODO: Create icons
+    val HCL: Icon by lazy { AllIcons.FileTypes.Text }
+    val Terraform: Icon by lazy { HCL }
+  }
+
   val Property: Icon by lazy { PlatformIcons.PROPERTY_ICON }
   val PropertyBrackets: Icon by lazy { IconLoader.getIcon("/hcl/property_brackets.png") }
   val PropertyBraces: Icon by lazy { IconLoader.getIcon("/hcl/property_braces.png") }
+  val Array: Icon by lazy { AllIcons.Json.Array}
+  val Object: Icon by lazy { AllIcons.Json.Object}
 }

@@ -15,7 +15,6 @@
  */
 package org.intellij.plugins.hcl.psi.impl
 
-import com.intellij.icons.AllIcons
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.TextRange
@@ -141,7 +140,7 @@ public object HCLPsiImplUtils {
       }
 
       override fun getIcon(unused: Boolean): Icon? {
-        return AllIcons.Json.Array
+        return Icons.Array
       }
     }
   }
@@ -157,7 +156,7 @@ public object HCLPsiImplUtils {
       }
 
       override fun getIcon(unused: Boolean): Icon? {
-        return AllIcons.Json.Object
+        return Icons.Object
       }
     }
   }

@@ -15,17 +15,16 @@
  */
 package org.intellij.plugins.hcl.terraform.config
 
-import com.intellij.icons.AllIcons
 import com.intellij.openapi.fileTypes.FileTypeConsumer
 import com.intellij.openapi.fileTypes.FileTypeFactory
 import com.intellij.openapi.fileTypes.LanguageFileType
+import org.intellij.plugins.hcl.Icons
 
 
 object TerraformFileType : LanguageFileType(TerraformLanguage) {
   public val DEFAULT_EXTENSION: String = "tf"
 
-  // TODO: Create icon
-  override fun getIcon() = AllIcons.FileTypes.Text
+  override fun getIcon() = Icons.FileTypes.Terraform
 
   override fun getDefaultExtension() = DEFAULT_EXTENSION
 

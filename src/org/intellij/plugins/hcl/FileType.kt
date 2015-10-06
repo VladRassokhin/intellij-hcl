@@ -15,14 +15,15 @@
  */
 package org.intellij.plugins.hcl
 
-import com.intellij.icons.AllIcons
-import com.intellij.openapi.fileTypes.*
+import com.intellij.openapi.fileTypes.ExactFileNameMatcher
+import com.intellij.openapi.fileTypes.FileTypeConsumer
+import com.intellij.openapi.fileTypes.FileTypeFactory
+import com.intellij.openapi.fileTypes.LanguageFileType
 
 object HCLFileType : LanguageFileType(HCLLanguage) {
   public val DEFAULT_EXTENSION: String = "hcl"
 
-  // TODO: Create icon
-  override fun getIcon() = AllIcons.FileTypes.Text
+  override fun getIcon() = Icons.FileTypes.HCL
 
   override fun getDefaultExtension() = DEFAULT_EXTENSION
 
