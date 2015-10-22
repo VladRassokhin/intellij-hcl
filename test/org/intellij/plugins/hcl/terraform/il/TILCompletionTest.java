@@ -35,7 +35,7 @@ public class TILCompletionTest extends CompletionTestCase {
 
   @Override
   protected Language getExpectedLanguage() {
-    return TILLanguage.INSTANCE$;
+    return TILLanguage.INSTANCE;
   }
 
   public void testMethodCompletion_BeginOnInterpolation() throws Exception {

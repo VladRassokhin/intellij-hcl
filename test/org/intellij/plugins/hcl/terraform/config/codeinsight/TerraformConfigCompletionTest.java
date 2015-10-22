@@ -51,7 +51,7 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
 
   @Override
   protected Language getExpectedLanguage() {
-    return TerraformLanguage.INSTANCE$;
+    return TerraformLanguage.INSTANCE;
   }
 
   public void testBlockKeywordCompletion() throws Exception {

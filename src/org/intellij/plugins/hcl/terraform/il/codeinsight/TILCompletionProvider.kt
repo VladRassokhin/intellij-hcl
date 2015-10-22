@@ -32,7 +32,7 @@ public class TILCompletionProvider : CompletionContributor() {
   }
 
   companion object {
-    public val TERRAFORM_METHODS: TreeSet<String> = sortedSetOf("concat", "file", "format", "formatlist", "join", "element", "replace", "split", "length", "lookup", "keys", "values")
+    @JvmField public val TERRAFORM_METHODS: TreeSet<String> = sortedSetOf("concat", "file", "format", "formatlist", "join", "element", "replace", "split", "length", "lookup", "keys", "values")
     private val METHOD_POSITION = PlatformPatterns.psiElement().withLanguage(TILLanguage)
         .withParent(ILVariable::class.java)
         .andNot(PlatformPatterns.psiElement().withSuperParent(2, ILSelectExpression::class.java))

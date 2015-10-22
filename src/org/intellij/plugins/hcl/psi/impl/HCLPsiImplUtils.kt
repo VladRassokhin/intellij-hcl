@@ -209,7 +209,7 @@ public object HCLPsiImplUtils {
 
   private fun getSuffixValue(suffix: String): Long {
     val base: Int
-    when(suffix.length()) {
+    when(suffix.length) {
       0 -> return 1;
       1 -> {
         base = 1000;

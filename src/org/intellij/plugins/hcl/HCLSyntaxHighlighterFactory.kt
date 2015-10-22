@@ -81,7 +81,7 @@ public open class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 
 
     override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
-      return SyntaxHighlighterBase.pack(ourAttributes.get(tokenType))
+      return SyntaxHighlighterBase.pack(ourAttributes.getRaw(tokenType))
     }
 
     override fun getHighlightingLexer(): Lexer {

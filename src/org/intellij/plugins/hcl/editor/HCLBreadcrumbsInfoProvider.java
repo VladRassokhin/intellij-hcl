@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 public class HCLBreadcrumbsInfoProvider extends BreadcrumbsInfoProvider {
   @Override
   public Language[] getLanguages() {
-    return new Language[]{HCLLanguage.INSTANCE$, TerraformLanguage.INSTANCE$};
+    return new Language[]{HCLLanguage.INSTANCE, TerraformLanguage.INSTANCE};
   }
 
   @Override

@@ -74,7 +74,7 @@ public class HCLFormatterTest extends LightCodeInsightFixtureTestCase {
   }
 
   public void doSimpleTest(String input, String expected, @Nullable Runnable setupSettings) throws Exception {
-    myFixture.configureByText(HCLFileType.INSTANCE$, input);
+    myFixture.configureByText(HCLFileType.INSTANCE, input);
     final Project project = getProject();
     final PsiFile file = myFixture.getFile();
     if (setupSettings != null) setupSettings.run();

@@ -123,7 +123,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
   }
 
   companion object {
-    public val ROOT_BLOCK_KEYWORDS: SortedSet<String> = TypeModel.RootBlocks.map { it -> it.literal }.toSortedSet()
+    @JvmField public val ROOT_BLOCK_KEYWORDS: SortedSet<String> = TypeModel.RootBlocks.map { it -> it.literal }.toSortedSet()
     public val ROOT_BLOCKS_SORTED: List<PropertyOrBlockType> = TypeModel.RootBlocks.map { it.toPOBT() }.sortedBy { it.name }
 
     private val LOG = Logger.getInstance(TerraformConfigCompletionProvider::class.java)

@@ -27,98 +27,98 @@ import java.util.List;
 public class HCLPsiImplUtilJ {
   @NotNull
   public static String getName(@NotNull HCLProperty property) {
-    return HCLPsiImplUtils.INSTANCE$.getName(property);
+    return HCLPsiImplUtils.INSTANCE.getName(property);
   }
 
   @NotNull
   public static String getName(@NotNull HCLBlock block) {
-    return HCLPsiImplUtils.INSTANCE$.getName(block);
+    return HCLPsiImplUtils.INSTANCE.getName(block);
   }
 
   @NotNull
   public static HCLValue getNameElement(@NotNull HCLProperty property) {
-    return HCLPsiImplUtils.INSTANCE$.getNameElement(property);
+    return HCLPsiImplUtils.INSTANCE.getNameElement(property);
   }
 
   @NotNull
   public static HCLElement[] getNameElements(@NotNull HCLBlock block) {
-    return HCLPsiImplUtils.INSTANCE$.getNameElements(block);
+    return HCLPsiImplUtils.INSTANCE.getNameElements(block);
   }
 
   @Nullable
   public static HCLValue getValue(@NotNull HCLProperty property) {
-    return HCLPsiImplUtils.INSTANCE$.getValue(property);
+    return HCLPsiImplUtils.INSTANCE.getValue(property);
   }
 
   @Nullable
   public static HCLObject getObject(@NotNull HCLBlock block) {
-    return HCLPsiImplUtils.INSTANCE$.getObject(block);
+    return HCLPsiImplUtils.INSTANCE.getObject(block);
   }
 
   public static boolean isQuotedString(@NotNull HCLLiteral literal) {
-    return HCLPsiImplUtils.INSTANCE$.isQuotedString(literal);
+    return HCLPsiImplUtils.INSTANCE.isQuotedString(literal);
   }
 
   @Nullable
   public static ItemPresentation getPresentation(@NotNull HCLProperty property) {
-    return HCLPsiImplUtils.INSTANCE$.getPresentation(property);
+    return HCLPsiImplUtils.INSTANCE.getPresentation(property);
   }
 
   @Nullable
   public static ItemPresentation getPresentation(@NotNull HCLBlock block) {
-    return HCLPsiImplUtils.INSTANCE$.getPresentation(block);
+    return HCLPsiImplUtils.INSTANCE.getPresentation(block);
   }
 
   @Nullable
   public static ItemPresentation getPresentation(@NotNull HCLArray array) {
-    return HCLPsiImplUtils.INSTANCE$.getPresentation(array);
+    return HCLPsiImplUtils.INSTANCE.getPresentation(array);
   }
 
   @Nullable
   public static ItemPresentation getPresentation(@NotNull HCLObject o) {
-    return HCLPsiImplUtils.INSTANCE$.getPresentation(o);
+    return HCLPsiImplUtils.INSTANCE.getPresentation(o);
   }
 
   @NotNull
   public static List<Pair<TextRange, String>> getTextFragments(@NotNull HCLStringLiteral literal) {
-    return HCLPsiImplUtils.INSTANCE$.getTextFragments(literal);
+    return HCLPsiImplUtils.INSTANCE.getTextFragments(literal);
   }
 
   @Nullable
   public static HCLProperty findProperty(@NotNull HCLObject object, @NotNull String name) {
-    return HCLPsiImplUtils.INSTANCE$.findProperty(object, name);
+    return HCLPsiImplUtils.INSTANCE.findProperty(object, name);
   }
 
   @NotNull
   public static String getValue(@NotNull HCLStringLiteral literal) {
-    return HCLPsiImplUtils.INSTANCE$.getValue(literal);
+    return HCLPsiImplUtils.INSTANCE.getValue(literal);
   }
 
   @NotNull
   public static String getValue(@NotNull HCLHeredocLiteral literal) {
-    return HCLPsiImplUtils.INSTANCE$.getValue(literal);
+    return HCLPsiImplUtils.INSTANCE.getValue(literal);
   }
 
   @NotNull
   public static String getValue(@NotNull HCLHeredocLine line) {
-    return HCLPsiImplUtils.INSTANCE$.getValue(line);
+    return HCLPsiImplUtils.INSTANCE.getValue(line);
   }
 
   @NotNull
   public static String getName(@NotNull HCLHeredocMarker marker) {
-    return HCLPsiImplUtils.INSTANCE$.getName(marker);
+    return HCLPsiImplUtils.INSTANCE.getName(marker);
   }
 
   public static boolean getValue(@NotNull HCLBooleanLiteral literal) {
-    return HCLPsiImplUtils.INSTANCE$.getValue(literal);
+    return HCLPsiImplUtils.INSTANCE.getValue(literal);
   }
 
   public static double getValue(@NotNull HCLNumberLiteral literal) {
-    return HCLPsiImplUtils.INSTANCE$.getValue(literal);
+    return HCLPsiImplUtils.INSTANCE.getValue(literal);
   }
 
   @NotNull
   public static String getId(@NotNull HCLIdentifier identifier) {
-    return HCLPsiImplUtils.INSTANCE$.getId(identifier);
+    return HCLPsiImplUtils.INSTANCE.getId(identifier);
   }
 }

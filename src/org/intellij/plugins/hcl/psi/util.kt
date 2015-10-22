@@ -25,7 +25,7 @@ import org.intellij.plugins.hcl.psi.HCLStringLiteral
 
 public fun HCLBlock.getNameElementUnquoted(i: Int): String? {
   val elements = this.nameElements
-  if (elements.size() < i + 1) return null
+  if (elements.size < i + 1) return null
   val element = elements.get(i)
   return when (element) {
     is HCLIdentifier -> element.id

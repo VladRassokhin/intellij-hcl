@@ -89,7 +89,7 @@ public class HCLCodeStylePanel extends CodeStyleAbstractPanel {
   @NotNull
   @Override
   protected FileType getFileType() {
-    return HCLFileType.INSTANCE$;
+    return HCLFileType.INSTANCE;
   }
 
   @Nullable

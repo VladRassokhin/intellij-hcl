@@ -138,7 +138,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
     } catch(e: Exception) {
       if (application.isUnitTestMode || application.isInternal) {
         LOG.error(e);
-        assert(false) { "In unit test mode exceptions are not tolerated. Exception: ${e.getMessage()}" }
+        assert(false) { "In unit test mode exceptions are not tolerated. Exception: ${e.message}" }
       }
       LOG.warn(e)
       return null
@@ -360,7 +360,7 @@ public class TypeModel(
         Connection.toPOBT()
     ))
 
-    val AbstractResource: BlockType = BlockType("resource", 2, properties = *arrayOf(
+    @JvmField val AbstractResource: BlockType = BlockType("resource", 2, properties = *arrayOf(
         PropertyType("count", Types.Number).toPOBT(),
         PropertyType("depends_on", Types.Array, "String").toPOBT(),
         PropertyType("provider", Types.String, "Reference(provider.type|provider.alias)").toPOBT(),

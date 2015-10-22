@@ -70,12 +70,12 @@ public class BlockMissingPropertyInspection : LocalInspectionTool() {
 
     ProgressIndicatorProvider.checkCanceled()
 
-    holder.registerProblem(block, "Missing required properties: ${required.map { it.name }.join(", ")}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING, AddResourcePropertiesFix(required))
+    holder.registerProblem(block, "Missing required properties: ${required.map { it.name }.joinToString(", ")}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING, AddResourcePropertiesFix(required))
   }
 
 }
 
-class AddResourcePropertiesFix(val add: Collection<PropertyOrBlockType>) : LocalQuickFixBase("Add properties: ${add.map { it.name }.join(", ")}", "Add missing properties") {
+class AddResourcePropertiesFix(val add: Collection<PropertyOrBlockType>) : LocalQuickFixBase("Add properties: ${add.map { it.name }.joinToString(", ")}", "Add missing properties") {
   override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
     val element = descriptor.psiElement
     if (element !is HCLBlock) return

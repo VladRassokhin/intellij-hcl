@@ -70,10 +70,10 @@ public class ILLanguageInjector : LanguageInjector {
       val ranges: ArrayList<TextRange> = ArrayList()
       var skip = text.indexOf("\${");
       out@ while (true) {
-        if (skip >= text.length()) break;
+        if (skip >= text.length) break;
 
         val lexer = TILLexer()
-        lexer.start(text, skip, text.length());
+        lexer.start(text, skip, text.length);
         var level = 0
         var start = -1;
         while (true) {
@@ -99,11 +99,11 @@ public class ILLanguageInjector : LanguageInjector {
               }
             }
             null -> {
-              if (lexer.tokenEnd >= text.length()) {
+              if (lexer.tokenEnd >= text.length) {
                 // Real end of string
                 if (level > 0) {
                   // Non finished interpolation
-                  ranges.add(TextRange(start, Math.min(lexer.tokenEnd, text.length())));
+                  ranges.add(TextRange(start, Math.min(lexer.tokenEnd, text.length)));
                 }
                 break@out;
               } else {

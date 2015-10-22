@@ -84,8 +84,8 @@ public open class HCLParserDefinition : ParserDefinition {
     public val HCL_CONTAINERS: TokenSet = TokenSet.create(OBJECT, ARRAY)
     public val HCL_BOOLEANS: TokenSet = TokenSet.create(TRUE, FALSE)
     public val HCL_KEYWORDS: TokenSet = TokenSet.create(TRUE, FALSE, NULL)
-    public val HCL_LITERALS: TokenSet = TokenSet.create(STRING_LITERAL, NUMBER_LITERAL, NULL_LITERAL, TRUE, FALSE)
+    @JvmField public val HCL_LITERALS: TokenSet = TokenSet.create(STRING_LITERAL, NUMBER_LITERAL, NULL_LITERAL, TRUE, FALSE)
     public val HCL_VALUES: TokenSet = TokenSet.orSet(HCL_CONTAINERS, HCL_LITERALS)
-    public val HCL_COMMENTARIES: TokenSet = TokenSet.create(BLOCK_COMMENT, LINE_COMMENT)
+    @JvmField public val HCL_COMMENTARIES: TokenSet = TokenSet.create(BLOCK_COMMENT, LINE_COMMENT)
   }
 }

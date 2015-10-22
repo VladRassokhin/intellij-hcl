@@ -81,7 +81,7 @@ public class TILPsiImplUtilJ {
 
   @Nullable
   public static ILVariable createVariable(String name, Project project) {
-    PsiFile file = PsiFileFactory.getInstance(project).createFileFromText(TILLanguage.INSTANCE$, "${" + name + "}");
+    PsiFile file = PsiFileFactory.getInstance(project).createFileFromText(TILLanguage.INSTANCE, "${" + name + "}");
     return (ILVariable) file.getFirstChild().getChildren()[0];
   }
 

@@ -59,6 +59,6 @@ object QuoteInsertHandler : BasicInsertHandler<LookupElement>() {
   private fun isCharAtCaret(editor: Editor, c: Char): Boolean {
     val startOffset = editor.caretModel.offset
     val document = editor.document
-    return document.textLength > startOffset && document.charsSequence.charAt(startOffset) == c
+    return document.textLength > startOffset && document.charsSequence[startOffset] == c
   }
 }

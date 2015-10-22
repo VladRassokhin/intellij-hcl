@@ -166,12 +166,12 @@ public object HCLPsiUtil {
    * @return
    */
   public fun stripQuotes(text: String): String {
-    if (text.length() > 0) {
-      val firstChar = text.charAt(0)
-      val lastChar = text.charAt(text.length() - 1)
+    if (text.length > 0) {
+      val firstChar = text[0]
+      val lastChar = text[text.length - 1]
       if (firstChar == '\'' || firstChar == '"') {
-        if (text.length() > 1 && firstChar == lastChar && !isEscapedChar(text, text.length() - 1)) {
-          return text.substring(1, text.length() - 1)
+        if (text.length > 1 && firstChar == lastChar && !isEscapedChar(text, text.length - 1)) {
+          return text.substring(1, text.length - 1)
         }
         return text.substring(1)
       }
@@ -191,7 +191,7 @@ public object HCLPsiUtil {
   public fun isEscapedChar(text: String, position: Int): Boolean {
     var count = 0
     var i = position - 1
-    while (i >= 0 && text.charAt(i) == '\\') {
+    while (i >= 0 && text[i] == '\\') {
       count++
       i--
     }

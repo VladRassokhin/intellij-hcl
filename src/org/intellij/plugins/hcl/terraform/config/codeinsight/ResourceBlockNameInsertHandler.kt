@@ -73,7 +73,7 @@ object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {
     if (parent is HCLBlock) {
       // Count existing arguments and add missing
       val elements = parent.nameElements
-      current = elements.size() - 1
+      current = elements.size - 1
       // Locate caret to latest argument
       val last = elements.last()
       // TODO: Move caret to last argument properly

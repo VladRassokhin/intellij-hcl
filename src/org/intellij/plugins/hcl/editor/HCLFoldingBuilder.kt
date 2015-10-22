@@ -41,8 +41,8 @@ public class HCLFoldingBuilder : FoldingBuilder {
       HCLElementTypes.OBJECT -> {
         val element = node.psi
         if (isSpanMultipleLines(node, document) && element is HCLObject) {
-          val props = element.propertyList.size()
-          val blocks = element.blockList.size()
+          val props = element.propertyList.size
+          val blocks = element.blockList.size
           val count = props + blocks
           when (count) {
             0, 1 -> descriptors.add(NamedFoldingDescriptor(node, node.textRange, null, getCollapsedObjectPlaceholder(element)))
@@ -53,7 +53,7 @@ public class HCLFoldingBuilder : FoldingBuilder {
       HCLElementTypes.ARRAY -> {
         val element = node.psi
         if (isSpanMultipleLines(node, document) && element is HCLArray) {
-          val count = element.valueList.size()
+          val count = element.valueList.size
           when (count) {
             0, 1 -> descriptors.add(NamedFoldingDescriptor(node, node.textRange, null, getCollapsedArrayPlaceholder(element)))
             else -> descriptors.add(FoldingDescriptor(node, node.textRange))
@@ -70,8 +70,8 @@ public class HCLFoldingBuilder : FoldingBuilder {
   }
 
   private fun getCollapsedObjectPlaceholder(element: HCLObject, limit: Int = 30): String {
-    val props = element.propertyList.size()
-    val blocks = element.blockList.size()
+    val props = element.propertyList.size
+    val blocks = element.blockList.size
     if (props + blocks == 0) return "{}"
     else if (props + blocks != 1) return "{...}"
 
@@ -82,9 +82,9 @@ public class HCLFoldingBuilder : FoldingBuilder {
     }
     val bl = element.blockList.firstOrNull()
     if (bl != null) {
-      if (bl.name.length() > limit) return "{...}"
+      if (bl.name.length > limit) return "{...}"
       val obj = bl.`object` ?: return "{...}"
-      val inner = getCollapsedObjectPlaceholder(obj, limit - (bl.name.length() + 3))
+      val inner = getCollapsedObjectPlaceholder(obj, limit - (bl.name.length + 3))
       return "{${bl.name} $inner}";
     }
     return "{}"
@@ -93,7 +93,7 @@ public class HCLFoldingBuilder : FoldingBuilder {
   private fun getCollapsedArrayPlaceholder(element: HCLArray, limit: Int = 30): String {
     val vals = element.valueList
     if (vals.isEmpty()) return "[]"
-    if (vals.size() > 1) return "[...]"
+    if (vals.size > 1) return "[...]"
     val node = vals.first().node
     if (node.textLength > limit) return "[...]"
     return "[${node.text}]"
