@@ -1,8 +1,8 @@
 {
-  "name": "digitalocean",
+  "name": "packet",
   "type": "provider",
   "schema": {
-    "token": [
+    "auth_token": [
       {
         "name": "Type",
         "type": "schema.ValueType",
@@ -16,13 +16,13 @@
       {
         "name": "Description",
         "type": "string",
-        "value": "The token key for API operations."
+        "value": "The API auth key for API operations."
       }
     ]
   },
   "resources": {
-    "digitalocean_domain": {
-      "ip_address": [
+    "packet_device": {
+      "billing_cycle": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -34,33 +34,14 @@
           "value": "true"
         }
       ],
-      "name": [
+      "created": [
         {
           "name": "Type",
           "type": "schema.ValueType",
           "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
-    },
-    "digitalocean_droplet": {
-      "backups": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
         }
       ],
-      "image": [
+      "facility": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -72,78 +53,74 @@
           "value": "true"
         }
       ],
-      "ipv4_address": [
+      "hostname": [
         {
           "name": "Type",
           "type": "schema.ValueType",
           "value": "TypeString"
-        }
-      ],
-      "ipv4_address_private": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        }
-      ],
-      "ipv6": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
         },
         {
-          "name": "Optional",
+          "name": "Required",
           "type": "bool",
           "value": "true"
-        }
-      ],
-      "ipv6_address": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        }
-      ],
-      "ipv6_address_private": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
         }
       ],
       "locked": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeString"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "private_networking": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
           "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
         }
       ],
-      "region": [
+      "network": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeList"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaInfo",
+          "value": {
+            "address": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              }
+            ],
+            "cidr": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeInt"
+              }
+            ],
+            "family": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeInt"
+              }
+            ],
+            "gateway": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              }
+            ],
+            "public": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeBool"
+              }
+            ]
+          }
+        }
+      ],
+      "operating_system": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -155,7 +132,7 @@
           "value": "true"
         }
       ],
-      "size": [
+      "plan": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -167,7 +144,26 @@
           "value": "true"
         }
       ],
-      "ssh_keys": [
+      "project_id": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "state": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        }
+      ],
+      "tags": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -190,7 +186,7 @@
           ]
         }
       ],
-      "status": [
+      "updated": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -210,17 +206,19 @@
         }
       ]
     },
-    "digitalocean_record": {
-      "domain": [
+    "packet_project": {
+      "created": [
         {
           "name": "Type",
           "type": "schema.ValueType",
           "value": "TypeString"
-        },
+        }
+      ],
+      "id": [
         {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
         }
       ],
       "name": [
@@ -230,48 +228,12 @@
           "value": "TypeString"
         },
         {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "port": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "priority": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "type": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
           "name": "Required",
           "type": "bool",
           "value": "true"
         }
       ],
-      "value": [
+      "payment_method": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -283,20 +245,22 @@
           "value": "true"
         }
       ],
-      "weight": [
+      "updated": [
         {
           "name": "Type",
           "type": "schema.ValueType",
           "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
         }
       ]
     },
-    "digitalocean_ssh_key": {
+    "packet_ssh_key": {
+      "created": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        }
+      ],
       "fingerprint": [
         {
           "name": "Type",
@@ -333,6 +297,13 @@
           "name": "Required",
           "type": "bool",
           "value": "true"
+        }
+      ],
+      "updated": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
         }
       ]
     }
