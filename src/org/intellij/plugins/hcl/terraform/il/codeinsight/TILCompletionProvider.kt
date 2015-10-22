@@ -38,21 +38,24 @@ public class TILCompletionProvider : CompletionContributor() {
         .andNot(PlatformPatterns.psiElement().withSuperParent(2, ILSelectExpression::class.java))
 
     private val LOG = Logger.getInstance(TILCompletionProvider::class.java)
+    fun create(value: String, quote: Boolean = true): LookupElementBuilder {
+      var builder = LookupElementBuilder.create(value)
+//      if (quote) {
+//        builder = builder.withInsertHandler(QuoteInsertHandler)
+//      }
+      return builder
+    }
   }
 
   private object MethodsCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-      LOG.debug("TIL.MethodsCompletionProvider")
       val position = parameters.position
-      LOG.debug("position = $position")
       val parent = position.parent
-      LOG.debug("parent = $parent")
-      LOG.debug("left = ${position.prevSibling}")
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
-      LOG.debug("leftNWS = $leftNWS")
+      LOG.debug("TIL.MethodsCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
       for (keyword in TERRAFORM_METHODS) {
-        result.addElement(LookupElementBuilder.create(keyword).bold())
+        result.addElement(create(keyword))
       }
     }
   }
