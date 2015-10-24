@@ -15,13 +15,18 @@
  */
 package org.intellij.plugins.hcl.terraform.config.codeinsight
 
-import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.completion.BasicInsertHandler
+import com.intellij.codeInsight.completion.CodeCompletionHandlerBase
+import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
+import getNextSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLIdentifier
@@ -70,7 +75,7 @@ object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {
     val current: Int
     val expected = type.args
     var addBraces = false
-    if (parent is HCLBlock) {
+    if (parent is HCLBlock && isNextNameOnTheSameLine(element, context.document)) {
       // Count existing arguments and add missing
       val elements = parent.nameElements
       current = elements.size - 1
@@ -98,6 +103,20 @@ object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {
     if (offset != null) {
       editor.caretModel.moveToOffset(offset)
     }
+  }
+
+  private fun isNextNameOnTheSameLine(element: PsiElement, document: Document): Boolean {
+    val right: PsiElement?
+    if (element is HCLIdentifier) {
+      right = element.getNextSiblingNonWhiteSpace()
+    } else if (element.node?.elementType == HCLElementTypes.ID) {
+      if (element.parent is HCLIdentifier) {
+        right = element.parent.getNextSiblingNonWhiteSpace()
+      } else return true
+    } else return true
+    if (right == null) return true
+    val range = right.node.textRange
+    return document.getLineNumber(range.startOffset) == document.getLineNumber(element.textRange.endOffset)
   }
 
   private fun scheduleBasicCompletion(context: InsertionContext) {
