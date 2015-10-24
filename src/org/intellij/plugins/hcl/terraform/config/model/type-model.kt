@@ -65,6 +65,8 @@ object Types {
   val Object = Type("Object")
   val Invalid = Type("Invalid")
 
+  val Any = Type("Any") // From interpolation
+
   // Separate, as could be used as String, Number, Boolean, etc
   val StringWithInjection = Type("String")
 }
@@ -72,6 +74,19 @@ object Types {
 public class ResourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, properties = *properties)
 public class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, properties = *properties)
 public class ProvisionerType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provisioner", 1, properties = *properties)
+
+// region Interpolation Functions
+public open class Argument(val type: Type, val name: String? = null)
+public open class VariadicArgument(type: Type, name: String? = null) : Argument(type, name)
+
+public class Function(val name: String, val ret: Type, vararg val arguments: Argument = arrayOf(), val variadic: VariadicArgument? = null) {
+  init {
+    val count = arguments.count { it is VariadicArgument }
+    assert (count == 0 || (count == 1 && arguments.last() is VariadicArgument)) { "Only one (last) argument could be variadic" }
+  }
+}
+// endregion
+
 
 
 public class TypeModelProvider {
@@ -100,6 +115,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
   val resources: MutableList<ResourceType> = arrayListOf()
   val providers: MutableList<ProviderType> = arrayListOf()
   val provisioners: MutableList<ProvisionerType> = arrayListOf()
+  val functions: MutableList<Function> = arrayListOf()
 
   public fun load(): TypeModel? {
     val application = ApplicationManager.getApplication()
@@ -133,7 +149,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
       // TODO: Fetch latest model from github (?)
 
-      return TypeModel(this.resources, this.providers, this.provisioners)
+      return TypeModel(this.resources, this.providers, this.provisioners, this.functions)
     } catch(e: Exception) {
       if (application.isUnitTestMode || application.isInternal) {
         LOG.error(e);
@@ -172,6 +188,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
     when (type) {
       "provisioner" -> return parseProvisionerFile(json, file)
       "provider" -> return parseProviderFile(json, file)
+      "functions" -> return parseInterpolationFunctions(json, file)
     }
     // Fallback
     if (json.obj("provider") != null) return parseProviderFile(json, file)
@@ -206,6 +223,26 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
     }
     val info = parseProvisionerInfo(name, provisioner);
     this.provisioners.add(info)
+  }
+
+  private fun parseInterpolationFunctions(json: JsonObject, file: String) {
+    val functions = json.obj("schema");
+    if (functions == null) {
+      LOG.warn("No functions schema in file '$file'")
+      return
+    }
+    for ((k, v) in functions) {
+      if (v !is JsonObject) continue;
+      assert(v.string("Name").equals(k)) { "Name mismatch: $k != ${v.string("Name")}" }
+      val returnType = parseType(v.string("ReturnType")!!)
+      val args = v.array<String>("ArgTypes")!!.map { parseType(it) }.map { Argument(it) }.toArrayList()
+      val variadic = v.boolean("Variadic")!!
+      var va: VariadicArgument? = null
+      if (variadic) {
+        va = VariadicArgument(parseType(v.string("VariadicType")!!))
+      }
+      this.functions.add(Function(k, returnType, *args.toTypedArray(), variadic = va))
+    }
   }
 
   private fun parseProviderInfo(name: String, obj: JsonObject): ProviderType {
@@ -293,7 +330,11 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
             typeObject
     )
      */
-    return when (attribute.string("value")) {
+    return parseType(attribute.string("value"))
+  }
+
+  private fun parseType(string: String?): Type {
+    return when (string) {
       "TypeInvalid" -> Types.Invalid
       "TypeBool" -> Types.Boolean
       "TypeInt" -> Types.Number
@@ -302,6 +343,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       "TypeList" -> Types.Array
       "TypeSet" -> Types.Array
       "TypeMap" -> Types.Object
+      "TypeAny" -> Types.Any
       else -> Types.Invalid
     }
   }
@@ -310,7 +352,8 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 public class TypeModel(
     val resources: List<ResourceType> = arrayListOf(),
     val providers: List<ProviderType> = arrayListOf(),
-    val provisioners: List<ProvisionerType> = arrayListOf()
+    val provisioners: List<ProvisionerType> = arrayListOf(),
+    val functions: List<Function> = arrayListOf()
 ) {
   companion object {
     val Atlas: BlockType = BlockType("atlas", 0, properties = PropertyType("name", Types.String, required = true, injectionAllowed = false).toPOBT())

@@ -18,6 +18,7 @@ package org.intellij.plugins.hcl.terraform.il.codeinsight
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.lang.injection.InjectedLanguageManager
+import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
@@ -25,6 +26,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import getPrevSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.psi.HCLElement
+import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
 import org.intellij.plugins.hcl.terraform.config.model.Variable
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hcl.terraform.il.TILLanguage
@@ -48,7 +50,7 @@ public class TILCompletionProvider : CompletionContributor() {
   }
 
   companion object {
-    @JvmField public val TERRAFORM_METHODS: TreeSet<String> = sortedSetOf("concat", "file", "format", "formatlist", "join", "element", "replace", "split", "length", "lookup", "keys", "values")
+    @JvmField public val TERRAFORM_METHODS: SortedSet<String> = ServiceManager.getService(TypeModelProvider::class.java).get().functions.map { it.name }.toSortedSet()
     private val METHOD_POSITION = PlatformPatterns.psiElement().withLanguage(TILLanguage)
         .withParent(ILVariable::class.java)
         .andNot(PlatformPatterns.psiElement().withSuperParent(2, ILSelectExpression::class.java))
