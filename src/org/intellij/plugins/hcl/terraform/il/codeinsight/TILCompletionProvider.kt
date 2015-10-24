@@ -16,7 +16,11 @@
 package org.intellij.plugins.hcl.terraform.il.codeinsight
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.codeInsight.lookup.LookupElementPresentation
+import com.intellij.codeInsight.lookup.LookupElementRenderer
+import com.intellij.icons.AllIcons
 import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
@@ -26,6 +30,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import getPrevSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.psi.HCLElement
+import org.intellij.plugins.hcl.terraform.config.model.Function
 import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
 import org.intellij.plugins.hcl.terraform.config.model.Variable
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
@@ -51,16 +56,39 @@ public class TILCompletionProvider : CompletionContributor() {
 
   companion object {
     @JvmField public val TERRAFORM_METHODS: SortedSet<String> = ServiceManager.getService(TypeModelProvider::class.java).get().functions.map { it.name }.toSortedSet()
+    @JvmField public val GLOBAL_SCOPES: SortedSet<String> = sortedSetOf("var", "self", "path")
+    @JvmField public val FUNCTIONS = ServiceManager.getService(TypeModelProvider::class.java).get().functions
     private val METHOD_POSITION = PlatformPatterns.psiElement().withLanguage(TILLanguage)
         .withParent(ILVariable::class.java)
         .andNot(PlatformPatterns.psiElement().withSuperParent(2, ILSelectExpression::class.java))
 
     private val LOG = Logger.getInstance(TILCompletionProvider::class.java)
-    fun create(value: String, quote: Boolean = true): LookupElementBuilder {
+    fun create(value: String): LookupElementBuilder {
       var builder = LookupElementBuilder.create(value)
-//      if (quote) {
-//        builder = builder.withInsertHandler(QuoteInsertHandler)
-//      }
+      return builder
+    }
+
+    fun createScope(value: String): LookupElementBuilder {
+      var builder = LookupElementBuilder.create(value)
+      builder = builder.withInsertHandler(ScopeSelectInsertHandler)
+      builder = builder.withRenderer(object : LookupElementRenderer<LookupElement?>() {
+        override fun renderElement(element: LookupElement?, presentation: LookupElementPresentation?) {
+          presentation?.icon = AllIcons.Nodes.Advice
+          presentation?.itemText = element?.lookupString
+        }
+      })
+      return builder
+    }
+
+    fun create(f: Function): LookupElementBuilder {
+      var builder = LookupElementBuilder.create(f.name)
+      builder = builder.withInsertHandler(FunctionInsertHandler)
+      builder = builder.withRenderer(object : LookupElementRenderer<LookupElement?>() {
+        override fun renderElement(element: LookupElement?, presentation: LookupElementPresentation?) {
+          presentation?.icon = AllIcons.Nodes.Method // or Function
+          presentation?.itemText = element?.lookupString
+        }
+      })
       return builder
     }
   }
@@ -72,9 +100,8 @@ public class TILCompletionProvider : CompletionContributor() {
       val parent = position.parent
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
       LOG.debug("TIL.MethodsCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
-      for (keyword in TERRAFORM_METHODS) {
-        result.addElement(create(keyword))
-      }
+      result.addAllElements(FUNCTIONS.map { create(it) })
+      result.addAllElements(GLOBAL_SCOPES.map { createScope(it) })
     }
   }
 

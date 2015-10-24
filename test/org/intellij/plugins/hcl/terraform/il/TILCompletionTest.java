@@ -56,6 +56,7 @@ public class TILCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("variable 'x' {}\na='${var.<caret>}'", 1, "x");
     doBasicCompletionTest("variable 'x' {default={a=true b=false}}\nfoo='${var.<caret>}'", 1, "x");
     doBasicCompletionTest("variable 'x' {}\nvariable 'y' {}\na='${var.<caret>}'", 2, "x", "y");
+    doBasicCompletionTest("variable 'x' {}\nvariable 'y' {}\na='${concat(var.<caret>)}'", 2, "x", "y");
   }
 
   public void testMappingVariableCompletion() throws Exception {
