@@ -45,24 +45,12 @@ import java.util.*
 
 public class TILCompletionProvider : CompletionContributor() {
   init {
-    val ANY_SCOPE_SELECT = PlatformPatterns.psiElement(ILSelectExpression::class.java).with(getScopeSelectPatternCondition(
-        SCOPE_PROVIDERS.keys
-    ))
-
     extend(CompletionType.BASIC, METHOD_POSITION, MethodsCompletionProvider)
     extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
-        .withParent(ILVariable::class.java).withSuperParent(2, ANY_SCOPE_SELECT)
+        .withParent(ILVariable::class.java).withSuperParent(2, ILSE_FROM_KNOWN_SCOPE)
         , AnyScopeCompletionProvider)
   }
 
-  private fun getScopeSelectPatternCondition(scopes: Set<String>): PatternCondition<ILSelectExpression?> {
-    return object : PatternCondition<ILSelectExpression?>("ScopeSelect($scopes)") {
-      override fun accepts(t: ILSelectExpression?, context: ProcessingContext?): Boolean {
-        val from = t?.from
-        return from is ILVariable && from.name in scopes
-      }
-    }
-  }
 
   companion object {
     @JvmField public val GLOBAL_SCOPES: SortedSet<String> = sortedSetOf("var", "path")
@@ -70,11 +58,23 @@ public class TILCompletionProvider : CompletionContributor() {
 
     // For tests purposes
     @JvmField public val GLOBAL_AVAILABLE: SortedSet<String> = FUNCTIONS.map { it.name }.toArrayList().plus(GLOBAL_SCOPES).toSortedSet()
+
+
     private val PATH_REFERENCES = sortedSetOf("root", "module", "cwd")
+    private val SCOPE_PROVIDERS = mapOf(
+        Pair("var", VariableCompletionProvider),
+        Pair("self", SelfCompletionProvider),
+        Pair("path", PathCompletionProvider),
+        Pair("count", CountCompletionProvider)
+    )
 
     private val METHOD_POSITION = PlatformPatterns.psiElement().withLanguage(TILLanguage)
         .withParent(ILVariable::class.java)
         .andNot(PlatformPatterns.psiElement().withSuperParent(2, ILSelectExpression::class.java))
+
+    public val ILSE_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
+        .with(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
+
 
     private val LOG = Logger.getInstance(TILCompletionProvider::class.java)
     fun create(value: String): LookupElementBuilder {
@@ -105,13 +105,6 @@ public class TILCompletionProvider : CompletionContributor() {
       })
       return builder
     }
-
-    private val SCOPE_PROVIDERS = mapOf(
-        Pair("var", VariableCompletionProvider),
-        Pair("self", SelfCompletionProvider),
-        Pair("path", PathCompletionProvider),
-        Pair("count", CountCompletionProvider)
-    )
   }
 
   private object MethodsCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -178,7 +171,12 @@ public class TILCompletionProvider : CompletionContributor() {
       val properties = ModelHelper.getBlockProperties(resource)
       // TODO: Filter already defined or computed properties (?)
       // TODO: Add type filtration
-      result.addAllElements(properties.map { create(it.name) })
+      val set = properties.map { it.name }.toHashSet()
+      val obj = resource.`object`
+      if (obj != null) {
+        set.addAll(obj.propertyList.map { it.name })
+      }
+      result.addAllElements(set.map { create(it) })
     }
   }
 
@@ -223,4 +221,13 @@ public fun getResource(position: ILExpression): HCLBlock? {
   val resource = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java, true) ?: return null
   if (resource.getNameElementUnquoted(0) != "resource") return null
   return resource
+}
+
+private fun getScopeSelectPatternCondition(scopes: Set<String>): PatternCondition<ILSelectExpression?> {
+  return object : PatternCondition<ILSelectExpression?>("ScopeSelect($scopes)") {
+    override fun accepts(t: ILSelectExpression?, context: ProcessingContext?): Boolean {
+      val from = t?.from
+      return from is ILVariable && from.name in scopes
+    }
+  }
 }
