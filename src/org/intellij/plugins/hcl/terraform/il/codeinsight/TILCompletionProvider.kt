@@ -27,9 +27,13 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
+import getNameElementUnquoted
 import getPrevSiblingNonWhiteSpace
+import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElement
+import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.Function
 import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
 import org.intellij.plugins.hcl.terraform.config.model.Variable
@@ -47,17 +51,39 @@ public class TILCompletionProvider : CompletionContributor() {
         return from is ILVariable && from.name == "var"
       }
     })
+    val SELF_SELECT = PlatformPatterns.psiElement(ILSelectExpression::class.java).with(object : PatternCondition<ILSelectExpression?>("SelectFromVar") {
+      override fun accepts(t: ILSelectExpression?, context: ProcessingContext?): Boolean {
+        val from = t?.from
+        return from is ILVariable && from.name == "self"
+      }
+    })
+    val PATH_SELECT = PlatformPatterns.psiElement(ILSelectExpression::class.java).with(object : PatternCondition<ILSelectExpression?>("SelectFromVar") {
+      override fun accepts(t: ILSelectExpression?, context: ProcessingContext?): Boolean {
+        val from = t?.from
+        return from is ILVariable && from.name == "path"
+      }
+    })
 
     extend(CompletionType.BASIC, METHOD_POSITION, MethodsCompletionProvider)
     extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
         .withParent(ILVariable::class.java).withSuperParent(2, VAR_SELECT)
         , VariableCompletionProvider)
+    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
+        .withParent(ILVariable::class.java).withSuperParent(2, SELF_SELECT)
+        , SelfCompletionProvider)
+    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
+        .withParent(ILVariable::class.java).withSuperParent(2, PATH_SELECT)
+        , PathCompletionProvider)
   }
 
   companion object {
-    @JvmField public val TERRAFORM_METHODS: SortedSet<String> = ServiceManager.getService(TypeModelProvider::class.java).get().functions.map { it.name }.toSortedSet()
-    @JvmField public val GLOBAL_SCOPES: SortedSet<String> = sortedSetOf("var", "self", "path")
+    @JvmField public val GLOBAL_SCOPES: SortedSet<String> = sortedSetOf("var", "path")
     @JvmField public val FUNCTIONS = ServiceManager.getService(TypeModelProvider::class.java).get().functions
+
+    // For tests purposes
+    @JvmField public val GLOBAL_AVAILABLE: SortedSet<String> = FUNCTIONS.map { it.name }.toArrayList().plus(GLOBAL_SCOPES).toSortedSet()
+    private val PATH_REFERENCES = sortedSetOf("root", "module", "cwd")
+
     private val METHOD_POSITION = PlatformPatterns.psiElement().withLanguage(TILLanguage)
         .withParent(ILVariable::class.java)
         .andNot(PlatformPatterns.psiElement().withSuperParent(2, ILSelectExpression::class.java))
@@ -102,6 +128,8 @@ public class TILCompletionProvider : CompletionContributor() {
       LOG.debug("TIL.MethodsCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
       result.addAllElements(FUNCTIONS.map { create(it) })
       result.addAllElements(GLOBAL_SCOPES.map { createScope(it) })
+      val resource = getProvisionerResource(position)
+      if (resource != null) result.addElement(createScope("self"))
     }
   }
 
@@ -122,6 +150,44 @@ public class TILCompletionProvider : CompletionContributor() {
       }
     }
   }
+
+  private object SelfCompletionProvider : CompletionProvider<CompletionParameters>() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+      val position = parameters.position
+      val parent = position.parent
+      if (parent !is ILVariable) return
+      val pp = parent.parent
+      if (pp !is ILSelectExpression) return
+      val from = pp.from
+      if (from !is ILVariable) return
+      if ("self" != from.name) return
+      LOG.debug("TIL.SelfCompletionProvider{position=$position, parent=$parent, pp=$pp}")
+
+      // For now 'self' allowed only for provisioners inside resources
+
+      val resource = getProvisionerResource(position) ?: return
+      val properties = ModelHelper.getBlockProperties(resource)
+      // TODO: Filter already defined or computed properties (?)
+      // TODO: Add type filtration
+      result.addAllElements(properties.map { create(it.name) })
+    }
+  }
+
+  private object PathCompletionProvider : CompletionProvider<CompletionParameters>() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+      val position = parameters.position
+      val parent = position.parent
+      if (parent !is ILVariable) return
+      val pp = parent.parent
+      if (pp !is ILSelectExpression) return
+      val from = pp.from
+      if (from !is ILVariable) return
+      if ("path" != from.name) return
+      LOG.debug("TIL.PathCompletionProvider{position=$position, parent=$parent, pp=$pp}")
+
+      result.addAllElements(PATH_REFERENCES.map { create(it) })
+    }
+  }
 }
 
 private fun getLocalDefinedVariables(element: PsiElement): List<Variable> {
@@ -131,3 +197,14 @@ private fun getLocalDefinedVariables(element: PsiElement): List<Variable> {
   return module.getAllVariables()
 }
 
+private fun getProvisionerResource(position: PsiElement): HCLBlock? {
+  val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
+
+  // For now 'self' allowed only for provisioners inside resources
+
+  val provisioner = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java) ?: return null
+  if (provisioner.getNameElementUnquoted(0) != "provisioner") return null
+  val resource = PsiTreeUtil.getParentOfType(provisioner, HCLBlock::class.java, true) ?: return null
+  if (resource.getNameElementUnquoted(0) != "resource") return null
+  return resource
+}

@@ -16,13 +16,10 @@
 package org.intellij.plugins.hcl.terraform.il;
 
 import com.intellij.lang.Language;
-import com.intellij.openapi.diagnostic.Logger;
 import org.intellij.plugins.hcl.CompletionTestCase;
 import org.intellij.plugins.hcl.terraform.il.codeinsight.TILCompletionProvider;
 
 public class TILCompletionTest extends CompletionTestCase {
-  private static final Logger LOG = Logger.getInstance(TILCompletionTest.class);
-
   @Override
   protected String getTestDataPath() {
     return "tests/data";
@@ -39,12 +36,12 @@ public class TILCompletionTest extends CompletionTestCase {
   }
 
   public void testMethodCompletion_BeginOnInterpolation() throws Exception {
-    doBasicCompletionTest("a='${<caret>}'", TILCompletionProvider.TERRAFORM_METHODS);
+    doBasicCompletionTest("a='${<caret>}'", TILCompletionProvider.GLOBAL_AVAILABLE);
   }
 
   public void testMethodCompletion_AsParameter() throws Exception {
-    doBasicCompletionTest("a='${foo(<caret>)}'", TILCompletionProvider.TERRAFORM_METHODS);
-    doBasicCompletionTest("a='${foo(true,<caret>)}'", TILCompletionProvider.TERRAFORM_METHODS);
+    doBasicCompletionTest("a='${foo(<caret>)}'", TILCompletionProvider.GLOBAL_AVAILABLE);
+    doBasicCompletionTest("a='${foo(true,<caret>)}'", TILCompletionProvider.GLOBAL_AVAILABLE);
   }
 
   public void testNoMethodCompletion_InSelect() throws Exception {
@@ -62,4 +59,15 @@ public class TILCompletionTest extends CompletionTestCase {
   public void testMappingVariableCompletion() throws Exception {
     doBasicCompletionTest("variable 'x' {default={a=true b=false}}\nfoo='${var.x.<caret>}'", 2, "a", "b");
   }
+
+  public void testSelfReferenceCompletion() throws Exception {
+    doBasicCompletionTest("resource 'aws_instance' 'x' {provisioner 'file' {file = '${self.<caret>}}'", "ami", "instance_type");
+    doBasicCompletionTest("resource 'abracadabra' 'x' {provisioner 'file' {file = '${self.<caret>}}'", "count");
+    doBasicCompletionTest("resource 'abracadabra' 'x' {file = '${self.<caret>}'", 0);
+  }
+
+  public void testPathCompletion() throws Exception {
+    doBasicCompletionTest("a='${path.<caret>}'", "cwd", "module", "root");
+  }
+
 }
