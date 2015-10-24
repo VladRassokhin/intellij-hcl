@@ -15,24 +15,23 @@
  */
 package org.intellij.plugins.hcl.psi.impl
 
-import com.intellij.json.psi.impl.JSStringLiteralEscaper
 import com.intellij.lang.ASTNode
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.impl.source.tree.LeafElement
+import com.intellij.psi.impl.source.tree.injected.StringLiteralEscaper
 
 public abstract class HCLStringLiteralMixin(node: ASTNode?) : HCLLiteralImpl(node), PsiLanguageInjectionHost {
   override fun isValidHost() = true
 
   override fun updateText(text: String): PsiLanguageInjectionHost {
-    val vNode = node.firstChildNode as LeafElement
-    vNode.replaceWithText(text)
+    val vNode = node.firstChildNode
+    assert(vNode is LeafElement)
+    (vNode as LeafElement).replaceWithText(text)
     return this
   }
 
   override fun createLiteralTextEscaper(): LiteralTextEscaper<out PsiLanguageInjectionHost> {
-    return object : JSStringLiteralEscaper<PsiLanguageInjectionHost>(this) {
-      override fun isRegExpLiteral() = true
-    }
+    return StringLiteralEscaper<HCLStringLiteralMixin>(this);
   }
 }
