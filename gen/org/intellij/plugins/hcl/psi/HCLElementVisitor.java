@@ -5,6 +5,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 
 public class HCLElementVisitor extends PsiElementVisitor {
 
@@ -59,7 +60,7 @@ public class HCLElementVisitor extends PsiElementVisitor {
 
   public void visitProperty(@NotNull HCLProperty o) {
     visitElement(o);
-    // visitPsiNamedElement(o);
+    // visitPsiNameIdentifierOwner(o);
   }
 
   public void visitStringLiteral(@NotNull HCLStringLiteral o) {
