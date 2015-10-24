@@ -26,7 +26,6 @@ import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
-import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import getNameElementUnquoted
@@ -39,6 +38,7 @@ import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
 import org.intellij.plugins.hcl.terraform.config.model.Variable
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hcl.terraform.il.TILLanguage
+import org.intellij.plugins.hcl.terraform.il.psi.ILExpression
 import org.intellij.plugins.hcl.terraform.il.psi.ILSelectExpression
 import org.intellij.plugins.hcl.terraform.il.psi.ILVariable
 import java.util.*
@@ -119,12 +119,13 @@ public class TILCompletionProvider : CompletionContributor() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
       val position = parameters.position
       val parent = position.parent
+      if (parent !is ILExpression) return
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
       LOG.debug("TIL.MethodsCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
       result.addAllElements(FUNCTIONS.map { create(it) })
       result.addAllElements(GLOBAL_SCOPES.map { createScope(it) })
-      if (getProvisionerResource(position) != null) result.addElement(createScope("self"))
-      if (getResource(position) != null) result.addElement(createScope("count"))
+      if (getProvisionerResource(parent) != null) result.addElement(createScope("self"))
+      if (getResource(parent) != null) result.addElement(createScope("count"))
     }
   }
 
@@ -139,10 +140,10 @@ public class TILCompletionProvider : CompletionContributor() {
       if (from !is ILVariable) return
       if (scope != from.name) return
       LOG.debug("TIL.SelectFromScopeCompletionProvider($scope){position=$position, parent=$parent, pp=$pp}")
-      doAddCompletions(position, parameters, context, result)
+      doAddCompletions(parent, parameters, context, result)
     }
 
-    abstract fun doAddCompletions(position: PsiElement, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet)
+    abstract fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet)
   }
 
   object AnyScopeCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -156,13 +157,13 @@ public class TILCompletionProvider : CompletionContributor() {
       if (from !is ILVariable) return
       val provider = SCOPE_PROVIDERS[from.name] ?: return
       LOG.debug("TIL.SelectFromScopeCompletionProviderAny($from.name){position=$position, parent=$parent, pp=$pp}")
-      provider.doAddCompletions(position, parameters, context, result)
+      provider.doAddCompletions(parent, parameters, context, result)
     }
   }
 
   private object VariableCompletionProvider : SelectFromScopeCompletionProvider("var") {
-    override fun doAddCompletions(position: PsiElement, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
-      val variables: List<Variable> = getLocalDefinedVariables(position);
+    override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      val variables: List<Variable> = getLocalDefinedVariables(variable);
       for (v in variables) {
         result.addElement(create(v.name))
       }
@@ -170,10 +171,10 @@ public class TILCompletionProvider : CompletionContributor() {
   }
 
   private object SelfCompletionProvider : SelectFromScopeCompletionProvider("self") {
-    override fun doAddCompletions(position: PsiElement, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+    override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       // For now 'self' allowed only for provisioners inside resources
 
-      val resource = getProvisionerResource(position) ?: return
+      val resource = getProvisionerResource(variable) ?: return
       val properties = ModelHelper.getBlockProperties(resource)
       // TODO: Filter already defined or computed properties (?)
       // TODO: Add type filtration
@@ -182,27 +183,27 @@ public class TILCompletionProvider : CompletionContributor() {
   }
 
   private object PathCompletionProvider : SelectFromScopeCompletionProvider("path") {
-    override fun doAddCompletions(position: PsiElement, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+    override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       result.addAllElements(PATH_REFERENCES.map { create(it) })
     }
   }
 
   private object CountCompletionProvider : SelectFromScopeCompletionProvider("count") {
-    override fun doAddCompletions(position: PsiElement, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
-      getResource(position) ?: return
+    override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      getResource(variable) ?: return
       result.addElement(create("index"))
     }
   }
 }
 
-private fun getLocalDefinedVariables(element: PsiElement): List<Variable> {
+public fun getLocalDefinedVariables(element: ILExpression): List<Variable> {
   val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return emptyList()
   if (host !is HCLElement) return emptyList()
   val module = host.getTerraformModule()
   return module.getAllVariables()
 }
 
-private fun getProvisionerResource(position: PsiElement): HCLBlock? {
+public fun getProvisionerResource(position: ILExpression): HCLBlock? {
   val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
 
   // For now 'self' allowed only for provisioners inside resources
@@ -214,7 +215,7 @@ private fun getProvisionerResource(position: PsiElement): HCLBlock? {
   return resource
 }
 
-private fun getResource(position: PsiElement): HCLBlock? {
+public fun getResource(position: ILExpression): HCLBlock? {
   val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
 
   // For now 'self' allowed only for provisioners inside resources
