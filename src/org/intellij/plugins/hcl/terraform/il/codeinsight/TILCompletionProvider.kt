@@ -45,44 +45,23 @@ import java.util.*
 
 public class TILCompletionProvider : CompletionContributor() {
   init {
-    val VAR_SELECT = PlatformPatterns.psiElement(ILSelectExpression::class.java).with(object : PatternCondition<ILSelectExpression?>("SelectFromVar") {
-      override fun accepts(t: ILSelectExpression?, context: ProcessingContext?): Boolean {
-        val from = t?.from
-        return from is ILVariable && from.name == "var"
-      }
-    })
-    val SELF_SELECT = PlatformPatterns.psiElement(ILSelectExpression::class.java).with(object : PatternCondition<ILSelectExpression?>("SelectFromVar") {
-      override fun accepts(t: ILSelectExpression?, context: ProcessingContext?): Boolean {
-        val from = t?.from
-        return from is ILVariable && from.name == "self"
-      }
-    })
-    val PATH_SELECT = PlatformPatterns.psiElement(ILSelectExpression::class.java).with(object : PatternCondition<ILSelectExpression?>("SelectFromVar") {
-      override fun accepts(t: ILSelectExpression?, context: ProcessingContext?): Boolean {
-        val from = t?.from
-        return from is ILVariable && from.name == "path"
-      }
-    })
-    val COUNT_SELECT = PlatformPatterns.psiElement(ILSelectExpression::class.java).with(object : PatternCondition<ILSelectExpression?>("SelectFromVar") {
-      override fun accepts(t: ILSelectExpression?, context: ProcessingContext?): Boolean {
-        val from = t?.from
-        return from is ILVariable && from.name == "count"
-      }
-    })
+    val ANY_SCOPE_SELECT = PlatformPatterns.psiElement(ILSelectExpression::class.java).with(getScopeSelectPatternCondition(
+        SCOPE_PROVIDERS.keys
+    ))
 
     extend(CompletionType.BASIC, METHOD_POSITION, MethodsCompletionProvider)
     extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
-        .withParent(ILVariable::class.java).withSuperParent(2, VAR_SELECT)
-        , VariableCompletionProvider)
-    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
-        .withParent(ILVariable::class.java).withSuperParent(2, SELF_SELECT)
-        , SelfCompletionProvider)
-    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
-        .withParent(ILVariable::class.java).withSuperParent(2, PATH_SELECT)
-        , PathCompletionProvider)
-    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
-        .withParent(ILVariable::class.java).withSuperParent(2, COUNT_SELECT)
-        , CountCompletionProvider)
+        .withParent(ILVariable::class.java).withSuperParent(2, ANY_SCOPE_SELECT)
+        , AnyScopeCompletionProvider)
+  }
+
+  private fun getScopeSelectPatternCondition(scopes: Set<String>): PatternCondition<ILSelectExpression?> {
+    return object : PatternCondition<ILSelectExpression?>("ScopeSelect($scopes)") {
+      override fun accepts(t: ILSelectExpression?, context: ProcessingContext?): Boolean {
+        val from = t?.from
+        return from is ILVariable && from.name in scopes
+      }
+    }
   }
 
   companion object {
@@ -126,6 +105,13 @@ public class TILCompletionProvider : CompletionContributor() {
       })
       return builder
     }
+
+    private val SCOPE_PROVIDERS = mapOf(
+        Pair("var", VariableCompletionProvider),
+        Pair("self", SelfCompletionProvider),
+        Pair("path", PathCompletionProvider),
+        Pair("count", CountCompletionProvider)
+    )
   }
 
   private object MethodsCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -142,8 +128,8 @@ public class TILCompletionProvider : CompletionContributor() {
     }
   }
 
-  private object VariableCompletionProvider : CompletionProvider<CompletionParameters>() {
-    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+  private abstract class SelectFromScopeCompletionProvider(val scope: String) : CompletionProvider<CompletionParameters>() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val position = parameters.position
       val parent = position.parent
       if (parent !is ILVariable) return
@@ -151,8 +137,31 @@ public class TILCompletionProvider : CompletionContributor() {
       if (pp !is ILSelectExpression) return
       val from = pp.from
       if (from !is ILVariable) return
-      if ("var" != from.name) return
-      LOG.debug("TIL.VariableCompletionProvider{position=$position, parent=$parent, pp=$pp}")
+      if (scope != from.name) return
+      LOG.debug("TIL.SelectFromScopeCompletionProvider($scope){position=$position, parent=$parent, pp=$pp}")
+      doAddCompletions(position, parameters, context, result)
+    }
+
+    abstract fun doAddCompletions(position: PsiElement, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet)
+  }
+
+  object AnyScopeCompletionProvider : CompletionProvider<CompletionParameters>() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      val position = parameters.position
+      val parent = position.parent
+      if (parent !is ILVariable) return
+      val pp = parent.parent
+      if (pp !is ILSelectExpression) return
+      val from = pp.from
+      if (from !is ILVariable) return
+      val provider = SCOPE_PROVIDERS[from.name] ?: return
+      LOG.debug("TIL.SelectFromScopeCompletionProviderAny($from.name){position=$position, parent=$parent, pp=$pp}")
+      provider.doAddCompletions(position, parameters, context, result)
+    }
+  }
+
+  private object VariableCompletionProvider : SelectFromScopeCompletionProvider("var") {
+    override fun doAddCompletions(position: PsiElement, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val variables: List<Variable> = getLocalDefinedVariables(position);
       for (v in variables) {
         result.addElement(create(v.name))
@@ -160,18 +169,8 @@ public class TILCompletionProvider : CompletionContributor() {
     }
   }
 
-  private object SelfCompletionProvider : CompletionProvider<CompletionParameters>() {
-    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-      val position = parameters.position
-      val parent = position.parent
-      if (parent !is ILVariable) return
-      val pp = parent.parent
-      if (pp !is ILSelectExpression) return
-      val from = pp.from
-      if (from !is ILVariable) return
-      if ("self" != from.name) return
-      LOG.debug("TIL.SelfCompletionProvider{position=$position, parent=$parent, pp=$pp}")
-
+  private object SelfCompletionProvider : SelectFromScopeCompletionProvider("self") {
+    override fun doAddCompletions(position: PsiElement, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       // For now 'self' allowed only for provisioners inside resources
 
       val resource = getProvisionerResource(position) ?: return
@@ -182,33 +181,14 @@ public class TILCompletionProvider : CompletionContributor() {
     }
   }
 
-  private object PathCompletionProvider : CompletionProvider<CompletionParameters>() {
-    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-      val position = parameters.position
-      val parent = position.parent
-      if (parent !is ILVariable) return
-      val pp = parent.parent
-      if (pp !is ILSelectExpression) return
-      val from = pp.from
-      if (from !is ILVariable) return
-      if ("path" != from.name) return
-      LOG.debug("TIL.PathCompletionProvider{position=$position, parent=$parent, pp=$pp}")
-
+  private object PathCompletionProvider : SelectFromScopeCompletionProvider("path") {
+    override fun doAddCompletions(position: PsiElement, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       result.addAllElements(PATH_REFERENCES.map { create(it) })
     }
   }
 
-  private object CountCompletionProvider : CompletionProvider<CompletionParameters>() {
-    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-      val position = parameters.position
-      val parent = position.parent
-      if (parent !is ILVariable) return
-      val pp = parent.parent
-      if (pp !is ILSelectExpression) return
-      val from = pp.from
-      if (from !is ILVariable) return
-      if ("count" != from.name) return
-      LOG.debug("TIL.CountCompletionProvider{position=$position, parent=$parent, pp=$pp}")
+  private object CountCompletionProvider : SelectFromScopeCompletionProvider("count") {
+    override fun doAddCompletions(position: PsiElement, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       getResource(position) ?: return
       result.addElement(create("index"))
     }
