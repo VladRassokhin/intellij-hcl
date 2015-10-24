@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.terraform.il.TILElementTypes.*;
 import org.intellij.plugins.hcl.terraform.il.psi.*;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
 public class ILVariableImpl extends ILExpressionWithReference implements ILVariable {
@@ -41,6 +42,11 @@ public class ILVariableImpl extends ILExpressionWithReference implements ILVaria
   @NotNull
   public SearchScope getUseScope() {
     return TILPsiImplUtilJ.getUseScope(this);
+  }
+
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
+    return TILPsiImplUtilJ.getResolveScope(this);
   }
 
 }
