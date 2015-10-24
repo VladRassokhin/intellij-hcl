@@ -71,7 +71,6 @@ object Types {
 
 public class ResourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, properties = *properties)
 public class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, properties = *properties)
-public class VariableType(vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("variable", 1, properties = *properties)
 public class ProvisionerType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provisioner", 1, properties = *properties)
 
 
@@ -317,9 +316,12 @@ public class TypeModel(
     val Atlas: BlockType = BlockType("atlas", 0, properties = PropertyType("name", Types.String, required = true, injectionAllowed = false).toPOBT())
     val Module: BlockType = BlockType("module", 1, properties = PropertyType("source", Types.String, hint = "Url", required = true).toPOBT())
     val Output: BlockType = BlockType("output", 1, properties = PropertyType("value", Types.String, hint = "Interpolation(Any)", required = true).toPOBT())
+
+    val Variable_Default = PropertyType("default", Type("String|Object"))
+    val Variable_Description = PropertyType("description", Types.String)
     val Variable: BlockType = BlockType("variable", 1, properties = *arrayOf(
-        PropertyType("default", Type("String|Object")).toPOBT(),
-        PropertyType("description", Types.String).toPOBT()
+        Variable_Default.toPOBT(),
+        Variable_Description.toPOBT()
     ))
 
     val Connection: BlockType = BlockType("connection", 0, properties = *arrayOf(

@@ -50,4 +50,15 @@ public class TILCompletionTest extends CompletionTestCase {
   public void testNoMethodCompletion_InSelect() throws Exception {
     doBasicCompletionTest("a='${foo.<caret>}'", 0);
   }
+
+  public void testSimpleVariableCompletion() throws Exception {
+    doBasicCompletionTest("a='${var.<caret>}'", 0);
+    doBasicCompletionTest("variable 'x' {}\na='${var.<caret>}'", 1, "x");
+    doBasicCompletionTest("variable 'x' {default={a=true b=false}}\nfoo='${var.<caret>}'", 1, "x");
+    doBasicCompletionTest("variable 'x' {}\nvariable 'y' {}\na='${var.<caret>}'", 2, "x", "y");
+  }
+
+  public void testMappingVariableCompletion() throws Exception {
+    doBasicCompletionTest("variable 'x' {default={a=true b=false}}\nfoo='${var.x.<caret>}'", 2, "a", "b");
+  }
 }

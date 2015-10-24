@@ -15,6 +15,13 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiFileSystemItem
+import com.intellij.psi.search.PsiElementProcessor
+import getNameElementUnquoted
+import org.intellij.plugins.hcl.psi.*
+import java.util.*
+
 // Actual model
 public open class Property(val type: PropertyType, val value: Any?)
 public open class Block(val type: BlockType, vararg val properties: PropertyOrBlock = arrayOf())
@@ -24,12 +31,85 @@ public class PropertyOrBlock(val property: Property? = null, val block: Block? =
   }
 }
 
+public fun Property.toPOB(): PropertyOrBlock {
+  return PropertyOrBlock(property = this)
+}
+
+public fun Block.toPOB(): PropertyOrBlock {
+  return PropertyOrBlock(block = this)
+}
+
 public class Resource(type: ResourceType, val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(type, *properties)
 // ProviderType from name
 public class Provider(type: ProviderType, val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(type, *properties)
 
-// VariableType from name or use default one
-public class Variable(type: VariableType, val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(type, *properties)
+public class Variable(val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(TypeModel.Variable, *properties) {
+  fun getDefault(): Any? {
+    return properties.firstOrNull { TypeModel.Variable_Default == it.property?.type }?.property?.value
+  }
+}
 
-public object Model {
+
+public fun HCLElement.getTerraformModule(): Module {
+  val file = this.containingFile
+  assert(file is HCLFile)
+  val directory = file.containingDirectory
+  if (directory == null) {
+    // File only in-memory, assume as only file in module
+    return Module(file as HCLFile)
+  } else {
+    return Module(directory)
+  }
+}
+
+public class Module private constructor(val item: PsiFileSystemItem) {
+  constructor(file: HCLFile) : this(file as PsiFileSystemItem) {
+  }
+
+  constructor(directory: PsiDirectory) : this(directory as PsiFileSystemItem) {
+  }
+
+  fun getAllVariables(): List<Variable> {
+    val visitor = CollectVariablesVisitor()
+    process(PsiElementProcessor { file -> file.acceptChildren(visitor); true })
+    return visitor.collected.toList()
+  }
+
+  // val helper = PsiSearchHelper.SERVICE.getInstance(position.project)
+  // helper.processAllFilesWithWord()
+
+  private fun process(processor: PsiElementProcessor<HCLFile>): Boolean {
+    // TODO: Support json files (?)
+    if (item is HCLFile) {
+      return processor.execute(item)
+    }
+    assert(item is PsiDirectory)
+    return item.processChildren(object : PsiElementProcessor<PsiFileSystemItem?> {
+      override fun execute(element: PsiFileSystemItem?): Boolean {
+        if (element !is HCLFile) return true
+        return processor.execute(element)
+      }
+    })
+  }
+
+}
+
+class CollectVariablesVisitor : HCLElementVisitor() {
+  val collected: MutableSet<Variable> = HashSet();
+  override fun visitBlock(o: HCLBlock) {
+    if ("variable" != o.getNameElementUnquoted(0)) return;
+    val name = o.getNameElementUnquoted(1) ?: return;
+
+    val props = TypeModel.Variable.properties.map { p ->
+      if (p.property != null) {
+        return@map o.`object`?.findProperty(p.property.name)?.toProperty(p.property)
+      }
+      return@map null
+    }.filterNotNull().map { it.toPOB() }
+    collected.add(Variable(name, *props.toTypedArray()))
+  }
+}
+
+fun HCLProperty.toProperty(type: PropertyType): Property {
+  return Property(type, this.value)
 }
