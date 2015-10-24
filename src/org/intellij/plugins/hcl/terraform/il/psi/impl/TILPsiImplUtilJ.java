@@ -16,78 +16,63 @@
 package org.intellij.plugins.hcl.terraform.il.psi.impl;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.search.LocalSearchScope;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.intellij.plugins.hcl.terraform.il.TILLanguage;
 import org.intellij.plugins.hcl.terraform.il.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public class TILPsiImplUtilJ {
   public static Class getTypeClass(ILLiteralExpressionImpl expression) {
-    // TODO use type classes from TIL model
-    return String.class;
+    return TILPsiImplUtils.INSTANCE.getTypeClass(expression);
   }
 
   @NotNull
   public static ILExpression[] getParameters(ILParameterList list) {
-    final List<ILExpression> expressions = PsiTreeUtil.getChildrenOfTypeAsList(list, ILExpression.class);
-    return expressions.toArray(new ILExpression[expressions.size()]);
+    return TILPsiImplUtils.INSTANCE.getParameters(list);
   }
 
   public static ILExpression getQualifier(ILMethodCallExpression expression) {
-    ILExpression select = expression.getILExpression();
-    return select == expression.getMethod() ? null : select;
+    return TILPsiImplUtils.INSTANCE.getQualifier(expression);
   }
 
   @Nullable
   public static ILVariable getMethod(ILMethodCallExpression expression) {
-    PsiElement sibling = expression.getILParameterList().getPrevSibling();
-    if (sibling instanceof ILVariable) {
-      return (ILVariable) sibling;
-    }
-    return null;
+    return TILPsiImplUtils.INSTANCE.getMethod(expression);
   }
 
   public static ILParameterList getParameterList(ILMethodCallExpressionImpl expression) {
-    return expression.getILParameterList();
+    return TILPsiImplUtils.INSTANCE.getParameterList(expression);
   }
-
 
   @NotNull
   public static String getName(ILVariableImpl variable) {
-    return variable.getText();
+    return TILPsiImplUtils.INSTANCE.getName(variable);
   }
 
   public static PsiNamedElement setName(ILVariableImpl variable, @NotNull String name) throws IncorrectOperationException {
-    ILVariable newElement = createVariable(name, variable.getProject());
-    if (newElement == null) throw new IncorrectOperationException("Cannot create variable with name '" + name + "'");
-    variable.replace(newElement);
-    return newElement;
+    return TILPsiImplUtils.INSTANCE.setName(variable, name);
   }
 
   @NotNull
   public static SearchScope getUseScope(ILVariableImpl variable) {
-    return new LocalSearchScope(variable.getContainingFile());
+    return TILPsiImplUtils.INSTANCE.getUseScope(variable);
+  }
+
+  @NotNull
+  public static GlobalSearchScope getResolveScope(ILVariableImpl variable) {
+    return TILPsiImplUtils.INSTANCE.getResolveScope(variable);
   }
 
   @Nullable
   public static ILVariable createVariable(String name, Project project) {
-    PsiFile file = PsiFileFactory.getInstance(project).createFileFromText(TILLanguage.INSTANCE, "${" + name + "}");
-    return (ILVariable) file.getFirstChild().getChildren()[0];
+    return TILPsiImplUtils.INSTANCE.createVariable(name, project);
   }
 
   @Nullable
   public static ILVariable getField(ILSelectExpression expression) {
-    List<? extends ILExpression> list = PsiTreeUtil.getChildrenOfTypeAsList(expression, ILExpression.class);
-    return list.size() < 2 ? null : (ILVariable)list.get(1);
+    return TILPsiImplUtils.INSTANCE.getField(expression);
   }
 }
