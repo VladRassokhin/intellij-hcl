@@ -18,7 +18,6 @@ package org.intellij.plugins.hcl.terraform.il.psi.impl
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
-import com.intellij.util.ArrayUtil
 
 
 open class ILExpressionWithReference(node: ASTNode) : ILExpressionBase(node) {
@@ -28,7 +27,7 @@ open class ILExpressionWithReference(node: ASTNode) : ILExpressionBase(node) {
   }
 
   public override fun getReference(): PsiReference? {
-    return ArrayUtil.getFirstElement<PsiReference>(references)
+    return references.firstOrNull()
   }
 
 }
