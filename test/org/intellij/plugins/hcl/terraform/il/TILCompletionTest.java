@@ -70,4 +70,10 @@ public class TILCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("a='${path.<caret>}'", "cwd", "module", "root");
   }
 
+  public void testCountCompletion() throws Exception {
+    doBasicCompletionTest("resource 'y' 'x' {count = 2 source='${count.<caret>}'", 1, "index");
+    doBasicCompletionTest("resource 'y' 'x' {source='${count.<caret>}'", 1, "index");
+    doBasicCompletionTest("resource 'y' 'x' {count = 2 source='${count.<caret> + 1}'", 1, "index");
+  }
+
 }

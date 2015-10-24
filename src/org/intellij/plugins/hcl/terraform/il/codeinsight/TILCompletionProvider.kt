@@ -63,6 +63,12 @@ public class TILCompletionProvider : CompletionContributor() {
         return from is ILVariable && from.name == "path"
       }
     })
+    val COUNT_SELECT = PlatformPatterns.psiElement(ILSelectExpression::class.java).with(object : PatternCondition<ILSelectExpression?>("SelectFromVar") {
+      override fun accepts(t: ILSelectExpression?, context: ProcessingContext?): Boolean {
+        val from = t?.from
+        return from is ILVariable && from.name == "count"
+      }
+    })
 
     extend(CompletionType.BASIC, METHOD_POSITION, MethodsCompletionProvider)
     extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
@@ -74,6 +80,9 @@ public class TILCompletionProvider : CompletionContributor() {
     extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
         .withParent(ILVariable::class.java).withSuperParent(2, PATH_SELECT)
         , PathCompletionProvider)
+    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
+        .withParent(ILVariable::class.java).withSuperParent(2, COUNT_SELECT)
+        , CountCompletionProvider)
   }
 
   companion object {
@@ -128,8 +137,8 @@ public class TILCompletionProvider : CompletionContributor() {
       LOG.debug("TIL.MethodsCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
       result.addAllElements(FUNCTIONS.map { create(it) })
       result.addAllElements(GLOBAL_SCOPES.map { createScope(it) })
-      val resource = getProvisionerResource(position)
-      if (resource != null) result.addElement(createScope("self"))
+      if (getProvisionerResource(position) != null) result.addElement(createScope("self"))
+      if (getResource(position) != null) result.addElement(createScope("count"))
     }
   }
 
@@ -188,6 +197,22 @@ public class TILCompletionProvider : CompletionContributor() {
       result.addAllElements(PATH_REFERENCES.map { create(it) })
     }
   }
+
+  private object CountCompletionProvider : CompletionProvider<CompletionParameters>() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+      val position = parameters.position
+      val parent = position.parent
+      if (parent !is ILVariable) return
+      val pp = parent.parent
+      if (pp !is ILSelectExpression) return
+      val from = pp.from
+      if (from !is ILVariable) return
+      if ("count" != from.name) return
+      LOG.debug("TIL.CountCompletionProvider{position=$position, parent=$parent, pp=$pp}")
+      getResource(position) ?: return
+      result.addElement(create("index"))
+    }
+  }
 }
 
 private fun getLocalDefinedVariables(element: PsiElement): List<Variable> {
@@ -205,6 +230,16 @@ private fun getProvisionerResource(position: PsiElement): HCLBlock? {
   val provisioner = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java) ?: return null
   if (provisioner.getNameElementUnquoted(0) != "provisioner") return null
   val resource = PsiTreeUtil.getParentOfType(provisioner, HCLBlock::class.java, true) ?: return null
+  if (resource.getNameElementUnquoted(0) != "resource") return null
+  return resource
+}
+
+private fun getResource(position: PsiElement): HCLBlock? {
+  val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
+
+  // For now 'self' allowed only for provisioners inside resources
+
+  val resource = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java, true) ?: return null
   if (resource.getNameElementUnquoted(0) != "resource") return null
   return resource
 }
