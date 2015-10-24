@@ -43,6 +43,9 @@ public abstract class CompletionTestCase extends LightCodeInsightFixtureTestCase
   protected void doBasicCompletionTest(String text, final int expectedAllSize, final String... expected) {
     doBasicCompletionTest(text, getPartialMatcher(expectedAllSize, expected));
   }
+  protected void doBasicCompletionTest(String text, final String... expected) {
+    doBasicCompletionTest(text, getPartialMatcher(expected));
+  }
 
   protected void doBasicCompletionTest(String text, BooleanFunction<Collection<String>> matcher) {
     final PsiFile psiFile = myFixture.configureByText(getFileName(), text);
