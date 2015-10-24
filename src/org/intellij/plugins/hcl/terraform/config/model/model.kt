@@ -16,7 +16,10 @@
 package org.intellij.plugins.hcl.terraform.config.model
 
 import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.GlobalSearchScopes
 import com.intellij.psi.search.PsiElementProcessor
 import getNameElementUnquoted
 import org.intellij.plugins.hcl.psi.*
@@ -62,6 +65,17 @@ public fun HCLElement.getTerraformModule(): Module {
   }
 }
 
+public fun PsiElement.getTerraformSearchScope(): GlobalSearchScope {
+  val file = this.containingFile
+  val directory = file.containingDirectory
+  if (directory == null) {
+    // File only in-memory, assume as only file in module
+    return GlobalSearchScope.fileScope(file)
+  } else {
+    return GlobalSearchScopes.directoryScope(directory, false)
+  }
+}
+
 public class Module private constructor(val item: PsiFileSystemItem) {
   constructor(file: HCLFile) : this(file as PsiFileSystemItem) {
   }
@@ -72,7 +86,13 @@ public class Module private constructor(val item: PsiFileSystemItem) {
   fun getAllVariables(): List<Variable> {
     val visitor = CollectVariablesVisitor()
     process(PsiElementProcessor { file -> file.acceptChildren(visitor); true })
-    return visitor.collected.toList()
+    return visitor.collected.map { it.first }.toList()
+  }
+
+  fun findVariable(name: String): Pair<Variable, HCLBlock>? {
+    val visitor = CollectVariablesVisitor()
+    process(PsiElementProcessor { file -> file.acceptChildren(visitor); true })
+    return visitor.collected.filter { it.first.name == name }.firstOrNull()
   }
 
   // val helper = PsiSearchHelper.SERVICE.getInstance(position.project)
@@ -95,7 +115,7 @@ public class Module private constructor(val item: PsiFileSystemItem) {
 }
 
 class CollectVariablesVisitor : HCLElementVisitor() {
-  val collected: MutableSet<Variable> = HashSet();
+  val collected: MutableSet<Pair<Variable, HCLBlock>> = HashSet();
   override fun visitBlock(o: HCLBlock) {
     if ("variable" != o.getNameElementUnquoted(0)) return;
     val name = o.getNameElementUnquoted(1) ?: return;
@@ -106,7 +126,7 @@ class CollectVariablesVisitor : HCLElementVisitor() {
       }
       return@map null
     }.filterNotNull().map { it.toPOB() }
-    collected.add(Variable(name, *props.toTypedArray()))
+    collected.add(Pair(Variable(name, *props.toTypedArray()), o))
   }
 }
 
