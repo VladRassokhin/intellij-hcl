@@ -168,7 +168,7 @@ public class Module private constructor(val item: PsiFileSystemItem) {
             is HCLIdentifier -> value.id
             else -> null
           }
-          if (als != null) found.add(Pair(o, als))
+          if (als != null) found.add(Pair(o, "$tp.$als"))
           else found.add(Pair(o, tp))
         }
       }); true

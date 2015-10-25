@@ -114,4 +114,13 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("resource aws_instance x {\n<caret> {}\n}", "lifecycle");
   }
 
+  public void testResourceProviderCompletionFromModel() throws Exception {
+    doBasicCompletionTest("provider Z {}\nresource a b {provider=<caret>}", "Z");
+    doBasicCompletionTest("provider Z {}\nresource a b {provider='<caret>'}", "Z");
+    doBasicCompletionTest("provider Z {}\nresource a b {provider=\"<caret>\"}", "Z");
+    doBasicCompletionTest("provider Z {alias='Y'}\nresource a b {provider=<caret>}", "Z.Y");
+    doBasicCompletionTest("provider Z {alias='Y'}\nresource a b {provider='<caret>'}", "Z.Y");
+    doBasicCompletionTest("provider Z {alias='Y'}\nresource a b {provider=\"<caret>\"}", "Z.Y");
+  }
+
 }

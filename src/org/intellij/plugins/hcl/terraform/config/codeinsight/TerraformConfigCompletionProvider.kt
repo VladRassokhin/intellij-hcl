@@ -33,11 +33,12 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.DebugUtil
-import com.intellij.psi.tree.TokenSet
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import getNameElementUnquoted
 import getPrevSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.HCLElementTypes
+import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionProvider
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
@@ -51,14 +52,13 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
     val ID = psiElement(HCLElementTypes.ID)
 
     val Identifier = psiElement(HCLIdentifier::class.java)
+    val Literal = psiElement(HCLStringLiteral::class.java)
     val File = psiElement(HCLFile::class.java)
     val Block = psiElement(HCLBlock::class.java)
     val Property = psiElement(HCLProperty::class.java)
     val Object = psiElement(HCLObject::class.java)
 
     val TerraformConfigFile = psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
-
-    val QuotedStringsTokenSet = TokenSet.create(HCLElementTypes.DOUBLE_QUOTED_STRING, HCLElementTypes.SINGLE_QUOTED_STRING)
 
     // Block first word
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
@@ -88,12 +88,12 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
         .withParent(psiElement(HCLIdentifier::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
         .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
         , BlockTypeOrNameCompletionProvider);
-    extend(CompletionType.BASIC, psiElement().withElementType(QuotedStringsTokenSet)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
         .inFile(TerraformConfigFile)
         .withParent(psiElement(HCLStringLiteral::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
         .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
         , BlockTypeOrNameCompletionProvider);
-    extend(CompletionType.BASIC, psiElement().withElementType(QuotedStringsTokenSet)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
         .inFile(TerraformConfigFile)
         .andOr(psiElement().withParent(File), psiElement().withParent(Block))
         .afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))
@@ -120,6 +120,21 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
         .withSuperParent(4, Block)
         , BlockPropertiesCompletionProvider);
 
+    // Property value
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformConfigFile)
+        .withParent(Identifier)
+        .withSuperParent(2, Property)
+        .withSuperParent(3, Object)
+        .withSuperParent(4, Block)
+        , PropertyValueCompletionProvider)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
+        .inFile(TerraformConfigFile)
+        .withParent(Literal)
+        .withSuperParent(2, Property)
+        .withSuperParent(3, Object)
+        .withSuperParent(4, Block)
+        , PropertyValueCompletionProvider)
   }
 
   companion object {
@@ -304,6 +319,28 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
       }
       return it.property.type == right
     }
+  }
+
+  private object PropertyValueCompletionProvider : OurCompletionProvider() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      val position = parameters.position
+      val parent = position.parent
+      LOG.debug("TF.PropertyValueCompletionProvider{position=$position, parent=$parent}")
+      val property = PsiTreeUtil.getParentOfType(position, HCLProperty::class.java) ?: return
+      val block = PsiTreeUtil.getParentOfType(property, HCLBlock::class.java) ?: return
+
+      if (property.name == "provider" && block.getNameElementUnquoted(0) == "resource") {
+        val providers = property.getTerraformModule().getDefinedProviders()
+        result.addAllElements(providers.map { create(it.second) })
+      }
+      // TODO: Support hints
+      //      val props = ModelHelper.getBlockProperties(block).map { it.property }.filterNotNull()
+      //      val hints = props.filter { it.name == property.name && it.hint != null }.map { it.hint }.filterIsInstance<String>()
+      //      val hint = hints.firstOrNull() ?: return
+      //      if (hint.matches("Reference\(.*\)"))
+      //
+    }
+
   }
 }
 
