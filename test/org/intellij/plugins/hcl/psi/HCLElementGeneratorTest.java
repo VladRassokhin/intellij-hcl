@@ -17,9 +17,12 @@ package org.intellij.plugins.hcl.psi;
 
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.testFramework.LightPlatformTestCase;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class HCLElementGeneratorTest extends LightPlatformTestCase {
@@ -106,6 +109,22 @@ public class HCLElementGeneratorTest extends LightPlatformTestCase {
     assertEquals(1, element.getNameElements().length);
   }
 
+  public void testCreateHereDocLines() throws Exception {
+    final List<String> strings = Arrays.asList("A", "B", "C");
+    final List<HCLHeredocLine> lines = myElementGenerator.createHeredocLines(strings);
+    assertNotNull(lines);
+    List<String> actual = new ArrayList<String>(lines.size());
+    for (HCLHeredocLine line : lines) {
+      actual.add(StringUtil.trimEnd(line.getValue(), "\n"));
+    }
+    assertOrderedEquals(actual, strings);
+  }
+
+  public void testCreateHereDocLine() throws Exception {
+    final HCLHeredocLine line = myElementGenerator.createHeredocLine("ABC");
+    assertNotNull(line);
+    assertEquals("ABC" + "\n", line.getValue());
+  }
 
 //  public void testCreate() throws Exception {
 //  }

@@ -272,7 +272,7 @@ public class TILCompletionContributor : CompletionContributor() {
       if (expression is ILVariable) {
         val module = host.getTerraformModule()
         val resources = module.findResources(expression.name, null)
-        if (resources.size == 0) return
+        if (resources.isEmpty()) return
         result.addAllElements(resources.map { it.getNameElementUnquoted(2) }.filterNotNull().map { create(it) })
         // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
       }

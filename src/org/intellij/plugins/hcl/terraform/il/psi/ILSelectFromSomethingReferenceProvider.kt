@@ -93,7 +93,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     // TODO: get suitable resource/provider/etc
     // val model = ServiceManager.getService(TypeModelProvider::class.java).get()
     val resources = module.findResources(ev, name)
-    if (resources.size == 0) return PsiReference.EMPTY_ARRAY
+    if (resources.isEmpty()) return PsiReference.EMPTY_ARRAY
     return resources.map { HCLBlockNameReference(element, true, it, 2) }.toTypedArray()
     // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
   }

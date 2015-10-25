@@ -15,7 +15,6 @@
  */
 package org.intellij.plugins.hcl.psi.impl
 
-import com.intellij.json.psi.impl.JSStringLiteralEscaper
 import com.intellij.lang.ASTNode
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiLanguageInjectionHost
