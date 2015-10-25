@@ -36,12 +36,12 @@ public class TILCompletionTest extends CompletionTestCase {
   }
 
   public void testMethodCompletion_BeginOnInterpolation() throws Exception {
-    doBasicCompletionTest("a='${<caret>}'", TILCompletionContributor.GLOBAL_AVAILABLE);
+    doBasicCompletionTest("a='${<caret>}'", getPartialMatcher(TILCompletionContributor.GLOBAL_AVAILABLE));
   }
 
   public void testMethodCompletion_AsParameter() throws Exception {
-    doBasicCompletionTest("a='${foo(<caret>)}'", TILCompletionContributor.GLOBAL_AVAILABLE);
-    doBasicCompletionTest("a='${foo(true,<caret>)}'", TILCompletionContributor.GLOBAL_AVAILABLE);
+    doBasicCompletionTest("a='${foo(<caret>)}'", getPartialMatcher(TILCompletionContributor.GLOBAL_AVAILABLE));
+    doBasicCompletionTest("a='${foo(true,<caret>)}'", getPartialMatcher(TILCompletionContributor.GLOBAL_AVAILABLE));
   }
 
   public void testNoMethodCompletion_InSelect() throws Exception {
@@ -78,6 +78,18 @@ public class TILCompletionTest extends CompletionTestCase {
 
   public void testModuleCompletion() throws Exception {
     doBasicCompletionTest("module 'ref' {source = './child'} foo='${module.<caret>}'", 1, "ref");
+  }
+
+  public void testResourceTypeCompletion() throws Exception {
+    doBasicCompletionTest("resource 'res_a' 'b' {} foo='${<caret>}'", "res_a");
+  }
+
+  public void testResourceNameCompletion() throws Exception {
+    doBasicCompletionTest("resource 'res_a' 'b' {} foo='${res_a.<caret>}'", "b");
+  }
+
+  public void testResourcePropertyCompletion() throws Exception {
+    doBasicCompletionTest("resource 'res_a' 'b' {x='y'} foo='${res_a.b.<caret>}'", "count", "x");
   }
 
 }

@@ -248,7 +248,12 @@ public class TILCompletionContributor : CompletionContributor() {
           when (r) {
             is HCLBlock -> {
               val properties = ModelHelper.getBlockProperties(r)
-              found.addAll(properties.map { create(it) });
+              val done = properties.map { it.name }.toSet()
+              found.addAll(properties.map { create(it) })
+              val pl = r.`object`?.propertyList
+              if (pl != null) {
+                found.addAll(pl.map{it.name}.filter{it !in done}.map{create(it)})
+              }
             }
             is HCLProperty -> {
               val value = r.value

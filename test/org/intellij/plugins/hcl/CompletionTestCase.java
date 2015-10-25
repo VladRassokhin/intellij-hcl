@@ -71,6 +71,17 @@ public abstract class CompletionTestCase extends LightCodeInsightFixtureTestCase
   }
 
   @NotNull
+  protected BooleanFunction<Collection<String>> getPartialMatcher(final Collection<String> expectedPart) {
+    return new BooleanFunction<Collection<String>>() {
+      @Override
+      public boolean fun(Collection<String> strings) {
+        assertContainsElements(strings, expectedPart);
+        return true;
+      }
+    };
+  }
+
+  @NotNull
   protected BooleanFunction<Collection<String>> getPartialMatcher(final int expectedAllSize, final String... expectedPart) {
     return new BooleanFunction<Collection<String>>() {
       @Override
