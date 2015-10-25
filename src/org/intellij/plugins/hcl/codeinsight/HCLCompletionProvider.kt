@@ -17,7 +17,6 @@ package org.intellij.plugins.hcl.codeinsight
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.json.codeinsight.JsonCompletionContributor
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.impl.DebugUtil
@@ -29,7 +28,7 @@ import org.intellij.plugins.hcl.psi.HCLProperty
  * Based on com.intellij.json.codeinsight.JsonCompletionContributor
  */
 public open class HCLCompletionProvider : CompletionContributor() {
-  private val LOG = Logger.getInstance(JsonCompletionContributor::class.java)
+  private val LOG = Logger.getInstance(HCLCompletionProvider::class.java)
 
   private val AFTER_EQUALS_IN_PROPERTY = psiElement().afterLeaf("=").withSuperParent(2, HCLProperty::class.java)
   private val AFTER_COMMA_OR_BRACKET_IN_ARRAY = psiElement().afterLeaf(",", "[").withSuperParent(2, HCLArray::class.java)
@@ -40,17 +39,13 @@ public open class HCLCompletionProvider : CompletionContributor() {
     extend(CompletionType.BASIC, AFTER_COMMA_OR_BRACKET_IN_ARRAY, MyKeywordsCompletionProvider)
   }
 
-  override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
-    LOG.debug(DebugUtil.psiToString(parameters.position.containingFile, true))
-    super.fillCompletionVariants(parameters, result)
-  }
-
   private object MyKeywordsCompletionProvider : CompletionProvider<CompletionParameters>() {
     private val KEYWORDS = arrayOf("null", "true", "false")
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+      if (parameters.invocationCount < 2) return
       for (keyword in KEYWORDS) {
-        result.addElement(LookupElementBuilder.create(keyword).bold())
+        result.addElement(LookupElementBuilder.create(keyword))
       }
     }
   }
