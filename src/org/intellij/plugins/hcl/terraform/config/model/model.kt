@@ -54,7 +54,7 @@ public class Variable(val name: String, vararg properties: PropertyOrBlock = arr
 
 
 public fun HCLElement.getTerraformModule(): Module {
-  val file = this.containingFile
+  val file = this.containingFile.originalFile
   assert(file is HCLFile)
   val directory = file.containingDirectory
   if (directory == null) {
@@ -66,7 +66,7 @@ public fun HCLElement.getTerraformModule(): Module {
 }
 
 public fun PsiElement.getTerraformSearchScope(): GlobalSearchScope {
-  val file = this.containingFile
+  val file = this.containingFile.originalFile
   val directory = file.containingDirectory
   if (directory == null) {
     // File only in-memory, assume as only file in module
