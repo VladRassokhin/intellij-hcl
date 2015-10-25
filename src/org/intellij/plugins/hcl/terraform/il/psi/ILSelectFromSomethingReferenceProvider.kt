@@ -99,28 +99,29 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     return PsiReference.EMPTY_ARRAY;
   }
 
-  private fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable): ILExpression? {
-    // select = left.right
-    val left = select.from
-    if (left is ILSelectExpression) {
-      // left = from.middle
-      val middle = left.field
-      val from = left.from
-      if (middle?.text == "*" && from is ILSelectExpression) {
-        // left == from.*
-        // from == X.Y
-        // select = X.Y.*.right
-        // Y == from.field
-        return from.field
-      }
-      return middle
-    }
-
-    if (left !== right) return left
-    // TODO: Investigate is that enough
-    return null
-  }
-
 
 }
+
+public fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable): ILExpression? {
+  // select = left.right
+  val left = select.from
+  if (left is ILSelectExpression) {
+    // left = from.middle
+    val middle = left.field
+    val from = left.from
+    if (middle?.text == "*" && from is ILSelectExpression) {
+      // left == from.*
+      // from == X.Y
+      // select = X.Y.*.right
+      // Y == from.field
+      return from.field
+    }
+    return middle
+  }
+
+  if (left !== right) return left
+  // TODO: Investigate is that enough
+  return null
+}
+
 

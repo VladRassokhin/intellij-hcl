@@ -112,7 +112,7 @@ public class Module private constructor(val item: PsiFileSystemItem) {
     })
   }
 
-  fun findResources(type: String, name: String): List<HCLBlock> {
+  fun findResources(type: String, name: String?): List<HCLBlock> {
     val found = ArrayList<HCLBlock>()
     process(PsiElementProcessor { file ->
       file.acceptChildren(object : HCLElementVisitor() {
@@ -120,7 +120,7 @@ public class Module private constructor(val item: PsiFileSystemItem) {
           if ("resource" != o.getNameElementUnquoted(0)) return;
           if (type != o.getNameElementUnquoted(1)) return;
           val n = o.getNameElementUnquoted(2) ?: return;
-          if (name == n) found.add(o)
+          if (name == null || name == n) found.add(o)
         }
       }); true
     })

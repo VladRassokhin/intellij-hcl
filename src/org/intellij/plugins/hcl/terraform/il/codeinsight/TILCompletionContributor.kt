@@ -26,19 +26,24 @@ import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import getNameElementUnquoted
 import getPrevSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElement
+import org.intellij.plugins.hcl.psi.HCLObject
+import org.intellij.plugins.hcl.psi.HCLProperty
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
+import org.intellij.plugins.hcl.terraform.config.codeinsight.ResourceBlockNameInsertHandler
+import org.intellij.plugins.hcl.terraform.config.codeinsight.ResourcePropertyInsertHandler
+import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformLookupElementRenderer
 import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.model.Function
 import org.intellij.plugins.hcl.terraform.il.TILLanguage
-import org.intellij.plugins.hcl.terraform.il.psi.ILExpression
-import org.intellij.plugins.hcl.terraform.il.psi.ILSelectExpression
-import org.intellij.plugins.hcl.terraform.il.psi.ILVariable
+import org.intellij.plugins.hcl.terraform.il.psi.*
 import java.util.*
 
 public class TILCompletionContributor : CompletionContributor() {
@@ -46,7 +51,10 @@ public class TILCompletionContributor : CompletionContributor() {
     extend(CompletionType.BASIC, METHOD_POSITION, MethodsCompletionProvider)
     extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
         .withParent(ILVariable::class.java).withSuperParent(2, ILSE_FROM_KNOWN_SCOPE)
-        , AnyScopeCompletionProvider)
+        , KnownScopeCompletionProvider)
+    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
+        .withParent(ILVariable::class.java).withSuperParent(2, ILSE_NOT_FROM_KNOWN_SCOPE)
+        , SelectCompletionProvider)
   }
 
 
@@ -107,6 +115,12 @@ public class TILCompletionContributor : CompletionContributor() {
       })
       return builder
     }
+
+    fun create(value: PropertyOrBlockType, lookupString: String? = null): LookupElementBuilder {
+      var builder = LookupElementBuilder.create(lookupString ?: value.name)
+      builder = builder.withRenderer(TerraformLookupElementRenderer())
+      return builder
+    }
   }
 
   private object MethodsCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -141,7 +155,7 @@ public class TILCompletionContributor : CompletionContributor() {
     abstract fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet)
   }
 
-  object AnyScopeCompletionProvider : CompletionProvider<CompletionParameters>() {
+  object KnownScopeCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val position = parameters.position
       val parent = position.parent
@@ -195,7 +209,7 @@ public class TILCompletionContributor : CompletionContributor() {
     }
   }
 
-  private object ModuleCompletionProvider : SelectFromScopeCompletionProvider("count") {
+  private object ModuleCompletionProvider : SelectFromScopeCompletionProvider("module") {
     override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val module = getTerraformModule(variable) ?: return
       val modules = module.getDefinedModules();
@@ -204,6 +218,67 @@ public class TILCompletionContributor : CompletionContributor() {
         if (name != null) result.addElement(create(name))
       }
     }
+  }
+
+  private object SelectCompletionProvider : CompletionProvider<CompletionParameters>() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      val position = parameters.position
+
+      val element = position.parent
+      if (element !is ILVariable) return
+      val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return
+      if (host !is HCLElement) return
+
+      val parent = element.parent
+      if (parent !is ILSelectExpression) return
+
+      val expression = getGoodLeftElement(parent, element);
+      if (expression == null) {
+        // v is leftmost, no idea what to do
+        return;
+      }
+      val references = expression.references
+      if (references.isNotEmpty()) {
+        val resolved = references.map {
+          if (it is HCLBlockNameReference) {
+            it.block
+          } else if (it is HCLBlockPropertyReference) {
+            it.property
+          } else {
+            it.resolve()
+          }
+        }.filterNotNull()
+
+        val found = ArrayList<LookupElement>()
+        for (r in resolved) {
+          when (r) {
+            is HCLBlock -> {
+              val properties = ModelHelper.getBlockProperties(r)
+              found.addAll(properties.map { create(it) });
+            }
+            is HCLProperty -> {
+              val value = r.value
+              if (value is HCLObject) {
+                found.addAll(value.propertyList.map { create(it.name) })
+              }
+            }
+          }
+        }
+        if (!found.isEmpty()) {
+          result.addAllElements(found)
+        }
+        return
+      }
+
+      if (expression is ILVariable) {
+        val module = host.getTerraformModule()
+        val resources = module.findResources(expression.name, null)
+        if (resources.size == 0) return
+        result.addAllElements(resources.map { it.getNameElementUnquoted(2) }.filterNotNull().map { create(it) })
+        // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
+      }
+    }
+
   }
 }
 
