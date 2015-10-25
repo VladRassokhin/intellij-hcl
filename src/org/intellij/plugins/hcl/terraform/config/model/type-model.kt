@@ -407,14 +407,16 @@ public class TypeModel(
 
     @JvmField val AbstractResource: BlockType = BlockType("resource", 2, properties = *arrayOf(
         PropertyType("count", Types.Number).toPOBT(),
-        PropertyType("depends_on", Types.Array, "String").toPOBT(),
-        PropertyType("provider", Types.String, "Reference(provider.type|provider.alias)").toPOBT(),
+        PropertyType("depends_on", Types.Array, hint = "String").toPOBT(),
+        PropertyType("provider", Types.String, hint = "Reference(provider.type|provider.alias)").toPOBT(),
         TypeModel.ResourceLifecycle.toPOBT(),
         // Also may have connection? and provisioner+ blocks
         Connection.toPOBT(),
         TypeModel.AbstractResourceProvisioner.toPOBT()
     ))
-    val AbstractProvider: BlockType = BlockType("provider", 1, false)
+    val AbstractProvider: BlockType = BlockType("provider", 1, false, properties = *arrayOf(
+        PropertyType("alias", Types.String, injectionAllowed = false).toPOBT())
+    )
 
     val RootBlocks = listOf(Atlas, Module, Output, Variable, AbstractProvider, AbstractResource)
   }

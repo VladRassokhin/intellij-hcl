@@ -19,7 +19,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import org.intellij.plugins.hcl.psi.HCLBlock
 
-class HCLBlockNameReference(from: ILVariable, soft: Boolean, val block: HCLBlock?, val index: Int) : PsiReferenceBase<ILVariable>(from, soft) {
+class HCLBlockNameReference(from: PsiElement, soft: Boolean, val block: HCLBlock?, val index: Int) : PsiReferenceBase<PsiElement>(from, soft) {
   override fun resolve(): PsiElement? {
     val elements = block?.nameElements ?: return null
     return elements[index]

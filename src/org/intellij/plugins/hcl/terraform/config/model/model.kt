@@ -138,12 +138,38 @@ public class Module private constructor(val item: PsiFileSystemItem) {
         override fun visitBlock(o: HCLBlock) {
           if ("provider" != o.getNameElementUnquoted(0)) return;
           val tp = o.getNameElementUnquoted(1) ?: return;
-          val als = o.`object`?.findProperty("alias")?.name
-          if (alias == null) {
+          val value = o.`object`?.findProperty("alias")?.value
+          val als = when (value) {
+            is HCLStringLiteral -> value.value
+            is HCLIdentifier -> value.id
+            else -> null
+          }
+          if (alias == null && als == null) {
             if (type == tp) found.add(o)
           } else {
             if (alias == als) found.add(o)
           }
+        }
+      }); true
+    })
+    return found
+  }
+
+  fun getDefinedProviders(): List<Pair<HCLBlock, String>> {
+    val found = ArrayList<Pair<HCLBlock, String>>()
+    process(PsiElementProcessor { file ->
+      file.acceptChildren(object : HCLElementVisitor() {
+        override fun visitBlock(o: HCLBlock) {
+          if ("provider" != o.getNameElementUnquoted(0)) return;
+          val tp = o.getNameElementUnquoted(1) ?: return;
+          val value = o.`object`?.findProperty("alias")?.value
+          val als = when (value) {
+            is HCLStringLiteral -> value.value
+            is HCLIdentifier -> value.id
+            else -> null
+          }
+          if (als != null) found.add(Pair(o, als))
+          else found.add(Pair(o, tp))
         }
       }); true
     })

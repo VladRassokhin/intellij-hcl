@@ -19,7 +19,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import org.intellij.plugins.hcl.psi.HCLProperty
 
-class HCLBlockPropertyReference(from: ILVariable, soft: Boolean, val property: HCLProperty?) : PsiReferenceBase<ILVariable>(from, soft) {
+class HCLBlockPropertyReference(from: PsiElement, soft: Boolean, val property: HCLProperty?) : PsiReferenceBase<PsiElement>(from, soft) {
   override fun resolve(): PsiElement? {
     return property
   }

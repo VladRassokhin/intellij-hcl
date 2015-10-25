@@ -46,7 +46,7 @@ public object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
     if (from.name == "count") {
       val resource = getResource(element) ?: return PsiReference.EMPTY_ARRAY
       val property = resource.`object`?.findProperty("count")
-      return arrayOf(HCLBlockPropertyReference(from, true, property))
+      return arrayOf(HCLBlockPropertyReference(parent, true, property))
     }
     if (from.name == "self") {
       val resource = getProvisionerResource(element) ?: return PsiReference.EMPTY_ARRAY
