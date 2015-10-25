@@ -82,14 +82,17 @@ public class TILCompletionTest extends CompletionTestCase {
 
   public void testResourceTypeCompletion() throws Exception {
     doBasicCompletionTest("resource 'res_a' 'b' {} foo='${<caret>}'", "res_a");
+    doBasicCompletionTest("resource 'res_a' 'b' {} foo='${concat(<caret>)}'", "res_a");
   }
 
   public void testResourceNameCompletion() throws Exception {
     doBasicCompletionTest("resource 'res_a' 'b' {} foo='${res_a.<caret>}'", "b");
+    doBasicCompletionTest("resource 'res_a' 'b' {} foo='${concat(res_a.<caret>)}'", "b");
   }
 
   public void testResourcePropertyCompletion() throws Exception {
     doBasicCompletionTest("resource 'res_a' 'b' {x='y'} foo='${res_a.b.<caret>}'", "count", "x");
+    doBasicCompletionTest("resource 'res_a' 'b' {x='y'} foo='${concat(res_a.b.<caret>)}'", "count", "x");
   }
 
 }
