@@ -46,7 +46,7 @@ public object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
     if (from.name == "count") {
       val resource = getResource(element) ?: return PsiReference.EMPTY_ARRAY
       val property = resource.`object`?.findProperty("count")
-      return arrayOf(HCLBlockPropertyReference(parent, true, property))
+      return arrayOf(HCLBlockPropertyReference(from, true, property))
     }
     if (from.name == "self") {
       val resource = getProvisionerResource(element) ?: return PsiReference.EMPTY_ARRAY
@@ -56,7 +56,7 @@ public object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
     if (from.name == "path") {
       // TODO: Resolve some paths
       if (name == "module") {
-        val file = (host as HCLElement).containingFile
+        val file = (host as HCLElement).containingFile.originalFile
         return arrayOf(PsiReferenceBase.Immediate<ILVariable>(element, true, file.containingDirectory ?: file))
       }
     }
