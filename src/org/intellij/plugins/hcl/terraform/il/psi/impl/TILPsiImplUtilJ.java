@@ -72,7 +72,12 @@ public class TILPsiImplUtilJ {
   }
 
   @Nullable
-  public static ILVariable getField(ILSelectExpression expression) {
+  public static ILExpression getField(ILSelectExpression expression) {
     return TILPsiImplUtils.INSTANCE.getField(expression);
+  }
+
+  @Nullable
+  public static String getUnquotedText(ILLiteralExpression literal){
+    return TILPsiImplUtils.INSTANCE.getUnquotedText(literal);
   }
 }

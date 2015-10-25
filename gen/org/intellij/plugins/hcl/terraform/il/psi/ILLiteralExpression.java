@@ -15,4 +15,7 @@ public interface ILLiteralExpression extends ILExpression {
 
   Class getTypeClass();
 
+  @Nullable
+  String getUnquotedText();
+
 }

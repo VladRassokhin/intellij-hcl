@@ -29,7 +29,7 @@ public class ILSelectExpressionImpl extends ILExpressionImpl implements ILSelect
   }
 
   @Nullable
-  public ILVariable getField() {
+  public ILExpression getField() {
     return TILPsiImplUtilJ.getField(this);
   }
 

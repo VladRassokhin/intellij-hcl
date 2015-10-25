@@ -17,6 +17,7 @@ package org.intellij.plugins.hcl.terraform.il.psi.impl
 
 import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.impl.source.tree.LeafElement
 import com.intellij.psi.search.GlobalSearchScope
@@ -92,8 +93,16 @@ object TILPsiImplUtils {
     return generator.createILVariable(name)
   }
 
-  fun getField(expression: ILSelectExpression): ILVariable? {
+  fun getField(expression: ILSelectExpression): ILExpression? {
     val list = PsiTreeUtil.getChildrenOfTypeAsList(expression, ILExpression::class.java)
-    return if (list.size < 2) null else list[1] as ILVariable
+    return list.getOrNull(1)
+  }
+
+  fun getUnquotedText(literal: ILLiteralExpression): String? {
+    val dqs = literal.doubleQuotedString
+    if (dqs != null) {
+      return StringUtil.unquoteString(dqs.text)
+    }
+    return literal.text
   }
 }

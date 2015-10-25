@@ -37,4 +37,9 @@ public class ILLiteralExpressionImpl extends ILExpressionWithReference implement
     return TILPsiImplUtilJ.getTypeClass(this);
   }
 
+  @Nullable
+  public String getUnquotedText() {
+    return TILPsiImplUtilJ.getUnquotedText(this);
+  }
+
 }

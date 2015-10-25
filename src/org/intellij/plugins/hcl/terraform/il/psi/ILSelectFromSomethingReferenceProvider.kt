@@ -85,22 +85,31 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
       return PsiReference.EMPTY_ARRAY
     }
 
-    if (expression is ILVariable) {
-      if (name in TILCompletionContributor.SCOPES) return PsiReference.EMPTY_ARRAY
-      val module = host.getTerraformModule()
-      // TODO: get suitable resource/provider/etc
-      // val model = ServiceManager.getService(TypeModelProvider::class.java).get()
-      val resources = module.findResources(expression.name, name)
-      if (resources.size == 0) return PsiReference.EMPTY_ARRAY
-      return resources.map { HCLBlockNameReference(element, true, it, 2) }.toTypedArray()
-      // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
-    }
+    if (name in TILCompletionContributor.SCOPES) return PsiReference.EMPTY_ARRAY
 
-    return PsiReference.EMPTY_ARRAY;
+    val ev = getSelectFieldText(expression) ?: return PsiReference.EMPTY_ARRAY
+
+    val module = host.getTerraformModule()
+    // TODO: get suitable resource/provider/etc
+    // val model = ServiceManager.getService(TypeModelProvider::class.java).get()
+    val resources = module.findResources(ev, name)
+    if (resources.size == 0) return PsiReference.EMPTY_ARRAY
+    return resources.map { HCLBlockNameReference(element, true, it, 2) }.toTypedArray()
+    // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
   }
 
 
+
 }
+
+private fun getSelectFieldText(expression: ILExpression): String? {
+  return when (expression) {
+    is ILLiteralExpression -> expression.unquotedText
+    is ILVariable -> expression.name
+    else -> null
+  }
+}
+
 
 public fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable): ILExpression? {
   // select = left.right
@@ -109,12 +118,15 @@ public fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable): IL
     // left = from.middle
     val middle = left.field
     val from = left.from
-    if (middle?.text == "*" && from is ILSelectExpression) {
-      // left == from.*
-      // from == X.Y
-      // select = X.Y.*.right
-      // Y == from.field
-      return from.field
+    if (from is ILSelectExpression && middle != null) {
+      val text = getSelectFieldText(middle)
+      if (text != null && (text == "*" || text.isNumber())) {
+        // left == from.*
+        // from == X.Y
+        // select = X.Y.*.right
+        // Y == from.field
+        return from.field
+      }
     }
     return middle
   }
@@ -122,6 +134,15 @@ public fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable): IL
   if (left !== right) return left
   // TODO: Investigate is that enough
   return null
+}
+
+fun String.isNumber(): Boolean {
+  try {
+    this.toInt()
+    return true
+  } catch(e: NumberFormatException) {
+    return false
+  }
 }
 
 

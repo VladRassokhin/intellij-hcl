@@ -11,6 +11,6 @@ public interface ILSelectExpression extends ILExpression {
   ILExpression getFrom();
 
   @Nullable
-  ILVariable getField();
+  ILExpression getField();
 
 }

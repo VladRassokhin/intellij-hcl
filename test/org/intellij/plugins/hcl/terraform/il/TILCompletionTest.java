@@ -95,4 +95,24 @@ public class TILCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("resource 'res_a' 'b' {x='y'} foo='${concat(res_a.b.<caret>)}'", "count", "x");
   }
 
+  public void testResourcePropertyCompletionAfterNumber() throws Exception {
+    doBasicCompletionTest("resource 'res_a' 'b' {x='y'} foo='${res_a.b.1.<caret>}'", "count", "x");
+    doBasicCompletionTest("resource 'res_a' 'b' {x='y'} foo='${concat(res_a.b.1.<caret>)}'", "count", "x");
+  }
+
+  public void testResourcePropertyCompletionAfterStar() throws Exception {
+    doBasicCompletionTest("resource 'res_a' 'b' {x='y'} foo='${res_a.b.*.<caret>}'", "count", "x");
+    doBasicCompletionTest("resource 'res_a' 'b' {x='y'} foo='${concat(res_a.b.*.<caret>)}'", "count", "x");
+  }
+
+  public void testResourcePropertyCompletionAfterQuotedStar() throws Exception {
+    doBasicCompletionTest("resource 'res_a' 'b' {x='y'} foo='${res_a.b.\"*\".<caret>}'", "count", "x");
+    doBasicCompletionTest("resource 'res_a' 'b' {x='y'} foo='${concat(res_a.b.\"*\".<caret>)}'", "count", "x");
+  }
+
+  public void testResourcePropertyCompletionQuotedResourceName() throws Exception {
+    doBasicCompletionTest("resource 'res_a' 'b' {x='y'} foo='${res_a.\"b\".<caret>}'", 0);
+    doBasicCompletionTest("resource 'res_a' 'b' {x='y'} foo='${concat(res_a.\"b\".<caret>)}'", 0);
+  }
+
 }
