@@ -60,6 +60,11 @@ public object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
         return arrayOf(PsiReferenceBase.Immediate<ILVariable>(element, true, file.containingDirectory ?: file))
       }
     }
+    if (from.name == "module") {
+      val blocks = host.getTerraformModule().findModules(name)
+      if (blocks.isEmpty()) return PsiReference.EMPTY_ARRAY
+      return blocks.map { TerraformModuleReference(element, false, it) }.toTypedArray()
+    }
     return PsiReference.EMPTY_ARRAY;
   }
 }
