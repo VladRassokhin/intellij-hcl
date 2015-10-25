@@ -17,17 +17,16 @@ Also HCL format is used for [Nomad](https://www.nomadproject.io/)(`.nomad` files
 #### Terraform configs (.tf) files
 * Interpolations syntax highlighting
 * (WIP) Properties validation (according to required properties for resource/provider, type checking)
+* (WIP) Go to definition from resource to provider
 
 #### Terraform configs Interpolation Language
 * Syntax highlighting
-
+* [Predefined methods](https://www.terraform.io/docs/configuration/interpolation.html) autocompletion
+* (WIP) Go to declaration on resources, providers, properties, etc.
 
 
 ### Planned features:
 #### Terraform configs (.tf) files
-* Go to definition from resource to provider
 * Find usages for resources, providers, variables
 
 #### Terraform configs Interpolation Language
-* [Predefined methods](https://www.terraform.io/docs/configuration/interpolation.html) autocompletion
-* Go to declaration on resources, providers, properties, etc.
