@@ -76,4 +76,8 @@ public class TILCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("resource 'y' 'x' {count = 2 source='${count.<caret> + 1}'", 1, "index");
   }
 
+  public void testModuleCompletion() throws Exception {
+    doBasicCompletionTest("module 'ref' {source = './child'} foo='${module.<caret>}'", 1, "ref");
+  }
+
 }

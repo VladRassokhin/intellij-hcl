@@ -150,6 +150,34 @@ public class Module private constructor(val item: PsiFileSystemItem) {
     return found
   }
 
+  fun findModules(name: String): List<HCLBlock> {
+    val found = ArrayList<HCLBlock>()
+    process(PsiElementProcessor { file ->
+      file.acceptChildren(object : HCLElementVisitor() {
+        override fun visitBlock(o: HCLBlock) {
+          if ("module" != o.getNameElementUnquoted(0)) return;
+          val n = o.getNameElementUnquoted(1) ?: return;
+          if (name == n) found.add(o)
+        }
+      }); true
+    })
+    return found
+  }
+
+  fun getDefinedModules(): List<HCLBlock> {
+    val found = ArrayList<HCLBlock>()
+    process(PsiElementProcessor { file ->
+      file.acceptChildren(object : HCLElementVisitor() {
+        override fun visitBlock(o: HCLBlock) {
+          if ("module" != o.getNameElementUnquoted(0)) return;
+          o.getNameElementUnquoted(1) ?: return;
+          found.add(o)
+        }
+      }); true
+    })
+    return found
+  }
+
 }
 
 class CollectVariablesVisitor : HCLElementVisitor() {

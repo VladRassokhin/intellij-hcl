@@ -33,10 +33,8 @@ import getPrevSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
+import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.model.Function
-import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
-import org.intellij.plugins.hcl.terraform.config.model.Variable
-import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hcl.terraform.il.TILLanguage
 import org.intellij.plugins.hcl.terraform.il.psi.ILExpression
 import org.intellij.plugins.hcl.terraform.il.psi.ILSelectExpression
@@ -65,7 +63,8 @@ public class TILCompletionProvider : CompletionContributor() {
         Pair("var", VariableCompletionProvider),
         Pair("self", SelfCompletionProvider),
         Pair("path", PathCompletionProvider),
-        Pair("count", CountCompletionProvider)
+        Pair("count", CountCompletionProvider),
+        Pair("module", ModuleCompletionProvider)
     )
     public val SCOPES = SCOPE_PROVIDERS.keys
 
@@ -195,13 +194,28 @@ public class TILCompletionProvider : CompletionContributor() {
       result.addElement(create("index"))
     }
   }
+
+  private object ModuleCompletionProvider : SelectFromScopeCompletionProvider("count") {
+    override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      val module = getTerraformModule(variable) ?: return
+      val modules = module.getDefinedModules();
+      for (m in modules) {
+        val name = m.getNameElementUnquoted(1)
+        if (name != null) result.addElement(create(name))
+      }
+    }
+  }
+}
+
+public fun getTerraformModule(element: ILExpression): Module? {
+  val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return null
+  if (host !is HCLElement) return null
+  val module = host.getTerraformModule()
+  return module
 }
 
 public fun getLocalDefinedVariables(element: ILExpression): List<Variable> {
-  val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return emptyList()
-  if (host !is HCLElement) return emptyList()
-  val module = host.getTerraformModule()
-  return module.getAllVariables()
+  return getTerraformModule(element)?.getAllVariables() ?: emptyList()
 }
 
 public fun getProvisionerResource(position: ILExpression): HCLBlock? {
