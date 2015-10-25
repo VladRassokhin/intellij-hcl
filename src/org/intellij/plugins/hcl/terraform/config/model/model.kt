@@ -112,6 +112,44 @@ public class Module private constructor(val item: PsiFileSystemItem) {
     })
   }
 
+  fun findResources(type: String, name: String): List<HCLBlock> {
+    val found = ArrayList<HCLBlock>()
+    process(PsiElementProcessor { file ->
+      file.acceptChildren(object : HCLElementVisitor() {
+        override fun visitBlock(o: HCLBlock) {
+          if ("resource" != o.getNameElementUnquoted(0)) return;
+          if (type != o.getNameElementUnquoted(1)) return;
+          val n = o.getNameElementUnquoted(2) ?: return;
+          if (name == n) found.add(o)
+        }
+      }); true
+    })
+    return found
+  }
+
+  // search is either 'type' or 'type.alias'
+  fun findProviders(search: String): List<HCLBlock> {
+    val split = search.split('.')
+    val type = split[0]
+    val alias = split.getOrNull(1)
+    val found = ArrayList<HCLBlock>()
+    process(PsiElementProcessor { file ->
+      file.acceptChildren(object : HCLElementVisitor() {
+        override fun visitBlock(o: HCLBlock) {
+          if ("provider" != o.getNameElementUnquoted(0)) return;
+          val tp = o.getNameElementUnquoted(1) ?: return;
+          val als = o.`object`?.findProperty("alias")?.name
+          if (alias == null) {
+            if (type == tp) found.add(o)
+          } else {
+            if (alias == als) found.add(o)
+          }
+        }
+      }); true
+    })
+    return found
+  }
+
 }
 
 class CollectVariablesVisitor : HCLElementVisitor() {

@@ -24,7 +24,8 @@ public class ILReferenceContributor : PsiReferenceContributor() {
   override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
     registrar.registerReferenceProvider(psiElement(ILVariable::class.java)
         .withParent(TILCompletionProvider.ILSE_FROM_KNOWN_SCOPE), ILSelectFromScopeReferenceProvider)
-//    registrar.registerReferenceProvider(psiElement(ILVariable::class.java)
-//        .withParent(TILCompletionProvider.ILSELECT_FROM_KNOWN_SCOPE), ILSelectFromSomethingReferenceProvider)
+
+    registrar.registerReferenceProvider(psiElement(ILVariable::class.java)
+        .withParent(TILCompletionProvider.ILSE_NOT_FROM_KNOWN_SCOPE), ILSelectFromSomethingReferenceProvider)
   }
 }

@@ -20,11 +20,13 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
+import com.intellij.psi.search.SearchScope
 import com.intellij.util.IncorrectOperationException
 import org.intellij.plugins.hcl.psi.HCLElementGenerator
 import org.intellij.plugins.hcl.psi.HCLIdentifier
 import org.intellij.plugins.hcl.psi.HCLProperty
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
+import org.intellij.plugins.hcl.terraform.config.model.getTerraformSearchScope
 import org.jetbrains.annotations.NonNls
 
 abstract class HCLPropertyMixin(node: ASTNode) : HCLElementImpl(node), HCLProperty {
@@ -56,5 +58,9 @@ abstract class HCLPropertyMixin(node: ASTNode) : HCLElementImpl(node), HCLProper
 
   override fun getNameIdentifier(): PsiElement? {
     return nameElement
+  }
+
+  override fun getUseScope(): SearchScope {
+    return this.getTerraformSearchScope()
   }
 }

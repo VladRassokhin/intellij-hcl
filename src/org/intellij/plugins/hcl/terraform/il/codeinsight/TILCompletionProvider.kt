@@ -67,6 +67,7 @@ public class TILCompletionProvider : CompletionContributor() {
         Pair("path", PathCompletionProvider),
         Pair("count", CountCompletionProvider)
     )
+    public val SCOPES = SCOPE_PROVIDERS.keys
 
     private val METHOD_POSITION = PlatformPatterns.psiElement().withLanguage(TILLanguage)
         .withParent(ILVariable::class.java)
@@ -74,6 +75,8 @@ public class TILCompletionProvider : CompletionContributor() {
 
     public val ILSE_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
         .with(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
+    public val ILSE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
+        .without(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
 
 
     private val LOG = Logger.getInstance(TILCompletionProvider::class.java)
