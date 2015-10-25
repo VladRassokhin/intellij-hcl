@@ -188,7 +188,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     }
   }
 
-  private abstract class OurCompletionProvider : CompletionProvider<CompletionParameters>() {
+  public abstract class OurCompletionProvider : CompletionProvider<CompletionParameters>() {
     protected fun getTypeModel(): TypeModel {
       val provider = ServiceManager.getService(TypeModelProvider::class.java)
       return provider.get()

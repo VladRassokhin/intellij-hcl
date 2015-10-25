@@ -26,8 +26,6 @@ import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
-import com.intellij.psi.PsiReference
-import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import getNameElementUnquoted
@@ -37,8 +35,7 @@ import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.psi.HCLObject
 import org.intellij.plugins.hcl.psi.HCLProperty
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
-import org.intellij.plugins.hcl.terraform.config.codeinsight.ResourceBlockNameInsertHandler
-import org.intellij.plugins.hcl.terraform.config.codeinsight.ResourcePropertyInsertHandler
+import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformLookupElementRenderer
 import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.model.Function
@@ -49,6 +46,7 @@ import java.util.*
 public class TILCompletionContributor : CompletionContributor() {
   init {
     extend(CompletionType.BASIC, METHOD_POSITION, MethodsCompletionProvider)
+    extend(CompletionType.BASIC, METHOD_POSITION, ResourceTypesCompletionProvider)
     extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
         .withParent(ILVariable::class.java).withSuperParent(2, ILSE_FROM_KNOWN_SCOPE)
         , KnownScopeCompletionProvider)
@@ -232,11 +230,7 @@ public class TILCompletionContributor : CompletionContributor() {
       val parent = element.parent
       if (parent !is ILSelectExpression) return
 
-      val expression = getGoodLeftElement(parent, element);
-      if (expression == null) {
-        // v is leftmost, no idea what to do
-        return;
-      }
+      val expression = getGoodLeftElement(parent, element) ?: return
       val references = expression.references
       if (references.isNotEmpty()) {
         val resolved = references.map {
@@ -279,6 +273,28 @@ public class TILCompletionContributor : CompletionContributor() {
       }
     }
 
+  }
+
+  private object ResourceTypesCompletionProvider : TerraformConfigCompletionContributor.OurCompletionProvider() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      val position = parameters.position
+      val parent = position.parent
+      if (parent !is ILExpression) return
+      val leftNWS = position.getPrevSiblingNonWhiteSpace()
+      LOG.debug("TIL.ResourceTypesCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
+
+      val host = InjectedLanguageManager.getInstance(parent.project).getInjectionHost(parent) ?: return
+      if (host !is HCLElement) return
+
+      val module = host.getTerraformModule()
+      val resources = module.getDeclaredResources()
+      val types = resources.map { it.getNameElementUnquoted(1) }.filterNotNull().toSortedSet()
+      result.addAllElements(types.map { create(it) })
+
+      if (parameters.isExtendedCompletion) {
+        result.addAllElements(getTypeModel().resources.map { it.type }.filter { it !in types }.map { create(it) })
+      }
+    }
   }
 }
 
