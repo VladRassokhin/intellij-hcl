@@ -41,7 +41,7 @@ import org.intellij.plugins.hcl.terraform.il.psi.ILSelectExpression
 import org.intellij.plugins.hcl.terraform.il.psi.ILVariable
 import java.util.*
 
-public class TILCompletionProvider : CompletionContributor() {
+public class TILCompletionContributor : CompletionContributor() {
   init {
     extend(CompletionType.BASIC, METHOD_POSITION, MethodsCompletionProvider)
     extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
@@ -78,7 +78,7 @@ public class TILCompletionProvider : CompletionContributor() {
         .without(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
 
 
-    private val LOG = Logger.getInstance(TILCompletionProvider::class.java)
+    private val LOG = Logger.getInstance(TILCompletionContributor::class.java)
     fun create(value: String): LookupElementBuilder {
       var builder = LookupElementBuilder.create(value)
       return builder

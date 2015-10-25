@@ -17,7 +17,7 @@ package org.intellij.plugins.hcl.terraform.il;
 
 import com.intellij.lang.Language;
 import org.intellij.plugins.hcl.CompletionTestCase;
-import org.intellij.plugins.hcl.terraform.il.codeinsight.TILCompletionProvider;
+import org.intellij.plugins.hcl.terraform.il.codeinsight.TILCompletionContributor;
 
 public class TILCompletionTest extends CompletionTestCase {
   @Override
@@ -36,12 +36,12 @@ public class TILCompletionTest extends CompletionTestCase {
   }
 
   public void testMethodCompletion_BeginOnInterpolation() throws Exception {
-    doBasicCompletionTest("a='${<caret>}'", TILCompletionProvider.GLOBAL_AVAILABLE);
+    doBasicCompletionTest("a='${<caret>}'", TILCompletionContributor.GLOBAL_AVAILABLE);
   }
 
   public void testMethodCompletion_AsParameter() throws Exception {
-    doBasicCompletionTest("a='${foo(<caret>)}'", TILCompletionProvider.GLOBAL_AVAILABLE);
-    doBasicCompletionTest("a='${foo(true,<caret>)}'", TILCompletionProvider.GLOBAL_AVAILABLE);
+    doBasicCompletionTest("a='${foo(<caret>)}'", TILCompletionContributor.GLOBAL_AVAILABLE);
+    doBasicCompletionTest("a='${foo(true,<caret>)}'", TILCompletionContributor.GLOBAL_AVAILABLE);
   }
 
   public void testNoMethodCompletion_InSelect() throws Exception {

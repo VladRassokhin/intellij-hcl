@@ -28,7 +28,7 @@ import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.psi.HCLObject
 import org.intellij.plugins.hcl.psi.HCLProperty
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
-import org.intellij.plugins.hcl.terraform.il.codeinsight.TILCompletionProvider
+import org.intellij.plugins.hcl.terraform.il.codeinsight.TILCompletionContributor
 import java.util.*
 
 object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
@@ -86,7 +86,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     }
 
     if (expression is ILVariable) {
-      if (name in TILCompletionProvider.SCOPES) return PsiReference.EMPTY_ARRAY
+      if (name in TILCompletionContributor.SCOPES) return PsiReference.EMPTY_ARRAY
       val module = host.getTerraformModule()
       // TODO: get suitable resource/provider/etc
       // val model = ServiceManager.getService(TypeModelProvider::class.java).get()

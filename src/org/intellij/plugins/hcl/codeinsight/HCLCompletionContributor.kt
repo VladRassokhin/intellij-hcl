@@ -19,7 +19,6 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PlatformPatterns.psiElement
-import com.intellij.psi.impl.DebugUtil
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.HCLArray
 import org.intellij.plugins.hcl.psi.HCLProperty
@@ -27,8 +26,8 @@ import org.intellij.plugins.hcl.psi.HCLProperty
 /**
  * Based on com.intellij.json.codeinsight.JsonCompletionContributor
  */
-public open class HCLCompletionProvider : CompletionContributor() {
-  private val LOG = Logger.getInstance(HCLCompletionProvider::class.java)
+public open class HCLCompletionContributor : CompletionContributor() {
+  private val LOG = Logger.getInstance(HCLCompletionContributor::class.java)
 
   private val AFTER_EQUALS_IN_PROPERTY = psiElement().afterLeaf("=").withSuperParent(2, HCLProperty::class.java)
   private val AFTER_COMMA_OR_BRACKET_IN_ARRAY = psiElement().afterLeaf(",", "[").withSuperParent(2, HCLArray::class.java)

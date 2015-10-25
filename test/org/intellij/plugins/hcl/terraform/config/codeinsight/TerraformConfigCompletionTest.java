@@ -55,11 +55,11 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
   }
 
   public void testBlockKeywordCompletion() throws Exception {
-    doBasicCompletionTest("<caret> {}", TerraformConfigCompletionProvider.ROOT_BLOCK_KEYWORDS);
-    doBasicCompletionTest("a=1\n<caret> {}", TerraformConfigCompletionProvider.ROOT_BLOCK_KEYWORDS);
+    doBasicCompletionTest("<caret> {}", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
+    doBasicCompletionTest("a=1\n<caret> {}", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
 
-    doBasicCompletionTest("<caret> ", TerraformConfigCompletionProvider.ROOT_BLOCK_KEYWORDS);
-    doBasicCompletionTest("a=1\n<caret> ", TerraformConfigCompletionProvider.ROOT_BLOCK_KEYWORDS);
+    doBasicCompletionTest("<caret> ", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
+    doBasicCompletionTest("a=1\n<caret> ", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
   }
 
   public void testNoBlockKeywordCompletion() throws Exception {

@@ -18,14 +18,14 @@ package org.intellij.plugins.hcl.terraform.il.psi
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
-import org.intellij.plugins.hcl.terraform.il.codeinsight.TILCompletionProvider
+import org.intellij.plugins.hcl.terraform.il.codeinsight.TILCompletionContributor
 
 public class ILReferenceContributor : PsiReferenceContributor() {
   override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
     registrar.registerReferenceProvider(psiElement(ILVariable::class.java)
-        .withParent(TILCompletionProvider.ILSE_FROM_KNOWN_SCOPE), ILSelectFromScopeReferenceProvider)
+        .withParent(TILCompletionContributor.ILSE_FROM_KNOWN_SCOPE), ILSelectFromScopeReferenceProvider)
 
     registrar.registerReferenceProvider(psiElement(ILVariable::class.java)
-        .withParent(TILCompletionProvider.ILSE_NOT_FROM_KNOWN_SCOPE), ILSelectFromSomethingReferenceProvider)
+        .withParent(TILCompletionContributor.ILSE_NOT_FROM_KNOWN_SCOPE), ILSelectFromSomethingReferenceProvider)
   }
 }

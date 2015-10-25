@@ -39,14 +39,14 @@ import getNameElementUnquoted
 import getPrevSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.HCLParserDefinition
-import org.intellij.plugins.hcl.codeinsight.HCLCompletionProvider
+import org.intellij.plugins.hcl.codeinsight.HCLCompletionContributor
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.il.ILFileType
 import java.util.*
 
-public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
+public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
   init {
     val WhiteSpace = psiElement(PsiWhiteSpace::class.java)
     val ID = psiElement(HCLElementTypes.ID)
@@ -141,7 +141,7 @@ public class TerraformConfigCompletionProvider : HCLCompletionProvider() {
     @JvmField public val ROOT_BLOCK_KEYWORDS: SortedSet<String> = TypeModel.RootBlocks.map { it -> it.literal }.toSortedSet()
     public val ROOT_BLOCKS_SORTED: List<PropertyOrBlockType> = TypeModel.RootBlocks.map { it.toPOBT() }.sortedBy { it.name }
 
-    private val LOG = Logger.getInstance(TerraformConfigCompletionProvider::class.java)
+    private val LOG = Logger.getInstance(TerraformConfigCompletionContributor::class.java)
     fun DumpPsiFileModel(element: PsiElement): () -> String {
       return { DebugUtil.psiToString(element.containingFile, true) }
     }
