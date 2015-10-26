@@ -53,7 +53,7 @@ public class UnknownBlockTypeInspection : LocalInspectionTool() {
         if (type.isEmpty()) return
         // It could be root block OR block inside Object.
         // Object could be value of some property or right part of other object
-        val parent = PsiTreeUtil.findFirstParent(block, true, { it is HCLBlock || it is HCLProperty || it is HCLFile }) ?: return
+        val parent = PsiTreeUtil.getParentOfType(block, HCLBlock::class.java, HCLProperty::class.java, HCLFile::class.java) ?: return
         ProgressIndicatorProvider.checkCanceled()
         if (parent is HCLFile) {
             if (TypeModel.RootBlocks.any { it.literal == type }) return
@@ -62,6 +62,7 @@ public class UnknownBlockTypeInspection : LocalInspectionTool() {
             parent.getNameElementUnquoted(0) ?: return
             parent.`object` ?: return
             val properties = ModelHelper.getBlockProperties(parent);
+            // TODO: (?) For some reason single name block could be represented as 'property' in model
             if (properties.any { it.block != null && it.name == type }) return
             holder.registerProblem(block.nameElements.first(), "Unknown block type $type", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         } else if (parent is HCLProperty) {

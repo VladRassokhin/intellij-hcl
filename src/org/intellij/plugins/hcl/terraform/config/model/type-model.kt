@@ -133,15 +133,15 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
             parseFile(json, file)
           } catch(e: Throwable) {
             val msg = "Failed to parse file '$file'"
-            LOG.error(msg)
-            if (application.isUnitTestMode) {
+            LOG.error(msg, e)
+            if (application.isUnitTestMode || application.isInternal) {
               assert(false) { msg }
             }
           }
         } else {
           val msg = "Failed to load anything from file '$file'"
           LOG.error(msg)
-          if (application.isUnitTestMode) {
+          if (application.isUnitTestMode || application.isInternal) {
             assert(false) { msg }
           }
         }
@@ -279,6 +279,8 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
     var hint: Any? = null
 
+    var isBlock = false
+
     val type = parseType(m.get("Type"))
     val elem = m.get("Elem")
     if (elem != null) {
@@ -289,7 +291,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
         val a = elem.array<Any>("value")
         if (a != null) {
           val parsed = parseSchemaElement("__inner__", a, "$fqn.__inner__")
-          val t = parsed.property!!.type
+          val t = parsed.property?.type ?: parsed.block?.properties
           hint = t
         }
       }
@@ -297,7 +299,10 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
         val o = elem.obj("value")
         if (o != null) {
           val innerTypeProperties = o.map { parseSchemaElement(it, "$fqn.__inner__") }
-          hint = innerTypeProperties
+          hint = innerTypeProperties.toTypedArray()
+          if (type == Types.Array) {
+            isBlock = true
+          }
         }
       }
       // ?? return BlockType(name).toPOBT()
@@ -306,7 +311,20 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
     val additional = external.get(fqn) ?: TypeModelProvider.Additional(name);
 
+    if (type == Types.Object) {
+      isBlock = true
+    }
+
     // External description and hint overrides one from model
+    if (isBlock) {
+      // TODO: Do something with a additional.hint
+      var bh: Array<out PropertyOrBlockType> = emptyArray()
+      if (hint is Array<*> && hint.size > 0 && hint.first() is PropertyOrBlockType) {
+        bh = hint as Array<out PropertyOrBlockType>
+      }
+      return BlockType(name, required = required,
+          description = additional.description ?: m.get("Description")?.string("value") ?: null, properties = *bh).toPOBT()
+    }
     return PropertyType(name, type, required = required,
         hint = additional.hint ?: hint,
         description = additional.description ?: m.get("Description")?.string("value") ?: null).toPOBT()
