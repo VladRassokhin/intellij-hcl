@@ -19,7 +19,6 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.impl.source.tree.LeafElement
-import com.intellij.psi.impl.source.tree.injected.StringLiteralEscaper
 import org.intellij.plugins.hcl.psi.HCLElementGenerator
 import org.intellij.plugins.hcl.psi.HCLHeredocLine
 import org.intellij.plugins.hcl.psi.HCLHeredocLiteral
@@ -62,6 +61,6 @@ public abstract class HCLHeredocLiteralMixin(node: ASTNode?) : HCLLiteralImpl(no
   }
 
   override fun createLiteralTextEscaper(): LiteralTextEscaper<out PsiLanguageInjectionHost> {
-    return StringLiteralEscaper<HCLHeredocLiteralMixin>(this);
+    return LiteralTextEscaper.createSimple(this)
   }
 }

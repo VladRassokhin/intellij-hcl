@@ -19,7 +19,6 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.impl.source.tree.LeafElement
-import com.intellij.psi.impl.source.tree.injected.StringLiteralEscaper
 
 public abstract class HCLStringLiteralMixin(node: ASTNode?) : HCLLiteralImpl(node), PsiLanguageInjectionHost {
   override fun isValidHost() = true
@@ -32,6 +31,6 @@ public abstract class HCLStringLiteralMixin(node: ASTNode?) : HCLLiteralImpl(nod
   }
 
   override fun createLiteralTextEscaper(): LiteralTextEscaper<out PsiLanguageInjectionHost> {
-    return StringLiteralEscaper<HCLStringLiteralMixin>(this);
+    return LiteralTextEscaper.createSimple(this)
   }
 }
