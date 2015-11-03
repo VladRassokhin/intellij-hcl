@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.psi;
+package org.intellij.plugins.hcl.findUsages
 
-import com.intellij.lang.refactoring.RefactoringSupportProvider;
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.cacheBuilder.DefaultWordsScanner
+import com.intellij.psi.tree.TokenSet
+import org.intellij.plugins.hcl.HCLElementTypes
+import org.intellij.plugins.hcl.HCLLexer
+import org.intellij.plugins.hcl.HCLParserDefinition
 
-public class HCLRefactoringSupportProvider extends RefactoringSupportProvider {
-  @Override
-  public boolean isMemberInplaceRenameAvailable(@NotNull PsiElement element, @Nullable PsiElement context) {
-    return element instanceof HCLProperty;
+class HCLWordsScanner(lexer: HCLLexer) : DefaultWordsScanner(lexer, TokenSet.create(HCLElementTypes.IDENTIFIER), HCLParserDefinition.HCL_COMMENTARIES, HCLParserDefinition.HCL_LITERALS) {
+  init {
+    setMayHaveFileRefsInLiterals(true)
   }
 }

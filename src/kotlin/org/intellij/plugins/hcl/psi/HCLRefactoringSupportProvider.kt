@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.findUsages;
+package org.intellij.plugins.hcl.psi
 
-import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
-import com.intellij.psi.tree.TokenSet;
-import org.intellij.plugins.hcl.HCLElementTypes;
-import org.intellij.plugins.hcl.HCLLexer;
-import org.intellij.plugins.hcl.HCLParserDefinition;
+import com.intellij.lang.refactoring.RefactoringSupportProvider
+import com.intellij.psi.PsiElement
 
-public class HCLWordsScanner extends DefaultWordsScanner {
-  public HCLWordsScanner(HCLLexer lexer) {
-    super(lexer, TokenSet.create(HCLElementTypes.IDENTIFIER), HCLParserDefinition.HCL_COMMENTARIES, HCLParserDefinition.HCL_LITERALS);
-    setMayHaveFileRefsInLiterals(true);
+class HCLRefactoringSupportProvider : RefactoringSupportProvider() {
+  override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean {
+    return element is HCLProperty
   }
 }
