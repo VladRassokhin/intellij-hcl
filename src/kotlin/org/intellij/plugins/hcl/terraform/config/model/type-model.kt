@@ -173,7 +173,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
     fun getModelResourceXml(path: String): Document? {
       val stream = getModelResource(path) ?: return null
-      return kotlin.dom.parseXml(stream)
+      return kotlinx.dom.parseXml(stream)
     }
 
     fun getResourceJson(path: String): Any? {

@@ -422,7 +422,7 @@ object ModelHelper {
   }
 
 
-  protected fun getTypeModel(): TypeModel {
+  fun getTypeModel(): TypeModel {
     val provider = ServiceManager.getService(TypeModelProvider::class.java)
     return provider.get()
   }
