@@ -281,8 +281,8 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
     var isBlock = false
 
-    val type = parseType(m.get("Type"))
-    val elem = m.get("Elem")
+    val type = parseType(m["Type"])
+    val elem = m["Elem"]
     if (elem != null) {
       // Valid only for TypeSet and TypeList, should parse internal structure
       // TODO: ensure set only for TypeSet and TypeList
@@ -307,9 +307,9 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       }
       // ?? return BlockType(name).toPOBT()
     }
-    val required = (m.get("Required")?.string("value")?.toLowerCase() ?: "false").toBoolean()
+    val required = (m["Required"]?.string("value")?.toLowerCase() ?: "false").toBoolean()
 
-    val additional = external.get(fqn) ?: TypeModelProvider.Additional(name);
+    val additional = external[fqn] ?: TypeModelProvider.Additional(name);
 
     if (type == Types.Object) {
       isBlock = true
@@ -323,11 +323,11 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
         bh = hint as Array<out PropertyOrBlockType>
       }
       return BlockType(name, required = required,
-          description = additional.description ?: m.get("Description")?.string("value") ?: null, properties = *bh).toPOBT()
+          description = additional.description ?: m["Description"]?.string("value") ?: null, properties = *bh).toPOBT()
     }
     return PropertyType(name, type, required = required,
         hint = additional.hint ?: hint,
-        description = additional.description ?: m.get("Description")?.string("value") ?: null).toPOBT()
+        description = additional.description ?: m["Description"]?.string("value") ?: null).toPOBT()
   }
 
   private fun parseType(attribute: JsonObject?): Type {
