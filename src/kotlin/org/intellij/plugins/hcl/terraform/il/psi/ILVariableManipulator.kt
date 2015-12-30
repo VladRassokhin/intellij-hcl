@@ -18,7 +18,6 @@ package org.intellij.plugins.hcl.terraform.il.psi
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.AbstractElementManipulator
 import com.intellij.util.IncorrectOperationException
-import kotlin.test.assertNotNull
 
 class ILVariableManipulator : AbstractElementManipulator<ILVariable>() {
   @Throws(IncorrectOperationException::class)
