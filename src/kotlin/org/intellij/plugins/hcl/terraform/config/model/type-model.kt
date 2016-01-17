@@ -30,10 +30,17 @@ import java.util.regex.Pattern
 // Model for element types
 
 public open class Type(val name: String)
-// Hint may be: String, PropertyOrBlockType, List<PropertyOrBlockType>
-public open class PropertyType(val name: String, val type: Type, val hint: Any? = null, val description: String? = null, val required: Boolean = false, val deprecated: String? = null, val injectionAllowed: Boolean = true)
 
-public open class BlockType(val literal: String, val args: Int = 0, val required: Boolean = false, val deprecated: String? = null, val description: String? = null, vararg val properties: PropertyOrBlockType = arrayOf())
+public open class BaseModelType(val description: String? = null, val required: Boolean = false, val deprecated: String? = null)
+
+public interface Hint
+public open class SimpleHint(val hint: String) : Hint
+public open class TypeHint(val hint: Type) : Hint
+public open class ListHint(val hint: List<PropertyOrBlockType>) : Hint
+
+public open class PropertyType(val name: String, val type: Type, val hint: Hint? = null, val injectionAllowed: Boolean = true, description: String? = null, required: Boolean = false, deprecated: String? = null) : BaseModelType(description = description, required = required, deprecated = deprecated)
+
+public open class BlockType(val literal: String, val args: Int = 0, description: String? = null, required: Boolean = false, deprecated: String? = null, vararg val properties: PropertyOrBlockType = arrayOf()) : BaseModelType(description = description, required = required, deprecated = deprecated)
 
 public class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
   val name: String = if (property != null) property.name else block!!.literal
@@ -279,7 +286,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
     val fqn = "$providerName.$name"
 
-    var hint: Any? = null
+    var hint: Hint? = null
 
     var isBlock = false
 
@@ -293,15 +300,14 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
         val a = elem.array<Any>("value")
         if (a != null) {
           val parsed = parseSchemaElement("__inner__", a, "$fqn.__inner__")
-          val t = parsed.property?.type ?: parsed.block?.properties
-          hint = t
+          hint = parsed.property?.type?.let { TypeHint(it) } ?: parsed.block?.properties?.let { ListHint(it.asList()) }
         }
       }
       if (et == "ResourceSchemaInfo") {
         val o = elem.obj("value")
         if (o != null) {
           val innerTypeProperties = o.map { parseSchemaElement(it, "$fqn.__inner__") }
-          hint = innerTypeProperties.toTypedArray()
+          hint = ListHint(innerTypeProperties)
           if (type == Types.Array) {
             isBlock = true
           }
@@ -329,10 +335,10 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
           deprecated = deprecated,
           description = additional.description ?: m["Description"]?.string("value") ?: null, properties = *bh).toPOBT()
     }
-    return PropertyType(name, type, required = required,
-        deprecated = deprecated,
-        hint = additional.hint ?: hint,
-        description = additional.description ?: m["Description"]?.string("value") ?: null).toPOBT()
+    return PropertyType(name, type, hint = additional.hint?.let { SimpleHint(it) } ?: hint,
+        description = additional.description ?: m["Description"]?.string("value") ?: null,
+        required = required,
+        deprecated = deprecated).toPOBT()
   }
 
   private fun parseType(attribute: JsonObject?): Type {
@@ -379,9 +385,9 @@ public class TypeModel(
     val functions: List<Function> = arrayListOf()
 ) {
   companion object {
-    val Atlas: BlockType = BlockType("atlas", 0, properties = PropertyType("name", Types.String, required = true, injectionAllowed = false).toPOBT())
-    val Module: BlockType = BlockType("module", 1, properties = PropertyType("source", Types.String, hint = "Url", required = true).toPOBT())
-    val Output: BlockType = BlockType("output", 1, properties = PropertyType("value", Types.String, hint = "Interpolation(Any)", required = true).toPOBT())
+    val Atlas: BlockType = BlockType("atlas", 0, properties = PropertyType("name", Types.String, injectionAllowed = false, required = true).toPOBT())
+    val Module: BlockType = BlockType("module", 1, properties = PropertyType("source", Types.String, hint = SimpleHint("Url"), required = true).toPOBT())
+    val Output: BlockType = BlockType("output", 1, properties = PropertyType("value", Types.String, hint = SimpleHint("Interpolation(Any)"), required = true).toPOBT())
 
     val Variable_Default = PropertyType("default", Type("String|Object"))
     val Variable_Description = PropertyType("description", Types.String)
@@ -430,14 +436,14 @@ public class TypeModel(
 
     @JvmField val AbstractResource: BlockType = BlockType("resource", 2, properties = *arrayOf(
         PropertyType("count", Types.Number).toPOBT(),
-        PropertyType("depends_on", Types.Array, hint = "String").toPOBT(),
-        PropertyType("provider", Types.String, hint = "Reference(provider.type|provider.alias)").toPOBT(),
+        PropertyType("depends_on", Types.Array, hint = SimpleHint("String")).toPOBT(),
+        PropertyType("provider", Types.String, hint = SimpleHint("Reference(provider.type|provider.alias)")).toPOBT(),
         TypeModel.ResourceLifecycle.toPOBT(),
         // Also may have connection? and provisioner+ blocks
         Connection.toPOBT(),
         TypeModel.AbstractResourceProvisioner.toPOBT()
     ))
-    val AbstractProvider: BlockType = BlockType("provider", 1, false, properties = *arrayOf(
+    val AbstractProvider: BlockType = BlockType("provider", 1, required = false, properties = *arrayOf(
         PropertyType("alias", Types.String, injectionAllowed = false).toPOBT())
     )
 
