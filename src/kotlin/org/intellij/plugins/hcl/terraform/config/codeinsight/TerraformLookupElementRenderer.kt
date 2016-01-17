@@ -32,12 +32,14 @@ class TerraformLookupElementRenderer : LookupElementRenderer<LookupElement>() {
         presentation.icon = Icons.Property
         //        presentation.isStrikeout = obj.property.deprecated;
         presentation.isItemTextBold = obj.property.required;
+        presentation.isStrikeout = obj.property.deprecated != null;
         presentation.tailText = obj.property.description;
         presentation.setTypeText(obj.property.type.name, getTypeIcon(obj.property.type));
       } else if (obj.block != null) {
         //        presentation.icon = Icons.Property
         //        presentation.isStrikeout = obj.property.deprecated;
         presentation.isItemTextBold = obj.block.required;
+        presentation.isStrikeout = obj.block.deprecated != null;
 //        presentation.typeText = "Block";
         presentation.tailText = obj.block.description;
       }

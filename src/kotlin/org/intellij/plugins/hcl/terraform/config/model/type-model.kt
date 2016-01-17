@@ -31,12 +31,14 @@ import java.util.regex.Pattern
 
 public open class Type(val name: String)
 // Hint may be: String, PropertyOrBlockType, List<PropertyOrBlockType>
-public open class PropertyType(val name: String, val type: Type, val hint: Any? = null, val description: String? = null, val required: Boolean = false, val injectionAllowed: Boolean = true)
-public open class BlockType(val literal: String, val args: Int = 0, val required: Boolean = false, val description: String? = null, vararg val properties: PropertyOrBlockType = arrayOf())
+public open class PropertyType(val name: String, val type: Type, val hint: Any? = null, val description: String? = null, val required: Boolean = false, val deprecated: String? = null, val injectionAllowed: Boolean = true)
+
+public open class BlockType(val literal: String, val args: Int = 0, val required: Boolean = false, val deprecated: String? = null, val description: String? = null, vararg val properties: PropertyOrBlockType = arrayOf())
 
 public class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
   val name: String = if (property != null) property.name else block!!.literal
   val required: Boolean = if (property != null) property.required else block!!.required
+  val deprecated: String? = if (property != null) property.deprecated else block!!.deprecated
 
   init {
     assert(property != null || block != null, { "Either property or block expected" });
@@ -308,6 +310,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       // ?? return BlockType(name).toPOBT()
     }
     val required = (m["Required"]?.string("value")?.toLowerCase() ?: "false").toBoolean()
+    val deprecated = m["Deprecated"]?.string("value") ?: null
 
     val additional = external[fqn] ?: TypeModelProvider.Additional(name);
 
@@ -323,9 +326,11 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
         bh = hint as Array<out PropertyOrBlockType>
       }
       return BlockType(name, required = required,
+          deprecated = deprecated,
           description = additional.description ?: m["Description"]?.string("value") ?: null, properties = *bh).toPOBT()
     }
     return PropertyType(name, type, required = required,
+        deprecated = deprecated,
         hint = additional.hint ?: hint,
         description = additional.description ?: m["Description"]?.string("value") ?: null).toPOBT()
   }
