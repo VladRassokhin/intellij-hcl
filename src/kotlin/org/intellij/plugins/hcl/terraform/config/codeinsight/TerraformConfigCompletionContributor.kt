@@ -24,8 +24,10 @@ import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.PlatformPatterns.psiFile
+import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.StandardPatterns.not
 import com.intellij.patterns.StandardPatterns.or
 import com.intellij.psi.PsiElement
@@ -59,6 +61,9 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     val Object = psiElement(HCLObject::class.java)
 
     val TerraformConfigFile = psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
+
+    val AtLeastOneEOL = psiElement(PsiWhiteSpace::class.java).withText(StandardPatterns.string().contains("\n"))
+    val Nothing = StandardPatterns.alwaysFalse<PsiElement>()
 
     // Block first word
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
@@ -115,6 +120,21 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
         .withParent(Identifier)
+        .withSuperParent(2, Block)
+        .withSuperParent(3, Object)
+        .withSuperParent(4, Block)
+        , BlockPropertiesCompletionProvider);
+
+    // Leftmost identifier of block could be start of new property in case of eol betwen it ant next identifier
+    //```
+    //resource "X" "Y" {
+    //  count<caret>
+    //  provider {}
+    //}
+    //```
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformConfigFile)
+        .withParent(psiElement(HCLIdentifier::class.java).beforeLeafSkipping(Nothing, AtLeastOneEOL))
         .withSuperParent(2, Block)
         .withSuperParent(3, Object)
         .withSuperParent(4, Block)
@@ -280,8 +300,16 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
           isProperty = true
         } else if (pob is HCLBlock) {
           isBlock = true
+          if (pob.nameElements.firstOrNull() == _parent) {
+            if (_parent.nextSibling is PsiWhiteSpace && _parent.nextSibling.text.contains("\n")) {
+              isBlock = false
+              _parent = _parent.parent.parent
+            }
+          }
         }
-        _parent = pob?.parent // Object
+        if (isBlock || isProperty) {
+          _parent = pob?.parent // Object
+        }
         LOG.debug("TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, right=$right, isBlock=$isBlock, isProperty=$isProperty}")
       } else {
         LOG.debug("TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, no right part}")

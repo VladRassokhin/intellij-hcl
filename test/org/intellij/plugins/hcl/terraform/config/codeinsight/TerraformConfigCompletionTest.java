@@ -123,4 +123,12 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("provider Z {alias='Y'}\nresource a b {provider=\"<caret>\"}", "Z.Y");
   }
 
+  public void testResourcePropertyCompletionBeforeInnerBlock() throws Exception {
+    doBasicCompletionTest("resource abc {\n<caret>\nlifecycle {}\n}", COMMON_RESOURCE_PROPERTIES);
+    final HashSet<String> set = new HashSet<String>(COMMON_RESOURCE_PROPERTIES);
+    set.remove("id");
+    doBasicCompletionTest("resource \"x\" {\nid='a'\n<caret>\nlifecycle {}\n}", set);
+    doBasicCompletionTest("resource abc {\n<caret> = true\nlifecycle {}\n}", Collections.<String>emptySet());
+  }
+
 }
