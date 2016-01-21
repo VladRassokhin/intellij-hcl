@@ -438,10 +438,10 @@ public class TypeModel(
         PropertyType("count", Types.Number).toPOBT(),
         PropertyType("depends_on", Types.Array, hint = SimpleHint("String")).toPOBT(),
         PropertyType("provider", Types.String, hint = SimpleHint("Reference(provider.type|provider.alias)")).toPOBT(),
-        TypeModel.ResourceLifecycle.toPOBT(),
+        ResourceLifecycle.toPOBT(),
         // Also may have connection? and provisioner+ blocks
         Connection.toPOBT(),
-        TypeModel.AbstractResourceProvisioner.toPOBT()
+        AbstractResourceProvisioner.toPOBT()
     ))
     val AbstractProvider: BlockType = BlockType("provider", 1, required = false, properties = *arrayOf(
         PropertyType("alias", Types.String, injectionAllowed = false).toPOBT())
