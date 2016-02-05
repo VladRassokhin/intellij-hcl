@@ -1,18 +1,18 @@
 package org.intellij.plugins.hcl.terraform.il.psi;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
-import static org.intellij.plugins.hcl.terraform.il.TILElementTypes.*;
+import static org.intellij.plugins.hcl.terraform.il.HILElementTypes.*;
 
 %%
 
 %{
-  public _TILLexer() {
+  public _HILLexer() {
     this((java.io.Reader)null);
   }
 %}
 
 %public
-%class _TILLexer
+%class _HILLexer
 %implements FlexLexer
 %function advance
 %type IElementType

@@ -17,4 +17,4 @@ package org.intellij.plugins.hcl.terraform.il.psi
 
 import com.intellij.lexer.FlexAdapter
 
-public class TILLexer: FlexAdapter(_TILLexer())
+public class TILLexer: FlexAdapter(_HILLexer())
