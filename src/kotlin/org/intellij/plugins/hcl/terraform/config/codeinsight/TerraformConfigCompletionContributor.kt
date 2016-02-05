@@ -45,7 +45,7 @@ import org.intellij.plugins.hcl.codeinsight.HCLCompletionContributor
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hcl.terraform.config.model.*
-import org.intellij.plugins.hcl.terraform.il.HILFileType
+import org.intellij.plugins.hil.HILFileType
 import java.util.*
 
 public class TerraformConfigCompletionContributor : HCLCompletionContributor() {

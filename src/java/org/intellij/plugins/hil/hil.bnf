@@ -1,0 +1,138 @@
+{
+  elementTypeHolderClass = 'org.intellij.plugins.hil.HILElementTypes'
+  tokenTypeClass = 'org.intellij.plugins.hil.HILTokenType'
+  elementTypeClass = 'org.intellij.plugins.hil.HILElementType'
+  parserClass = 'org.intellij.plugins.hil.HILParser'
+  psiVisitorName = 'ILGeneratedVisitor'
+  psiImplUtilClass = 'org.intellij.plugins.hil.psi.impl.HILPsiImplUtilJ'
+
+  implements = 'org.intellij.plugins.hil.psi.ILExpression'
+  extends = 'org.intellij.plugins.hil.psi.impl.ILExpressionBase'
+
+  psiPackage = 'org.intellij.plugins.hil.psi'
+  psiImplPackage = 'org.intellij.plugins.hil.psi.impl'
+
+  extends(".*Expression|.*Variable")=ILExpression
+
+  tokens = [
+//    space = "regexp:\s+"
+    INTERPOLATION_START='${'
+    INTERPOLATION_END='}'
+    L_PAREN='('
+    R_PAREN=')'
+    COMMA=','
+    EQUALS='='
+    POINT='.'
+
+    // Operators
+    OP_PLUS='+'
+    OP_MINUS='-'
+    OP_MUL='*'
+    OP_DIV='/'
+    OP_MOD='%'
+
+    DOUBLE_QUOTED_STRING="regexp:\"([^\\\"\r\n]|\\[^\r\n])*\"?"
+
+    NUMBER='regexp:-?(0x)?(0|[1-9])\d*(\.\d+)?([eE][-+]?\d+)?'
+
+    TRUE='true'
+    FALSE='false'
+    NULL='null'
+
+    ID="regexp:[a-zA-Z\-_*][0-9a-zA-Z\-_*]*"
+  ]
+
+}
+
+
+private root ::= ILExpression
+
+// Expressions
+ILExpression ::= ILParenthesizedExpression
+  | ILExpressionHolder
+  | ILSelectExpression
+  | ILBinaryAddExpression
+  | ILBinaryMulExpression
+  | ILMethodCallExpression
+  | ILLiteralExpression
+  | ILVariable
+{
+  name="expression"
+  implements="com.intellij.psi.templateLanguages.OuterLanguageElement"
+  methods =[
+    ILExpression="" // Magic hack
+  ]
+}
+
+ILExpressionHolder ::= '${' ILExpression '}' {
+  extends=ILExpression
+}
+
+ILParenthesizedExpression ::= '(' ILExpression ')'
+
+ILBinaryAddExpression ::= ILExpression AddOp ILExpression
+{
+  implements="org.intellij.plugins.hil.ILBinaryExpression"
+  mixin="org.intellij.plugins.hil.psi.impl.ILBinaryExpressionImpl"
+}
+ILBinaryMulExpression ::= ILExpression MulOp ILExpression
+{
+  implements="org.intellij.plugins.hil.ILBinaryExpression"
+  mixin="org.intellij.plugins.hil.psi.impl.ILBinaryExpressionImpl"
+}
+ILMethodCallExpression ::= ILExpression ILParameterList
+{
+  implements="org.intellij.plugins.hil.ILCallExpression"
+  methods=[
+    getQualifier
+    getMethod
+    getParameterList
+  ]
+}
+
+ILLiteralExpression ::= literal /*| identifier*/ | number | 'true' | 'false' | 'null' {
+   name="Literal"
+   mixin="org.intellij.plugins.hil.psi.impl.ILExpressionWithReference"
+   methods=[
+    getTypeClass
+    getUnquotedText
+   ]
+}
+
+ILParameterList ::= '(' (ILExpression? (',' ILExpression )* )?')' {
+  pin(".*")=1
+  methods=[
+    ILExpression=""
+    getParameters
+  ]
+}
+
+ILSelectExpression ::= ILExpression DotOp ILVariable {
+  methods=[
+    ILExpression=""
+    from="ILExpression[0]"
+    getField
+  ]
+}
+
+ILVariable ::= identifier | '*' {
+  name="Identifier"
+  implements="com.intellij.psi.PsiNamedElement"
+  mixin="org.intellij.plugins.hil.psi.impl.ILExpressionWithReference"
+  methods=[
+    getName
+    setName
+    getUseScope
+    getResolveScope
+  ]
+}
+
+// Operators
+private DotOp ::= '.'
+private MulOp ::= '*' | '/' | '%'
+private AddOp ::= '+' | '-'
+
+// Primitives
+private literal ::= DOUBLE_QUOTED_STRING
+private identifier ::= ID
+private number ::= NUMBER
