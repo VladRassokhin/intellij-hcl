@@ -30,12 +30,12 @@ import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.ILazyParseableElementType
 import com.intellij.psi.tree.TokenSet
 import org.intellij.plugins.hcl.terraform.il.psi.ILPsiFile
-import org.intellij.plugins.hcl.terraform.il.psi.TILLexer
+import org.intellij.plugins.hcl.terraform.il.psi.HILLexer
 import org.intellij.plugins.hcl.terraform.il.psi.impl.ILExpressionHolderImpl
 
 public class HILParserDefinition : ParserDefinition {
 
-  override fun createLexer(project: Project) = TILLexer()
+  override fun createLexer(project: Project) = HILLexer()
 
   override fun createParser(project: Project) = HILParser()
 
@@ -87,7 +87,7 @@ public class HILParserDefinition : ParserDefinition {
     public val IL_HOLDER: ILazyParseableElementType = object : ILazyParseableElementType("IL_HOLDER", HILLanguage) {
       override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
         val project = psi.project
-        val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, TILLexer(), HILLanguage, chameleon.chars)
+        val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, HILLexer(), HILLanguage, chameleon.chars)
         val parser = LanguageParserDefinitions.INSTANCE.forLanguage(language).createParser(project)
 
         builder.putUserData(ourContextNodeKey, chameleon.treeParent)

@@ -17,7 +17,7 @@ package org.intellij.plugins.hcl.terraform.il;
 
 import com.intellij.lang.Language;
 import org.intellij.plugins.hcl.CompletionTestCase;
-import org.intellij.plugins.hcl.terraform.il.codeinsight.TILCompletionContributor;
+import org.intellij.plugins.hcl.terraform.il.codeinsight.HILCompletionContributor;
 
 public class HILCompletionTest extends CompletionTestCase {
   @Override
@@ -36,12 +36,12 @@ public class HILCompletionTest extends CompletionTestCase {
   }
 
   public void testMethodCompletion_BeginOnInterpolation() throws Exception {
-    doBasicCompletionTest("a='${<caret>}'", getPartialMatcher(TILCompletionContributor.GLOBAL_AVAILABLE));
+    doBasicCompletionTest("a='${<caret>}'", getPartialMatcher(HILCompletionContributor.GLOBAL_AVAILABLE));
   }
 
   public void testMethodCompletion_AsParameter() throws Exception {
-    doBasicCompletionTest("a='${foo(<caret>)}'", getPartialMatcher(TILCompletionContributor.GLOBAL_AVAILABLE));
-    doBasicCompletionTest("a='${foo(true,<caret>)}'", getPartialMatcher(TILCompletionContributor.GLOBAL_AVAILABLE));
+    doBasicCompletionTest("a='${foo(<caret>)}'", getPartialMatcher(HILCompletionContributor.GLOBAL_AVAILABLE));
+    doBasicCompletionTest("a='${foo(true,<caret>)}'", getPartialMatcher(HILCompletionContributor.GLOBAL_AVAILABLE));
   }
 
   public void testNoMethodCompletion_InSelect() throws Exception {

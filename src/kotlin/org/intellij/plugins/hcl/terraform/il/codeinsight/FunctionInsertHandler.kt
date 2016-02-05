@@ -49,7 +49,7 @@ object FunctionInsertHandler : BasicInsertHandler<LookupElement>() {
     }
     if (element !is ILVariable) return
 
-    val function = TILCompletionContributor.FUNCTIONS.firstOrNull { it.name == item.lookupString } ?: return
+    val function = HILCompletionContributor.FUNCTIONS.firstOrNull { it.name == item.lookupString } ?: return
 
 
     var offset: Int? = null

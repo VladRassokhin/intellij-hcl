@@ -30,12 +30,12 @@ import com.intellij.psi.StringEscapesTokenTypes
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import org.intellij.plugins.hcl.terraform.il.HILElementTypes.*
-import org.intellij.plugins.hcl.terraform.il.psi.TILLexer
+import org.intellij.plugins.hcl.terraform.il.psi.HILLexer
 import java.util.*
 
 public class HILSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 
-  object TILSyntaxHighlighter : SyntaxHighlighterBase() {
+  object HILSyntaxHighlighter : SyntaxHighlighterBase() {
     val ourAttributes: Map<IElementType, TextAttributesKey> = HashMap()
 
     public val TIL_PARENS: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.PARENS", DefaultLanguageHighlighterColors.PARENTHESES)
@@ -80,13 +80,13 @@ public class HILSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
     }
 
     override fun getHighlightingLexer(): Lexer {
-      val layeredLexer = LayeredLexer(TILLexer())
+      val layeredLexer = LayeredLexer(HILLexer())
       layeredLexer.registerSelfStoppingLayer(StringLiteralLexer('\"', DOUBLE_QUOTED_STRING, false, "/", false, false), arrayOf(DOUBLE_QUOTED_STRING), IElementType.EMPTY_ARRAY)
       return layeredLexer
     }
   }
 
   override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): SyntaxHighlighter {
-    return TILSyntaxHighlighter
+    return HILSyntaxHighlighter
   }
 }

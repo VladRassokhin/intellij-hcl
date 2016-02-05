@@ -26,58 +26,58 @@ import org.jetbrains.annotations.Nullable;
 
 public class HILPsiImplUtilJ {
   public static Class getTypeClass(ILLiteralExpressionImpl expression) {
-    return TILPsiImplUtils.INSTANCE.getTypeClass(expression);
+    return HILPsiImplUtils.INSTANCE.getTypeClass(expression);
   }
 
   @NotNull
   public static ILExpression[] getParameters(ILParameterList list) {
-    return TILPsiImplUtils.INSTANCE.getParameters(list);
+    return HILPsiImplUtils.INSTANCE.getParameters(list);
   }
 
   public static ILExpression getQualifier(ILMethodCallExpression expression) {
-    return TILPsiImplUtils.INSTANCE.getQualifier(expression);
+    return HILPsiImplUtils.INSTANCE.getQualifier(expression);
   }
 
   @Nullable
   public static ILVariable getMethod(ILMethodCallExpression expression) {
-    return TILPsiImplUtils.INSTANCE.getMethod(expression);
+    return HILPsiImplUtils.INSTANCE.getMethod(expression);
   }
 
   public static ILParameterList getParameterList(ILMethodCallExpressionImpl expression) {
-    return TILPsiImplUtils.INSTANCE.getParameterList(expression);
+    return HILPsiImplUtils.INSTANCE.getParameterList(expression);
   }
 
   @NotNull
   public static String getName(ILVariableImpl variable) {
-    return TILPsiImplUtils.INSTANCE.getName(variable);
+    return HILPsiImplUtils.INSTANCE.getName(variable);
   }
 
   public static PsiNamedElement setName(ILVariableImpl variable, @NotNull String name) throws IncorrectOperationException {
-    return TILPsiImplUtils.INSTANCE.setName(variable, name);
+    return HILPsiImplUtils.INSTANCE.setName(variable, name);
   }
 
   @NotNull
   public static SearchScope getUseScope(ILVariableImpl variable) {
-    return TILPsiImplUtils.INSTANCE.getUseScope(variable);
+    return HILPsiImplUtils.INSTANCE.getUseScope(variable);
   }
 
   @NotNull
   public static GlobalSearchScope getResolveScope(ILVariableImpl variable) {
-    return TILPsiImplUtils.INSTANCE.getResolveScope(variable);
+    return HILPsiImplUtils.INSTANCE.getResolveScope(variable);
   }
 
   @Nullable
   public static ILVariable createVariable(String name, Project project) {
-    return TILPsiImplUtils.INSTANCE.createVariable(name, project);
+    return HILPsiImplUtils.INSTANCE.createVariable(name, project);
   }
 
   @Nullable
   public static ILExpression getField(ILSelectExpression expression) {
-    return TILPsiImplUtils.INSTANCE.getField(expression);
+    return HILPsiImplUtils.INSTANCE.getField(expression);
   }
 
   @Nullable
   public static String getUnquotedText(ILLiteralExpression literal){
-    return TILPsiImplUtils.INSTANCE.getUnquotedText(literal);
+    return HILPsiImplUtils.INSTANCE.getUnquotedText(literal);
   }
 }

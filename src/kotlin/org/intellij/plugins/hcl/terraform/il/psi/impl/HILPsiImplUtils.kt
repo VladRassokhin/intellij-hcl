@@ -27,9 +27,9 @@ import com.intellij.util.IncorrectOperationException
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformSearchScope
 import org.intellij.plugins.hcl.terraform.il.psi.*
 
-object TILPsiImplUtils {
+object HILPsiImplUtils {
   fun getTypeClass(expression: ILLiteralExpressionImpl): Class<*> {
-    // TODO use type classes from TIL model
+    // TODO use type classes from HIL model
     return String::class.java;
   }
 

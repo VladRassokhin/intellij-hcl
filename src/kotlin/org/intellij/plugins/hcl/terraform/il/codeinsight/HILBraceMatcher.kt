@@ -24,7 +24,7 @@ import org.intellij.plugins.hcl.terraform.il.HILElementTypes.INTERPOLATION_START
 import org.intellij.plugins.hcl.terraform.il.HILElementTypes.L_PAREN
 import org.intellij.plugins.hcl.terraform.il.HILElementTypes.R_PAREN
 
-public class TILBraceMatcher : PairedBraceMatcher {
+public class HILBraceMatcher : PairedBraceMatcher {
 
   override fun getCodeConstructStart(file: PsiFile, openingBraceOffset: Int): Int {
     return openingBraceOffset

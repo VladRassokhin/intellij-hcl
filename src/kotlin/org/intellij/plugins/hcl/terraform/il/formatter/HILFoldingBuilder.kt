@@ -23,7 +23,7 @@ import com.intellij.psi.tree.TokenSet
 import org.intellij.plugins.hcl.terraform.il.HILElementTypes
 import java.util.*
 
-public class TILFoldingBuilder : FoldingBuilder {
+public class HILFoldingBuilder : FoldingBuilder {
   override fun isCollapsedByDefault(node: ASTNode): Boolean {
     return false
   }

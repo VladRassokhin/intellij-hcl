@@ -43,7 +43,7 @@ import org.intellij.plugins.hcl.terraform.il.HILLanguage
 import org.intellij.plugins.hcl.terraform.il.psi.*
 import java.util.*
 
-public class TILCompletionContributor : CompletionContributor() {
+public class HILCompletionContributor : CompletionContributor() {
   init {
     extend(CompletionType.BASIC, METHOD_POSITION, MethodsCompletionProvider)
     extend(CompletionType.BASIC, METHOD_POSITION, ResourceTypesCompletionProvider)
@@ -84,7 +84,7 @@ public class TILCompletionContributor : CompletionContributor() {
         .without(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
 
 
-    private val LOG = Logger.getInstance(TILCompletionContributor::class.java)
+    private val LOG = Logger.getInstance(HILCompletionContributor::class.java)
     fun create(value: String): LookupElementBuilder {
       var builder = LookupElementBuilder.create(value)
       return builder
@@ -128,7 +128,7 @@ public class TILCompletionContributor : CompletionContributor() {
       val parent = position.parent
       if (parent !is ILExpression) return
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
-      LOG.debug("TIL.MethodsCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
+      LOG.debug("HIL.MethodsCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
       result.addAllElements(FUNCTIONS.map { create(it) })
       result.addAllElements(GLOBAL_SCOPES.map { createScope(it) })
       if (getProvisionerResource(parent) != null) result.addElement(createScope("self"))
@@ -146,7 +146,7 @@ public class TILCompletionContributor : CompletionContributor() {
       val from = pp.from
       if (from !is ILVariable) return
       if (scope != from.name) return
-      LOG.debug("TIL.SelectFromScopeCompletionProvider($scope){position=$position, parent=$parent, pp=$pp}")
+      LOG.debug("HIL.SelectFromScopeCompletionProvider($scope){position=$position, parent=$parent, pp=$pp}")
       doAddCompletions(parent, parameters, context, result)
     }
 
@@ -163,7 +163,7 @@ public class TILCompletionContributor : CompletionContributor() {
       val from = pp.from
       if (from !is ILVariable) return
       val provider = SCOPE_PROVIDERS[from.name] ?: return
-      LOG.debug("TIL.SelectFromScopeCompletionProviderAny($from.name){position=$position, parent=$parent, pp=$pp}")
+      LOG.debug("HIL.SelectFromScopeCompletionProviderAny($from.name){position=$position, parent=$parent, pp=$pp}")
       provider.doAddCompletions(parent, parameters, context, result)
     }
   }
@@ -286,7 +286,7 @@ public class TILCompletionContributor : CompletionContributor() {
       val parent = position.parent
       if (parent !is ILExpression) return
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
-      LOG.debug("TIL.ResourceTypesCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
+      LOG.debug("HIL.ResourceTypesCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
 
       val host = InjectedLanguageManager.getInstance(parent.project).getInjectionHost(parent) ?: return
       if (host !is HCLElement) return

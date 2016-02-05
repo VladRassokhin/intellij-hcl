@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.terraform.il.formatter
+package org.intellij.plugins.hcl.terraform.il.psi
 
-import com.intellij.codeInsight.editorActions.SimpleTokenSetQuoteHandler
-import org.intellij.plugins.hcl.terraform.il.HILParserDefinition
+import com.intellij.lexer.FlexAdapter
 
-public class TILQuoteHandler : SimpleTokenSetQuoteHandler(HILParserDefinition.STRING_LITERALS)
+public class HILLexer : FlexAdapter(_HILLexer())

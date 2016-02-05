@@ -28,7 +28,7 @@ import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.psi.HCLObject
 import org.intellij.plugins.hcl.psi.HCLProperty
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
-import org.intellij.plugins.hcl.terraform.il.codeinsight.TILCompletionContributor
+import org.intellij.plugins.hcl.terraform.il.codeinsight.HILCompletionContributor
 import java.util.*
 
 object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
@@ -85,7 +85,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
       return PsiReference.EMPTY_ARRAY
     }
 
-    if (name in TILCompletionContributor.SCOPES) return PsiReference.EMPTY_ARRAY
+    if (name in HILCompletionContributor.SCOPES) return PsiReference.EMPTY_ARRAY
 
     val ev = getSelectFieldText(expression) ?: return PsiReference.EMPTY_ARRAY
 

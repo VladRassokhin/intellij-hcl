@@ -24,7 +24,7 @@ import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.il.HILElementTypes.INTERPOLATION_END
 import org.intellij.plugins.hcl.terraform.il.HILElementTypes.INTERPOLATION_START
-import org.intellij.plugins.hcl.terraform.il.psi.TILLexer
+import org.intellij.plugins.hcl.terraform.il.psi.HILLexer
 import java.util.*
 
 public class ILLanguageInjector : LanguageInjector {
@@ -72,7 +72,7 @@ public class ILLanguageInjector : LanguageInjector {
       out@ while (true) {
         if (skip >= text.length) break;
 
-        val lexer = TILLexer()
+        val lexer = HILLexer()
         lexer.start(text, skip, text.length);
         var level = 0
         var start = -1;
