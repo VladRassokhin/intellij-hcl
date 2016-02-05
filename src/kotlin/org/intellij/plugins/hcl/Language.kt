@@ -19,5 +19,8 @@ import com.intellij.lang.Language
 
 object HCLLanguage : Language("HCL") {
   override fun isCaseSensitive() = true
+  override fun getDisplayName(): String {
+    return "HashiCorp Configuration Language"
+  }
 }
 
