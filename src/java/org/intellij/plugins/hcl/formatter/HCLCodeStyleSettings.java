@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Mikhail Golubev
+ * @author Vladislav Rassokhin
  */
 public class HCLCodeStyleSettings extends CustomCodeStyleSettings {
 
@@ -39,7 +40,7 @@ public class HCLCodeStyleSettings extends CustomCodeStyleSettings {
    * @see #ALIGN_PROPERTY_ON_VALUE
    * @see #ALIGN_PROPERTY_ON_EQUALS
    */
-  public int PROPERTY_ALIGNMENT = PropertyAlignment.DO_NOT_ALIGN.getId();
+  public int PROPERTY_ALIGNMENT = PropertyAlignment.ALIGN_ON_EQUALS.getId();
 
   // Commenter properties
   public int PROPERTY_LINE_COMMENTER_CHARACTER = LineCommenterPrefix.LINE_DOUBLE_SLASHES.getId();
