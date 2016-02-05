@@ -19,7 +19,7 @@ import com.intellij.testFramework.ParsingTestCase;
 
 public class HILParserTest extends ParsingTestCase {
   public HILParserTest() {
-    super("til/psi", "til", true, new HILParserDefinition());
+    super("hil/psi", "hil", true, new HILParserDefinition());
   }
 
   @Override
