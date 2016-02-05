@@ -24,7 +24,7 @@ public class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(
     private val STRING_START_MASK: Int = 0xFFFF shl 0x10 // 0xFFFF0000
     private val IN_SINGLE_QUOTED_STRING = 1 shl 15
     private val IN_STRING = 1 shl 14
-    private val TIL_MASK = 0x00003F00 // 8-13
+    private val HIL_MASK = 0x00003F00 // 8-13
 
     private val HEREDOC_MARKER_LENGTH: Int = 0xFF00 // 0-255
     private val HEREDOC_MARKER_WEAK_HASH: Int = STRING_START_MASK // half of int
@@ -42,14 +42,14 @@ public class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(
       lexer.myHereDocMarkerLength = (state and HEREDOC_MARKER_LENGTH) ushr 0x8;
       lexer.myHereDocMarkerWeakHash = (state and HEREDOC_MARKER_WEAK_HASH) ushr 0x10;
     } else if (capabilities.contains(HCLCapability.INTERPOLATION_LANGUAGE)) {
-      if (!isLexerInStringOrTILState(state) || state and IN_STRING == 0) {
+      if (!isLexerInStringOrHILState(state) || state and IN_STRING == 0) {
         lexer.stringType = _HCLLexer.StringType.None
         lexer.stringStart = -1;
-        lexer.til = 0;
+        lexer.hil = 0;
       } else {
         lexer.stringType = if (state and IN_SINGLE_QUOTED_STRING == 0) _HCLLexer.StringType.DoubleQ else _HCLLexer.StringType.SingleQ
         lexer.stringStart = (state and STRING_START_MASK) ushr 0x10;
-        lexer.til = (state and TIL_MASK) ushr 8;
+        lexer.hil = (state and HIL_MASK) ushr 8;
       }
     }
     super.start(buffer, startOffset, endOffset, state and JFLEX_STATE_MASK)
@@ -59,11 +59,11 @@ public class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(
     return state and JFLEX_STATE_MASK == _HCLLexer.S_HEREDOC_LINE
   }
 
-  private fun isLexerInStringOrTILState(state: Int): Boolean {
+  private fun isLexerInStringOrHILState(state: Int): Boolean {
     return when (state and JFLEX_STATE_MASK) {
       _HCLLexer.S_STRING -> true
       _HCLLexer.D_STRING -> true
-      _HCLLexer.TIL_EXPRESSION -> true
+      _HCLLexer.HIL_EXPRESSION -> true
       else -> false
     }
   }
@@ -84,7 +84,7 @@ public class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(
           state = state or IN_SINGLE_QUOTED_STRING;
         }
       }
-      state = state or (((lexer.til and 0x3f) shl 8) and TIL_MASK)
+      state = state or (((lexer.hil and 0x3f) shl 8) and HIL_MASK)
     }
     return state
   }

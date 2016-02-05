@@ -25,14 +25,14 @@ BLOCK_COMMENT="/*"([^"*"]|"*"[^/])*("*/")?
 NUMBER=-?(0[xX])?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?
 ID=[a-zA-Z\.\-_][0-9a-zA-Z\.\-_]*
 
-TIL_START=(\$\{)
-TIL_STOP=(\})
+HIL_START=(\$\{)
+HIL_STOP=(\})
 
 HEREDOC_START="<<"
 
 STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 
-%state D_STRING, S_STRING, TIL_EXPRESSION, IN_NUMBER
+%state D_STRING, S_STRING, HIL_EXPRESSION, IN_NUMBER
 %state S_HEREDOC_MARKER, S_HEREDOC_LINE
 %{
   // This parameters can be getted from capabilities
@@ -50,17 +50,17 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
   // State data
     StringType stringType = StringType.None;
     int stringStart = -1;
-    int til = 0;
+    int hil = 0;
     int myHereDocMarkerLength = 0;
     int myHereDocMarkerWeakHash = 0;
 
-    private void til_inc() {
-      til++;
+    private void hil_inc() {
+      hil++;
     }
-    private int til_dec() {
-      assert til > 0;
-      til--;
-      return til;
+    private int hil_dec() {
+      assert hil > 0;
+      hil--;
+      return hil;
     }
     private void push_eol() {
       yypushback(getEOLLength());
@@ -79,7 +79,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
       yybegin(YYINITIAL); stringType = StringType.None; zzStartRead = stringStart; return SINGLE_QUOTED_STRING;
     }
     private IElementType eoil() {
-      til=0; return stringType == StringType.SingleQ ? eoss(): eods();
+      hil=0; return stringType == StringType.SingleQ ? eoss(): eods();
     }
     private void setHereDocMarker(CharSequence marker) {
       myHereDocMarkerLength = marker.length() & 0xFF;
@@ -104,7 +104,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 %%
 
 <D_STRING> {
-  {TIL_START} { if (withInterpolationLanguage) {til_inc(); yybegin(TIL_EXPRESSION);} }
+  {HIL_START} { if (withInterpolationLanguage) {hil_inc(); yybegin(HIL_EXPRESSION);} }
   \"          { return eods(); }
   {STRING_ELEMENT} {}
   \$ {}
@@ -117,7 +117,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 }
 
 <S_STRING> {
-  {TIL_START} { if (withInterpolationLanguage) {til_inc(); yybegin(TIL_EXPRESSION);} }
+  {HIL_START} { if (withInterpolationLanguage) {hil_inc(); yybegin(HIL_EXPRESSION);} }
   \'          { return eoss(); }
   {STRING_ELEMENT} {}
   \$ {}
@@ -130,9 +130,9 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
 }
 
 
-<TIL_EXPRESSION> {
-  {TIL_START} {til_inc();}
-  {TIL_STOP} {if (til_dec() <= 0) yybegin(stringType == StringType.SingleQ ? S_STRING: D_STRING); }
+<HIL_EXPRESSION> {
+  {HIL_START} {hil_inc();}
+  {HIL_STOP} {if (hil_dec() <= 0) yybegin(stringType == StringType.SingleQ ? S_STRING: D_STRING); }
   {STRING_ELEMENT} {}
   \' {}
   \" {}
