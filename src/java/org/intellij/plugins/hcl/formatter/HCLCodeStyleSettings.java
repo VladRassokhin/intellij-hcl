@@ -49,7 +49,7 @@ public class HCLCodeStyleSettings extends CustomCodeStyleSettings {
   public int OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS;
   // This was default policy for array elements wrapping in JavaScript's JSON.
   // CHOP_DOWN_IF_LONG seems more appropriate however for short arrays.
-  public int ARRAY_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS;
+  public int ARRAY_WRAPPING = CommonCodeStyleSettings.DO_NOT_WRAP;
 
   public HCLCodeStyleSettings(CodeStyleSettings container, Language language) {
     super(language.getID(), container);
