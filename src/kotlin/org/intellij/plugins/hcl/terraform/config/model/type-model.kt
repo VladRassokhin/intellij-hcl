@@ -244,7 +244,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       if (v !is JsonObject) continue;
       assert(v.string("Name").equals(k)) { "Name mismatch: $k != ${v.string("Name")}" }
       val returnType = parseType(v.string("ReturnType")!!)
-      val args = v.array<String>("ArgTypes")!!.map { parseType(it) }.map { Argument(it) }.toArrayList()
+      val args = v.array<String>("ArgTypes")!!.map { parseType(it) }.map { Argument(it) }.toMutableList()
       val variadic = v.boolean("Variadic")!!
       var va: VariadicArgument? = null
       if (variadic) {

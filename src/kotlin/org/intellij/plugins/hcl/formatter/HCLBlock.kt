@@ -48,7 +48,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     return myNode.getChildren(null).map {
       if (isWhitespaceOrEmpty(it)) null
       else makeSubBlock(it)
-    }.filterNotNull().toArrayList();
+    }.filterNotNull().toMutableList();
   }
 
   private fun makeSubBlock(childNode: ASTNode): HCLBlock {

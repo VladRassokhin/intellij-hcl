@@ -61,7 +61,7 @@ public class TILCompletionContributor : CompletionContributor() {
     @JvmField public val FUNCTIONS = ServiceManager.getService(TypeModelProvider::class.java).get().functions
 
     // For tests purposes
-    @JvmField public val GLOBAL_AVAILABLE: SortedSet<String> = FUNCTIONS.map { it.name }.toArrayList().plus(GLOBAL_SCOPES).toSortedSet()
+    @JvmField public val GLOBAL_AVAILABLE: SortedSet<String> = FUNCTIONS.map { it.name }.toMutableList().plus(GLOBAL_SCOPES).toSortedSet()
 
 
     private val PATH_REFERENCES = sortedSetOf("root", "module", "cwd")
