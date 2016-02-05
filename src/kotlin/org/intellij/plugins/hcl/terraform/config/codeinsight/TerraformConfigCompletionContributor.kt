@@ -45,7 +45,7 @@ import org.intellij.plugins.hcl.codeinsight.HCLCompletionContributor
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hcl.terraform.config.model.*
-import org.intellij.plugins.hcl.terraform.il.ILFileType
+import org.intellij.plugins.hcl.terraform.il.HILFileType
 import java.util.*
 
 public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
@@ -291,7 +291,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
             // Check for Injection
             InjectedLanguageManager.getInstance(pob.project).enumerate(value, object : PsiLanguageInjectionHost.InjectedPsiVisitor {
               override fun visit(injectedPsi: PsiFile, places: MutableList<PsiLanguageInjectionHost.Shred>) {
-                if (injectedPsi.fileType == ILFileType) {
+                if (injectedPsi.fileType == HILFileType) {
                   right = Types.StringWithInjection;
                 }
               }

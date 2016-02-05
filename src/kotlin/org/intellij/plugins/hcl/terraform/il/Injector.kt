@@ -22,8 +22,8 @@ import com.intellij.psi.PsiLanguageInjectionHost
 import org.intellij.plugins.hcl.psi.HCLHeredocLiteral
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
-import org.intellij.plugins.hcl.terraform.il.TILElementTypes.INTERPOLATION_END
-import org.intellij.plugins.hcl.terraform.il.TILElementTypes.INTERPOLATION_START
+import org.intellij.plugins.hcl.terraform.il.HILElementTypes.INTERPOLATION_END
+import org.intellij.plugins.hcl.terraform.il.HILElementTypes.INTERPOLATION_START
 import org.intellij.plugins.hcl.terraform.il.psi.TILLexer
 import java.util.*
 
@@ -45,7 +45,7 @@ public class ILLanguageInjector : LanguageInjector {
     val ranges = getILRangesInText(value)
     for (range in ranges) {
       val rng = range.shiftRight(offset)
-      places.addPlace(TILLanguage, rng, null, null)
+      places.addPlace(HILLanguage, rng, null, null)
     }
   }
 
@@ -58,7 +58,7 @@ public class ILLanguageInjector : LanguageInjector {
       val offset = line.startOffsetInParent
       for (range in ranges) {
         val rng = range.shiftRight(offset)
-        places.addPlace(TILLanguage, rng, null, null)
+        places.addPlace(HILLanguage, rng, null, null)
       }
     }
   }

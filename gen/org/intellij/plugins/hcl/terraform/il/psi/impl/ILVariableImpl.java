@@ -7,7 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static org.intellij.plugins.hcl.terraform.il.TILElementTypes.*;
+import static org.intellij.plugins.hcl.terraform.il.HILElementTypes.*;
 import org.intellij.plugins.hcl.terraform.il.psi.*;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -32,21 +32,21 @@ public class ILVariableImpl extends ILExpressionWithReference implements ILVaria
 
   @NotNull
   public String getName() {
-    return TILPsiImplUtilJ.getName(this);
+    return HILPsiImplUtilJ.getName(this);
   }
 
   public PsiNamedElement setName(String name) {
-    return TILPsiImplUtilJ.setName(this, name);
+    return HILPsiImplUtilJ.setName(this, name);
   }
 
   @NotNull
   public SearchScope getUseScope() {
-    return TILPsiImplUtilJ.getUseScope(this);
+    return HILPsiImplUtilJ.getUseScope(this);
   }
 
   @NotNull
   public GlobalSearchScope getResolveScope() {
-    return TILPsiImplUtilJ.getResolveScope(this);
+    return HILPsiImplUtilJ.getResolveScope(this);
   }
 
 }

@@ -29,11 +29,11 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.StringEscapesTokenTypes
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
-import org.intellij.plugins.hcl.terraform.il.TILElementTypes.*
+import org.intellij.plugins.hcl.terraform.il.HILElementTypes.*
 import org.intellij.plugins.hcl.terraform.il.psi.TILLexer
 import java.util.*
 
-public class TILSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
+public class HILSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 
   object TILSyntaxHighlighter : SyntaxHighlighterBase() {
     val ourAttributes: Map<IElementType, TextAttributesKey> = HashMap()

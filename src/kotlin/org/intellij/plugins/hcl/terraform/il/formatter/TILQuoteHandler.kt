@@ -16,6 +16,6 @@
 package org.intellij.plugins.hcl.terraform.il.formatter
 
 import com.intellij.codeInsight.editorActions.SimpleTokenSetQuoteHandler
-import org.intellij.plugins.hcl.terraform.il.TILParserDefinition
+import org.intellij.plugins.hcl.terraform.il.HILParserDefinition
 
-public class TILQuoteHandler : SimpleTokenSetQuoteHandler(TILParserDefinition.STRING_LITERALS)
+public class TILQuoteHandler : SimpleTokenSetQuoteHandler(HILParserDefinition.STRING_LITERALS)

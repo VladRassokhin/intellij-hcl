@@ -24,7 +24,7 @@ import org.intellij.plugins.hcl.terraform.il.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TILPsiImplUtilJ {
+public class HILPsiImplUtilJ {
   public static Class getTypeClass(ILLiteralExpressionImpl expression) {
     return TILPsiImplUtils.INSTANCE.getTypeClass(expression);
   }

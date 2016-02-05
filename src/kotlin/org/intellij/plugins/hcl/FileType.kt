@@ -27,7 +27,7 @@ object HCLFileType : LanguageFileType(HCLLanguage) {
 
   override fun getDefaultExtension() = DEFAULT_EXTENSION
 
-  override fun getDescription() = "HCL files"
+  override fun getDescription() = "HashiCorp Configuration Language files"
 
   override fun getName() = "HCL"
 

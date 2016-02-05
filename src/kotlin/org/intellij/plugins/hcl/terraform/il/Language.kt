@@ -19,10 +19,14 @@ import com.intellij.lang.Language
 import com.intellij.openapi.fileTypes.LanguageFileType
 
 
-object TILLanguage : Language("Terraform-IL") {
+object HILLanguage : Language("HIL") {
   override fun isCaseSensitive() = true
   override fun getAssociatedFileType(): LanguageFileType? {
-    return ILFileType
+    return HILFileType
+  }
+
+  override fun getDisplayName(): String {
+    return "HashiCorp Interpolation Language"
   }
 }
 

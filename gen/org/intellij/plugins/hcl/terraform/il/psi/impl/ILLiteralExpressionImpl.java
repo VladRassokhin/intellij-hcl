@@ -7,7 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static org.intellij.plugins.hcl.terraform.il.TILElementTypes.*;
+import static org.intellij.plugins.hcl.terraform.il.HILElementTypes.*;
 import org.intellij.plugins.hcl.terraform.il.psi.*;
 
 public class ILLiteralExpressionImpl extends ILExpressionWithReference implements ILLiteralExpression {
@@ -34,12 +34,12 @@ public class ILLiteralExpressionImpl extends ILExpressionWithReference implement
   }
 
   public Class getTypeClass() {
-    return TILPsiImplUtilJ.getTypeClass(this);
+    return HILPsiImplUtilJ.getTypeClass(this);
   }
 
   @Nullable
   public String getUnquotedText() {
-    return TILPsiImplUtilJ.getUnquotedText(this);
+    return HILPsiImplUtilJ.getUnquotedText(this);
   }
 
 }

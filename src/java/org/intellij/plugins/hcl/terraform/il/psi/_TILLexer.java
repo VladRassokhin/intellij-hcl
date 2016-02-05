@@ -3,7 +3,7 @@
 package org.intellij.plugins.hcl.terraform.il.psi;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
-import static org.intellij.plugins.hcl.terraform.il.TILElementTypes.*;
+import static org.intellij.plugins.hcl.terraform.il.HILElementTypes.*;
 
 
 /**

@@ -18,17 +18,17 @@ package org.intellij.plugins.hcl.terraform.il.psi
 import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
-import org.intellij.plugins.hcl.terraform.il.ILFileType
-import org.intellij.plugins.hcl.terraform.il.TILLanguage
-import org.intellij.plugins.hcl.terraform.il.TILParserDefinition
+import org.intellij.plugins.hcl.terraform.il.HILFileType
+import org.intellij.plugins.hcl.terraform.il.HILLanguage
+import org.intellij.plugins.hcl.terraform.il.HILParserDefinition
 
-class ILPsiFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, TILLanguage) {
+class ILPsiFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, HILLanguage) {
   init {
-    init(TILParserDefinition.FILE, TILParserDefinition.IL_HOLDER)
+    init(HILParserDefinition.FILE, HILParserDefinition.IL_HOLDER)
   }
 
   override fun getFileType(): FileType {
-    return ILFileType
+    return HILFileType
   }
 
   override fun toString(): String {

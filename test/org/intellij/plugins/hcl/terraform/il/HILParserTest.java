@@ -17,9 +17,9 @@ package org.intellij.plugins.hcl.terraform.il;
 
 import com.intellij.testFramework.ParsingTestCase;
 
-public class TILParserTest  extends ParsingTestCase {
-  public TILParserTest() {
-    super("til/psi", "til", true, new TILParserDefinition());
+public class HILParserTest extends ParsingTestCase {
+  public HILParserTest() {
+    super("til/psi", "til", true, new HILParserDefinition());
   }
 
   @Override

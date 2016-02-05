@@ -21,8 +21,8 @@ import com.intellij.openapi.fileTypes.FileTypeFactory
 import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon
 
-object ILFileType: LanguageFileType(TILLanguage) {
-  public val DEFAULT_EXTENSION: String = "terraform.il";
+object HILFileType : LanguageFileType(HILLanguage) {
+  public val DEFAULT_EXTENSION: String = "hil";
 
   override fun getIcon(): Icon? {
     return AllIcons.FileTypes.Custom
@@ -33,16 +33,16 @@ object ILFileType: LanguageFileType(TILLanguage) {
   }
 
   override fun getDescription(): String {
-    return "Interpolation Language in Terraform configs"
+    return "HashiCorp Interpolation Language file"
   }
 
   override fun getName(): String {
-    return "Terraform-IL"
+    return "HIL"
   }
 }
 
-class ILFileTypeFactory : FileTypeFactory() {
+class HILFileTypeFactory : FileTypeFactory() {
   override fun createFileTypes(consumer: FileTypeConsumer) {
-    consumer.consume(ILFileType, ILFileType.DEFAULT_EXTENSION)
+    consumer.consume(HILFileType, HILFileType.DEFAULT_EXTENSION)
   }
 }

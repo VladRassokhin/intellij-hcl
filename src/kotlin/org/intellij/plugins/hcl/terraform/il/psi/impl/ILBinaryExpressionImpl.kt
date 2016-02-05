@@ -19,24 +19,24 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.tree.IElementType
 import org.intellij.plugins.hcl.terraform.il.ILBinaryExpression
-import org.intellij.plugins.hcl.terraform.il.TILElementType
-import org.intellij.plugins.hcl.terraform.il.TILTokenType
+import org.intellij.plugins.hcl.terraform.il.HILElementType
+import org.intellij.plugins.hcl.terraform.il.HILTokenType
 import org.intellij.plugins.hcl.terraform.il.psi.ILElementVisitor
 import org.intellij.plugins.hcl.terraform.il.psi.ILExpression
 
 public open class ILBinaryExpressionImpl(node: ASTNode) : ILExpressionImpl(node), ILBinaryExpression {
   override fun getLOperand(): ILExpression? {
-    val nodes = node.getChildren(TILElementType.IL_EXPRESSIONS)
+    val nodes = node.getChildren(HILElementType.IL_EXPRESSIONS)
     return (if (nodes.size > 0) nodes[0].psi else null) as ILExpression
   }
 
   override fun getROperand(): ILExpression? {
-    val nodes = node.getChildren(TILElementType.IL_EXPRESSIONS)
+    val nodes = node.getChildren(HILElementType.IL_EXPRESSIONS)
     return (if (nodes.size > 2) nodes[2].psi else null) as ILExpression
   }
 
   override fun getOperationSign(): IElementType? {
-    val nodes = node.getChildren(TILTokenType.IL_BINARY_OPERATIONS)
+    val nodes = node.getChildren(HILTokenType.IL_BINARY_OPERATIONS)
     return if (nodes.size == 1) nodes[0].elementType else null
   }
 

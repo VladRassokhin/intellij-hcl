@@ -18,7 +18,7 @@ package org.intellij.plugins.hcl.terraform.il.psi
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileFactory
-import org.intellij.plugins.hcl.terraform.il.ILFileType
+import org.intellij.plugins.hcl.terraform.il.HILFileType
 
 public open class ILElementGenerator(val project: Project) {
   fun createILVariable(text: String): ILVariable {
@@ -32,6 +32,6 @@ public open class ILElementGenerator(val project: Project) {
 
   public open fun createDummyFile(content: String): PsiFile {
     val psiFileFactory = PsiFileFactory.getInstance(project)
-    return psiFileFactory.createFileFromText("dummy." + ILFileType.defaultExtension, ILFileType, content)
+    return psiFileFactory.createFileFromText("dummy." + HILFileType.defaultExtension, HILFileType, content)
   }
 }

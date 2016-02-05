@@ -19,7 +19,7 @@ import com.intellij.lang.Language;
 import org.intellij.plugins.hcl.CompletionTestCase;
 import org.intellij.plugins.hcl.terraform.il.codeinsight.TILCompletionContributor;
 
-public class TILCompletionTest extends CompletionTestCase {
+public class HILCompletionTest extends CompletionTestCase {
   @Override
   protected String getTestDataPath() {
     return "tests/data";
@@ -32,7 +32,7 @@ public class TILCompletionTest extends CompletionTestCase {
 
   @Override
   protected Language getExpectedLanguage() {
-    return TILLanguage.INSTANCE;
+    return HILLanguage.INSTANCE;
   }
 
   public void testMethodCompletion_BeginOnInterpolation() throws Exception {

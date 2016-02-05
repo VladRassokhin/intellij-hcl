@@ -25,7 +25,7 @@ import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import org.intellij.plugins.hcl.terraform.il.TILElementTypes
+import org.intellij.plugins.hcl.terraform.il.HILElementTypes
 import org.intellij.plugins.hcl.terraform.il.psi.ILMethodCallExpression
 import org.intellij.plugins.hcl.terraform.il.psi.ILSelectExpression
 import org.intellij.plugins.hcl.terraform.il.psi.ILVariable
@@ -42,7 +42,7 @@ object FunctionInsertHandler : BasicInsertHandler<LookupElement>() {
     val e = file.findElementAt(context.startOffset) ?: return
 
     val element: PsiElement?
-    if (e.node?.elementType == TILElementTypes.ID) {
+    if (e.node?.elementType == HILElementTypes.ID) {
       element = e.parent
     } else {
       element = e

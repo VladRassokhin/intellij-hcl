@@ -39,7 +39,7 @@ import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigComp
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformLookupElementRenderer
 import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.model.Function
-import org.intellij.plugins.hcl.terraform.il.TILLanguage
+import org.intellij.plugins.hcl.terraform.il.HILLanguage
 import org.intellij.plugins.hcl.terraform.il.psi.*
 import java.util.*
 
@@ -47,10 +47,10 @@ public class TILCompletionContributor : CompletionContributor() {
   init {
     extend(CompletionType.BASIC, METHOD_POSITION, MethodsCompletionProvider)
     extend(CompletionType.BASIC, METHOD_POSITION, ResourceTypesCompletionProvider)
-    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
+    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(HILLanguage)
         .withParent(ILVariable::class.java).withSuperParent(2, ILSE_FROM_KNOWN_SCOPE)
         , KnownScopeCompletionProvider)
-    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(TILLanguage)
+    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(HILLanguage)
         .withParent(ILVariable::class.java).withSuperParent(2, ILSE_NOT_FROM_KNOWN_SCOPE)
         , SelectCompletionProvider)
   }
@@ -74,7 +74,7 @@ public class TILCompletionContributor : CompletionContributor() {
     )
     public val SCOPES = SCOPE_PROVIDERS.keys
 
-    private val METHOD_POSITION = PlatformPatterns.psiElement().withLanguage(TILLanguage)
+    private val METHOD_POSITION = PlatformPatterns.psiElement().withLanguage(HILLanguage)
         .withParent(ILVariable::class.java)
         .andNot(PlatformPatterns.psiElement().withSuperParent(2, ILSelectExpression::class.java))
 

@@ -20,7 +20,7 @@ import com.intellij.lang.folding.FoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.psi.tree.TokenSet
-import org.intellij.plugins.hcl.terraform.il.TILElementTypes
+import org.intellij.plugins.hcl.terraform.il.HILElementTypes
 import java.util.*
 
 public class TILFoldingBuilder : FoldingBuilder {
@@ -35,7 +35,7 @@ public class TILFoldingBuilder : FoldingBuilder {
   }
 
   companion object {
-    private val Accepted = TokenSet.create(TILElementTypes.IL_PARENTHESIZED_EXPRESSION, TILElementTypes.IL_PARAMETER_LIST, TILElementTypes.IL_EXPRESSION_HOLDER)
+    private val Accepted = TokenSet.create(HILElementTypes.IL_PARENTHESIZED_EXPRESSION, HILElementTypes.IL_PARAMETER_LIST, HILElementTypes.IL_EXPRESSION_HOLDER)
   }
 
   private fun collect(node: ASTNode, document: Document, descriptors: ArrayList<FoldingDescriptor>) {
@@ -49,9 +49,9 @@ public class TILFoldingBuilder : FoldingBuilder {
 
   override fun getPlaceholderText(node: ASTNode): String? {
     return when (node.elementType) {
-      TILElementTypes.IL_PARENTHESIZED_EXPRESSION -> "(...)"
-      TILElementTypes.IL_PARAMETER_LIST -> "(...)"
-      TILElementTypes.IL_EXPRESSION_HOLDER -> "\${...}"
+      HILElementTypes.IL_PARENTHESIZED_EXPRESSION -> "(...)"
+      HILElementTypes.IL_PARAMETER_LIST -> "(...)"
+      HILElementTypes.IL_EXPRESSION_HOLDER -> "\${...}"
       else -> "..."
     }
   }

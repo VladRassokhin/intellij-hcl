@@ -33,11 +33,11 @@ import org.intellij.plugins.hcl.terraform.il.psi.ILPsiFile
 import org.intellij.plugins.hcl.terraform.il.psi.TILLexer
 import org.intellij.plugins.hcl.terraform.il.psi.impl.ILExpressionHolderImpl
 
-public class TILParserDefinition : ParserDefinition {
+public class HILParserDefinition : ParserDefinition {
 
   override fun createLexer(project: Project) = TILLexer()
 
-  override fun createParser(project: Project) = TILParser()
+  override fun createParser(project: Project) = HILParser()
 
   override fun getFileNodeType() = FILE
 
@@ -54,11 +54,11 @@ public class TILParserDefinition : ParserDefinition {
     if (type == IL_HOLDER) {
       return ILExpressionHolderImpl(node)
     }
-    if (type is TILElementType) {
-      return TILElementTypes.Factory.createElement(node)
+    if (type is HILElementType) {
+      return HILElementTypes.Factory.createElement(node)
     }
-    if (type is TILTokenType) {
-      return TILElementTypes.Factory.createElement(node)
+    if (type is HILTokenType) {
+      return HILElementTypes.Factory.createElement(node)
     }
     return ASTWrapperPsiElement(node)
   }
@@ -71,23 +71,23 @@ public class TILParserDefinition : ParserDefinition {
 
   companion object {
     public val WHITE_SPACES: TokenSet = TokenSet.create(TokenType.WHITE_SPACE)
-    public val STRING_LITERALS: TokenSet = TokenSet.create(TILElementTypes.DOUBLE_QUOTED_STRING)
+    public val STRING_LITERALS: TokenSet = TokenSet.create(HILElementTypes.DOUBLE_QUOTED_STRING)
 
-    public val FILE: IFileElementType = IFileElementType(TILLanguage)
+    public val FILE: IFileElementType = IFileElementType(HILLanguage)
 
-    public val TIL_BRACES: TokenSet = TokenSet.create(TILElementTypes.INTERPOLATION_START, TILElementTypes.INTERPOLATION_END)
-    public val TIL_PARENS: TokenSet = TokenSet.create(TILElementTypes.L_PAREN, TILElementTypes.R_PAREN)
-    public val TIL_BOOLEANS: TokenSet = TokenSet.create(TILElementTypes.TRUE, TILElementTypes.FALSE)
-    public val TIL_KEYWORDS: TokenSet = TokenSet.create(TILElementTypes.TRUE, TILElementTypes.FALSE, TILElementTypes.NULL)
-    public val TIL_LITERALS: TokenSet = TokenSet.create(TILElementTypes.IL_LITERAL_EXPRESSION, TILElementTypes.TRUE, TILElementTypes.FALSE)
+    public val TIL_BRACES: TokenSet = TokenSet.create(HILElementTypes.INTERPOLATION_START, HILElementTypes.INTERPOLATION_END)
+    public val TIL_PARENS: TokenSet = TokenSet.create(HILElementTypes.L_PAREN, HILElementTypes.R_PAREN)
+    public val TIL_BOOLEANS: TokenSet = TokenSet.create(HILElementTypes.TRUE, HILElementTypes.FALSE)
+    public val TIL_KEYWORDS: TokenSet = TokenSet.create(HILElementTypes.TRUE, HILElementTypes.FALSE, HILElementTypes.NULL)
+    public val TIL_LITERALS: TokenSet = TokenSet.create(HILElementTypes.IL_LITERAL_EXPRESSION, HILElementTypes.TRUE, HILElementTypes.FALSE)
     public val TIL_VALUES: TokenSet = TokenSet.orSet(TIL_LITERALS)
 
     private val ourContextNodeKey: Key<ASTNode> = Key.create("Terraform-IL.context.node");
 
-    public val IL_HOLDER: ILazyParseableElementType = object : ILazyParseableElementType("IL_HOLDER", TILLanguage) {
+    public val IL_HOLDER: ILazyParseableElementType = object : ILazyParseableElementType("IL_HOLDER", HILLanguage) {
       override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
         val project = psi.project
-        val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, TILLexer(), TILLanguage, chameleon.chars)
+        val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, TILLexer(), HILLanguage, chameleon.chars)
         val parser = LanguageParserDefinitions.INSTANCE.forLanguage(language).createParser(project)
 
         builder.putUserData(ourContextNodeKey, chameleon.treeParent)

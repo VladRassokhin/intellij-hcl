@@ -7,7 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static org.intellij.plugins.hcl.terraform.il.TILElementTypes.*;
+import static org.intellij.plugins.hcl.terraform.il.HILElementTypes.*;
 import org.intellij.plugins.hcl.terraform.il.psi.*;
 
 public class ILMethodCallExpressionImpl extends ILExpressionImpl implements ILMethodCallExpression {
@@ -34,16 +34,16 @@ public class ILMethodCallExpressionImpl extends ILExpressionImpl implements ILMe
   }
 
   public ILExpression getQualifier() {
-    return TILPsiImplUtilJ.getQualifier(this);
+    return HILPsiImplUtilJ.getQualifier(this);
   }
 
   @Nullable
   public ILVariable getMethod() {
-    return TILPsiImplUtilJ.getMethod(this);
+    return HILPsiImplUtilJ.getMethod(this);
   }
 
   public ILParameterList getParameterList() {
-    return TILPsiImplUtilJ.getParameterList(this);
+    return HILPsiImplUtilJ.getParameterList(this);
   }
 
 }
