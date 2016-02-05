@@ -199,9 +199,6 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       "provider" -> return parseProviderFile(json, file)
       "functions" -> return parseInterpolationFunctions(json, file)
     }
-    // Fallback
-    if (json.obj("provider") != null) return parseProviderFile(json, file)
-    if (json.obj("provisioner") != null) return parseProvisionerFile(json, file)
     LOG.warn("Cannot determine model file content, $file")
   }
 
