@@ -21,7 +21,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import org.intellij.plugins.hcl.formatter.HCLCodeStyleSettings;
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +35,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @RunWith(Parameterized.class)
-public class HCLFormatterTest extends LightPlatformCodeInsightFixtureTestCase {
+public class HCLFormatterBasicTest extends HCLFormatterBaseTestCase {
 
   @Parameterized.Parameters
   public static Collection<Object[]> data() {
