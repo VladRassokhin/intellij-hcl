@@ -29,6 +29,7 @@ import org.intellij.plugins.hcl.psi.HCLPsiUtil
 class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Alignment?, val spacingBuilder: SpacingBuilder, val _indent: Indent?, val settings: HCLCodeStyleSettings, private val valueAlignment: Alignment? = null) : AbstractBlock(node, wrap, alignment) {
   val myChildWrap: Wrap?
   val myAlwaysWrap: Wrap?
+  val myCommentValueAlignment: Alignment? by lazy { if (isElementType(myNode, OBJECT, ARRAY)) Alignment.createAlignment(true) else null }
 
   init {
     myChildWrap = when (node.elementType) {
@@ -71,6 +72,16 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
 
       if (isElementType(childNode, COMMA)) {
         wrap = Wrap.createWrap(WrapType.NONE, true)
+      } else if (isElementType(childNode, HCLParserDefinition.HCL_COMMENTARIES)) {
+        if (isElementType(myNode, ARRAY)) {
+          // Check if comment either standalone or attached to element
+          if (isStandaloneComment(childNode)) {
+            wrap = myAlwaysWrap
+            indent = Indent.getNormalIndent()
+          } else {
+            alignment = myCommentValueAlignment
+          }
+        }
       } else if (!isElementType(childNode, ALL_BRACES)) {
         wrap = myChildWrap!!
         if (myNode.elementType == ARRAY) {
@@ -118,8 +129,21 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     return HCLBlock(this, childNode, wrap, alignment, spacingBuilder, indent, settings, propertyValueAlignment ?: valueAlignment)
   }
 
+  private fun isStandaloneComment(childNode: ASTNode): Boolean {
+    var node: ASTNode? = childNode.treePrev
+    while (node != null) {
+      if (node.elementType == TokenType.WHITE_SPACE) {
+        if (node.textContains('\n')) return true
+      } else {
+        return isElementType(node, TokenSet.orSet(OPEN_BRACES, HCLParserDefinition.HCL_COMMENTARIES))
+      }
+      node = node.treePrev
+    }
+    return false
+  }
+
   private fun isOnSameLineAsFirstChildrenOfParent(childNode: ASTNode): Boolean {
-    var node: ASTNode? = childNode
+    var node: ASTNode? = childNode.treePrev
     while (node != null) {
       if (node.elementType == TokenType.WHITE_SPACE) {
         if (node.textContains('\n')) return false
