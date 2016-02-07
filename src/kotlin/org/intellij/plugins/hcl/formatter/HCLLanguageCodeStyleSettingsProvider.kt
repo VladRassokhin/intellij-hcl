@@ -53,6 +53,9 @@ open class HCLLanguageCodeStyleSettingsProvider(private val language:Language = 
     val commonSettings = CommonCodeStyleSettings(language)
     val indentOptions = commonSettings.initIndentOptions()
     indentOptions.INDENT_SIZE = 2
+    indentOptions.TAB_SIZE = 2
+    indentOptions.USE_TAB_CHARACTER = false
+    indentOptions.SMART_TABS = false
     return commonSettings
   }
 
