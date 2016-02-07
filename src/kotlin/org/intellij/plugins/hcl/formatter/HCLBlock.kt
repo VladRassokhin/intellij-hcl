@@ -28,6 +28,7 @@ import org.intellij.plugins.hcl.psi.HCLPsiUtil
 
 class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Alignment?, val spacingBuilder: SpacingBuilder, val _indent: Indent?, val settings: HCLCodeStyleSettings, private val valueAlignment: Alignment? = null) : AbstractBlock(node, wrap, alignment) {
   val myChildWrap: Wrap?
+  val myAlwaysWrap: Wrap?
 
   init {
     myChildWrap = when (node.elementType) {
@@ -35,6 +36,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
       ARRAY -> Wrap.createWrap(settings.ARRAY_WRAPPING, true)
       else -> null
     }
+    myAlwaysWrap = Wrap.createWrap(WrapType.ALWAYS, true)
   }
 
   val OPEN_BRACES: TokenSet = TokenSet.create(L_CURLY, L_BRACKET)
@@ -71,12 +73,22 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
         wrap = Wrap.createWrap(WrapType.NONE, true)
       } else if (!isElementType(childNode, ALL_BRACES)) {
         wrap = myChildWrap!!
+        if (myNode.elementType == ARRAY) {
+          // Check whether that children located on the same line as open bracket
+          if (!isOnSameLineAsFirstChildrenOfParent(childNode)) {
+            wrap = myAlwaysWrap
+          }
+        }
         indent = Indent.getNormalIndent()
       } else if (isElementType(childNode, OPEN_BRACES)) {
         if (HCLPsiUtil.isPropertyValue(myNode.psi) && settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_VALUE) {
           // WEB-13587 Align compound values on opening brace/bracket, not the whole block
           assert(valueAlignment != null)
           alignment = valueAlignment
+        }
+      } else if (isElementType(childNode, CLOSE_BRACES)) {
+        if (!isOnSameLineAsFirstChildrenOfParent(childNode)) {
+          wrap = myAlwaysWrap
         }
       }
     } else if (isElementType(myNode, PROPERTY)) {
@@ -104,6 +116,17 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
       }
     }
     return HCLBlock(this, childNode, wrap, alignment, spacingBuilder, indent, settings, propertyValueAlignment ?: valueAlignment)
+  }
+
+  private fun isOnSameLineAsFirstChildrenOfParent(childNode: ASTNode): Boolean {
+    var node: ASTNode? = childNode
+    while (node != null) {
+      if (node.elementType == TokenType.WHITE_SPACE) {
+        if (node.textContains('\n')) return false
+      }
+      node = node.treePrev
+    }
+    return true
   }
 
   override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
