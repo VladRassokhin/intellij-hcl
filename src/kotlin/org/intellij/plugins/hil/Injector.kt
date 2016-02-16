@@ -19,7 +19,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
-import org.intellij.plugins.hcl.psi.HCLHeredocLiteral
+import org.intellij.plugins.hcl.psi.HCLHeredocContent
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hil.HILElementTypes.INTERPOLATION_END
@@ -29,12 +29,12 @@ import java.util.*
 
 class ILLanguageInjector : LanguageInjector {
   override fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
-    if (host !is HCLStringLiteral && host !is HCLHeredocLiteral) return;
+    if (host !is HCLStringLiteral && host !is HCLHeredocContent) return;
     // Only .tf (Terraform config) files
     val file = host.containingFile ?: return
     if (file.fileType !is TerraformFileType) return;
     if (host is HCLStringLiteral) return getStringLiteralInjections(host, places);
-    if (host is HCLHeredocLiteral) return getHeredocLiteralInjections(host, places);
+    if (host is HCLHeredocContent) return getHCLHeredocContentInjections(host, places);
     return;
   }
 
@@ -49,17 +49,19 @@ class ILLanguageInjector : LanguageInjector {
     }
   }
 
-  private fun getHeredocLiteralInjections(host: HCLHeredocLiteral, places: InjectedLanguagePlaces) {
-    val lines = host.content.lines
+  private fun getHCLHeredocContentInjections(host: HCLHeredocContent, places: InjectedLanguagePlaces) {
+    if (host.linesCount == 0) return
+    val lines = host.lines
     if (lines.isEmpty()) return
     var off:Int = 0
     for (line in lines) {
       val ranges = getILRangesInText(line)
-      if (ranges.isEmpty()) continue
-      val offset = off
-      for (range in ranges) {
-        val rng = range.shiftRight(offset)
-        places.addPlace(HILLanguage, rng, null, null)
+      if (!ranges.isEmpty()) {
+        val offset = off
+        for (range in ranges) {
+          val rng = range.shiftRight(offset)
+          places.addPlace(HILLanguage, rng, null, null)
+        }
       }
       off += line.length
     }
