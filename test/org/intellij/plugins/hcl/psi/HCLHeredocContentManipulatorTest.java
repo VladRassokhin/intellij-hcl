@@ -90,6 +90,10 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
     doTest(content("012", "456", "890"), TextRange.create(2, 8), "\n", "01", "890");
   }
 
+  public void testAlwaysAtLeastOneNewLine() throws Exception {
+    doTestText(content("a\nb\nc"), TextRange.from(0, 6), "", content(""));
+  }
+
   public void testReplaceFullText() throws Exception {
     doTestText(
         content("[\n" +

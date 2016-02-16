@@ -21,6 +21,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.AbstractElementManipulator
 import com.intellij.util.IncorrectOperationException
 import org.intellij.plugins.hcl.HCLElementTypes
+import java.util.*
 
 class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocContent>() {
   @Throws(IncorrectOperationException::class)
@@ -54,12 +55,23 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
     node.removeRange(children[startString], afterNode)
 
     val newText = prefixStartString + newContent + suffixEndString
-    val newLines = StringUtil.split(newText, "\n", false, false)
+    val newLines = ArrayList<String>(StringUtil.split(newText, "\n", false, false))
     // Remove last empty line
-    newLines.forEachIndexed { i, line ->
-      if (i != newLines.lastIndex || line.isNotEmpty()) {
-        node.addLeaf(HCLElementTypes.HD_LINE, line, afterNode)
+    if (newLines.isNotEmpty()) {
+      if (newLines[newLines.lastIndex].isEmpty()) {
+        newLines.removeAt(newLines.lastIndex)
       }
+    }
+    // Last line should have new line char
+    if (newLines.isNotEmpty()) {
+      if (!newLines[newLines.lastIndex].endsWith('\n')) {
+        newLines[newLines.lastIndex] += '\n'
+      }
+    } else {
+      newLines.add("\n")
+    }
+    for (line in newLines) {
+      node.addLeaf(HCLElementTypes.HD_LINE, line, afterNode)
     }
     return element
   }
