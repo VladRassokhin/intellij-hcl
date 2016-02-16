@@ -36,8 +36,6 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
 
   @Throws(IncorrectOperationException::class)
   override fun handleContentChange(element: HCLHeredocContent, range: TextRange, newContent: String): HCLHeredocContent {
-    if (range.length == 0) return element
-
     //////////
     // Calculate affected strings (based on offsets)
 
