@@ -18,4 +18,4 @@ package org.intellij.plugins.hil.formatter
 import com.intellij.codeInsight.editorActions.SimpleTokenSetQuoteHandler
 import org.intellij.plugins.hil.HILParserDefinition
 
-public class HILQuoteHandler : SimpleTokenSetQuoteHandler(HILParserDefinition.STRING_LITERALS)
+class HILQuoteHandler : SimpleTokenSetQuoteHandler(HILParserDefinition.STRING_LITERALS)

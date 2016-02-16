@@ -22,7 +22,7 @@ import org.intellij.plugins.hil.HILElementTypes.*
 
 open class HILElementType(debugName: String) : IElementType(debugName, HILLanguage) {
   companion object {
-    public val IL_EXPRESSIONS: TokenSet = TokenSet.create(
+    val IL_EXPRESSIONS: TokenSet = TokenSet.create(
         IL_VARIABLE,
         IL_BINARY_ADD_EXPRESSION,
         IL_BINARY_MUL_EXPRESSION,

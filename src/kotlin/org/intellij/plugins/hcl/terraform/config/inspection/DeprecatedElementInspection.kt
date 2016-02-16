@@ -28,7 +28,7 @@ import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
 import java.util.*
 
-public class DeprecatedElementInspection : LocalInspectionTool() {
+class DeprecatedElementInspection : LocalInspectionTool() {
 
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     val ft = holder.file.fileType

@@ -24,7 +24,7 @@ import org.intellij.plugins.hcl.HCLElementTypes.L_CURLY
 import org.intellij.plugins.hcl.HCLElementTypes.R_BRACKET
 import org.intellij.plugins.hcl.HCLElementTypes.R_CURLY
 
-public class HCLBraceMatcher : PairedBraceMatcher {
+class HCLBraceMatcher : PairedBraceMatcher {
   override fun getCodeConstructStart(file: PsiFile?, openingBraceOffset: Int): Int {
     return openingBraceOffset
   }

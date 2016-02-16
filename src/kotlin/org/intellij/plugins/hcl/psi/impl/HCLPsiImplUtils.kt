@@ -29,12 +29,12 @@ import org.intellij.plugins.hcl.Icons
 import org.intellij.plugins.hcl.psi.*
 import javax.swing.Icon
 
-public object HCLPsiImplUtils {
-  public fun getName(property: HCLProperty): String {
+object HCLPsiImplUtils {
+  fun getName(property: HCLProperty): String {
     return StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(property.nameElement.text))
   }
 
-  public fun getName(block: HCLBlock): String {
+  fun getName(block: HCLBlock): String {
     val elements = block.nameElements
     val sb = StringBuilder()
     for (element in elements) {
@@ -43,7 +43,7 @@ public object HCLPsiImplUtils {
     return sb.toString().trim()
   }
 
-  public fun getName(marker: HCLHeredocMarker): String {
+  fun getName(marker: HCLHeredocMarker): String {
     return marker.firstChild.text
   }
 
@@ -54,13 +54,13 @@ public object HCLPsiImplUtils {
 
    * @see HCLStandardComplianceInspection
    */
-  public fun getNameElement(property: HCLProperty): HCLValue {
+  fun getNameElement(property: HCLProperty): HCLValue {
     val firstChild = property.firstChild
     assert(firstChild is HCLLiteral || firstChild is HCLIdentifier) { "Excepted literal or identifier, got ${firstChild.javaClass.name}" }
     return firstChild as HCLValue
   }
 
-  public fun getNameElements(block: HCLBlock): Array<HCLElement> {
+  fun getNameElements(block: HCLBlock): Array<HCLElement> {
     var result: MutableList<HCLElement>? = null
     var child: PsiElement? = block.firstChild
     while (child != null) {
@@ -74,19 +74,19 @@ public object HCLPsiImplUtils {
     return if (result == null) emptyArray<HCLElement>() else ArrayUtil.toObjectArray<HCLElement>(result, HCLElement::class.java)
   }
 
-  public fun getValue(property: HCLProperty): HCLValue? {
+  fun getValue(property: HCLProperty): HCLValue? {
     return PsiTreeUtil.getNextSiblingOfType<HCLValue>(getNameElement(property), HCLValue::class.java)
   }
 
-  public fun getObject(block: HCLBlock): HCLObject? {
+  fun getObject(block: HCLBlock): HCLObject? {
     return PsiTreeUtil.getNextSiblingOfType<HCLObject>(block.firstChild, HCLObject::class.java)
   }
 
-  public fun isQuotedString(literal: HCLLiteral): Boolean {
+  fun isQuotedString(literal: HCLLiteral): Boolean {
     return literal.node.findChildByType(HCLParserDefinition.STRING_LITERALS) != null
   }
 
-  public fun getPresentation(property: HCLProperty): ItemPresentation? {
+  fun getPresentation(property: HCLProperty): ItemPresentation? {
     return object : ItemPresentation {
       override fun getPresentableText(): String? {
         return property.name
@@ -108,7 +108,7 @@ public object HCLPsiImplUtils {
     }
   }
 
-  public fun getPresentation(block: HCLBlock): ItemPresentation? {
+  fun getPresentation(block: HCLBlock): ItemPresentation? {
     return object : ItemPresentation {
       override fun getPresentableText(): String? {
         return block.name
@@ -130,7 +130,7 @@ public object HCLPsiImplUtils {
     }
   }
 
-  public fun getPresentation(array: HCLArray): ItemPresentation? {
+  fun getPresentation(array: HCLArray): ItemPresentation? {
     return object : ItemPresentation {
       override fun getPresentableText(): String? {
         return ("hcl.array")
@@ -146,7 +146,7 @@ public object HCLPsiImplUtils {
     }
   }
 
-  public fun getPresentation(o: HCLObject): ItemPresentation? {
+  fun getPresentation(o: HCLObject): ItemPresentation? {
     return object : ItemPresentation {
       override fun getPresentableText(): String? {
         return ("hcl.object")
@@ -162,14 +162,14 @@ public object HCLPsiImplUtils {
     }
   }
 
-  public fun getTextFragments(literal: HCLStringLiteral): List<Pair<TextRange, String>> = JavaUtil.getTextFragments(literal)
+  fun getTextFragments(literal: HCLStringLiteral): List<Pair<TextRange, String>> = JavaUtil.getTextFragments(literal)
 
   //  public static void delete(@NotNull HCLProperty property) {
   //    final ASTNode myNode = property.getNode();
   //    HCLPsiChangeUtils.removeCommaSeparatedFromList(myNode, myNode.getTreeParent());
   //  }
 
-  public fun findProperty(`object`: HCLObject, name: String): HCLProperty? {
+  fun findProperty(`object`: HCLObject, name: String): HCLProperty? {
     for (property in `object`.propertyList) {
       if (property.name == name) {
         return property
@@ -178,26 +178,26 @@ public object HCLPsiImplUtils {
     return null
   }
 
-  public fun getValue(literal: HCLStringLiteral): String {
+  fun getValue(literal: HCLStringLiteral): String {
     return StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(literal.text))
   }
 
-  public fun getValue(literal: HCLHeredocLiteral): String {
+  fun getValue(literal: HCLHeredocLiteral): String {
     return literal.content.value
   }
 
-  public fun getValue(content: HCLHeredocContent): String {
+  fun getValue(content: HCLHeredocContent): String {
     val builder = StringBuilder()
     content.lines.forEach { builder.append(it) }
     return builder.toString()
   }
 
-  public fun getLines(content: HCLHeredocContent): List<String> {
+  fun getLines(content: HCLHeredocContent): List<String> {
     val children = content.node.getChildren(null)
     return children.mapTo(SmartList<String>()) { it.text }
   }
 
-  public fun getLinesCount(content: HCLHeredocContent): Int {
+  fun getLinesCount(content: HCLHeredocContent): Int {
     val node = content.node
     var cn: ASTNode? = node.firstChildNode
     var counter: Int = 0
@@ -208,11 +208,11 @@ public object HCLPsiImplUtils {
     return counter
   }
 
-  public fun getValue(literal: HCLBooleanLiteral): Boolean {
+  fun getValue(literal: HCLBooleanLiteral): Boolean {
     return literal.textMatches("true")
   }
 
-  public fun getValue(literal: HCLNumberLiteral): Double {
+  fun getValue(literal: HCLNumberLiteral): Double {
     val text = literal.text
     val index = text.indexOfAny("KMGB".toCharArray(), 0, true)
     if (index != -1) {
@@ -256,7 +256,7 @@ public object HCLPsiImplUtils {
   }
 
 
-  public fun getId(identifier: HCLIdentifier): String {
+  fun getId(identifier: HCLIdentifier): String {
     return identifier.text
   }
 }

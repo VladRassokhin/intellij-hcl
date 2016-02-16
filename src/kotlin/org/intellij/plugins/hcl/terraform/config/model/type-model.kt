@@ -29,20 +29,20 @@ import java.util.regex.Pattern
 
 // Model for element types
 
-public open class Type(val name: String)
+open class Type(val name: String)
 
-public open class BaseModelType(val description: String? = null, val required: Boolean = false, val deprecated: String? = null)
+open class BaseModelType(val description: String? = null, val required: Boolean = false, val deprecated: String? = null)
 
-public interface Hint
-public open class SimpleHint(val hint: String) : Hint
-public open class TypeHint(val hint: Type) : Hint
-public open class ListHint(val hint: List<PropertyOrBlockType>) : Hint
+interface Hint
+open class SimpleHint(val hint: String) : Hint
+open class TypeHint(val hint: Type) : Hint
+open class ListHint(val hint: List<PropertyOrBlockType>) : Hint
 
-public open class PropertyType(val name: String, val type: Type, val hint: Hint? = null, val injectionAllowed: Boolean = true, description: String? = null, required: Boolean = false, deprecated: String? = null) : BaseModelType(description = description, required = required, deprecated = deprecated)
+open class PropertyType(val name: String, val type: Type, val hint: Hint? = null, val injectionAllowed: Boolean = true, description: String? = null, required: Boolean = false, deprecated: String? = null) : BaseModelType(description = description, required = required, deprecated = deprecated)
 
-public open class BlockType(val literal: String, val args: Int = 0, description: String? = null, required: Boolean = false, deprecated: String? = null, vararg val properties: PropertyOrBlockType = arrayOf()) : BaseModelType(description = description, required = required, deprecated = deprecated)
+open class BlockType(val literal: String, val args: Int = 0, description: String? = null, required: Boolean = false, deprecated: String? = null, vararg val properties: PropertyOrBlockType = arrayOf()) : BaseModelType(description = description, required = required, deprecated = deprecated)
 
-public class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
+class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
   val name: String = if (property != null) property.name else block!!.literal
   val required: Boolean = if (property != null) property.required else block!!.required
   val deprecated: String? = if (property != null) property.deprecated else block!!.deprecated
@@ -56,11 +56,11 @@ public class PropertyOrBlockType private constructor(val property: PropertyType?
   constructor(block: BlockType) : this(null, block)
 }
 
-public fun PropertyType.toPOBT(): PropertyOrBlockType {
+fun PropertyType.toPOBT(): PropertyOrBlockType {
   return PropertyOrBlockType(this)
 }
 
-public fun BlockType.toPOBT(): PropertyOrBlockType {
+fun BlockType.toPOBT(): PropertyOrBlockType {
   return PropertyOrBlockType(this)
 }
 
@@ -80,15 +80,15 @@ object Types {
   val StringWithInjection = Type("String")
 }
 
-public class ResourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, properties = *properties)
-public class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, properties = *properties)
-public class ProvisionerType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provisioner", 1, properties = *properties)
+class ResourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, properties = *properties)
+class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, properties = *properties)
+class ProvisionerType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provisioner", 1, properties = *properties)
 
 // region Interpolation Functions
-public open class Argument(val type: Type, val name: String? = null)
-public open class VariadicArgument(type: Type, name: String? = null) : Argument(type, name)
+open class Argument(val type: Type, val name: String? = null)
+open class VariadicArgument(type: Type, name: String? = null) : Argument(type, name)
 
-public class Function(val name: String, val ret: Type, vararg val arguments: Argument = arrayOf(), val variadic: VariadicArgument? = null) {
+class Function(val name: String, val ret: Type, vararg val arguments: Argument = arrayOf(), val variadic: VariadicArgument? = null) {
   init {
     val count = arguments.count { it is VariadicArgument }
     assert (count == 0 || (count == 1 && arguments.last() is VariadicArgument)) { "Only one (last) argument could be variadic" }
@@ -98,11 +98,11 @@ public class Function(val name: String, val ret: Type, vararg val arguments: Arg
 
 
 
-public class TypeModelProvider {
+class TypeModelProvider {
   val model: TypeModel by lazy { loadModel() }
   val external: Map<String, Additional> by lazy { loadExternalInformation() }
 
-  public fun get(): TypeModel = model
+  fun get(): TypeModel = model
 
   private fun loadModel(): TypeModel {
     return TypeModelLoader(external).load() ?: TypeModel()
@@ -126,7 +126,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
   val provisioners: MutableList<ProvisionerType> = arrayListOf()
   val functions: MutableList<Function> = arrayListOf()
 
-  public fun load(): TypeModel? {
+  fun load(): TypeModel? {
     val application = ApplicationManager.getApplication()
     try {
       val reflections = Reflections(ConfigurationBuilder()
@@ -375,7 +375,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
   }
 }
 
-public class TypeModel(
+class TypeModel(
     val resources: List<ResourceType> = arrayListOf(),
     val providers: List<ProviderType> = arrayListOf(),
     val provisioners: List<ProvisionerType> = arrayListOf(),

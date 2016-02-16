@@ -20,7 +20,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import org.intellij.plugins.hcl.psi.HCLLiteral
 
-public abstract class HCLLiteralMixin(node: ASTNode) : HCLElementImpl(node), HCLLiteral {
+abstract class HCLLiteralMixin(node: ASTNode) : HCLElementImpl(node), HCLLiteral {
   private val myRefLock: Any = Any()
   private var myModCount: Long = -1
   private var myRefs: Array<PsiReference> = emptyArray();

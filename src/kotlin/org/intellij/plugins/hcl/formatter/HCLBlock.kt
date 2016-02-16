@@ -40,9 +40,9 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     }
   }
 
-  public val OPEN_BRACES: TokenSet = TokenSet.create(L_CURLY, L_BRACKET)
-  public val CLOSE_BRACES: TokenSet = TokenSet.create(R_CURLY, R_BRACKET)
-  public val ALL_BRACES: TokenSet = TokenSet.orSet(OPEN_BRACES, CLOSE_BRACES)
+  val OPEN_BRACES: TokenSet = TokenSet.create(L_CURLY, L_BRACKET)
+  val CLOSE_BRACES: TokenSet = TokenSet.create(R_CURLY, R_BRACKET)
+  val ALL_BRACES: TokenSet = TokenSet.orSet(OPEN_BRACES, CLOSE_BRACES)
 
   override fun buildChildren(): MutableList<Block>? {
     return myNode.getChildren(null).map {

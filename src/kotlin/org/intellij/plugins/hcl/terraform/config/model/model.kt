@@ -26,34 +26,34 @@ import org.intellij.plugins.hcl.psi.*
 import java.util.*
 
 // Actual model
-public open class Property(val type: PropertyType, val value: Any?)
-public open class Block(val type: BlockType, vararg val properties: PropertyOrBlock = arrayOf())
-public class PropertyOrBlock(val property: Property? = null, val block: Block? = null) {
+open class Property(val type: PropertyType, val value: Any?)
+open class Block(val type: BlockType, vararg val properties: PropertyOrBlock = arrayOf())
+class PropertyOrBlock(val property: Property? = null, val block: Block? = null) {
   init {
     assert(property != null || block != null);
   }
 }
 
-public fun Property.toPOB(): PropertyOrBlock {
+fun Property.toPOB(): PropertyOrBlock {
   return PropertyOrBlock(property = this)
 }
 
-public fun Block.toPOB(): PropertyOrBlock {
+fun Block.toPOB(): PropertyOrBlock {
   return PropertyOrBlock(block = this)
 }
 
-public class Resource(type: ResourceType, val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(type, *properties)
+class Resource(type: ResourceType, val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(type, *properties)
 // ProviderType from name
-public class Provider(type: ProviderType, val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(type, *properties)
+class Provider(type: ProviderType, val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(type, *properties)
 
-public class Variable(val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(TypeModel.Variable, *properties) {
+class Variable(val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(TypeModel.Variable, *properties) {
   fun getDefault(): Any? {
     return properties.firstOrNull { TypeModel.Variable_Default == it.property?.type }?.property?.value
   }
 }
 
 
-public fun HCLElement.getTerraformModule(): Module {
+fun HCLElement.getTerraformModule(): Module {
   val file = this.containingFile.originalFile
   assert(file is HCLFile)
   val directory = file.containingDirectory
@@ -65,7 +65,7 @@ public fun HCLElement.getTerraformModule(): Module {
   }
 }
 
-public fun PsiElement.getTerraformSearchScope(): GlobalSearchScope {
+fun PsiElement.getTerraformSearchScope(): GlobalSearchScope {
   val file = this.containingFile.originalFile
   val directory = file.containingDirectory
   if (directory == null) {
@@ -76,7 +76,7 @@ public fun PsiElement.getTerraformSearchScope(): GlobalSearchScope {
   }
 }
 
-public class Module private constructor(val item: PsiFileSystemItem) {
+class Module private constructor(val item: PsiFileSystemItem) {
   constructor(file: HCLFile) : this(file as PsiFileSystemItem) {
   }
 

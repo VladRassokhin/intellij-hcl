@@ -26,10 +26,10 @@ import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.psi.impl.HCLFileImpl
 import java.util.*
 
-public open class TerraformParserDefinition : HCLParserDefinition() {
+open class TerraformParserDefinition : HCLParserDefinition() {
   companion object {
-    public val LexerCapabilities: EnumSet<HCLCapability> = EnumSet.of(HCLCapability.INTERPOLATION_LANGUAGE, HCLCapability.NUMBERS_WITH_BYTES_POSTFIX);
-    public val FILE: IFileElementType = IFileElementType(TerraformLanguage)
+    val LexerCapabilities: EnumSet<HCLCapability> = EnumSet.of(HCLCapability.INTERPOLATION_LANGUAGE, HCLCapability.NUMBERS_WITH_BYTES_POSTFIX);
+    val FILE: IFileElementType = IFileElementType(TerraformLanguage)
   }
 
   // TODO: Add special parser with psi elements in terms of Terraform (resource, provider, etc)

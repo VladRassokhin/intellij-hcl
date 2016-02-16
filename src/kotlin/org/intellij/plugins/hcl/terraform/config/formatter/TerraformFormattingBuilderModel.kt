@@ -18,5 +18,5 @@ package org.intellij.plugins.hcl.terraform.config.formatter
 import org.intellij.plugins.hcl.formatter.HCLFormattingBuilderModel
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 
-public class TerraformFormattingBuilderModel : HCLFormattingBuilderModel(TerraformLanguage) {
+class TerraformFormattingBuilderModel : HCLFormattingBuilderModel(TerraformLanguage) {
 }

@@ -26,7 +26,7 @@ import org.intellij.plugins.hcl.HCLElementTypes.*
 import org.intellij.plugins.hcl.HCLLanguage
 
 
-public open class HCLFormattingBuilderModel(val language: Language = HCLLanguage) : FormattingModelBuilder {
+open class HCLFormattingBuilderModel(val language: Language = HCLLanguage) : FormattingModelBuilder {
   override fun createModel(element: PsiElement?, settings: CodeStyleSettings?): FormattingModel {
     assert(element != null)
     assert(settings != null)

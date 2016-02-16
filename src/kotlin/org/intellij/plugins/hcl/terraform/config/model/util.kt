@@ -17,9 +17,9 @@ package org.intellij.plugins.hcl.terraform.config.model
 
 import org.intellij.plugins.hcl.psi.*
 
-public class ModelUtil private constructor() {
+class ModelUtil private constructor() {
   companion object {
-    public fun getValueType(value: HCLValue?): Type? {
+    fun getValueType(value: HCLValue?): Type? {
       if (value == null) return null
       return when (value) {
         is HCLObject -> Types.Object

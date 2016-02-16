@@ -24,7 +24,7 @@ import org.intellij.plugins.hil.ILBinaryExpression
 import org.intellij.plugins.hil.psi.ILElementVisitor
 import org.intellij.plugins.hil.psi.ILExpression
 
-public open class ILBinaryExpressionImpl(node: ASTNode) : ILExpressionImpl(node), ILBinaryExpression {
+open class ILBinaryExpressionImpl(node: ASTNode) : ILExpressionImpl(node), ILBinaryExpression {
   override fun getLOperand(): ILExpression? {
     val nodes = node.getChildren(HILElementType.IL_EXPRESSIONS)
     return (if (nodes.size > 0) nodes[0].psi else null) as ILExpression
@@ -40,7 +40,7 @@ public open class ILBinaryExpressionImpl(node: ASTNode) : ILExpressionImpl(node)
     return if (nodes.size == 1) nodes[0].elementType else null
   }
 
-  public override fun toString(): String {
+  override fun toString(): String {
     return "ILBinaryExpression"
   }
 

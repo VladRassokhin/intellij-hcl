@@ -20,7 +20,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileFactory
 import org.intellij.plugins.hil.HILFileType
 
-public open class ILElementGenerator(val project: Project) {
+open class ILElementGenerator(val project: Project) {
   fun createILVariable(text: String): ILVariable {
     val file = createDummyFile(text)
     val firstChild = file.firstChild
@@ -30,7 +30,7 @@ public open class ILElementGenerator(val project: Project) {
     return firstChild as ILVariable
   }
 
-  public open fun createDummyFile(content: String): PsiFile {
+  open fun createDummyFile(content: String): PsiFile {
     val psiFileFactory = PsiFileFactory.getInstance(project)
     return psiFileFactory.createFileFromText("dummy." + HILFileType.defaultExtension, HILFileType, content)
   }

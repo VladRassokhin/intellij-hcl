@@ -29,7 +29,7 @@ import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.psi.HCLBlockNameReference
 
-public class TerraformReferenceContributor : PsiReferenceContributor() {
+class TerraformReferenceContributor : PsiReferenceContributor() {
   override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
     val TerraformConfigFile = PlatformPatterns.psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
 

@@ -23,7 +23,7 @@ import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLIdentifier
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
 
-public fun HCLBlock.getNameElementUnquoted(i: Int): String? {
+fun HCLBlock.getNameElementUnquoted(i: Int): String? {
   val elements = this.nameElements
   if (elements.size < i + 1) return null
   val element = elements.get(i)
@@ -34,7 +34,7 @@ public fun HCLBlock.getNameElementUnquoted(i: Int): String? {
   }
 }
 
-public fun PsiElement.getPrevSiblingNonWhiteSpace(): PsiElement? {
+fun PsiElement.getPrevSiblingNonWhiteSpace(): PsiElement? {
   var prev = this.prevSibling
   while (prev != null && prev is PsiWhiteSpace) {
     prev = prev.prevSibling
@@ -42,7 +42,7 @@ public fun PsiElement.getPrevSiblingNonWhiteSpace(): PsiElement? {
   return prev;
 }
 
-public fun PsiElement.getNextSiblingNonWhiteSpace(): PsiElement? {
+fun PsiElement.getNextSiblingNonWhiteSpace(): PsiElement? {
   var prev = this.nextSibling
   while (prev != null && prev is PsiWhiteSpace) {
     prev = prev.nextSibling
@@ -50,7 +50,7 @@ public fun PsiElement.getNextSiblingNonWhiteSpace(): PsiElement? {
   return prev;
 }
 
-public fun <T : PsiElement, Self : PsiElementPattern<T, Self>> PsiElementPattern<T, Self>.afterSiblingSkipping2(skip: ElementPattern<out Any>, pattern: ElementPattern<out PsiElement>): Self {
+fun <T : PsiElement, Self : PsiElementPattern<T, Self>> PsiElementPattern<T, Self>.afterSiblingSkipping2(skip: ElementPattern<out Any>, pattern: ElementPattern<out PsiElement>): Self {
   return with(object : PatternCondition<T>("afterSiblingSkipping2") {
     override fun accepts(t: T, context: ProcessingContext): Boolean {
       var o = t.prevSibling

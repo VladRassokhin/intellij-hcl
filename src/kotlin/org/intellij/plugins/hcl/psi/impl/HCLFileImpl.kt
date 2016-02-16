@@ -21,7 +21,7 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
 import org.intellij.plugins.hcl.psi.HCLFile
 
-public class HCLFileImpl(fileViewProvider: FileViewProvider, language: Language) : PsiFileBase(fileViewProvider, language), HCLFile {
+class HCLFileImpl(fileViewProvider: FileViewProvider, language: Language) : PsiFileBase(fileViewProvider, language), HCLFile {
 
   override fun getFileType(): FileType {
     return viewProvider.virtualFile.fileType

@@ -30,7 +30,7 @@ import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 
-public class UnknownBlockTypeInspection : LocalInspectionTool() {
+class UnknownBlockTypeInspection : LocalInspectionTool() {
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val ft = holder.file.fileType

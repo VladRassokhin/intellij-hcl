@@ -21,7 +21,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IElementType
 import org.intellij.plugins.hil.HILElementTypes.*
 
-public class HILBraceMatcher : PairedBraceMatcher {
+class HILBraceMatcher : PairedBraceMatcher {
 
   override fun getCodeConstructStart(file: PsiFile, openingBraceOffset: Int): Int {
     return openingBraceOffset

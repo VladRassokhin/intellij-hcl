@@ -26,7 +26,7 @@ import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.getProvisionerResource
 import org.intellij.plugins.hil.codeinsight.getResource
 
-public object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
+object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
     if (element !is ILVariable) return PsiReference.EMPTY_ARRAY
     val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return PsiReference.EMPTY_ARRAY

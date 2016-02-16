@@ -27,7 +27,7 @@ import org.intellij.plugins.hil.HILElementTypes.INTERPOLATION_START
 import org.intellij.plugins.hil.psi.HILLexer
 import java.util.*
 
-public class ILLanguageInjector : LanguageInjector {
+class ILLanguageInjector : LanguageInjector {
   override fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
     if (host !is HCLStringLiteral && host !is HCLHeredocLiteral) return;
     // Only .tf (Terraform config) files
@@ -66,7 +66,7 @@ public class ILLanguageInjector : LanguageInjector {
   }
 
   companion object {
-    public fun getILRangesInText(text: String): ArrayList<TextRange> {
+    fun getILRangesInText(text: String): ArrayList<TextRange> {
       if (!text.contains("${"$"}{")) return arrayListOf();
 
       val ranges: ArrayList<TextRange> = ArrayList()

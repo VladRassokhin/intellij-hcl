@@ -22,7 +22,7 @@ import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon
 
 object HILFileType : LanguageFileType(HILLanguage) {
-  public val DEFAULT_EXTENSION: String = "hil";
+  val DEFAULT_EXTENSION: String = "hil";
 
   override fun getIcon(): Icon? {
     return AllIcons.FileTypes.Custom

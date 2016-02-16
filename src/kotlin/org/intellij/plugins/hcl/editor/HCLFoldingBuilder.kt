@@ -25,7 +25,7 @@ import org.intellij.plugins.hcl.psi.HCLArray
 import org.intellij.plugins.hcl.psi.HCLObject
 import java.util.*
 
-public class HCLFoldingBuilder : FoldingBuilder {
+class HCLFoldingBuilder : FoldingBuilder {
   override fun isCollapsedByDefault(node: ASTNode): Boolean {
     return false
   }

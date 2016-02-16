@@ -25,7 +25,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings
 import org.intellij.plugins.hcl.HCLLanguage
 
-public open class HCLCodeStyleSettingsProvider(val _language: Language = HCLLanguage) : CodeStyleSettingsProvider() {
+open class HCLCodeStyleSettingsProvider(val _language: Language = HCLLanguage) : CodeStyleSettingsProvider() {
   override fun createSettingsPage(settings: CodeStyleSettings, originalSettings: CodeStyleSettings): Configurable {
     return object : CodeStyleAbstractConfigurable(settings, originalSettings, _language.displayName) {
       override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {

@@ -26,7 +26,7 @@ import org.intellij.plugins.hcl.psi.HCLProperty
 /**
  * @author Mikhail Golubev
  */
-public class HCLPropertyNameReference(private val myProperty: HCLProperty) : PsiReference {
+class HCLPropertyNameReference(private val myProperty: HCLProperty) : PsiReference {
 
   override fun getElement(): PsiElement = myProperty
 

@@ -18,6 +18,6 @@ package org.intellij.plugins.hcl.terraform.config.formatter
 import org.intellij.plugins.hcl.formatter.HCLCodeStyleSettingsProvider
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 
-public class TerraformCodeStyleSettingsProvider : HCLCodeStyleSettingsProvider(TerraformLanguage) {
+class TerraformCodeStyleSettingsProvider : HCLCodeStyleSettingsProvider(TerraformLanguage) {
 }
 

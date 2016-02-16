@@ -17,4 +17,4 @@ package org.intellij.plugins.hil.psi
 
 import com.intellij.lexer.FlexAdapter
 
-public class HILLexer : FlexAdapter(_HILLexer())
+class HILLexer : FlexAdapter(_HILLexer())

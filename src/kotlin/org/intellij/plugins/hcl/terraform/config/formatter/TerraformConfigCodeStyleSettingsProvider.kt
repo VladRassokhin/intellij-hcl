@@ -19,7 +19,7 @@ import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import org.intellij.plugins.hcl.formatter.HCLLanguageCodeStyleSettingsProvider
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 
-public class TerraformConfigCodeStyleSettingsProvider : HCLLanguageCodeStyleSettingsProvider(TerraformLanguage) {
+class TerraformConfigCodeStyleSettingsProvider : HCLLanguageCodeStyleSettingsProvider(TerraformLanguage) {
   companion object {
     private val SAMPLE: String = """
 # Specify the provider and access details

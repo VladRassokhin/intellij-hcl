@@ -30,7 +30,7 @@ import com.intellij.psi.tree.TokenSet
 import org.intellij.plugins.hcl.HCLElementTypes.*
 import org.intellij.plugins.hcl.psi.impl.HCLFileImpl
 
-public open class HCLParserDefinition : ParserDefinition {
+open class HCLParserDefinition : ParserDefinition {
 
   override fun createLexer(project: Project): Lexer {
     return HCLLexer()
@@ -74,18 +74,18 @@ public open class HCLParserDefinition : ParserDefinition {
   override fun spaceExistanceTypeBetweenTokens(left: ASTNode, right: ASTNode) = ParserDefinition.SpaceRequirements.MAY
 
   companion object {
-    public val WHITE_SPACES: TokenSet = TokenSet.create(TokenType.WHITE_SPACE)
-    public val STRING_LITERALS: TokenSet = TokenSet.create(SINGLE_QUOTED_STRING, DOUBLE_QUOTED_STRING)
+    val WHITE_SPACES: TokenSet = TokenSet.create(TokenType.WHITE_SPACE)
+    val STRING_LITERALS: TokenSet = TokenSet.create(SINGLE_QUOTED_STRING, DOUBLE_QUOTED_STRING)
 
-    public val FILE: IFileElementType = IFileElementType(HCLLanguage)
+    val FILE: IFileElementType = IFileElementType(HCLLanguage)
 
-    public val HCL_BRACES: TokenSet = TokenSet.create(L_CURLY, R_CURLY)
-    public val HCL_BRACKETS: TokenSet = TokenSet.create(L_BRACKET, R_BRACKET)
-    public val HCL_CONTAINERS: TokenSet = TokenSet.create(OBJECT, ARRAY)
-    public val HCL_BOOLEANS: TokenSet = TokenSet.create(TRUE, FALSE)
-    public val HCL_KEYWORDS: TokenSet = TokenSet.create(TRUE, FALSE, NULL)
-    @JvmField public val HCL_LITERALS: TokenSet = TokenSet.create(STRING_LITERAL, NUMBER_LITERAL, NULL_LITERAL, TRUE, FALSE)
-    public val HCL_VALUES: TokenSet = TokenSet.orSet(HCL_CONTAINERS, HCL_LITERALS)
-    @JvmField public val HCL_COMMENTARIES: TokenSet = TokenSet.create(BLOCK_COMMENT, LINE_COMMENT)
+    val HCL_BRACES: TokenSet = TokenSet.create(L_CURLY, R_CURLY)
+    val HCL_BRACKETS: TokenSet = TokenSet.create(L_BRACKET, R_BRACKET)
+    val HCL_CONTAINERS: TokenSet = TokenSet.create(OBJECT, ARRAY)
+    val HCL_BOOLEANS: TokenSet = TokenSet.create(TRUE, FALSE)
+    val HCL_KEYWORDS: TokenSet = TokenSet.create(TRUE, FALSE, NULL)
+    @JvmField val HCL_LITERALS: TokenSet = TokenSet.create(STRING_LITERAL, NUMBER_LITERAL, NULL_LITERAL, TRUE, FALSE)
+    val HCL_VALUES: TokenSet = TokenSet.orSet(HCL_CONTAINERS, HCL_LITERALS)
+    @JvmField val HCL_COMMENTARIES: TokenSet = TokenSet.create(BLOCK_COMMENT, LINE_COMMENT)
   }
 }

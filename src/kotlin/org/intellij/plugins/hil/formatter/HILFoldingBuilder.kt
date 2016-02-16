@@ -23,7 +23,7 @@ import com.intellij.psi.tree.TokenSet
 import org.intellij.plugins.hil.HILElementTypes
 import java.util.*
 
-public class HILFoldingBuilder : FoldingBuilder {
+class HILFoldingBuilder : FoldingBuilder {
   override fun isCollapsedByDefault(node: ASTNode): Boolean {
     return false
   }

@@ -26,7 +26,7 @@ import org.intellij.plugins.hcl.HCLFileType
  * @author Mikhail Golubev
  * @author Vladislav Rassokhin
  */
-public open class HCLElementGenerator(private val project: Project) {
+open class HCLElementGenerator(private val project: Project) {
 
   /**
    * Create lightweight in-memory [org.intellij.plugins.hcl.psi.HCLFile] filled with `content`.
@@ -35,7 +35,7 @@ public open class HCLElementGenerator(private val project: Project) {
    * *
    * @return created file
    */
-  public open fun createDummyFile(content: String): PsiFile {
+  open fun createDummyFile(content: String): PsiFile {
     val psiFileFactory = PsiFileFactory.getInstance(project)
     return psiFileFactory.createFileFromText("dummy." + HCLFileType.defaultExtension, HCLFileType, content)
   }
@@ -52,13 +52,13 @@ public open class HCLElementGenerator(private val project: Project) {
    * *
    * @see .createStringLiteral
    */
-  public fun <T : HCLValue> createValue(content: String): T {
+  fun <T : HCLValue> createValue(content: String): T {
     val property = createProperty("foo", content)
     @Suppress("UNCHECKED_CAST")
     return property.value as T
   }
 
-  public fun createObject(content: String): HCLObject {
+  fun createObject(content: String): HCLObject {
     val file = createDummyFile("foo {$content}")
     val block = file.firstChild as HCLBlock
     return block.`object`!!
@@ -71,11 +71,11 @@ public open class HCLElementGenerator(private val project: Project) {
    * *
    * @return HCL string literal created from given text
    */
-  public fun createStringLiteral(unescapedContent: String): HCLStringLiteral {
+  fun createStringLiteral(unescapedContent: String): HCLStringLiteral {
     return createValue("\"${StringUtil.escapeStringCharacters(unescapedContent)}\"")
   }
 
-  public fun createProperty(name: String, value: String): HCLProperty {
+  fun createProperty(name: String, value: String): HCLProperty {
     val s: String
     if (isIdentifier(name)) {
       s = "$name = $value"
@@ -90,23 +90,23 @@ public open class HCLElementGenerator(private val project: Project) {
     return name.matches("\\w*".toRegex())
   }
 
-  public fun createBlock(name: String): HCLBlock {
+  fun createBlock(name: String): HCLBlock {
     val file = createDummyFile("\"$name\" {}")
     return file.firstChild as HCLBlock
   }
 
-  public fun createComma(): PsiElement {
+  fun createComma(): PsiElement {
     val array = createValue<HCLArray>("[1, 2]")
     return array.valueList[0].nextSibling
   }
 
-  public fun createIdentifier(name: String): HCLIdentifier {
+  fun createIdentifier(name: String): HCLIdentifier {
     val file = createDummyFile("$name=true")
     val property = file.firstChild as HCLProperty
     return property.nameElement as HCLIdentifier
   }
 
-  public fun createHeredocContent(lines: List<String>): HCLHeredocContent {
+  fun createHeredocContent(lines: List<String>): HCLHeredocContent {
     var text = buildString {
       append("x=<<___EOF___\n")
       for (l in lines) {

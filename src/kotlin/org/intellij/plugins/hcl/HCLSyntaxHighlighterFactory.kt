@@ -32,31 +32,31 @@ import com.intellij.psi.tree.IElementType
 import java.util.*
 
 
-public open class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
+open class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 
 
   open class MySyntaxHighlighter(val lexer: HCLLexer) : SyntaxHighlighterBase() {
     val ourAttributes: Map<IElementType, TextAttributesKey> = HashMap()
 
-    public val HCL_BRACKETS: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BRACKETS", BRACKETS)
-    public val HCL_BRACES: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BRACES", BRACES)
-    public val HCL_COMMA: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.COMMA", COMMA)
-    public val HCL_COLON: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.COLON", SEMICOLON)
-    public val HCL_NUMBER: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.NUMBER", NUMBER)
-    public val HCL_STRING: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.STRING", STRING)
-    public val HCL_KEYWORD: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.KEYWORD", KEYWORD)
-    public val HCL_LINE_COMMENT: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.LINE_COMMENT", LINE_COMMENT)
-    public val HCL_BLOCK_COMMENT: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BLOCK_COMMENT", BLOCK_COMMENT)
+    val HCL_BRACKETS: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BRACKETS", BRACKETS)
+    val HCL_BRACES: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BRACES", BRACES)
+    val HCL_COMMA: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.COMMA", COMMA)
+    val HCL_COLON: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.COLON", SEMICOLON)
+    val HCL_NUMBER: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.NUMBER", NUMBER)
+    val HCL_STRING: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.STRING", STRING)
+    val HCL_KEYWORD: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.KEYWORD", KEYWORD)
+    val HCL_LINE_COMMENT: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.LINE_COMMENT", LINE_COMMENT)
+    val HCL_BLOCK_COMMENT: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BLOCK_COMMENT", BLOCK_COMMENT)
 
     // Artificial element type
-    public val HCL_IDENTIFIER: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.IDENTIFIER", IDENTIFIER)
+    val HCL_IDENTIFIER: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.IDENTIFIER", IDENTIFIER)
 
     // Added by annotators
-    public val HCL_PROPERTY_KEY: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.PROPERTY_KEY", INSTANCE_FIELD)
+    val HCL_PROPERTY_KEY: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.PROPERTY_KEY", INSTANCE_FIELD)
 
     // String escapes
-    public val HCL_VALID_ESCAPE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.VALID_ESCAPE", VALID_STRING_ESCAPE)
-    public val HCL_INVALID_ESCAPE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.INVALID_ESCAPE", INVALID_STRING_ESCAPE)
+    val HCL_VALID_ESCAPE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.VALID_ESCAPE", VALID_STRING_ESCAPE)
+    val HCL_INVALID_ESCAPE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.INVALID_ESCAPE", INVALID_STRING_ESCAPE)
 
 
     init {

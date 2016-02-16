@@ -18,7 +18,7 @@ package org.intellij.plugins.hcl.editor
 import com.intellij.lang.Commenter
 
 
-public class HCLCommenter : Commenter {
+class HCLCommenter : Commenter {
   override fun getLineCommentPrefix(): String? {
     return "//"
   }

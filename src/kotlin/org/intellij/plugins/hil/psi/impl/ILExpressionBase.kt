@@ -36,7 +36,7 @@ abstract class ILExpressionBase(node: ASTNode) : ASTWrapperPsiElement(node), ILE
     }
   }
 
-  public open fun getTypeClass(): Class<out Any>? {
+  open fun getTypeClass(): Class<out Any>? {
     return null
   }
 

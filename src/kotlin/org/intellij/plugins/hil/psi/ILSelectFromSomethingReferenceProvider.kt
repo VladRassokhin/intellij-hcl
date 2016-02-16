@@ -110,7 +110,7 @@ private fun getSelectFieldText(expression: ILExpression): String? {
 }
 
 
-public fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable): ILExpression? {
+fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable): ILExpression? {
   // select = left.right
   val left = select.from
   if (left is ILSelectExpression) {

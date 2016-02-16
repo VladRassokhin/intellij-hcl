@@ -21,7 +21,7 @@ import org.intellij.plugins.hcl.findUsages.HCLFindUsagesProvider
 import org.intellij.plugins.hcl.findUsages.HCLWordsScanner
 import org.intellij.plugins.hcl.terraform.config.TerraformParserDefinition
 
-public class TerraformFindUsagesProvider : HCLFindUsagesProvider() {
+class TerraformFindUsagesProvider : HCLFindUsagesProvider() {
   override fun getWordsScanner(): WordsScanner? {
     return HCLWordsScanner(HCLLexer(TerraformParserDefinition.LexerCapabilities))
   }

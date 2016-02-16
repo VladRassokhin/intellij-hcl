@@ -22,7 +22,7 @@ import org.intellij.plugins.hcl.Icons
 
 
 object TerraformFileType : LanguageFileType(TerraformLanguage) {
-  public val DEFAULT_EXTENSION: String = "tf"
+  val DEFAULT_EXTENSION: String = "tf"
 
   override fun getIcon() = Icons.FileTypes.Terraform
 

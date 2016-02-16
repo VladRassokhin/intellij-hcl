@@ -21,7 +21,7 @@ import com.intellij.openapi.fileTypes.FileTypeFactory
 import com.intellij.openapi.fileTypes.LanguageFileType
 
 object HCLFileType : LanguageFileType(HCLLanguage) {
-  public val DEFAULT_EXTENSION: String = "hcl"
+  val DEFAULT_EXTENSION: String = "hcl"
 
   override fun getIcon() = Icons.FileTypes.HCL
 

@@ -19,7 +19,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.AbstractElementManipulator
 import com.intellij.util.IncorrectOperationException
 
-public class HCLStringLiteralManipulator : AbstractElementManipulator<HCLStringLiteral>() {
+class HCLStringLiteralManipulator : AbstractElementManipulator<HCLStringLiteral>() {
   @Throws(IncorrectOperationException::class)
   override fun handleContentChange(element: HCLStringLiteral, range: TextRange, newContent: String): HCLStringLiteral {
     val generator = HCLElementGenerator(element.project)

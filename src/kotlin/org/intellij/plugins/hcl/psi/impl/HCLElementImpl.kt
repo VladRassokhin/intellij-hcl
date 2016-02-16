@@ -23,7 +23,7 @@ import org.intellij.plugins.hcl.psi.HCLElement
 /**
  * @author Mikhail Golubev
  */
-public open class HCLElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), HCLElement {
+open class HCLElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), HCLElement {
 
   override fun toString(): String {
     val className = javaClass.simpleName

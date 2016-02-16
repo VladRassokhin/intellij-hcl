@@ -20,7 +20,7 @@ import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.impl.source.tree.LeafElement
 
-public abstract class HCLStringLiteralMixin(node: ASTNode?) : HCLLiteralImpl(node), PsiLanguageInjectionHost {
+abstract class HCLStringLiteralMixin(node: ASTNode?) : HCLLiteralImpl(node), PsiLanguageInjectionHost {
   override fun isValidHost() = true
 
   override fun updateText(text: String): PsiLanguageInjectionHost {

@@ -43,7 +43,7 @@ import org.intellij.plugins.hil.HILLanguage
 import org.intellij.plugins.hil.psi.*
 import java.util.*
 
-public class HILCompletionContributor : CompletionContributor() {
+class HILCompletionContributor : CompletionContributor() {
   init {
     extend(CompletionType.BASIC, METHOD_POSITION, MethodsCompletionProvider)
     extend(CompletionType.BASIC, METHOD_POSITION, ResourceTypesCompletionProvider)
@@ -57,11 +57,11 @@ public class HILCompletionContributor : CompletionContributor() {
 
 
   companion object {
-    @JvmField public val GLOBAL_SCOPES: SortedSet<String> = sortedSetOf("var", "path")
-    @JvmField public val FUNCTIONS = ServiceManager.getService(TypeModelProvider::class.java).get().functions
+    @JvmField val GLOBAL_SCOPES: SortedSet<String> = sortedSetOf("var", "path")
+    @JvmField val FUNCTIONS = ServiceManager.getService(TypeModelProvider::class.java).get().functions
 
     // For tests purposes
-    @JvmField public val GLOBAL_AVAILABLE: SortedSet<String> = FUNCTIONS.map { it.name }.toMutableList().plus(GLOBAL_SCOPES).toSortedSet()
+    @JvmField val GLOBAL_AVAILABLE: SortedSet<String> = FUNCTIONS.map { it.name }.toMutableList().plus(GLOBAL_SCOPES).toSortedSet()
 
 
     private val PATH_REFERENCES = sortedSetOf("root", "module", "cwd")
@@ -72,15 +72,15 @@ public class HILCompletionContributor : CompletionContributor() {
         Pair("count", CountCompletionProvider),
         Pair("module", ModuleCompletionProvider)
     )
-    public val SCOPES = SCOPE_PROVIDERS.keys
+    val SCOPES = SCOPE_PROVIDERS.keys
 
     private val METHOD_POSITION = PlatformPatterns.psiElement().withLanguage(HILLanguage)
         .withParent(ILVariable::class.java)
         .andNot(PlatformPatterns.psiElement().withSuperParent(2, ILSelectExpression::class.java))
 
-    public val ILSE_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
+    val ILSE_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
         .with(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
-    public val ILSE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
+    val ILSE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
         .without(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
 
 
@@ -303,18 +303,18 @@ public class HILCompletionContributor : CompletionContributor() {
   }
 }
 
-public fun getTerraformModule(element: ILExpression): Module? {
+fun getTerraformModule(element: ILExpression): Module? {
   val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return null
   if (host !is HCLElement) return null
   val module = host.getTerraformModule()
   return module
 }
 
-public fun getLocalDefinedVariables(element: ILExpression): List<Variable> {
+fun getLocalDefinedVariables(element: ILExpression): List<Variable> {
   return getTerraformModule(element)?.getAllVariables() ?: emptyList()
 }
 
-public fun getProvisionerResource(position: ILExpression): HCLBlock? {
+fun getProvisionerResource(position: ILExpression): HCLBlock? {
   val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
 
   // For now 'self' allowed only for provisioners inside resources
@@ -326,7 +326,7 @@ public fun getProvisionerResource(position: ILExpression): HCLBlock? {
   return resource
 }
 
-public fun getResource(position: ILExpression): HCLBlock? {
+fun getResource(position: ILExpression): HCLBlock? {
   val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
 
   // For now 'self' allowed only for provisioners inside resources

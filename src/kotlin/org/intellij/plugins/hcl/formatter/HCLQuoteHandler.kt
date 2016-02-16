@@ -18,4 +18,4 @@ package org.intellij.plugins.hcl.formatter
 import com.intellij.codeInsight.editorActions.SimpleTokenSetQuoteHandler
 import org.intellij.plugins.hcl.HCLParserDefinition
 
-public class HCLQuoteHandler : SimpleTokenSetQuoteHandler(HCLParserDefinition.STRING_LITERALS)
+class HCLQuoteHandler : SimpleTokenSetQuoteHandler(HCLParserDefinition.STRING_LITERALS)

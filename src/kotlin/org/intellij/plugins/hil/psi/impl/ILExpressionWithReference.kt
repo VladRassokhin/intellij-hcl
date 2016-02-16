@@ -22,11 +22,11 @@ import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 
 open class ILExpressionWithReference(node: ASTNode) : ILExpressionBase(node) {
 
-  public override fun getReferences(): Array<PsiReference> {
+  override fun getReferences(): Array<PsiReference> {
     return ReferenceProvidersRegistry.getReferencesFromProviders(this)
   }
 
-  public override fun getReference(): PsiReference? {
+  override fun getReference(): PsiReference? {
     return references.firstOrNull()
   }
 

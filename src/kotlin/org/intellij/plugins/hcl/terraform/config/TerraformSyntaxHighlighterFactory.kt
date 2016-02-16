@@ -21,7 +21,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import org.intellij.plugins.hcl.HCLLexer
 import org.intellij.plugins.hcl.HCLSyntaxHighlighterFactory
 
-public class TerraformSyntaxHighlighterFactory : HCLSyntaxHighlighterFactory() {
+class TerraformSyntaxHighlighterFactory : HCLSyntaxHighlighterFactory() {
   override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): SyntaxHighlighter {
     return HCLSyntaxHighlighterFactory.MySyntaxHighlighter(HCLLexer(TerraformParserDefinition.LexerCapabilities))
   }

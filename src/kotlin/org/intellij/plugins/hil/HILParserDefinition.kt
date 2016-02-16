@@ -33,7 +33,7 @@ import org.intellij.plugins.hil.psi.HILLexer
 import org.intellij.plugins.hil.psi.ILPsiFile
 import org.intellij.plugins.hil.psi.impl.ILExpressionHolderImpl
 
-public class HILParserDefinition : ParserDefinition {
+class HILParserDefinition : ParserDefinition {
 
   override fun createLexer(project: Project) = HILLexer()
 
@@ -70,21 +70,21 @@ public class HILParserDefinition : ParserDefinition {
   override fun spaceExistanceTypeBetweenTokens(left: ASTNode, right: ASTNode) = ParserDefinition.SpaceRequirements.MAY
 
   companion object {
-    public val WHITE_SPACES: TokenSet = TokenSet.create(TokenType.WHITE_SPACE)
-    public val STRING_LITERALS: TokenSet = TokenSet.create(HILElementTypes.DOUBLE_QUOTED_STRING)
+    val WHITE_SPACES: TokenSet = TokenSet.create(TokenType.WHITE_SPACE)
+    val STRING_LITERALS: TokenSet = TokenSet.create(HILElementTypes.DOUBLE_QUOTED_STRING)
 
-    public val FILE: IFileElementType = IFileElementType(HILLanguage)
+    val FILE: IFileElementType = IFileElementType(HILLanguage)
 
-    public val TIL_BRACES: TokenSet = TokenSet.create(HILElementTypes.INTERPOLATION_START, HILElementTypes.INTERPOLATION_END)
-    public val TIL_PARENS: TokenSet = TokenSet.create(HILElementTypes.L_PAREN, HILElementTypes.R_PAREN)
-    public val TIL_BOOLEANS: TokenSet = TokenSet.create(HILElementTypes.TRUE, HILElementTypes.FALSE)
-    public val TIL_KEYWORDS: TokenSet = TokenSet.create(HILElementTypes.TRUE, HILElementTypes.FALSE, HILElementTypes.NULL)
-    public val TIL_LITERALS: TokenSet = TokenSet.create(HILElementTypes.IL_LITERAL_EXPRESSION, HILElementTypes.TRUE, HILElementTypes.FALSE)
-    public val TIL_VALUES: TokenSet = TokenSet.orSet(TIL_LITERALS)
+    val TIL_BRACES: TokenSet = TokenSet.create(HILElementTypes.INTERPOLATION_START, HILElementTypes.INTERPOLATION_END)
+    val TIL_PARENS: TokenSet = TokenSet.create(HILElementTypes.L_PAREN, HILElementTypes.R_PAREN)
+    val TIL_BOOLEANS: TokenSet = TokenSet.create(HILElementTypes.TRUE, HILElementTypes.FALSE)
+    val TIL_KEYWORDS: TokenSet = TokenSet.create(HILElementTypes.TRUE, HILElementTypes.FALSE, HILElementTypes.NULL)
+    val TIL_LITERALS: TokenSet = TokenSet.create(HILElementTypes.IL_LITERAL_EXPRESSION, HILElementTypes.TRUE, HILElementTypes.FALSE)
+    val TIL_VALUES: TokenSet = TokenSet.orSet(TIL_LITERALS)
 
     private val ourContextNodeKey: Key<ASTNode> = Key.create("Terraform-IL.context.node");
 
-    public val IL_HOLDER: ILazyParseableElementType = object : ILazyParseableElementType("IL_HOLDER", HILLanguage) {
+    val IL_HOLDER: ILazyParseableElementType = object : ILazyParseableElementType("IL_HOLDER", HILLanguage) {
       override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
         val project = psi.project
         val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, HILLexer(), HILLanguage, chameleon.chars)

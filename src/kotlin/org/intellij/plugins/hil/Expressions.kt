@@ -21,14 +21,14 @@ import org.intellij.plugins.hil.psi.ILParameterList
 import org.intellij.plugins.hil.psi.ILVariable
 
 
-public interface ILCallExpression : ILExpression {
-  public fun getParameterList(): ILParameterList?
+interface ILCallExpression : ILExpression {
+  fun getParameterList(): ILParameterList?
 
-  public fun getMethod(): ILVariable
+  fun getMethod(): ILVariable
 }
 
-public interface ILBinaryExpression : ILExpression {
-  public fun getLOperand(): ILExpression?
-  public fun getROperand(): ILExpression?
-  public fun getOperationSign(): IElementType?
+interface ILBinaryExpression : ILExpression {
+  fun getLOperand(): ILExpression?
+  fun getROperand(): ILExpression?
+  fun getOperationSign(): IElementType?
 }

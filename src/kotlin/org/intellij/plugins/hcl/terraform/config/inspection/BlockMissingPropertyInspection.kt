@@ -30,7 +30,7 @@ import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
 import java.util.*
 
-public class BlockMissingPropertyInspection : LocalInspectionTool() {
+class BlockMissingPropertyInspection : LocalInspectionTool() {
 
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     val ft = holder.file.fileType

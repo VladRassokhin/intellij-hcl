@@ -20,7 +20,7 @@ import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
 
-public class ILReferenceContributor : PsiReferenceContributor() {
+class ILReferenceContributor : PsiReferenceContributor() {
   override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
     registrar.registerReferenceProvider(psiElement(ILVariable::class.java)
         .withParent(HILCompletionContributor.ILSE_FROM_KNOWN_SCOPE), ILSelectFromScopeReferenceProvider)

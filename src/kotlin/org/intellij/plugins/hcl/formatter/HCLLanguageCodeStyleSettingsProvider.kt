@@ -23,7 +23,7 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import org.intellij.plugins.hcl.HCLLanguage
 
-public open class HCLLanguageCodeStyleSettingsProvider(val _language:Language = HCLLanguage) : LanguageCodeStyleSettingsProvider() {
+open class HCLLanguageCodeStyleSettingsProvider(val _language:Language = HCLLanguage) : LanguageCodeStyleSettingsProvider() {
   override fun getLanguage(): Language = _language;
 
   companion object {

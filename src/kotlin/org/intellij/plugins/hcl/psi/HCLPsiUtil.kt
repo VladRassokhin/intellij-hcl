@@ -29,8 +29,7 @@ import org.intellij.plugins.hcl.HCLParserDefinition
 
  * @author Mikhail Golubev
  */
-@SuppressWarnings("UnusedDeclaration")
-public object HCLPsiUtil {
+@SuppressWarnings("UnusedDeclaration") object HCLPsiUtil {
 
 
   /**
@@ -40,7 +39,7 @@ public object HCLPsiUtil {
    * *
    * @return whether this PSI element is array element
    */
-  public fun isArrayElement(element: PsiElement): Boolean {
+  fun isArrayElement(element: PsiElement): Boolean {
     return element is HCLValue && element.parent is HCLArray
   }
 
@@ -51,7 +50,7 @@ public object HCLPsiUtil {
    * *
    * @return whether this PSI element is property key
    */
-  public fun isPropertyKey(element: PsiElement): Boolean {
+  fun isPropertyKey(element: PsiElement): Boolean {
     val parent = element.parent
     return parent is HCLProperty && element == parent.nameElement
   }
@@ -63,7 +62,7 @@ public object HCLPsiUtil {
    * *
    * @return whether this PSI element is property value
    */
-  public fun isPropertyValue(element: PsiElement): Boolean {
+  fun isPropertyValue(element: PsiElement): Boolean {
     val parent = element.parent
     return parent is HCLProperty && element == parent.value
   }
@@ -81,7 +80,7 @@ public object HCLPsiUtil {
    * *
    * @return described element or anchor if search stops immediately
    */
-  public fun findFurthestSiblingOfSameType(anchor: PsiElement, after: Boolean): PsiElement {
+  fun findFurthestSiblingOfSameType(anchor: PsiElement, after: Boolean): PsiElement {
     var node: ASTNode? = anchor.node
     // Compare by node type to distinguish between different types of comments
     val expectedType = node!!.elementType
@@ -110,28 +109,28 @@ public object HCLPsiUtil {
    * It slightly less verbose than `set.contains(node.getElementType())` and overloaded methods with the same name
    * allow check ASTNode/PsiElement against both concrete element types and token sets in uniform way.
    */
-  public fun hasElementType(node: ASTNode, set: TokenSet): Boolean {
+  fun hasElementType(node: ASTNode, set: TokenSet): Boolean {
     return set.contains(node.elementType)
   }
 
   /**
    * @see .hasElementType
    */
-  public fun hasElementType(node: ASTNode, vararg types: IElementType): Boolean {
+  fun hasElementType(node: ASTNode, vararg types: IElementType): Boolean {
     return hasElementType(node, TokenSet.create(*types))
   }
 
   /**
    * @see .hasElementType
    */
-  public fun hasElementType(element: PsiElement, set: TokenSet): Boolean {
+  fun hasElementType(element: PsiElement, set: TokenSet): Boolean {
     return element.node != null && hasElementType(element.node, set)
   }
 
   /**
    * @see .hasElementType
    */
-  public fun hasElementType(element: PsiElement, vararg types: IElementType): Boolean {
+  fun hasElementType(element: PsiElement, vararg types: IElementType): Boolean {
     return element.node != null && hasElementType(element.node, *types)
   }
 
@@ -143,7 +142,7 @@ public object HCLPsiUtil {
    * *
    * @return text of the element with any host escaping removed
    */
-  public fun getElementTextWithoutHostEscaping(element: PsiElement): String {
+  fun getElementTextWithoutHostEscaping(element: PsiElement): String {
     val manager = InjectedLanguageManager.getInstance(element.project)
     if (manager.isInjectedFragment(element.containingFile)) {
       return manager.getUnescapedText(element)
@@ -165,7 +164,7 @@ public object HCLPsiUtil {
    * *
    * @return
    */
-  public fun stripQuotes(text: String): String {
+  fun stripQuotes(text: String): String {
     if (text.length > 0) {
       val firstChar = text[0]
       val lastChar = text[text.length - 1]
@@ -188,7 +187,7 @@ public object HCLPsiUtil {
    * *
    * @return whether character at given position is escaped, i.e. preceded by odd number of backslashes
    */
-  public fun isEscapedChar(text: String, position: Int): Boolean {
+  fun isEscapedChar(text: String, position: Int): Boolean {
     var count = 0
     var i = position - 1
     while (i >= 0 && text[i] == '\\') {
