@@ -89,7 +89,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
       }
     } else if (isElementType(myNode, HEREDOC_LITERAL)) {
       if (this.textRange.equals(myNode.textRange)) {
-        if (isElementType(childNode, HEREDOC_LINE, HEREDOC_MARKER)) {
+        if (isElementType(childNode, HEREDOC_CONTENT, HEREDOC_MARKER)) {
           wrap = Wrap.createWrap(WrapType.NONE, false)
           indent = Indent.getAbsoluteNoneIndent();
         } else if (isElementType(childNode, HD_START)) {
@@ -106,7 +106,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
   }
 
   override fun getChildIndent(): Indent? {
-    if (isElementType(myNode, HEREDOC_LITERAL, HEREDOC_MARKER, HEREDOC_LINE, HD_MARKER, HD_LINE, HD_START)) {
+    if (isElementType(myNode, HEREDOC_LITERAL, HEREDOC_MARKER, HEREDOC_CONTENT, HD_MARKER, HD_LINE, HD_START)) {
       return Indent.getAbsoluteNoneIndent();
     }
     if (isElementType(myNode, OBJECT)) {
@@ -160,7 +160,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
   }
 
   override fun isLeaf(): Boolean {
-    if (isElementType(myNode, HEREDOC_LINE, HEREDOC_MARKER)) return true;
+    if (isElementType(myNode, HEREDOC_CONTENT, HEREDOC_MARKER)) return true;
     return myNode.firstChildNode == null
   }
 

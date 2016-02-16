@@ -186,21 +186,22 @@ null_literal::= NULL
 heredoc_literal::= heredoc {
   methods=[
     getValue
-    heredoc=""
     heredoc_marker=""
-    heredoc_content=""
-    lines="heredoc_line"
+    content="heredoc_content"
     marker-start="heredoc_marker[0]"
     marker-end="heredoc_marker[1]"
   ]
-  mixin = 'org.intellij.plugins.hcl.psi.impl.HCLHeredocLiteralMixin'
 }
-private heredoc::= HD_START heredoc_marker heredoc_line* heredoc_marker
-heredoc_line::= HD_LINE {
+private heredoc::= HD_START heredoc_marker heredoc_content heredoc_marker
+heredoc_content::=heredoc_line* {
   methods=[
+    getLines
+    getLinesCount
     getValue
-  ]
+ ]
+  mixin = 'org.intellij.plugins.hcl.psi.impl.HCLHeredocContentMixin'
 }
+private heredoc_line::= HD_LINE
 heredoc_marker::= HD_MARKER {
   methods=[
     getName

@@ -100,8 +100,17 @@ public class HCLPsiImplUtilJ {
   }
 
   @NotNull
-  public static String getValue(@NotNull HCLHeredocLine line) {
-    return HCLPsiImplUtils.INSTANCE.getValue(line);
+  public static String getValue(@NotNull HCLHeredocContent content) {
+    return HCLPsiImplUtils.INSTANCE.getValue(content);
+  }
+
+  @NotNull
+  public static List<String> getLines(@NotNull HCLHeredocContent content) {
+    return HCLPsiImplUtils.INSTANCE.getLines(content);
+  }
+
+  public static int getLinesCount(@NotNull HCLHeredocContent content) {
+    return HCLPsiImplUtils.INSTANCE.getLinesCount(content);
   }
 
   @NotNull

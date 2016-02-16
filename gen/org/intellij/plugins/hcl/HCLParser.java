@@ -32,8 +32,8 @@ public class HCLParser implements PsiParser, LightPsiParser {
     else if (t == BOOLEAN_LITERAL) {
       r = boolean_literal(b, 0);
     }
-    else if (t == HEREDOC_LINE) {
-      r = heredoc_line(b, 0);
+    else if (t == HEREDOC_CONTENT) {
+      r = heredoc_content(b, 0);
     }
     else if (t == HEREDOC_LITERAL) {
       r = heredoc_literal(b, 0);
@@ -206,7 +206,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // HD_START heredoc_marker heredoc_line* heredoc_marker
+  // HD_START heredoc_marker heredoc_content heredoc_marker
   static boolean heredoc(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "heredoc")) return false;
     if (!nextTokenIs(b, HD_START)) return false;
@@ -214,34 +214,31 @@ public class HCLParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, HD_START);
     r = r && heredoc_marker(b, l + 1);
-    r = r && heredoc_2(b, l + 1);
+    r = r && heredoc_content(b, l + 1);
     r = r && heredoc_marker(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
+  /* ********************************************************** */
   // heredoc_line*
-  private static boolean heredoc_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "heredoc_2")) return false;
+  public static boolean heredoc_content(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "heredoc_content")) return false;
+    Marker m = enter_section_(b, l, _NONE_, "<heredoc content>");
     int c = current_position_(b);
     while (true) {
       if (!heredoc_line(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "heredoc_2", c)) break;
+      if (!empty_element_parsed_guard_(b, "heredoc_content", c)) break;
       c = current_position_(b);
     }
+    exit_section_(b, l, m, HEREDOC_CONTENT, true, false, null);
     return true;
   }
 
   /* ********************************************************** */
   // HD_LINE
-  public static boolean heredoc_line(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "heredoc_line")) return false;
-    if (!nextTokenIs(b, HD_LINE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, HD_LINE);
-    exit_section_(b, m, HEREDOC_LINE, r);
-    return r;
+  static boolean heredoc_line(PsiBuilder b, int l) {
+    return consumeToken(b, HD_LINE);
   }
 
   /* ********************************************************** */

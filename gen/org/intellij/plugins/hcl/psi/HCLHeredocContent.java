@@ -5,7 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HCLHeredocLine extends PsiElement {
+public interface HCLHeredocContent extends PsiElement {
+
+  @NotNull
+  List<String> getLines();
+
+  int getLinesCount();
 
   @NotNull
   String getValue();

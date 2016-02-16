@@ -15,6 +15,7 @@
  */
 package org.intellij.plugins.hcl.psi.impl
 
+import com.intellij.lang.ASTNode
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.TextRange
@@ -182,13 +183,29 @@ public object HCLPsiImplUtils {
   }
 
   public fun getValue(literal: HCLHeredocLiteral): String {
+    return literal.content.value
+  }
+
+  public fun getValue(content: HCLHeredocContent): String {
     val builder = StringBuilder()
-    literal.linesList.forEach {builder.append(it.text)}
+    content.lines.forEach { builder.append(it) }
     return builder.toString()
   }
 
-  public fun getValue(line: HCLHeredocLine): String {
-    return line.text
+  public fun getLines(content: HCLHeredocContent): List<String> {
+    val children = content.node.getChildren(null)
+    return children.mapTo(SmartList<String>()) { it.text }
+  }
+
+  public fun getLinesCount(content: HCLHeredocContent): Int {
+    val node = content.node
+    var cn: ASTNode? = node.firstChildNode
+    var counter: Int = 0
+    while (cn != null) {
+      cn = cn.treeNext
+      counter++
+    }
+    return counter
   }
 
   public fun getValue(literal: HCLBooleanLiteral): Boolean {

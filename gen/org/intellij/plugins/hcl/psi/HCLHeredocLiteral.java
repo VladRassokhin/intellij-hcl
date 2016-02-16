@@ -11,7 +11,7 @@ public interface HCLHeredocLiteral extends HCLLiteral {
   String getValue();
 
   @NotNull
-  List<HCLHeredocLine> getLinesList();
+  HCLHeredocContent getContent();
 
   @NotNull
   HCLHeredocMarker getMarkerStart();

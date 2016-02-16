@@ -11,7 +11,7 @@ public interface HCLElementTypes {
   IElementType ARRAY = new HCLElementType("ARRAY");
   IElementType BLOCK = new HCLElementType("BLOCK");
   IElementType BOOLEAN_LITERAL = new HCLElementType("BOOLEAN_LITERAL");
-  IElementType HEREDOC_LINE = new HCLElementType("HEREDOC_LINE");
+  IElementType HEREDOC_CONTENT = new HCLElementType("HEREDOC_CONTENT");
   IElementType HEREDOC_LITERAL = new HCLElementType("HEREDOC_LITERAL");
   IElementType HEREDOC_MARKER = new HCLElementType("HEREDOC_MARKER");
   IElementType IDENTIFIER = new HCLElementType("IDENTIFIER");
@@ -54,8 +54,8 @@ public interface HCLElementTypes {
       else if (type == BOOLEAN_LITERAL) {
         return new HCLBooleanLiteralImpl(node);
       }
-      else if (type == HEREDOC_LINE) {
-        return new HCLHeredocLineImpl(node);
+      else if (type == HEREDOC_CONTENT) {
+        return new HCLHeredocContentImpl(node);
       }
       else if (type == HEREDOC_LITERAL) {
         return new HCLHeredocLiteralImpl(node);

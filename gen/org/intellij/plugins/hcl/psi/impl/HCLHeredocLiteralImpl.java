@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
 
-public class HCLHeredocLiteralImpl extends HCLHeredocLiteralMixin implements HCLHeredocLiteral {
+public class HCLHeredocLiteralImpl extends HCLLiteralImpl implements HCLHeredocLiteral {
 
   public HCLHeredocLiteralImpl(ASTNode node) {
     super(node);
@@ -28,8 +28,8 @@ public class HCLHeredocLiteralImpl extends HCLHeredocLiteralMixin implements HCL
 
   @Override
   @NotNull
-  public List<HCLHeredocLine> getLinesList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLHeredocLine.class);
+  public HCLHeredocContent getContent() {
+    return findNotNullChildByClass(HCLHeredocContent.class);
   }
 
   @Override

@@ -50,16 +50,18 @@ public class ILLanguageInjector : LanguageInjector {
   }
 
   private fun getHeredocLiteralInjections(host: HCLHeredocLiteral, places: InjectedLanguagePlaces) {
-    val lines = host.linesList
+    val lines = host.content.lines
     if (lines.isEmpty()) return
+    var off:Int = 0
     for (line in lines) {
-      val ranges = getILRangesInText(line.value)
+      val ranges = getILRangesInText(line)
       if (ranges.isEmpty()) continue
-      val offset = line.startOffsetInParent
+      val offset = off
       for (range in ranges) {
         val rng = range.shiftRight(offset)
         places.addPlace(HILLanguage, rng, null, null)
       }
+      off += line.length
     }
   }
 

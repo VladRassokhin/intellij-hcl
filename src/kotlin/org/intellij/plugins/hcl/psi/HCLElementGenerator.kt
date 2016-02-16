@@ -106,11 +106,7 @@ public open class HCLElementGenerator(private val project: Project) {
     return property.nameElement as HCLIdentifier
   }
 
-  public fun createHeredocLine(text: String): HCLHeredocLine {
-    return createHeredocLines(arrayListOf(text)).get(0)
-  }
-
-  public fun createHeredocLines(lines: List<String>): List<HCLHeredocLine> {
+  public fun createHeredocContent(lines: List<String>): HCLHeredocContent {
     var text = buildString {
       append("x=<<___EOF___\n")
       for (l in lines) {
@@ -121,6 +117,6 @@ public open class HCLElementGenerator(private val project: Project) {
     }
     val file = createDummyFile(text)
     val property = file.firstChild as HCLProperty
-    return (property.value as HCLHeredocLiteral).linesList
+    return (property.value as HCLHeredocLiteral).content
   }
 }
