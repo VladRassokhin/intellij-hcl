@@ -110,8 +110,10 @@ open class HCLElementGenerator(private val project: Project) {
     var text = buildString {
       append("x=<<___EOF___\n")
       for (l in lines) {
-        append(l.removeSuffix("\n"))
-        append('\n')
+        append(l)
+        if (!l.endsWith('\n')) {
+          append('\n')
+        }
       }
       append("___EOF___")
     }
