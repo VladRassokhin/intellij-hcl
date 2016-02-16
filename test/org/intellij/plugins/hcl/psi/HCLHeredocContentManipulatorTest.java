@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("WeakerAccess")
@@ -39,6 +40,18 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
   @NotNull
   protected HCLElementGenerator createElementGenerator() {
     return new HCLElementGenerator(getProject());
+  }
+
+  public void testEmptyContent() throws Exception {
+    final HCLHeredocContent content = content();
+    final List<String> lines = content.getLines();
+    assertEquals(Collections.<String>emptyList(), lines);
+  }
+
+  public void testSingleEmptyLineContent() throws Exception {
+    final HCLHeredocContent content = content("");
+    final List<String> lines = content.getLines();
+    assertEquals(Arrays.asList("\n"), lines);
   }
 
   public void testContentLines() throws Exception {
@@ -90,11 +103,11 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
     doTest(content("012", "456", "890"), TextRange.create(2, 8), "\n", "01", "890");
   }
 
-  public void testAlwaysAtLeastOneNewLine() throws Exception {
-    doTestText(content("a\nb\nc"), TextRange.from(0, 6), "", content(""));
+  public void testMayBeEmptiedCompletely() throws Exception {
+    doTestText(content("a\nb\nc"), TextRange.from(0, 6), "", content());
   }
 
-  public void testReplaceFullText() throws Exception {
+  public void testReplaceInText() throws Exception {
     doTestText(
         content("[\n" +
             "  {\n" +
@@ -129,6 +142,16 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
             "]"));
   }
 
+  public void testReplaceFullText() throws Exception {
+    doTestFullTextReplacement(content("jenkins"), "leeroy", content("leeroy"));
+    doTestFullTextReplacement(content("jenkins"), "leeroy\n", content("leeroy"));
+    doTestFullTextReplacement(content("a\nb"), "c", content("c"));
+    doTestFullTextReplacement(content("a\nb"), "c\n", content("c"));
+    doTestFullTextReplacement(content("a\nb"), "\n\n\n", content("","",""));
+    doTestFullTextReplacement(content(""), "x", content("x"));
+    doTestFullTextReplacement(content(""), "", content());
+  }
+
 
   protected void doTest(final HCLHeredocContent content, final TextRange range, final String replacement, String... expected) {
     final HCLHeredocContent[] changed = new HCLHeredocContent[1];
@@ -149,6 +172,18 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
       @Override
       public void run() {
         changed[0] = myContentManipulator.handleContentChange(content, range, replacement);
+      }
+    });
+    assertNotNull(changed[0]);
+    assertEquals(expected.getText(), changed[0].getText());
+  }
+
+  protected void doTestFullTextReplacement(final HCLHeredocContent content, final String replacement, HCLHeredocContent expected) {
+    final HCLHeredocContent[] changed = new HCLHeredocContent[1];
+    ApplicationManager.getApplication().runWriteAction(new Runnable() {
+      @Override
+      public void run() {
+        changed[0] = myContentManipulator.handleContentChange(content, replacement);
       }
     });
     assertNotNull(changed[0]);

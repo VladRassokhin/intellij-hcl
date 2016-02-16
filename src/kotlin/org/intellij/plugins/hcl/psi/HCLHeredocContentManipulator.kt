@@ -20,13 +20,26 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.AbstractElementManipulator
 import com.intellij.util.IncorrectOperationException
+import com.intellij.util.SmartList
 import org.intellij.plugins.hcl.HCLElementTypes
-import java.util.*
+import org.intellij.plugins.hcl.terraform.config.model.ensureHaveSuffix
 
 class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocContent>() {
+
+  // There two major cases:
+  // 1. all content replaced with actual diff very small (full heredoc injection):
+  // 1.1 One line modified
+  // 1.2 One line added
+  // 1.3 One line removed
+  // 2. one line content (probably not all) replaced with any diff (HIL injection)
+  // This cases should work quite fast
+
   @Throws(IncorrectOperationException::class)
   override fun handleContentChange(element: HCLHeredocContent, range: TextRange, newContent: String): HCLHeredocContent {
     if (range.length == 0) return element
+
+    //////////
+    // Calculate affected strings (based on offsets)
 
     var offset: Int = 0;
     val lines = element.lines
@@ -52,35 +65,37 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
 
     var afterNode: ASTNode? = children[endString].treeNext
 
-    node.removeRange(children[startString], afterNode)
+    //////////
+    // Prepare new lines content
 
     val newText = prefixStartString + newContent + suffixEndString
-    val newLines = ArrayList<String>(StringUtil.split(newText, "\n", false, false))
-    // Remove last empty line
-    if (newLines.isNotEmpty()) {
-      if (newLines[newLines.lastIndex].isEmpty()) {
-        newLines.removeAt(newLines.lastIndex)
-      }
-    }
-    // Last line should have new line char
-    if (newLines.isNotEmpty()) {
-      if (!newLines[newLines.lastIndex].endsWith('\n')) {
-        newLines[newLines.lastIndex] += '\n'
-      }
-    } else {
-      newLines.add("\n")
-    }
+    val newLines: MutableList<String> = getReplacementLines(newText)
+
+    //////////
+    // Replace nodes
+    // TODO: Try LeafElement.replaceWithText or LeafElement.rawReplaceWithText to not lose HIL injection fragment editing window
+
+    node.removeRange(children[startString], afterNode)
     for (line in newLines) {
       node.addLeaf(HCLElementTypes.HD_LINE, line, afterNode)
     }
     return element
   }
 
+  private fun getReplacementLines(newText: String): MutableList<String> {
+    val newLines: MutableList<String> = when {
+      newText == "" -> SmartList()
+      else -> SmartList<String>(StringUtil.split(newText.ensureHaveSuffix("\n"), "\n", false, false).dropLast(1))
+    }
+    return newLines
+  }
+
   override fun handleContentChange(element: HCLHeredocContent, newContent: String): HCLHeredocContent {
     // Do simple full replacement
+    val newLines = getReplacementLines(newContent)
+
     val node = element.node
     node.removeRange(node.firstChildNode, null)
-    val newLines = StringUtil.split(newContent, "\n", false, false)
     for (line in newLines) {
       node.addLeaf(HCLElementTypes.HD_LINE, line, null)
     }
