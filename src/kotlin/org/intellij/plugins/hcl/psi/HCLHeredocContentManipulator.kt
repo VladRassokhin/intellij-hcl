@@ -76,40 +76,26 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
 
     //////////
     // Replace nodes
-    // TODO: Try LeafElement.replaceWithText or LeafElement.rawReplaceWithText to not lose HIL injection fragment editing window
 
-    if (newLines.size != linesToChange.size) {
-      var stopNode: ASTNode? = children[endString].treeNext
-      var iter: ASTNode? = children[startString]
-      for (line in newLines) {
-        if (iter != null && iter != stopNode) {
-          // Replace existing lines
-          val next = iter.treeNext
-          if (iter.text != line) {
-            // Replace node text
-            (iter as LeafElement).replaceWithText(line)
-          }
-          iter = next
-        } else {
-          // Add new lines to end
-          node.addLeaf(HCLElementTypes.HD_LINE, line, stopNode)
-        }
-      }
-      // Remove extra lines
+    var stopNode: ASTNode? = children[endString].treeNext
+    var iter: ASTNode? = children[startString]
+    for (line in newLines) {
       if (iter != null && iter != stopNode) {
-        node.removeRange(iter, stopNode)
-      }
-    } else {
-      // Some lines modified, let's try reuse them
-      for (i in linesToChange.indices) {
-        val cn = children[linesToChange[i]]
-        val old = cn.text
-        val new = newLines[i]
-        if (old != new) {
+        // Replace existing lines
+        val next = iter.treeNext
+        if (iter.text != line) {
           // Replace node text
-          (cn as LeafElement).replaceWithText(new)
+          (iter as LeafElement).replaceWithText(line)
         }
+        iter = next
+      } else {
+        // Add new lines to end
+        node.addLeaf(HCLElementTypes.HD_LINE, line, stopNode)
       }
+    }
+    // Remove extra lines
+    if (iter != null && iter != stopNode) {
+      node.removeRange(iter, stopNode)
     }
     return element
   }
