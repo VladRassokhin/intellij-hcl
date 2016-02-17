@@ -87,6 +87,15 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
     doTest(content("abc"), TextRange.create(0, 1), "\n", "", "bc");
     doTest(content("abc"), TextRange.create(1, 2), "\n", "a", "c");
     doTest(content("abc"), TextRange.create(2, 3), "\n", "ab", "");
+
+    doTest(content("abc"), TextRange.create(0, 1), "a\n", "a", "bc");
+    doTest(content("abc"), TextRange.create(1, 2), "b\n", "ab", "c");
+    doTest(content("abc"), TextRange.create(2, 3), "c\n", "abc", "");
+
+    doTest(content("abc"), TextRange.create(0, 4), "\nabc", "", "abc");
+    doTest(content("abc"), TextRange.create(0, 4), "a\nbc", "a", "bc");
+    doTest(content("abc"), TextRange.create(0, 4), "ab\nc", "ab", "c");
+    doTest(content("abc"), TextRange.create(0, 4), "abc\n", "abc", "");
   }
 
   public void testSeparateMultipleLines() throws Exception {
@@ -94,13 +103,20 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
     doTest(content("012", "456", "890"), TextRange.create(4, 7), "\n", "012", "", "", "890");
     doTest(content("012", "456", "890"), TextRange.create(7, 10), "\n", "012", "456", "0");
     doTest(content("012", "456", "890"), TextRange.create(7, 11), "\n", "012", "456", "");
-    doTest(content("012", "456", "890"), TextRange.create(7, 12), "\n", "012", "456");
+    doTest(content("012", "456", "890"), TextRange.create(7, 12), "\n", "012", "456", "");
   }
 
   public void testReplaceTextAcrossLines() throws Exception {
     doTest(content("012", "456", "890"), TextRange.create(2, 6), "x", "01x6", "890");
     doTest(content("012", "456", "890"), TextRange.create(2, 8), "x", "01x890");
     doTest(content("012", "456", "890"), TextRange.create(2, 8), "\n", "01", "890");
+  }
+
+  public void testReplaceEmptyString() throws Exception {
+    doTest(content(), TextRange.create(0, 0), "text", "text");
+    doTest(content(), TextRange.create(0, 0), "te\nxt", "te", "xt");
+    doTestFullTextReplacement(content(), "text", content("text"));
+    doTestFullTextReplacement(content(), "te\nxt", content("te", "xt"));
   }
 
   public void testMayBeEmptiedCompletely() throws Exception {
@@ -144,14 +160,28 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
 
   public void testReplaceFullText() throws Exception {
     doTestFullTextReplacement(content("jenkins"), "leeroy", content("leeroy"));
-    doTestFullTextReplacement(content("jenkins"), "leeroy\n", content("leeroy"));
+    doTestFullTextReplacement(content("jenkins"), "leeroy\n", content("leeroy", ""));
     doTestFullTextReplacement(content("a\nb"), "c", content("c"));
-    doTestFullTextReplacement(content("a\nb"), "c\n", content("c"));
-    doTestFullTextReplacement(content("a\nb"), "\n\n\n", content("","",""));
+    doTestFullTextReplacement(content("a\nb"), "c\n", content("c", ""));
+    doTestFullTextReplacement(content("a\nb"), "a\nb\nc\n", content("a\n", "b\n", "c\n", "\n"));
+    doTestFullTextReplacement(content("a\nb"), "a\nb\nc\n", content("a", "b", "c", ""));
+    doTestFullTextReplacement(content("a\nb"), "\n\n\n", content("", "", "", ""));
     doTestFullTextReplacement(content(""), "x", content("x"));
     doTestFullTextReplacement(content(""), "", content());
   }
 
+  public void testReplacementLines() throws Exception {
+    doReplacementLinesTest("");
+    doReplacementLinesTest("a", "a\n");
+    doReplacementLinesTest("leeroy\njenkins", "leeroy\n", "jenkins\n");
+    doReplacementLinesTest("a\n", "a\n", "\n");
+    doReplacementLinesTest("leeroy\njenkins\n", "leeroy\n", "jenkins\n", "\n");
+  }
+
+  private void doReplacementLinesTest(String input, String... expected) {
+    final List<String> list = HCLHeredocContentManipulator.Companion.getReplacementLines(input);
+    assertEquals(Arrays.asList(expected), list);
+  }
 
   protected void doTest(final HCLHeredocContent content, final TextRange range, final String replacement, String... expected) {
     final HCLHeredocContent[] changed = new HCLHeredocContent[1];

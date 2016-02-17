@@ -189,6 +189,8 @@ object HCLPsiImplUtils {
   fun getValue(content: HCLHeredocContent): String {
     val builder = StringBuilder()
     content.lines.forEach { builder.append(it) }
+    // Last line EOL is not part of value
+    builder.removeSuffix("\n")
     return builder.toString()
   }
 

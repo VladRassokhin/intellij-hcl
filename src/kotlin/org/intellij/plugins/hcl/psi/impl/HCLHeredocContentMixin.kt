@@ -50,6 +50,11 @@ abstract class HCLHeredocContentMixin(node: ASTNode?) : HCLLiteralImpl(node), Ps
         }
         return offset
       }
+
+      override fun getRelevantTextRange(): TextRange {
+        if (myHost.textLength == 0) return TextRange.EMPTY_RANGE
+        return TextRange.from(0, myHost.textLength - 1)
+      }
     }
   }
 }

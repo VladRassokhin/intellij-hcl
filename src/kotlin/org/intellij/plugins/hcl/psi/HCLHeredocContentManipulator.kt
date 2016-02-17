@@ -19,6 +19,8 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.AbstractElementManipulator
+import com.intellij.psi.impl.source.tree.LeafElement
+import com.intellij.psi.impl.source.tree.TreeElement
 import com.intellij.util.IncorrectOperationException
 import com.intellij.util.SmartList
 import org.intellij.plugins.hcl.HCLElementTypes
@@ -36,6 +38,11 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
 
   @Throws(IncorrectOperationException::class)
   override fun handleContentChange(element: HCLHeredocContent, range: TextRange, newContent: String): HCLHeredocContent {
+    if (range.length == 0 && element.linesCount == 0) {
+      // Replace empty with something
+      return handleContentChange(element, newContent)
+    }
+
     //////////
     // Calculate affected strings (based on offsets)
 
@@ -55,13 +62,11 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
     startString = linesToChange.first()
     endString = linesToChange.last()
 
-    val node = element.node
+    val node = element.node as TreeElement
 
     val children = node.getChildren(null)
     val prefixStartString = children[startString].text.substring(0, range.startOffset - ranges[startString].startOffset)
-    val suffixEndString = children[endString].text.substring(range.endOffset - ranges[endString].startOffset)
-
-    var afterNode: ASTNode? = children[endString].treeNext
+    val suffixEndString = children[endString].text.substring(range.endOffset - ranges[endString].startOffset).removeSuffix("\n")
 
     //////////
     // Prepare new lines content
@@ -73,19 +78,50 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
     // Replace nodes
     // TODO: Try LeafElement.replaceWithText or LeafElement.rawReplaceWithText to not lose HIL injection fragment editing window
 
-    node.removeRange(children[startString], afterNode)
-    for (line in newLines) {
-      node.addLeaf(HCLElementTypes.HD_LINE, line, afterNode)
+    if (newLines.size != linesToChange.size) {
+      var stopNode: ASTNode? = children[endString].treeNext
+      var iter: ASTNode? = children[startString]
+      for (line in newLines) {
+        if (iter != null && iter != stopNode) {
+          // Replace existing lines
+          val next = iter.treeNext
+          if (iter.text != line) {
+            // Replace node text
+            (iter as LeafElement).replaceWithText(line)
+          }
+          iter = next
+        } else {
+          // Add new lines to end
+          node.addLeaf(HCLElementTypes.HD_LINE, line, stopNode)
+        }
+      }
+      // Remove extra lines
+      if (iter != null && iter != stopNode) {
+        node.removeRange(iter, stopNode)
+      }
+    } else {
+      // Some lines modified, let's try reuse them
+      for (i in linesToChange.indices) {
+        val cn = children[linesToChange[i]]
+        val old = cn.text
+        val new = newLines[i]
+        if (old != new) {
+          // Replace node text
+          (cn as LeafElement).replaceWithText(new)
+        }
+      }
     }
     return element
   }
 
-  private fun getReplacementLines(newText: String): MutableList<String> {
-    val newLines: MutableList<String> = when {
-      newText == "" -> SmartList()
-      else -> SmartList<String>(StringUtil.split(newText.ensureHaveSuffix("\n"), "\n", false, false).dropLast(1))
+  companion object {
+    fun getReplacementLines(newText: String): MutableList<String> {
+      if (newText == "") (return SmartList())
+      val newLines: MutableList<String>
+      newLines = SmartList<String>(StringUtil.split(newText, "\n", false, false))
+      newLines[newLines.lastIndex] = newLines[newLines.lastIndex].ensureHaveSuffix("\n")
+      return newLines
     }
-    return newLines
   }
 
   override fun handleContentChange(element: HCLHeredocContent, newContent: String): HCLHeredocContent {
@@ -93,10 +129,17 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
     val newLines = getReplacementLines(newContent)
 
     val node = element.node
-    node.removeRange(node.firstChildNode, null)
+    if (node.firstChildNode != null) {
+      node.removeRange(node.firstChildNode, null)
+    }
     for (line in newLines) {
       node.addLeaf(HCLElementTypes.HD_LINE, line, null)
     }
     return element
+  }
+
+  override fun getRangeInElement(element: HCLHeredocContent): TextRange {
+    if (element.textLength == 0) return TextRange.EMPTY_RANGE
+    return TextRange.from(0, element.textLength - 1)
   }
 }
