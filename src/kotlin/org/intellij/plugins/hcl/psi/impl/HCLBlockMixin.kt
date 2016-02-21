@@ -17,9 +17,11 @@ package org.intellij.plugins.hcl.psi.impl
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
+import com.intellij.psi.search.SearchScope
 import com.intellij.util.IncorrectOperationException
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.HCLBlock
+import org.intellij.plugins.hcl.terraform.config.model.getTerraformSearchScope
 
 abstract class HCLBlockMixin(node: ASTNode) : HCLElementImpl(node), HCLBlock {
 
@@ -35,4 +37,8 @@ abstract class HCLBlockMixin(node: ASTNode) : HCLElementImpl(node), HCLBlock {
   }
 
   // TODO: Add proper references (?)
+
+  override fun getUseScope(): SearchScope {
+    return this.getTerraformSearchScope()
+  }
 }

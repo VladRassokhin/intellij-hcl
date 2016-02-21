@@ -19,8 +19,10 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.impl.source.tree.LeafElement
+import com.intellij.psi.search.SearchScope
 import org.intellij.plugins.hcl.psi.HCLElementGenerator
 import org.intellij.plugins.hcl.psi.HCLIdentifier
+import org.intellij.plugins.hcl.terraform.config.model.getTerraformSearchScope
 import java.util.regex.Pattern
 
 abstract class HCLIdentifierMixin(node: ASTNode) : HCLValueImpl(node), HCLIdentifier, PsiNamedElement {
@@ -41,5 +43,9 @@ abstract class HCLIdentifierMixin(node: ASTNode) : HCLValueImpl(node), HCLIdenti
 
   override fun getName(): String? {
     return id
+  }
+
+  override fun getUseScope(): SearchScope {
+    return this.getTerraformSearchScope()
   }
 }
