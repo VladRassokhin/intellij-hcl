@@ -18,8 +18,10 @@ package org.intellij.plugins.hil.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.lang.Language
+import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElementVisitor
+import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hil.psi.ILElementVisitor
 import org.intellij.plugins.hil.psi.ILExpression
 
@@ -46,5 +48,11 @@ abstract class ILExpressionBase(node: ASTNode) : ASTWrapperPsiElement(node), ILE
     if (trimmed.startsWith("ILBinary")) return "ILBinaryExpression"
     if ("ILLiteralExpression".equals(trimmed) || "ILParameterListExpression".equals(trimmed)) return StringUtil.trimEnd(trimmed, "Expression")
     return trimmed
+  }
+
+  fun getHCLHost(): HCLElement? {
+    val host = InjectedLanguageManager.getInstance(this.project).getInjectionHost(this)
+    if (host is  HCLElement) return host
+    return null
   }
 }
