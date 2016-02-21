@@ -25,6 +25,7 @@ import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.getProvisionerResource
 import org.intellij.plugins.hil.codeinsight.getResource
+import org.intellij.plugins.hil.psi.impl.ILExpressionBase
 
 object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
@@ -40,8 +41,9 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
     val name = element.name
 
     if (from.name == "var") {
-      val block = host.getTerraformModule().findVariable(name)?.second
-      return arrayOf(HCLBlockNameReference(element, false, block, 1))
+      return arrayOf(HCLBlockNameLazyReference(element, false, 1) {
+        listOf((this.element as ILExpressionBase).getHCLHost()?.getTerraformModule()?.findVariable(this.element.name)?.second).filterNotNull()
+      })
     }
     if (from.name == "count") {
       val resource = getResource(element) ?: return PsiReference.EMPTY_ARRAY
@@ -56,6 +58,7 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
     if (from.name == "path") {
       // TODO: Resolve some paths
       if (name == "module") {
+        @Suppress("USELESS_CAST")
         val file = (host as HCLElement).containingFile.originalFile
         return arrayOf(PsiReferenceBase.Immediate<ILVariable>(element, true, file.containingDirectory ?: file))
       }

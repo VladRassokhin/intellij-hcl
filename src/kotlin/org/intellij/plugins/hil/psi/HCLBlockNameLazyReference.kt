@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2015 JetBrains s.r.o.
+ * Copyright 2000-2016 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,18 @@
 package org.intellij.plugins.hil.psi
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.ResolveResult
 import org.intellij.plugins.hcl.psi.HCLBlock
 
-class HCLBlockNameReference(from: PsiElement, soft: Boolean, val block: HCLBlock?, val index: Int) : PsiReferenceBase<PsiElement>(from, soft) {
-  override fun resolve(): PsiElement? {
-    val elements = block?.nameElements ?: return null
-    return elements[index]
-    //    return block
+class HCLBlockNameLazyReference<T : PsiElement>(from: T, soft: Boolean, val index: Int, val doResolve: HCLBlockNameLazyReference<T>.(incompleteCode: Boolean) -> List<HCLBlock>) : PsiReferenceBase.Poly<T>(from, soft) {
+  override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+    return PsiElementResolveResult.createResults(doResolve(incompleteCode))
   }
 
   override fun getVariants(): Array<out Any> {
-    return EMPTY_ARRAY
+    //    return EMPTY_ARRAY
+    return doResolve(true).map { it.nameElements.getOrNull(index) }.filterNotNull().toTypedArray()
   }
 }

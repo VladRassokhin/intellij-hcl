@@ -234,9 +234,7 @@ class HILCompletionContributor : CompletionContributor() {
       val references = expression.references
       if (references.isNotEmpty()) {
         val resolved = references.map {
-          if (it is HCLBlockNameReference) {
-            it.block
-          } else if (it is HCLBlockPropertyReference) {
+          if (it is HCLBlockPropertyReference) {
             it.property
           } else {
             it.resolve()

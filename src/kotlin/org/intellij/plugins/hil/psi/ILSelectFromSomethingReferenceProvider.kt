@@ -29,6 +29,7 @@ import org.intellij.plugins.hcl.psi.HCLObject
 import org.intellij.plugins.hcl.psi.HCLProperty
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
+import org.intellij.plugins.hil.psi.impl.ILExpressionBase
 import java.util.*
 
 object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
@@ -42,6 +43,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     if (parent !is ILSelectExpression) return PsiReference.EMPTY_ARRAY
 
     val name = element.name
+    if (name in HILCompletionContributor.SCOPES) return PsiReference.EMPTY_ARRAY
 
     val expression = getGoodLeftElement(parent, element);
     if (expression == null) {
@@ -50,10 +52,9 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     }
     val references = expression.references
     if (references.isNotEmpty()) {
+      // TODO: Make lazy
       val resolved = references.map {
-        if (it is HCLBlockNameReference) {
-          it.block
-        } else if (it is HCLBlockPropertyReference) {
+        if (it is HCLBlockPropertyReference) {
           it.property
         } else {
           it.resolve()
@@ -86,16 +87,12 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
       return PsiReference.EMPTY_ARRAY
     }
 
-    if (name in HILCompletionContributor.SCOPES) return PsiReference.EMPTY_ARRAY
-
     val ev = getSelectFieldText(expression) ?: return PsiReference.EMPTY_ARRAY
 
-    val module = host.getTerraformModule()
     // TODO: get suitable resource/provider/etc
-    // val model = ServiceManager.getService(TypeModelProvider::class.java).get()
-    val resources = module.findResources(ev, name)
-    if (resources.isEmpty()) return PsiReference.EMPTY_ARRAY
-    return resources.map { HCLBlockNameReference(element, true, it, 2) }.toTypedArray()
+    return arrayOf(HCLBlockNameLazyReference(element, true, 2) {
+      (this.element as ILExpressionBase).getHCLHost()?.getTerraformModule()?.findResources(ev, this.element.name)?:emptyList()
+    })
     // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
   }
 

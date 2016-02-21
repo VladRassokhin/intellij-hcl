@@ -27,7 +27,7 @@ import org.intellij.plugins.hcl.psi.HCLProperty
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
-import org.intellij.plugins.hil.psi.HCLBlockNameReference
+import org.intellij.plugins.hil.psi.HCLBlockNameLazyReference
 
 class TerraformReferenceContributor : PsiReferenceContributor() {
   override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
@@ -46,17 +46,22 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
                 return t?.getNameElementUnquoted(0) == "resource"
               }
             }))
-        , object : PsiReferenceProvider() {
-      override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
-        if (element !is HCLStringLiteral) return PsiReference.EMPTY_ARRAY
-        val parent = element.parent
-        if (parent !is HCLProperty) return PsiReference.EMPTY_ARRAY
-        if (parent.nameElement == element) return PsiReference.EMPTY_ARRAY
-        val providers = element.getTerraformModule().findProviders(element.value)
-        if (providers.isEmpty()) return PsiReference.EMPTY_ARRAY
-        return providers.map { HCLBlockNameReference(element, true, it, 1) }.toTypedArray()
-      }
-    });
+        , SimpleReferenceProvider);
+  }
+}
 
+object SimpleReferenceProvider : PsiReferenceProvider() {
+  override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
+    if (element !is HCLStringLiteral) return PsiReference.EMPTY_ARRAY
+    val parent = element.parent
+    if (parent !is HCLProperty) return PsiReference.EMPTY_ARRAY
+    if (parent.nameElement == element) return PsiReference.EMPTY_ARRAY
+    return arrayOf(HCLBlockNameLazyReference(element, true, 1) {
+      if (it) {
+        element.getTerraformModule().getDefinedProviders().map { it.first }
+      } else {
+        element.getTerraformModule().findProviders(element.value)
+      }
+    })
   }
 }
