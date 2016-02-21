@@ -15,12 +15,14 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.GlobalSearchScopes
 import com.intellij.psi.search.PsiElementProcessor
+import com.intellij.testFramework.LightVirtualFileBase
 import getNameElementUnquoted
 import org.intellij.plugins.hcl.psi.*
 import java.util.*
@@ -70,7 +72,11 @@ fun PsiElement.getTerraformSearchScope(): GlobalSearchScope {
   val directory = file.containingDirectory
   if (directory == null) {
     // File only in-memory, assume as only file in module
-    return GlobalSearchScope.fileScope(file)
+    var vf: VirtualFile = file.virtualFile
+    if (vf is LightVirtualFileBase) {
+      vf = vf.originalFile?:vf
+    }
+    return GlobalSearchScopes.directoryScope(file.project, vf.parent, false)
   } else {
     return GlobalSearchScopes.directoryScope(directory, false)
   }
