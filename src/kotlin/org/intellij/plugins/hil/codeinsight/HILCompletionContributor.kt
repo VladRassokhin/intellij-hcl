@@ -26,14 +26,13 @@ import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
+import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
+import com.intellij.util.SmartList
 import getNameElementUnquoted
 import getPrevSiblingNonWhiteSpace
-import org.intellij.plugins.hcl.psi.HCLBlock
-import org.intellij.plugins.hcl.psi.HCLElement
-import org.intellij.plugins.hcl.psi.HCLObject
-import org.intellij.plugins.hcl.psi.HCLProperty
+import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformLookupElementRenderer
@@ -233,31 +232,31 @@ class HILCompletionContributor : CompletionContributor() {
       val expression = getGoodLeftElement(parent, element) ?: return
       val references = expression.references
       if (references.isNotEmpty()) {
-        val resolved = references.map {
-          if (it is HCLBlockPropertyReference) {
-            it.property
+        val resolved = SmartList<PsiElement>()
+        for (reference in references) {
+          if (reference is PsiPolyVariantReference) {
+            resolved.addAll(reference.multiResolve(false).map { it.element }.filterNotNull())
           } else {
-            it.resolve()
+            reference.resolve()?.let { resolved.add(it) }
           }
-        }.filterNotNull()
+        }
 
         val found = ArrayList<LookupElement>()
         for (r in resolved) {
           when (r) {
-            is HCLBlock -> {
-              val properties = ModelHelper.getBlockProperties(r)
-              val done = properties.map { it.name }.toSet()
-              found.addAll(properties.map { create(it) })
-              val pl = r.`object`?.propertyList
-              if (pl != null) {
-                found.addAll(pl.map { it.name }.filter { it !in done }.map { create(it) })
+            is HCLStringLiteral, is HCLIdentifier ->{
+              val p = r.parent
+              if (p is HCLBlock) {
+                getBlockProperties(p, found)
+              } else if (p is HCLProperty && p.nameElement === r) {
+                getPropertyObjectProperties(p, found)
               }
             }
+            is HCLBlock -> {
+              getBlockProperties(r, found)
+            }
             is HCLProperty -> {
-              val value = r.value
-              if (value is HCLObject) {
-                found.addAll(value.propertyList.map { create(it.name) })
-              }
+              getPropertyObjectProperties(r, found)
             }
           }
         }
@@ -273,6 +272,23 @@ class HILCompletionContributor : CompletionContributor() {
         if (resources.isEmpty()) return
         result.addAllElements(resources.map { it.getNameElementUnquoted(2) }.filterNotNull().map { create(it) })
         // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
+      }
+    }
+
+    private fun getPropertyObjectProperties(r: HCLProperty, found: ArrayList<LookupElement>) {
+      val value = r.value
+      if (value is HCLObject) {
+        found.addAll(value.propertyList.map { create(it.name) })
+      }
+    }
+
+    private fun getBlockProperties(r: HCLBlock, found: ArrayList<LookupElement>) {
+      val properties = ModelHelper.getBlockProperties(r)
+      val done = properties.map { it.name }.toSet()
+      found.addAll(properties.map { create(it) })
+      val pl = r.`object`?.propertyList
+      if (pl != null) {
+        found.addAll(pl.map { it.name }.filter { it !in done }.map { create(it) })
       }
     }
 

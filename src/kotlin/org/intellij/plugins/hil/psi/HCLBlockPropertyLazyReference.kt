@@ -16,13 +16,14 @@
 package org.intellij.plugins.hil.psi
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiReferenceBase
-import org.intellij.plugins.hcl.psi.HCLBlock
+import com.intellij.psi.ResolveResult
+import org.intellij.plugins.hcl.psi.HCLProperty
 
-class TerraformModuleReference(from: ILVariable, soft: Boolean, val block: HCLBlock?) : PsiReferenceBase<ILVariable>(from, soft) {
-  override fun resolve(): PsiElement? {
-    val elements = block?.nameElements ?: return null
-    return elements[1]
+class HCLBlockPropertyLazyReference<T : PsiElement>(from: T, soft: Boolean, val doResolve: HCLBlockPropertyLazyReference<T>.(incompleteCode: Boolean) -> List<HCLProperty>) : PsiReferenceBase.Poly<T>(from, soft) {
+  override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+    return PsiElementResolveResult.createResults(doResolve(incompleteCode))
   }
 
   override fun getVariants(): Array<out Any> {

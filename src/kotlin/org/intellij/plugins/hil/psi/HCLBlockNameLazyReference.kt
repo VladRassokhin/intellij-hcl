@@ -23,7 +23,7 @@ import org.intellij.plugins.hcl.psi.HCLBlock
 
 class HCLBlockNameLazyReference<T : PsiElement>(from: T, soft: Boolean, val index: Int, val doResolve: HCLBlockNameLazyReference<T>.(incompleteCode: Boolean) -> List<HCLBlock>) : PsiReferenceBase.Poly<T>(from, soft) {
   override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-    return PsiElementResolveResult.createResults(doResolve(incompleteCode))
+    return PsiElementResolveResult.createResults(doResolve(incompleteCode).map { it.nameElements.getOrNull(index) }.filterNotNull())
   }
 
   override fun getVariants(): Array<out Any> {

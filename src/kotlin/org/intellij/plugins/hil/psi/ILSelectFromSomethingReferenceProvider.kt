@@ -18,11 +18,9 @@
 package org.intellij.plugins.hil.psi
 
 import com.intellij.lang.injection.InjectedLanguageManager
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReference
-import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
+import com.intellij.util.SmartList
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.psi.HCLObject
@@ -30,11 +28,9 @@ import org.intellij.plugins.hcl.psi.HCLProperty
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
 import org.intellij.plugins.hil.psi.impl.ILExpressionBase
-import java.util.*
 
 object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
-    // TODO: Do not use Immediate references. this method should work as fast as possible
     if (element !is ILVariable) return PsiReference.EMPTY_ARRAY
     val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return PsiReference.EMPTY_ARRAY
     if (host !is HCLElement) return PsiReference.EMPTY_ARRAY
@@ -46,45 +42,59 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     if (name in HILCompletionContributor.SCOPES) return PsiReference.EMPTY_ARRAY
 
     val expression = getGoodLeftElement(parent, element);
+    @Suppress("IfNullToElvis")
     if (expression == null) {
       // v is leftmost, no idea what to do
       return PsiReference.EMPTY_ARRAY;
     }
     val references = expression.references
     if (references.isNotEmpty()) {
-      // TODO: Make lazy
-      val resolved = references.map {
-        if (it is HCLBlockPropertyReference) {
-          it.property
-        } else {
-          it.resolve()
-        }
-      }.filterNotNull()
+      val refs = SmartList<PsiReference>()
 
-      val found = ArrayList<PsiReference>()
-      for (r in resolved) {
-        when (r) {
-          is HCLBlock -> {
-            val property = r.`object`?.findProperty(name)
-            if (property != null) {
-              found.add(PsiReferenceBase.Immediate(element, true, property))
+      for (reference in references) {
+        refs.add(object : PsiReferenceBase.Poly<ILVariable>(element, true) {
+          override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
+            val resolved = SmartList<PsiElement>()
+            if (reference is PsiPolyVariantReference) {
+              resolved.addAll(reference.multiResolve(incompleteCode).map { it.element }.filterNotNull())
+            } else {
+              reference.resolve()?.let { resolved.add(it) }
             }
-          }
-          is HCLProperty -> {
-            val value = r.value
-            if (value is HCLObject) {
-              val property = value.findProperty(name)
-              if (property != null) {
-                found.add(PsiReferenceBase.Immediate(element, true, property))
+            if (resolved.isEmpty()) {
+              return emptyArray()
+            }
+            val found = SmartList<PsiElement>()
+            for (r in resolved) {
+              when (r) {
+                is HCLBlock -> {
+                  val property = r.`object`?.findProperty(name)
+                  if (property != null) {
+                    found.add(property)
+                  }
+                }
+                is HCLProperty -> {
+                  val value = r.value
+                  if (value is HCLObject) {
+                    val property = value.findProperty(name)
+                    if (property != null) {
+                      found.add(property)
+                    }
+                  }
+                }
               }
             }
+            if (!found.isEmpty()) {
+              return found.map { PsiElementResolveResult(it) }.toTypedArray()
+            }
+            return emptyArray()
           }
-        }
+
+          override fun getVariants(): Array<out Any> {
+            return EMPTY_ARRAY
+          }
+        })
       }
-      if (!found.isEmpty()) {
-        return found.toTypedArray()
-      }
-      return PsiReference.EMPTY_ARRAY
+      return refs.toTypedArray()
     }
 
     val ev = getSelectFieldText(expression) ?: return PsiReference.EMPTY_ARRAY

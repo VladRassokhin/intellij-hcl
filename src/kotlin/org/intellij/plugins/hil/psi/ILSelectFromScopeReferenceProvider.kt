@@ -46,14 +46,14 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
       })
     }
     if (from.name == "count") {
-      val resource = getResource(element) ?: return PsiReference.EMPTY_ARRAY
-      val property = resource.`object`?.findProperty("count")
-      return arrayOf(HCLBlockPropertyReference(from, true, property))
+      return arrayOf(HCLBlockPropertyLazyReference(from, true) {
+        listOf(getResource(this.element)?.`object`?.findProperty("count")).filterNotNull()
+      })
     }
     if (from.name == "self") {
-      val resource = getProvisionerResource(element) ?: return PsiReference.EMPTY_ARRAY
-      val property = resource.`object`?.findProperty(name)
-      return arrayOf(HCLBlockPropertyReference(element, true, property))
+      return arrayOf(HCLBlockPropertyLazyReference(element, true) {
+        listOf(getProvisionerResource(this.element)?.`object`?.findProperty(name)).filterNotNull()
+      })
     }
     if (from.name == "path") {
       // TODO: Resolve some paths
@@ -64,9 +64,9 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
       }
     }
     if (from.name == "module") {
-      val blocks = host.getTerraformModule().findModules(name)
-      if (blocks.isEmpty()) return PsiReference.EMPTY_ARRAY
-      return blocks.map { TerraformModuleReference(element, false, it) }.toTypedArray()
+      return arrayOf(HCLBlockNameLazyReference(element, false, 1) {
+        (this.element as ILExpressionBase).getHCLHost()?.getTerraformModule()?.findModules(this.element.name) ?: emptyList()
+      })
     }
     return PsiReference.EMPTY_ARRAY;
   }
