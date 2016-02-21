@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
 
-public class HCLIdentifierImpl extends HCLValueImpl implements HCLIdentifier {
+public class HCLIdentifierImpl extends HCLIdentifierMixin implements HCLIdentifier {
 
   public HCLIdentifierImpl(ASTNode node) {
     super(node);

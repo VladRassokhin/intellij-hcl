@@ -19,6 +19,10 @@ import com.intellij.lang.refactoring.RefactoringSupportProvider
 import com.intellij.psi.PsiElement
 
 class ILRefactoringSupportProvider : RefactoringSupportProvider() {
+  override fun isInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean {
+    return element is ILVariable
+  }
+
   override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean {
     return element is ILVariable
   }

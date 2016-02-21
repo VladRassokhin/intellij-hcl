@@ -64,7 +64,7 @@
   ]
   implements("block")=[
     "org.intellij.plugins.hcl.psi.HCLElement"
-    "com.intellij.psi.PsiNamedElement"
+    'com.intellij.psi.PsiNameIdentifierOwner'
   ]
 }
 
@@ -100,6 +100,7 @@ private block_outer ::= property_name block {
 left block ::= property_name* object {
   methods=[
       getName
+      getFullName
       getNameElements
       getObject
       // suppress getValueList() accessor
@@ -151,6 +152,8 @@ identifier ::= ID {
     getId
     ID=""
   ]
+//  implements = ['com.intellij.psi.PsiNamedElement']
+  mixin = 'org.intellij.plugins.hcl.psi.impl.HCLIdentifierMixin'
 }
 
 
@@ -168,6 +171,7 @@ string_literal::= DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING {
     SINGLE_QUOTED_STRING=""
     DOUBLE_QUOTED_STRING=""
   ]
+//  implements = ['com.intellij.psi.PsiNamedElement']
   mixin = 'org.intellij.plugins.hcl.psi.impl.HCLStringLiteralMixin'
 }
 number_literal::= NUMBER {

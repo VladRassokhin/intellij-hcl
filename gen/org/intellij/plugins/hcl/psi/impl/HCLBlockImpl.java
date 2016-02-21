@@ -28,6 +28,11 @@ public class HCLBlockImpl extends HCLBlockMixin implements HCLBlock {
   }
 
   @NotNull
+  public String getFullName() {
+    return HCLPsiImplUtilJ.getFullName(this);
+  }
+
+  @NotNull
   public HCLElement[] getNameElements() {
     return HCLPsiImplUtilJ.getNameElements(this);
   }

@@ -21,6 +21,7 @@ import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ArrayUtil
 import com.intellij.util.SmartList
@@ -35,6 +36,14 @@ object HCLPsiImplUtils {
   }
 
   fun getName(block: HCLBlock): String {
+    val identifier = block.nameIdentifier
+    if (identifier != null) {
+      return if (identifier is PsiNamedElement) identifier.name ?: identifier.text else identifier.text
+    }
+    return getFullName(block)
+  }
+
+  fun getFullName(block: HCLBlock): String {
     val elements = block.nameElements
     val sb = StringBuilder()
     for (element in elements) {
@@ -86,16 +95,37 @@ object HCLPsiImplUtils {
     return literal.node.findChildByType(HCLParserDefinition.STRING_LITERALS) != null
   }
 
+  open class AbstractItemPresentation(val element: HCLElement) : ItemPresentation {
+    override fun getPresentableText(): String? {
+      if (element is PsiNamedElement) {
+        @Suppress("USELESS_CAST")
+        return (element as PsiNamedElement).name
+      }
+      return null
+    }
+
+    override fun getLocationString(): String? {
+      if (true) return null;
+      if (element.parent is HCLFile) {
+        return element.containingFile.containingDirectory.name
+      } else if (element.parent is HCLObject) {
+        val pp = element.parent.parent
+        if (pp is HCLBlock) {
+          return pp.fullName
+        } else if (pp is PsiNamedElement) {
+          return pp.name
+        }
+      }
+      return null
+    }
+
+    override fun getIcon(p0: Boolean): Icon? {
+      return null
+    }
+  }
+
   fun getPresentation(property: HCLProperty): ItemPresentation? {
-    return object : ItemPresentation {
-      override fun getPresentableText(): String? {
-        return property.name
-      }
-
-      override fun getLocationString(): String? {
-        return null
-      }
-
+    return object : AbstractItemPresentation(property) {
       override fun getIcon(unused: Boolean): Icon? {
         if (property.value is HCLArray) {
           return Icons.PropertyBrackets
@@ -109,13 +139,9 @@ object HCLPsiImplUtils {
   }
 
   fun getPresentation(block: HCLBlock): ItemPresentation? {
-    return object : ItemPresentation {
+    return object : AbstractItemPresentation(block) {
       override fun getPresentableText(): String? {
-        return block.name
-      }
-
-      override fun getLocationString(): String? {
-        return null
+        return block.fullName
       }
 
       override fun getIcon(unused: Boolean): Icon? {
@@ -131,13 +157,9 @@ object HCLPsiImplUtils {
   }
 
   fun getPresentation(array: HCLArray): ItemPresentation? {
-    return object : ItemPresentation {
+    return object : AbstractItemPresentation(array) {
       override fun getPresentableText(): String? {
         return ("hcl.array")
-      }
-
-      override fun getLocationString(): String? {
-        return null
       }
 
       override fun getIcon(unused: Boolean): Icon? {
@@ -147,13 +169,9 @@ object HCLPsiImplUtils {
   }
 
   fun getPresentation(o: HCLObject): ItemPresentation? {
-    return object : ItemPresentation {
+    return object : AbstractItemPresentation(o) {
       override fun getPresentableText(): String? {
         return ("hcl.object")
-      }
-
-      override fun getLocationString(): String? {
-        return null
       }
 
       override fun getIcon(unused: Boolean): Icon? {

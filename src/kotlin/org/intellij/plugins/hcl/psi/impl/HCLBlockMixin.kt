@@ -18,18 +18,21 @@ package org.intellij.plugins.hcl.psi.impl
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.util.IncorrectOperationException
+import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.HCLBlock
 
 abstract class HCLBlockMixin(node: ASTNode) : HCLElementImpl(node), HCLBlock {
 
-  @Throws(IncorrectOperationException::class)
-  override fun setName(name: String): PsiElement {
-//    val generator = HCLElementGenerator(getProject())
-    // Strip only both quotes in case user wants some exotic name like key
-    // TODO: do something
-    //    getNameElement().replace(generator.createStringLiteral(StringUtil.unquoteString(name)));
-    throw IncorrectOperationException("Not supported for blocks")
+  override fun getNameIdentifier(): PsiElement {
+    return nameElements.last()!! // Block always have at least one nameElement
   }
 
-  // TODO: Add proper references
+  @Throws(IncorrectOperationException::class)
+  override fun setName(name: String): PsiElement {
+    // TODO: Should we change only nameIdentifier or other nameElement also?
+    ElementChangeUtil.doNameReplacement(this, nameIdentifier, name, HCLElementTypes.IDENTIFIER)
+    return this
+  }
+
+  // TODO: Add proper references (?)
 }

@@ -36,6 +36,11 @@ public class HCLPsiImplUtilJ {
   }
 
   @NotNull
+  public static String getFullName(@NotNull HCLBlock block) {
+    return HCLPsiImplUtils.INSTANCE.getFullName(block);
+  }
+
+  @NotNull
   public static HCLValue getNameElement(@NotNull HCLProperty property) {
     return HCLPsiImplUtils.INSTANCE.getNameElement(property);
   }

@@ -33,6 +33,7 @@ import java.util.*
 
 object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
+    // TODO: Do not use Immediate references. this method should work as fast as possible
     if (element !is ILVariable) return PsiReference.EMPTY_ARRAY
     val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return PsiReference.EMPTY_ARRAY
     if (host !is HCLElement) return PsiReference.EMPTY_ARRAY
