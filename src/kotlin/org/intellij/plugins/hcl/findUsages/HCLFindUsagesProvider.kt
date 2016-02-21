@@ -32,9 +32,13 @@ open class HCLFindUsagesProvider : FindUsagesProvider {
       return false
     }
     if (psiElement is HCLStringLiteral || psiElement is HCLIdentifier) {
-      //      @Suppress("USELESS_CAST")
-      //      val parent = (psiElement as PsiElement).parent
-      //      if (parent is HCLProperty && parent.nameElement == psiElement) return false
+      @Suppress("USELESS_CAST")
+      val parent = (psiElement as PsiElement).parent
+      if (parent is HCLBlock) {
+        return psiElement === parent.nameIdentifier
+      } else if(parent is HCLProperty) {
+        return psiElement === parent.nameElement
+      }
     }
     return true
   }
