@@ -17,6 +17,7 @@ import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PsiElementPattern
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.HCLBlock
@@ -27,7 +28,9 @@ fun HCLBlock.getNameElementUnquoted(i: Int): String? {
   val elements = this.nameElements
   if (elements.size < i + 1) return null
   val element = elements.get(i)
+  @Suppress("USELESS_CAST")
   return when (element) {
+    is PsiNamedElement -> (element as PsiNamedElement).name
     is HCLIdentifier -> element.id
     is HCLStringLiteral -> element.value
     else -> null
