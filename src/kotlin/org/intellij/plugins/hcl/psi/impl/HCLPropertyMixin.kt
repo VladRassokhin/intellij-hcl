@@ -17,8 +17,6 @@ package org.intellij.plugins.hcl.psi.impl
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReference
-import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.IncorrectOperationException
 import org.intellij.plugins.hcl.HCLElementTypes
@@ -34,19 +32,15 @@ abstract class HCLPropertyMixin(node: ASTNode) : HCLElementImpl(node), HCLProper
     return this
   }
 
-  override fun getReference(): PsiReference? {
-    return references.firstOrNull()
-  }
-
-  override fun getReferences(): Array<PsiReference> {
-    return ReferenceProvidersRegistry.getReferencesFromProviders(this)
-  }
-
   override fun getNameIdentifier(): PsiElement {
     return nameElement
   }
 
   override fun getUseScope(): SearchScope {
     return this.getTerraformSearchScope()
+  }
+
+  override fun isEquivalentTo(another: PsiElement?): Boolean {
+    return this === another || another === nameIdentifier
   }
 }

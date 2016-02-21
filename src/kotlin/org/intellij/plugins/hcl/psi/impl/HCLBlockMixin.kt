@@ -36,9 +36,11 @@ abstract class HCLBlockMixin(node: ASTNode) : HCLElementImpl(node), HCLBlock {
     return this
   }
 
-  // TODO: Add proper references (?)
-
   override fun getUseScope(): SearchScope {
     return this.getTerraformSearchScope()
+  }
+
+  override fun isEquivalentTo(another: PsiElement?): Boolean {
+    return this === another || another === nameIdentifier
   }
 }

@@ -37,7 +37,7 @@ open class HCLFindUsagesProvider : FindUsagesProvider {
       if (parent is HCLBlock) {
         return psiElement === parent.nameIdentifier
       } else if(parent is HCLProperty) {
-        return psiElement === parent.nameElement
+        return psiElement === parent.nameIdentifier
       }
     }
     return true

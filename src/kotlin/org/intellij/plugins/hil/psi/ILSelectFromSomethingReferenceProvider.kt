@@ -21,10 +21,7 @@ import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
 import com.intellij.util.SmartList
-import org.intellij.plugins.hcl.psi.HCLBlock
-import org.intellij.plugins.hcl.psi.HCLElement
-import org.intellij.plugins.hcl.psi.HCLObject
-import org.intellij.plugins.hcl.psi.HCLProperty
+import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
 import org.intellij.plugins.hil.psi.impl.ILExpressionBase
@@ -66,6 +63,23 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
             val found = SmartList<PsiElement>()
             for (r in resolved) {
               when (r) {
+                is HCLStringLiteral, is HCLIdentifier ->{
+                  val p = r.parent
+                  if (p is HCLBlock) {
+                    val property = p.`object`?.findProperty(name)
+                    if (property != null) {
+                      found.add(property)
+                    }
+                  } else if (p is HCLProperty && p.nameElement === r) {
+                    val value = p.value
+                    if (value is HCLObject) {
+                      val property = value.findProperty(name)
+                      if (property != null) {
+                        found.add(property)
+                      }
+                    }
+                  }
+                }
                 is HCLBlock -> {
                   val property = r.`object`?.findProperty(name)
                   if (property != null) {
