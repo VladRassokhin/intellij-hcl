@@ -17,9 +17,12 @@ package org.intellij.plugins.hcl.terraform.config
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNameIdentifierOwner
 import getNameElementUnquoted
 import org.intellij.plugins.hcl.psi.HCLBlock
+import org.intellij.plugins.hcl.psi.HCLIdentifier
 import org.intellij.plugins.hcl.psi.HCLProperty
+import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 
@@ -74,6 +77,12 @@ class TerraformDocumentationProvider : AbstractDocumentationProvider() {
           append("<br/>")
           append(block.description)
         }
+      }
+    } else if (element is HCLStringLiteral || element is HCLIdentifier) {
+      if (element.containingFile.fileType != TerraformFileType) return null
+      val parent = element.parent
+      if (parent is PsiNameIdentifierOwner && parent.nameIdentifier === element) {
+        return generateDoc(parent, originalElement);
       }
     }
     return null
