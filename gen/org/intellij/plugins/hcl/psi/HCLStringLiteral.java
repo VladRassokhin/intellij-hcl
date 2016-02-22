@@ -15,4 +15,6 @@ public interface HCLStringLiteral extends HCLLiteral {
   @NotNull
   String getValue();
 
+  char getQuoteSymbol();
+
 }

@@ -33,4 +33,8 @@ public class HCLStringLiteralImpl extends HCLStringLiteralMixin implements HCLSt
     return HCLPsiImplUtilJ.getValue(this);
   }
 
+  public char getQuoteSymbol() {
+    return HCLPsiImplUtilJ.getQuoteSymbol(this);
+  }
+
 }

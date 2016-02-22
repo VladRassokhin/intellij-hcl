@@ -99,6 +99,10 @@ public class HCLPsiImplUtilJ {
     return HCLPsiImplUtils.INSTANCE.getValue(literal);
   }
 
+  public static char getQuoteSymbol(@NotNull HCLStringLiteral literal) {
+    return HCLPsiImplUtils.INSTANCE.getQuoteSymbol(literal);
+  }
+
   @NotNull
   public static String getValue(@NotNull HCLHeredocLiteral literal) {
     return HCLPsiImplUtils.INSTANCE.getValue(literal);

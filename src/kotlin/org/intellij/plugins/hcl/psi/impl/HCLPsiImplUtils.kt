@@ -197,7 +197,12 @@ object HCLPsiImplUtils {
   }
 
   fun getValue(literal: HCLStringLiteral): String {
+    // FIXME: Fix unescaping for single quoted string
     return StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(literal.text))
+  }
+
+  fun getQuoteSymbol(literal: HCLStringLiteral): Char {
+    return literal.text[0]
   }
 
   fun getValue(literal: HCLHeredocLiteral): String {

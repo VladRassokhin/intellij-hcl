@@ -39,17 +39,10 @@ abstract class HCLStringLiteralMixin(node: ASTNode?) : HCLLiteralImpl(node), HCL
 
     // TODO: Use HIL-aware string escaper (?)
 
-    // Fix quotes
-    if (node.elementType == HCLElementTypes.SINGLE_QUOTED_STRING) {
-      if (quote != '\'') {
-        buffer[0] = '\''
-        buffer[buffer.lastIndex] = '\''
-      }
-    } else {
-      if (quote != '"') {
-        buffer[0] = '\"'
-        buffer[buffer.lastIndex] = '\"'
-      }
+    // Fix quotes if needed
+    if (quote != quoteSymbol) {
+      buffer[0] = quoteSymbol
+      buffer[buffer.lastIndex] = quoteSymbol
     }
     (node.firstChildNode as LeafElement).replaceWithText(buffer.toString())
     return this
