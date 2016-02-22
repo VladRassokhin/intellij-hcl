@@ -45,6 +45,10 @@ class HCLLiteralAnnotator : Annotator {
     if (element is HCLStringLiteral || element is HCLIdentifier) {
       if (HCLPsiUtil.isPropertyKey(element)) {
         holder.createInfoAnnotation(element, if (DEBUG) "property key" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY
+      } else if (HCLPsiUtil.isBlockNameIdentifierElement(element)) {
+        holder.createInfoAnnotation(element, if (DEBUG) "block name identifier" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY
+      } else if (HCLPsiUtil.isBlockNonLastNameElement(element)) {
+        holder.createInfoAnnotation(element, if (DEBUG) "block type element" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_TYPES_KEY
       }
     }
     if (element is HCLStringLiteral) {

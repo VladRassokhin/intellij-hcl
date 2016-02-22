@@ -50,6 +50,9 @@ open class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 
     // Added by annotators
     val HCL_PROPERTY_KEY: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.PROPERTY_KEY", INSTANCE_FIELD)
+    val HCL_BLOCK_TYPES_KEY: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BLOCK_TYPES_KEY", MARKUP_ATTRIBUTE)
+    val HCL_BLOCK_NAME_KEY: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BLOCK_NAME_KEY", CLASS_NAME)
+
     // String escapes
     val HCL_VALID_ESCAPE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.VALID_ESCAPE", VALID_STRING_ESCAPE)
     val HCL_INVALID_ESCAPE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.INVALID_ESCAPE", INVALID_STRING_ESCAPE)
@@ -71,7 +74,6 @@ open class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
       SyntaxHighlighterBase.fillMap(ourAttributes, HCL_KEYWORD, HCLElementTypes.TRUE, HCLElementTypes.FALSE, HCLElementTypes.NULL)
       SyntaxHighlighterBase.fillMap(ourAttributes, HCL_LINE_COMMENT, HCLElementTypes.LINE_COMMENT)
       SyntaxHighlighterBase.fillMap(ourAttributes, HCL_BLOCK_COMMENT, HCLElementTypes.BLOCK_COMMENT)
-      // TODO may be it's worth to add more sensible highlighting for identifiers
       SyntaxHighlighterBase.fillMap(ourAttributes, HCL_IDENTIFIER, HCLElementTypes.ID)
       SyntaxHighlighterBase.fillMap(ourAttributes, HighlighterColors.BAD_CHARACTER, TokenType.BAD_CHARACTER)
 

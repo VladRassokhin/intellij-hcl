@@ -196,4 +196,19 @@ import org.intellij.plugins.hcl.HCLParserDefinition
     }
     return count % 2 != 0
   }
+
+  fun isBlockNonLastNameElement(element: PsiElement): Boolean {
+    val parent = element.parent
+    if (parent !is HCLBlock) {
+      return false
+    }
+    val index = parent.nameElements.indexOf(element)
+    return index > -1 && index < parent.nameElements.lastIndex
+  }
+
+  fun isBlockNameIdentifierElement(element: PsiElement): Boolean {
+    val parent = element.parent
+    return parent is HCLBlock && parent.nameIdentifier === element
+  }
+
 }// empty

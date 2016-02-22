@@ -15,7 +15,6 @@
  */
 package org.intellij.plugins.hcl
 
-import com.google.common.collect.ImmutableMap
 import com.intellij.application.options.colors.InspectionColorSettingsPage
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
@@ -41,11 +40,19 @@ class HCLColorsPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPri
         AttributesDescriptor("Line comment", HCLSyntaxHighlighterFactory.HCL_LINE_COMMENT),
         AttributesDescriptor("Block comment", HCLSyntaxHighlighterFactory.HCL_BLOCK_COMMENT),
         AttributesDescriptor("Identifier", HCLSyntaxHighlighterFactory.HCL_IDENTIFIER),
+
         AttributesDescriptor("Property key", HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY),
+        AttributesDescriptor("Block type", HCLSyntaxHighlighterFactory.HCL_BLOCK_TYPES_KEY),
+        AttributesDescriptor("Block name", HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY),
+
         AttributesDescriptor("Valid escape sequence", HCLSyntaxHighlighterFactory.HCL_VALID_ESCAPE),
         AttributesDescriptor("Invalid escape sequence", HCLSyntaxHighlighterFactory.HCL_INVALID_ESCAPE)
     )
-    private val additional: Map<String, TextAttributesKey> = ImmutableMap.of("propertyKey", HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY)
+    private val additional: Map<String, TextAttributesKey> = mapOf(
+        "propertyKey" to HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY,
+        "blockType" to HCLSyntaxHighlighterFactory.HCL_BLOCK_TYPES_KEY,
+        "blockName" to HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY
+    )
   }
 
   override fun getIcon(): Icon? {
@@ -57,13 +64,12 @@ class HCLColorsPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPri
   }
 
   override fun getDemoText(): String {
-    return """
-/*
+    return """/*
   Here's simple HCL code to show you syntax highlighter
 */
 <propertyKey>name</propertyKey> = value
 // Simple single line comment
-block 'name' {
+<blockType>block</blockType> <blockType>with</blockType> <blockName>'name'</blockName> {
   <propertyKey>array</propertyKey> = [ 'a', 100, "b", 10.5e-42, true, false ]
   <propertyKey>empty_array</propertyKey> = []
   <propertyKey>empty_object</propertyKey> = {}
