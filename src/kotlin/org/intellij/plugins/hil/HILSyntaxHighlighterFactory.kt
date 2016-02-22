@@ -29,15 +29,14 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.StringEscapesTokenTypes
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
+import org.intellij.plugins.hcl.HCLSyntaxHighlighterFactory
 import org.intellij.plugins.hil.HILElementTypes.*
 import org.intellij.plugins.hil.psi.HILLexer
 import java.util.*
 
 class HILSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 
-  object HILSyntaxHighlighter : SyntaxHighlighterBase() {
-    val ourAttributes: Map<IElementType, TextAttributesKey> = HashMap()
-
+  companion object {
     val TIL_PARENS: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.PARENS", DefaultLanguageHighlighterColors.PARENTHESES)
     val TIL_BRACES: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.BRACES", DefaultLanguageHighlighterColors.BRACES)
     val TIL_COMMA: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.COMMA", DefaultLanguageHighlighterColors.COMMA)
@@ -50,10 +49,19 @@ class HILSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
     // Artificial element type
     val TIL_IDENTIFIER: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.IDENTIFIER", DefaultLanguageHighlighterColors.IDENTIFIER)
 
+    // Added by annotators
+    val TIL_PREDEFINED_SCOPE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.PREDEFINED_SCOPE", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL)
+    val TIL_RESOURCE_TYPE_REFERENCE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.RESOURCE_TYPE_REFERENCE", HCLSyntaxHighlighterFactory.HCL_BLOCK_SECOND_TYPE_KEY)
+    val TIL_RESOURCE_INSTANCE_REFERENCE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.RESOURCE_INSTANCE_REFERENCE", HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY)
+    val TIL_PROPERTY_REFERENCE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.PROPERTY_REFERENCE", HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY)
+
     // String escapes
     val TIL_VALID_ESCAPE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.VALID_ESCAPE", DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE)
     val TIL_INVALID_ESCAPE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.INVALID_ESCAPE", DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE)
+  }
 
+  object HILSyntaxHighlighter : SyntaxHighlighterBase() {
+    val ourAttributes: Map<IElementType, TextAttributesKey> = HashMap()
 
     init {
       SyntaxHighlighterBase.fillMap(ourAttributes, TIL_BRACES, INTERPOLATION_START, INTERPOLATION_END)

@@ -60,7 +60,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
             if (resolved.isEmpty()) {
               return emptyArray()
             }
-            val found = SmartList<PsiElement>()
+            val found = SmartList<HCLProperty>()
             for (r in resolved) {
               when (r) {
                 is HCLStringLiteral, is HCLIdentifier ->{
@@ -132,14 +132,14 @@ private fun getSelectFieldText(expression: ILExpression): String? {
 }
 
 
-fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable): ILExpression? {
+fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable, skipStars:Boolean = true): ILExpression? {
   // select = left.right
   val left = select.from
   if (left is ILSelectExpression) {
     // left = from.middle
     val middle = left.field
     val from = left.from
-    if (from is ILSelectExpression && middle != null) {
+    if (from is ILSelectExpression && middle != null && skipStars) {
       val text = getSelectFieldText(middle)
       if (text != null && (text == "*" || text.isNumber())) {
         // left == from.*

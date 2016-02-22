@@ -154,7 +154,13 @@
 
     <!-- Terraform Interpolation language -->
     <lang.parserDefinition language="HIL" implementationClass="org.intellij.plugins.hil.HILParserDefinition"/>
+
     <lang.syntaxHighlighterFactory key="HIL" implementationClass="org.intellij.plugins.hil.HILSyntaxHighlighterFactory"/>
+
+    <!-- Annotators -->
+    <annotator language="HIL" implementationClass="org.intellij.plugins.hil.codeinsight.HILVariableAnnotator"/>
+
+    <!-- CodeInsight -->
     <lang.braceMatcher language="HIL" implementationClass="org.intellij.plugins.hil.codeinsight.HILBraceMatcher"/>
     <lang.quoteHandler language="HIL" implementationClass="org.intellij.plugins.hil.formatter.HILQuoteHandler"/>
     <lang.foldingBuilder language="HIL" implementationClass="org.intellij.plugins.hil.formatter.HILFoldingBuilder"/>
@@ -162,6 +168,7 @@
     <completion.contributor language="HIL" implementationClass="org.intellij.plugins.hil.codeinsight.HILCompletionContributor"/>
     <lang.elementManipulator forClass="org.intellij.plugins.hil.psi.ILVariable"
                              implementationClass="org.intellij.plugins.hil.psi.ILVariableManipulator"/>
+    <!-- Refactoring support -->
     <lang.refactoringSupport language="HIL" implementationClass="org.intellij.plugins.hil.psi.ILRefactoringSupportProvider"/>
 
     <lang.findUsagesProvider language="HIL" implementationClass="org.intellij.plugins.hil.findUsages.HILFindUsagesProvider"/>
@@ -209,6 +216,17 @@
                      key="deprecated.element.inspection.display.name"
                      groupKey="terraform.files.inspection.group.display.name" enabledByDefault="true" level="WEAK WARNING"
                      implementationClass="org.intellij.plugins.hcl.terraform.config.inspection.DeprecatedElementInspection"/>
+
+    <!-- HIL Inspections -->
+    <localInspection language="HIL" applyToDialects="true" shortName="HIL.MissingSelfInContext" bundle="messages.HCLBundle"
+                     key="hil.scope.not.available.in.context.inspection.display.name"
+                     groupKey="terraform.files.inspection.group.display.name" enabledByDefault="true" level="ERROR"
+                     implementationClass="org.intellij.plugins.hil.inspection.SelfScopeNotAvailableInCurrentContextInspection"/>
+    <localInspection language="HIL" applyToDialects="true" shortName="HIL.UnknownResourceType" bundle="messages.HCLBundle"
+                     key="hil.unknown.resource.type.inspection.display.name"
+                     groupKey="terraform.files.inspection.group.display.name" enabledByDefault="true" level="WARNING"
+                     implementationClass="org.intellij.plugins.hil.inspection.UnknownResourceTypeReferencedInspection"/>
+
   </extensions>
 
   <application-components>

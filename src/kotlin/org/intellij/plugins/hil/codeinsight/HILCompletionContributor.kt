@@ -26,7 +26,8 @@ import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import com.intellij.util.SmartList
@@ -39,7 +40,10 @@ import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformLookupElem
 import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.model.Function
 import org.intellij.plugins.hil.HILLanguage
-import org.intellij.plugins.hil.psi.*
+import org.intellij.plugins.hil.psi.ILExpression
+import org.intellij.plugins.hil.psi.ILSelectExpression
+import org.intellij.plugins.hil.psi.ILVariable
+import org.intellij.plugins.hil.psi.getGoodLeftElement
 import java.util.*
 
 class HILCompletionContributor : CompletionContributor() {
@@ -332,7 +336,10 @@ fun getProvisionerResource(position: ILExpression): HCLBlock? {
   val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
 
   // For now 'self' allowed only for provisioners inside resources
+  return if (host is HCLElement) getProvisionerResource(host) else null
+}
 
+fun getProvisionerResource(host: HCLElement): HCLBlock? {
   val provisioner = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java) ?: return null
   if (provisioner.getNameElementUnquoted(0) != "provisioner") return null
   val resource = PsiTreeUtil.getParentOfType(provisioner, HCLBlock::class.java, true) ?: return null
