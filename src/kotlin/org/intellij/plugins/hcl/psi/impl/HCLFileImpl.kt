@@ -19,9 +19,13 @@ import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.lang.Language
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
+import org.intellij.plugins.hcl.HILCompatibleLanguage
 import org.intellij.plugins.hcl.psi.HCLFile
 
 class HCLFileImpl(fileViewProvider: FileViewProvider, language: Language) : PsiFileBase(fileViewProvider, language), HCLFile {
+  override fun isInterpolationsAllowed(): Boolean {
+    return language is HILCompatibleLanguage
+  }
 
   override fun getFileType(): FileType {
     return viewProvider.virtualFile.fileType

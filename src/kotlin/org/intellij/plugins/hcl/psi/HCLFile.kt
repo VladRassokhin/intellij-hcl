@@ -18,4 +18,5 @@ package org.intellij.plugins.hcl.psi
 import com.intellij.psi.PsiFile
 
 interface HCLFile : HCLElement, PsiFile {
+  fun isInterpolationsAllowed(): Boolean
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2015 JetBrains s.r.o.
+ * Copyright 2000-2016 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.terraform.config
+package org.intellij.plugins.hcl
 
-import com.intellij.lang.Language
-import org.intellij.plugins.hcl.HCLLanguage
-import org.intellij.plugins.hcl.HILCompatibleLanguage
+interface HILCompatibleLanguage {
 
-
-object TerraformLanguage : Language(HCLLanguage, "HCL-Terraform"), HILCompatibleLanguage {
-  override fun getDisplayName(): String {
-    return "Terraform Config"
-  }
 }
-
