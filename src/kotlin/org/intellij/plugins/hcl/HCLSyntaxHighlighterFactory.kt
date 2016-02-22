@@ -34,10 +34,7 @@ import java.util.*
 
 open class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 
-
-  open class MySyntaxHighlighter(val lexer: HCLLexer) : SyntaxHighlighterBase() {
-    val ourAttributes: Map<IElementType, TextAttributesKey> = HashMap()
-
+  companion object {
     val HCL_BRACKETS: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BRACKETS", BRACKETS)
     val HCL_BRACES: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BRACES", BRACES)
     val HCL_COMMA: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.COMMA", COMMA)
@@ -53,10 +50,14 @@ open class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 
     // Added by annotators
     val HCL_PROPERTY_KEY: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.PROPERTY_KEY", INSTANCE_FIELD)
-
     // String escapes
     val HCL_VALID_ESCAPE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.VALID_ESCAPE", VALID_STRING_ESCAPE)
     val HCL_INVALID_ESCAPE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.INVALID_ESCAPE", INVALID_STRING_ESCAPE)
+  }
+
+
+  open class MySyntaxHighlighter(val lexer: HCLLexer) : SyntaxHighlighterBase() {
+    val ourAttributes: Map<IElementType, TextAttributesKey> = HashMap()
 
 
     init {
