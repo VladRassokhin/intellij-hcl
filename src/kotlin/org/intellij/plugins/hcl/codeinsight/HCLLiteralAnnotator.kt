@@ -20,10 +20,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import org.intellij.plugins.hcl.HCLSyntaxHighlighterFactory
-import org.intellij.plugins.hcl.psi.HCLIdentifier
-import org.intellij.plugins.hcl.psi.HCLNumberLiteral
-import org.intellij.plugins.hcl.psi.HCLPsiUtil
-import org.intellij.plugins.hcl.psi.HCLStringLiteral
+import org.intellij.plugins.hcl.psi.*
 import java.util.regex.Pattern
 
 /**
@@ -43,12 +40,25 @@ class HCLLiteralAnnotator : Annotator {
   override fun annotate(element: PsiElement, holder: AnnotationHolder) {
     val text = HCLPsiUtil.getElementTextWithoutHostEscaping(element)
     if (element is HCLStringLiteral || element is HCLIdentifier) {
+      val parent = element.parent
       if (HCLPsiUtil.isPropertyKey(element)) {
         holder.createInfoAnnotation(element, if (DEBUG) "property key" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY
-      } else if (HCLPsiUtil.isBlockNameIdentifierElement(element)) {
-        holder.createInfoAnnotation(element, if (DEBUG) "block name identifier" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY
-      } else if (HCLPsiUtil.isBlockNonLastNameElement(element)) {
-        holder.createInfoAnnotation(element, if (DEBUG) "block type element" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_TYPES_KEY
+      } else if (parent is HCLBlock) {
+        val ne = parent.nameElements
+        for (i in ne.indices) {
+          if (ne[i] === element) {
+            if (i == ne.lastIndex) {
+              holder.createInfoAnnotation(element, if (DEBUG) "block name identifier" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY
+            } else if (i == 0) {
+              holder.createInfoAnnotation(element, if (DEBUG) "block type 1 element" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_FIRST_TYPE_KEY
+            } else if (i == 1) {
+              holder.createInfoAnnotation(element, if (DEBUG) "block type 2 element" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_SECOND_TYPE_KEY
+            } else {
+              holder.createInfoAnnotation(element, if (DEBUG) "block type 3+ element" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_OTHER_TYPES_KEY
+            }
+            break
+          }
+        }
       }
     }
     if (element is HCLStringLiteral) {

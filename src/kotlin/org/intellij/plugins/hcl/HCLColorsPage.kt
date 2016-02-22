@@ -42,16 +42,20 @@ class HCLColorsPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPri
         AttributesDescriptor("Identifier", HCLSyntaxHighlighterFactory.HCL_IDENTIFIER),
 
         AttributesDescriptor("Property key", HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY),
-        AttributesDescriptor("Block type", HCLSyntaxHighlighterFactory.HCL_BLOCK_TYPES_KEY),
+        AttributesDescriptor("Block first type", HCLSyntaxHighlighterFactory.HCL_BLOCK_FIRST_TYPE_KEY),
+        AttributesDescriptor("Block second type", HCLSyntaxHighlighterFactory.HCL_BLOCK_SECOND_TYPE_KEY),
+        AttributesDescriptor("Block other types", HCLSyntaxHighlighterFactory.HCL_BLOCK_OTHER_TYPES_KEY),
         AttributesDescriptor("Block name", HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY),
 
         AttributesDescriptor("Valid escape sequence", HCLSyntaxHighlighterFactory.HCL_VALID_ESCAPE),
         AttributesDescriptor("Invalid escape sequence", HCLSyntaxHighlighterFactory.HCL_INVALID_ESCAPE)
     )
     private val additional: Map<String, TextAttributesKey> = mapOf(
-        "propertyKey" to HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY,
-        "blockType" to HCLSyntaxHighlighterFactory.HCL_BLOCK_TYPES_KEY,
-        "blockName" to HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY
+        "pk" to HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY,
+        "bt1" to HCLSyntaxHighlighterFactory.HCL_BLOCK_FIRST_TYPE_KEY,
+        "bt2" to HCLSyntaxHighlighterFactory.HCL_BLOCK_SECOND_TYPE_KEY,
+        "btO" to HCLSyntaxHighlighterFactory.HCL_BLOCK_OTHER_TYPES_KEY,
+        "bn" to HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY
     )
   }
 
@@ -65,19 +69,20 @@ class HCLColorsPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPri
 
   override fun getDemoText(): String {
     return """/*
-  Here's simple HCL code to show you syntax highlighter
+  Here's simple HCL code to show you syntax highlighter.
+  Suggestions are welcome at https://github.com/VladRassokhin/intellij-hcl/issues
 */
-<propertyKey>name</propertyKey> = value
+<pk>name</pk> = value
 // Simple single line comment
-<blockType>block</blockType> <blockType>with</blockType> <blockName>'name'</blockName> {
-  <propertyKey>array</propertyKey> = [ 'a', 100, "b", 10.5e-42, true, false ]
-  <propertyKey>empty_array</propertyKey> = []
-  <propertyKey>empty_object</propertyKey> = {}
+<bt1>block</bt1> <bt2>with</bt2> <btO>five</btO> <btO>types</btO> <btO>and</btO> <bn>'name'</bn> {
+  <pk>array</pk> = [ 'a', 100, "b", 10.5e-42, true, false ]
+  <pk>empty_array</pk> = []
+  <pk>empty_object</pk> = {}
   # Yet another comment style
-  <propertyKey>strings</propertyKey> = {
-    <propertyKey>"something"</propertyKey> = "\"Quoted Yep!\""
-    <propertyKey>bad</propertyKey> = "Invalid escaping:\c"
-    <propertyKey>'good'</propertyKey> = "Valid escaping:\"\n\"\"
+  <pk>strings</pk> = {
+    <pk>"something"</pk> = "\"Quoted Yep!\""
+    <pk>bad</pk> = "Invalid escaping:\c"
+    <pk>'good'</pk> = "Valid escaping:\"\n\"\"
   }
 }"""
   }
