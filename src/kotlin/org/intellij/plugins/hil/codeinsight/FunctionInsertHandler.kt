@@ -68,7 +68,9 @@ object FunctionInsertHandler : BasicInsertHandler<LookupElement>() {
     if (parent is ILMethodCallExpression) {
       // Looks like function name modified
       current = parent.ilParameterList.parameters.size
-      place = parent.ilParameterList.parameters.last().textOffset
+      if (current != 0) {
+        place = parent.ilParameterList.parameters.last().textOffset
+      }
     } else {
       current = 0
       addBraces = true
