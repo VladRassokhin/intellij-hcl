@@ -15,6 +15,7 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
+import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
@@ -25,6 +26,7 @@ import com.intellij.psi.search.PsiElementProcessor
 import com.intellij.testFramework.LightVirtualFileBase
 import getNameElementUnquoted
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hil.psi.ILExpression
 import java.util.*
 
 // Actual model
@@ -69,7 +71,12 @@ fun HCLElement.getTerraformModule(): Module {
 
 fun PsiElement.getTerraformSearchScope(): GlobalSearchScope {
   val file = this.containingFile.originalFile
-  val directory = file.containingDirectory
+  var directory = file.containingDirectory
+  if (directory == null) {
+    if (this is ILExpression) {
+      directory = InjectedLanguageManager.getInstance(project).getTopLevelFile(this)?.containingDirectory
+    }
+  }
   if (directory == null) {
     // File only in-memory, assume as only file in module
     var vf: VirtualFile = file.virtualFile
