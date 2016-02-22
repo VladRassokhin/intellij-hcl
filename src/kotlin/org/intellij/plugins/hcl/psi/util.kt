@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PsiElementPattern
@@ -21,6 +22,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.HCLBlock
+import org.intellij.plugins.hcl.psi.HCLFile
 import org.intellij.plugins.hcl.psi.HCLIdentifier
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
 
@@ -66,4 +68,13 @@ fun <T : PsiElement, Self : PsiElementPattern<T, Self>> PsiElementPattern<T, Sel
       return false
     }
   })
+}
+
+fun PsiElement.isInHCLFileWithInterpolations(): Boolean {
+  var file = containingFile
+  if (file.containingDirectory == null) {
+    // Probably injected language
+    file = InjectedLanguageManager.getInstance(project).getTopLevelFile(this)
+  }
+  return file is HCLFile && file.isInterpolationsAllowed()
 }

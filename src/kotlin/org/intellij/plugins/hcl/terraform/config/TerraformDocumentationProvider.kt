@@ -19,6 +19,7 @@ import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import getNameElementUnquoted
+import isInHCLFileWithInterpolations
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLIdentifier
 import org.intellij.plugins.hcl.psi.HCLProperty
@@ -36,7 +37,7 @@ class TerraformDocumentationProvider : AbstractDocumentationProvider() {
 
   override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
     if (element is HCLProperty) {
-      if (element.containingFile.fileType != TerraformFileType) return null
+      if (!element.isInHCLFileWithInterpolations()) return null
 
       val pp = element.parent?.parent
       if (pp !is HCLBlock) return null
@@ -54,7 +55,7 @@ class TerraformDocumentationProvider : AbstractDocumentationProvider() {
         }
       }
     } else if (element is HCLBlock) {
-      if (element.containingFile.fileType != TerraformFileType) return null
+      if (!element.isInHCLFileWithInterpolations()) return null
 
       val pp = element.parent?.parent
       if (pp !is HCLBlock) {
@@ -79,7 +80,7 @@ class TerraformDocumentationProvider : AbstractDocumentationProvider() {
         }
       }
     } else if (element is HCLStringLiteral || element is HCLIdentifier) {
-      if (element.containingFile.fileType != TerraformFileType) return null
+      if (!element.isInHCLFileWithInterpolations()) return null
       val parent = element.parent
       if (parent is PsiNameIdentifierOwner && parent.nameIdentifier === element) {
         return generateDoc(parent, originalElement);
