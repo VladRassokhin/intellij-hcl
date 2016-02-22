@@ -15,6 +15,7 @@
  */
 package org.intellij.plugins.hcl
 
+import com.google.common.collect.ImmutableMap
 import com.intellij.application.options.colors.InspectionColorSettingsPage
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
@@ -40,10 +41,11 @@ class HCLColorsPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPri
         AttributesDescriptor("Line comment", HCLSyntaxHighlighterFactory.HCL_LINE_COMMENT),
         AttributesDescriptor("Block comment", HCLSyntaxHighlighterFactory.HCL_BLOCK_COMMENT),
         AttributesDescriptor("Identifier", HCLSyntaxHighlighterFactory.HCL_IDENTIFIER),
-        AttributesDescriptor("Property", HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY),
+        AttributesDescriptor("Property key", HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY),
         AttributesDescriptor("Valid escape sequence", HCLSyntaxHighlighterFactory.HCL_VALID_ESCAPE),
         AttributesDescriptor("Invalid escape sequence", HCLSyntaxHighlighterFactory.HCL_INVALID_ESCAPE)
     )
+    private val additional: Map<String, TextAttributesKey> = ImmutableMap.of("propertyKey", HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY)
   }
 
   override fun getIcon(): Icon? {
@@ -56,27 +58,26 @@ class HCLColorsPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPri
 
   override fun getDemoText(): String {
     return """
-    /*
-      Here's simple HCL code to show you syntax highlighter
-    */
-    name = value
-    // Simple single line comment
-    block 'name' {
-      array = [ 'a', 100, "b", 10.5e-42, true, false ]
-      empty_array = []
-      empty_object = {}
-      # Yet another comment style
-      strings = {
-        something = "\"Quoted Yep!\""
-        bad = "Invalid escaping:\c"
-        good = "Valid escaping:\"\n\"\"
-      }
-    }
-    """
+/*
+  Here's simple HCL code to show you syntax highlighter
+*/
+<propertyKey>name</propertyKey> = value
+// Simple single line comment
+block 'name' {
+  <propertyKey>array</propertyKey> = [ 'a', 100, "b", 10.5e-42, true, false ]
+  <propertyKey>empty_array</propertyKey> = []
+  <propertyKey>empty_object</propertyKey> = {}
+  # Yet another comment style
+  <propertyKey>strings</propertyKey> = {
+    <propertyKey>"something"</propertyKey> = "\"Quoted Yep!\""
+    <propertyKey>bad</propertyKey> = "Invalid escaping:\c"
+    <propertyKey>'good'</propertyKey> = "Valid escaping:\"\n\"\"
+  }
+}"""
   }
 
-  override fun getAdditionalHighlightingTagToDescriptorMap(): MutableMap<String, TextAttributesKey>? {
-    return null
+  override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey>? {
+    return additional;
   }
 
   override fun getAttributeDescriptors(): Array<out AttributesDescriptor> {
