@@ -118,7 +118,7 @@ class UnresolvedReferencedInspection : LocalInspectionTool() {
     if (reference is EmptyResolveMessageProvider) {
       message = reference.unresolvedMessagePattern
     } else {
-      message = "Unresolved property {0}"
+      message = "Unresolved reference {0}"
     }
 
     val description: String
