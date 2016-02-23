@@ -65,7 +65,7 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
           val prop = resource.`object`?.findProperty(name)
           if (prop != null) return@HCLElementLazyReference listOf(prop)
           val blocks = resource.`object`?.blockList?.filter { it.name == name }
-          if (blocks != null && blocks.isNotEmpty()) return@HCLElementLazyReference blocks
+          if (blocks != null && blocks.isNotEmpty()) return@HCLElementLazyReference blocks.map { it.nameIdentifier as HCLElement }
 
           if (fake) {
             val properties = ModelHelper.getResourceProperties(resource)

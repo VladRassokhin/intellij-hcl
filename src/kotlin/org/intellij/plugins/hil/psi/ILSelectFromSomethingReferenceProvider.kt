@@ -97,7 +97,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
       }
       is HCLBlock -> {
         val property = r.`object`?.findProperty(name)
-        val blocks = r.`object`?.blockList?.filter { it.name == name }.orEmpty()
+        val blocks = r.`object`?.blockList?.filter { it.nameElements.any { it.name == name } }.orEmpty()
         // TODO: Move this special support somewhere else
         if ("module" == r.getNameElementUnquoted(0)) {
           val module = getModule(r)
