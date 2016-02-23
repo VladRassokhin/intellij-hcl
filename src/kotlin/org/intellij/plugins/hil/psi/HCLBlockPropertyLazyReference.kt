@@ -16,22 +16,11 @@
 package org.intellij.plugins.hil.psi
 
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
-import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.ResolveResult
 import org.intellij.plugins.hcl.psi.HCLProperty
-import org.intellij.plugins.hil.inspection.PsiFakeAwarePolyVariantReference
 
-class HCLBlockPropertyLazyReference<T : PsiElement>(from: T, soft: Boolean, val doResolve: HCLBlockPropertyLazyReference<T>.(incompleteCode: Boolean, includeFake: Boolean) -> List<HCLProperty>) : PsiReferenceBase.Poly<T>(from, soft), PsiFakeAwarePolyVariantReference {
-  override fun multiResolve(incompleteCode: Boolean, includeFake: Boolean): Array<out ResolveResult> {
-    return PsiElementResolveResult.createResults(doResolve(incompleteCode, includeFake))
-  }
-
-  override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-    return multiResolve(incompleteCode, false)
-  }
-
-  override fun getVariants(): Array<out Any> {
-    return EMPTY_ARRAY
-  }
-}
+class HCLBlockPropertyLazyReference<T : PsiElement>(from: T, soft: Boolean,
+                                                    val doResolve2: HCLBlockPropertyLazyReference<T>.(incompleteCode: Boolean, includeFake: Boolean) -> List<HCLProperty>)
+: HCLElementLazyReference<T>(from, soft, { incomplete, fake ->
+  val list = (this  as HCLBlockPropertyLazyReference<T>).doResolve2(incomplete, fake)
+  list.filter { it is HCLProperty }
+})

@@ -22,7 +22,7 @@ import com.intellij.psi.ResolveResult
 import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hil.inspection.PsiFakeAwarePolyVariantReference
 
-class HCLElementLazyReference<T : PsiElement>(from: T, soft: Boolean, val doResolve: HCLElementLazyReference<T>.(incompleteCode: Boolean, includeFake: Boolean) -> List<HCLElement>) : PsiReferenceBase.Poly<T>(from, soft), PsiFakeAwarePolyVariantReference {
+open class HCLElementLazyReference<T : PsiElement>(from: T, soft: Boolean, val doResolve: HCLElementLazyReference<T>.(incompleteCode: Boolean, includeFake: Boolean) -> List<HCLElement>) : PsiReferenceBase.Poly<T>(from, soft), PsiFakeAwarePolyVariantReference {
   override fun multiResolve(incompleteCode: Boolean, includeFake: Boolean): Array<out ResolveResult> {
     return PsiElementResolveResult.createResults(doResolve(incompleteCode, includeFake))
   }

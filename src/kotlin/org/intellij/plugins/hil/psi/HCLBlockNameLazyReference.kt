@@ -16,18 +16,12 @@
 package org.intellij.plugins.hil.psi
 
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
-import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.ResolveResult
 import org.intellij.plugins.hcl.psi.HCLBlock
 
-class HCLBlockNameLazyReference<T : PsiElement>(from: T, soft: Boolean, val index: Int, val doResolve: HCLBlockNameLazyReference<T>.(incompleteCode: Boolean) -> List<HCLBlock>) : PsiReferenceBase.Poly<T>(from, soft) {
-  override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-    return PsiElementResolveResult.createResults(doResolve(incompleteCode).map { it.nameElements.getOrNull(index) }.filterNotNull())
-  }
-
-  override fun getVariants(): Array<out Any> {
-    //    return EMPTY_ARRAY
-    return doResolve(true).map { it.nameElements.getOrNull(index) }.filterNotNull().toTypedArray()
-  }
-}
+class HCLBlockNameLazyReference<T : PsiElement>(from: T, soft: Boolean,
+                                                val index: Int,
+                                                val doResolve2: HCLBlockNameLazyReference<T>.(incompleteCode: Boolean) -> List<HCLBlock>)
+: HCLElementLazyReference<T>(from, soft, { incomplete, fake ->
+  val list = (this  as HCLBlockNameLazyReference<T>).doResolve2(incomplete)
+  list.filter { it is HCLBlock }.map { it.nameElements.getOrNull(index) }.filterNotNull()
+})
