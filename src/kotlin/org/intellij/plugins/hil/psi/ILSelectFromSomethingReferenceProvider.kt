@@ -58,6 +58,8 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     if (references.isNotEmpty()) {
       val refs = SmartList<PsiReference>()
 
+      if (isStarOrNumber(element)) return references
+
       for (reference in references) {
         refs.add(HCLElementLazyReference(element, false) { incompleteCode, fake ->
           val resolved = SmartList<PsiElement>()
@@ -155,7 +157,7 @@ fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable, skipStars:
     val from = left.from
     if (from is ILSelectExpression && middle != null && skipStars) {
       val text = getSelectFieldText(middle)
-      if (text != null && (text == "*" || text.isNumber())) {
+      if (text != null && isStarOrNumber(text)) {
         // left == from.*
         // from == X.Y
         // select = X.Y.*.right
@@ -171,6 +173,13 @@ fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable, skipStars:
   return null
 }
 
+fun isStarOrNumber(element: ILVariable): Boolean {
+  val text = element.name
+  return isStarOrNumber(text)
+}
+
+fun isStarOrNumber(text: String) = text == "*" || text.isNumber()
+
 fun String.isNumber(): Boolean {
   try {
     this.toInt()
@@ -179,5 +188,4 @@ fun String.isNumber(): Boolean {
     return false
   }
 }
-
 
