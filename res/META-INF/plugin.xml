@@ -1,15 +1,18 @@
 <idea-plugin version="2">
   <id>org.intellij.plugins.hcl</id>
   <name>HCL language support</name>
-  <version>0.4.5.dev</version>
+  <version>0.5.0.dev</version>
   <vendor email="vlad.rassokhin@gmail.com" url="https://github.com/VladRassokhin">Vladislav Rassokhin</vendor>
 
   <description><![CDATA[
-    This plugin adds support for <a href="https://github.com/hashicorp/hcl">HashiCorp Configuration Language (HCL) language</a><br>
-    And it's variation, <a href="https://www.terraform.io/">Terraform</a> configuration files (.tf)<br>
+    This plugin adds support for <a href="https://github.com/hashicorp/hcl">HashiCorp Configuration Language (HCL)</a>
+    and <a href="https://github.com/hashicorp/hil">HashiCorp Interpolation Language (HIL)</a> languages<br>
+
+    And their combination, <a href="https://www.terraform.io/">Terraform</a> configuration files (.tf)<br>
+
     Also HCL format is used for <a href="https://www.nomadproject.io/">Nomad</a>(.nomad files) and <a href="https://www.ottoproject.io/">Otto</a>(Appfile files) tools.<br>
     <h3>Features:</h3>
-    <h4>For both .hcl and .tf file formats:</h4>
+    <h4>For file formats with HCL (.hcl, .tf, .nomad, Appfile):</h4>
     <ul>
       <li>Syntax highlighting</li>
       <li>Structure outline in 'Structure' tool window</li>
@@ -17,31 +20,34 @@
       <li>Code folding</li>
       <li>Comment/Uncomment action</li>
     </ul>
-    <h4>Terraform configs (.tf) files</h4>
-    <ul>
-      <li>Interpolations syntax highlighting</li>
-      <li>(WIP) Properties validation (according to required properties for resource/provider, type checking)</li>
-      <li>(WIP) Go to definition from resource to provider</li>
-    </ul>
-    <h4>Terraform configs Interpolation Language</h4>
+    <h4>HashiCorp Interpolation Language:</h4>
     <ul>
       <li>Syntax highlighting</li>
-      <li><a href="https://www.terraform.io/docs/configuration/interpolation.html">Predefined methods</a> autocompletion</li>
-      <li>(WIP) Go to declaration on resources, providers, properties, etc.</li>
+    </ul>
+    <h3><a href="https://www.terraform.io/">Terraform</a> specific support:</h3>
+    <h4>In both config and interpolations:</h4>
+    <ul>
+      <li>Autocompletion</li>
+      <li>Find Usages / Go to definition for resources, providers, variables and their properties</li>
+      <li>Rename Refactoring</li>
+      <li>Several inspections</li>
+      <li>Report usage of deprecated properties</li>
+      <li>Unresolved reference checks (in interpolations)</li>
+      <li>Check required/missing properties in resource/provider</li>
+      <li><a href="https://www.terraform.io/docs/configuration/interpolation.html">Predefined Terraform methods</a> autocompletion in interpolations</li>
+
+      <li>(WIP) Better properties validation (type checking)</li>
+      <li>(WIP) Working with dependent modules</li>
+      <li>(WIP) Type-specific autocompletion in interpolations</li>
     </ul>
     ]]></description>
-  <!--<h3>Planned features:</h3>-->
-  <!--<h4>Terraform configs (.tf) files</h4>-->
-  <!--<ul>-->
-  <!--<li>Find usages for resources, providers, variables</li>-->
-  <!--</ul>-->
-  <!--<h4>Terraform configs Interpolation Language</h4>-->
-  <!--<ul>-->
-  <!--</ul>-->
 
   <change-notes><![CDATA[
-    <h4>0.4.5</h4>
+    <h4>0.5.0</h4>
+    <p>Customize highlighting text attributes (colour, etc)</p>
+    <p>Improved Find Usages, Go to definition, Rename refactoring support.</p>
     <p>Support custom language injections in heredoc (issue #17)</p>
+    <p>Added inspections in Terraform interpolations: incorrect use of 'self', 'unknown resource type', <b>'unresolved reference'</b></p>
     <h4>0.4.4</h4>
     <p>Added 'deprecated parameter or block type' inspection.</p>
     <p>Updated terraform model data to match Terraform 0.6.11</p>
@@ -58,54 +64,7 @@
     <p>Go to definition from interpolations to provider/resources properties, etc.</p>
     <p>Find usages of provider/resources properties, etc. in interpolations</p>
     <p>Inplace properties renaming (with usages tracking)</p>
-    <h4>0.3.5</h4>
-    <p>Updated terraform model data to match Terraform 0.6.5</p>
-    <p>Added 'unknown block type' inspection.</p>
-    <h4>0.3.4</h4>
-    <p>Improvements in completion and 'required property is missing' inspection.</p>
-    <h4>0.3.3</h4>
-    <p>Improvements in completion. Now it available for almost all blocks properties (resource, provider, variable, etc)</p>
-    <p>Missing required properties inspection improved.</p>
-    <h4>0.3.2</h4>
-    <p>Enable resource type and properties completion introduced in 0.3.0</p>
-    <h4>0.3.1</h4>
-    <p>Register '.nomad' (Nomad) and 'Appfile' (Otto) files as HCL files</p>
-    <h4>0.3.0</h4>
-    <p>Added Inspection for missing required properties in providers.</p>
-    <h4>0.2.8, 0.2.9</h4>
-    <p>Another minor improvement in code formatter around caret placement after pressing `Enter`</p>
-    <h4>0.2.7</h4>
-    <p>Code formatter improved</p>
-    <h4>0.2.6</h4>
-    <p>Support heredoc values (issue #8)</p>
-    <h4>0.2.5</h4>
-    <p>Compatibility with 139.X platform branch</p>
-    <h4>0.2.4</h4>
-    <p>Improvements around incorrect files</p>
-    <p>Now numbers like '10Gb' properly handled</p>
-    <h4>0.2.3</h4>
-    <p>Fixes issue #6: Double quote handled incorrectly in interpolation</p>
-    <h4>0.2.2</h4>
-    <p>Fixes around Auto-create closing quotes, braces, brackets (issue #4)</p>
-    <p>Improve interpolation language injector</p>
-    <h4>0.2.1</h4>
-    <p>Auto-create closing quotes, braces, brackets (issue #4)</p>
-    <p>Highlight matching bracket signs (issue #5)</p>
-    <h4>0.2.0</h4>
-    <p>Terraform Interpolation language support (automatically injected in .tf files)</p>
-    <h4>0.1.4</h4>
-    <p>Fix grammar: identifiers may contain numbers</p>
-    <h4>0.1.3</h4>
-    <p>Register for '.tf' files extension</p>
-    <p>Minor improvements</p>
-    <h4>0.1.2</h4>
-    <p>Comment/Uncomment line action</p>
-    <p>'Structure' tool window support</p>
-    <p>Objects and arrays folding in editor</p>
-    <h4>0.1.1</h4>
-    <p>Recompiled for Java 6</p>
-    <h4>0.1</h4>
-    <p>Syntax highlighting</p>
+    <h4>Previous changes <a href="https://github.com/VladRassokhin/intellij-hcl/blob/master/ChangeLog.html">see in sources repository</a></h4>
     ]]>
   </change-notes>
 
