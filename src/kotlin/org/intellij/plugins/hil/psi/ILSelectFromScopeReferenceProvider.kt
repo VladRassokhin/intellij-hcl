@@ -53,23 +53,25 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
         })
       }
       "count" -> {
-        return arrayOf(HCLBlockPropertyLazyReference(from, true) { incomplete, fake ->
+        return arrayOf(HCLElementLazyReference(from, true) { incomplete, fake ->
           listOf(getResource(this.element)?.`object`?.findProperty("count")).filterNotNull()
         })
       }
       "self" -> {
-        return arrayOf(HCLBlockPropertyLazyReference(element, false) { incomplete, fake ->
+        return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
           val name = this.element.name
-          val resource = getProvisionerResource(this.element) ?: return@HCLBlockPropertyLazyReference emptyList()
+          val resource = getProvisionerResource(this.element) ?: return@HCLElementLazyReference emptyList()
 
-          val found = resource.`object`?.findProperty(name)
-          if (found != null) return@HCLBlockPropertyLazyReference listOf(found)
+          val prop = resource.`object`?.findProperty(name)
+          if (prop != null) return@HCLElementLazyReference listOf(prop)
+          val blocks = resource.`object`?.blockList?.filter { it.name == name }
+          if (blocks != null && blocks.isNotEmpty()) return@HCLElementLazyReference blocks
 
           if (fake) {
             val properties = ModelHelper.getResourceProperties(resource)
             for (p in properties) {
               if (p.name == name) {
-                return@HCLBlockPropertyLazyReference listOf(FakeHCLProperty(p.name))
+                return@HCLElementLazyReference listOf(FakeHCLProperty(p.name))
               }
             }
           }
