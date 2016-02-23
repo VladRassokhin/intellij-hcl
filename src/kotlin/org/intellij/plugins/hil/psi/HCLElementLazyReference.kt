@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2015 JetBrains s.r.o.
+ * Copyright 2000-2016 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
-import org.intellij.plugins.hcl.psi.HCLProperty
+import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hil.inspection.PsiFakeAwarePolyVariantReference
 
-class HCLBlockPropertyLazyReference<T : PsiElement>(from: T, soft: Boolean, val doResolve: HCLBlockPropertyLazyReference<T>.(incompleteCode: Boolean, includeFake: Boolean) -> List<HCLProperty>) : PsiReferenceBase.Poly<T>(from, soft), PsiFakeAwarePolyVariantReference {
+class HCLElementLazyReference<T : PsiElement>(from: T, soft: Boolean, val doResolve: HCLElementLazyReference<T>.(incompleteCode: Boolean, includeFake: Boolean) -> List<HCLElement>) : PsiReferenceBase.Poly<T>(from, soft), PsiFakeAwarePolyVariantReference {
   override fun multiResolve(incompleteCode: Boolean, includeFake: Boolean): Array<out ResolveResult> {
     return PsiElementResolveResult.createResults(doResolve(incompleteCode, includeFake))
   }

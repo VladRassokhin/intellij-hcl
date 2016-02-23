@@ -18,12 +18,19 @@
 package org.intellij.plugins.hil.psi
 
 import com.intellij.lang.injection.InjectedLanguageManager
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiPolyVariantReference
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
 import com.intellij.util.SmartList
+import getNameElementUnquoted
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
+import org.intellij.plugins.hcl.terraform.config.model.getModule
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
+import org.intellij.plugins.hil.inspection.PsiFakeAwarePolyVariantReference
 import org.intellij.plugins.hil.psi.impl.ILExpressionBase
 
 object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
@@ -44,68 +51,26 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
       // v is leftmost, no idea what to do
       return PsiReference.EMPTY_ARRAY;
     }
+
+    // FIXME: Support module outputs
+
     val references = expression.references
     if (references.isNotEmpty()) {
       val refs = SmartList<PsiReference>()
 
       for (reference in references) {
-        refs.add(object : PsiReferenceBase.Poly<ILVariable>(element, true) {
-          override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-            val resolved = SmartList<PsiElement>()
-            if (reference is PsiPolyVariantReference) {
-              resolved.addAll(reference.multiResolve(incompleteCode).map { it.element }.filterNotNull())
-            } else {
-              reference.resolve()?.let { resolved.add(it) }
-            }
-            if (resolved.isEmpty()) {
-              return emptyArray()
-            }
-            val found = SmartList<HCLProperty>()
-            for (r in resolved) {
-              when (r) {
-                is HCLStringLiteral, is HCLIdentifier ->{
-                  val p = r.parent
-                  if (p is HCLBlock) {
-                    val property = p.`object`?.findProperty(name)
-                    if (property != null) {
-                      found.add(property)
-                    }
-                  } else if (p is HCLProperty && p.nameElement === r) {
-                    val value = p.value
-                    if (value is HCLObject) {
-                      val property = value.findProperty(name)
-                      if (property != null) {
-                        found.add(property)
-                      }
-                    }
-                  }
-                }
-                is HCLBlock -> {
-                  val property = r.`object`?.findProperty(name)
-                  if (property != null) {
-                    found.add(property)
-                  }
-                }
-                is HCLProperty -> {
-                  val value = r.value
-                  if (value is HCLObject) {
-                    val property = value.findProperty(name)
-                    if (property != null) {
-                      found.add(property)
-                    }
-                  }
-                }
-              }
-            }
-            if (!found.isEmpty()) {
-              return found.map { PsiElementResolveResult(it) }.toTypedArray()
-            }
-            return emptyArray()
+        refs.add(HCLElementLazyReference(element, false) { incompleteCode, fake ->
+          val resolved = SmartList<PsiElement>()
+          if (reference is PsiFakeAwarePolyVariantReference) {
+            resolved.addAll(reference.multiResolve(incompleteCode, fake).map { it.element }.filterNotNull())
+          } else if (reference is PsiPolyVariantReference) {
+            resolved.addAll(reference.multiResolve(incompleteCode).map { it.element }.filterNotNull())
+          } else {
+            reference.resolve()?.let { resolved.add(it) }
           }
-
-          override fun getVariants(): Array<out Any> {
-            return EMPTY_ARRAY
-          }
+          val found = SmartList<HCLElement>()
+          resolved.forEach { collectReferences(it, name, found, fake) }
+          found
         })
       }
       return refs.toTypedArray()
@@ -114,10 +79,59 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     val ev = getSelectFieldText(expression) ?: return PsiReference.EMPTY_ARRAY
 
     // TODO: get suitable resource/provider/etc
-    return arrayOf(HCLBlockNameLazyReference(element, true, 2) {
-      (this.element as ILExpressionBase).getHCLHost()?.getTerraformModule()?.findResources(ev, this.element.name)?:emptyList()
+    return arrayOf(HCLBlockNameLazyReference(element, false, 2) {
+      (this.element as ILExpressionBase).getHCLHost()?.getTerraformModule()?.findResources(ev, this.element.name) ?: emptyList()
     })
     // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
+  }
+
+  private fun collectReferences(r: PsiElement, name: String, found: MutableList<HCLElement>, fake: Boolean) {
+    when (r) {
+      is HCLStringLiteral, is HCLIdentifier -> {
+        val p = r.parent
+        if (p is HCLBlock && p.nameIdentifier === r) {
+          return collectReferences(p, name, found, fake)
+        } else if (p is HCLProperty && p.nameIdentifier === r) {
+          return collectReferences(p, name, found, fake)
+        }
+      }
+      is HCLBlock -> {
+        val property = r.`object`?.findProperty(name)
+        val blocks = r.`object`?.blockList?.filter { it.name == name }.orEmpty()
+        // TODO: Move this special support somewhere else
+        if ("module" == r.getNameElementUnquoted(0)) {
+          val module = getModule(r)
+          if (module == null) {
+            // Resolve everything
+            if (fake) {
+              found.add(FakeHCLProperty(name))
+            }
+          } else {
+            val outputs = module.getDefinedOutputs().filter { it.name == name }
+            if (!outputs.isEmpty()) {
+              outputs.map { it.nameIdentifier as HCLElement }.toCollection(found)
+            } else if (fake) {
+              //              found.add(FakeHCLProperty(name))
+            }
+          }
+        } else if (property != null) {
+          found.add(property)
+        } else if (!blocks.isEmpty()) {
+          found.addAll(blocks.map { it.nameIdentifier as HCLElement })
+        } else if (fake) {
+          ModelHelper.getBlockProperties(r).filter { it.name == name }.map { FakeHCLProperty(it.name) }.toCollection(found)
+        }
+      }
+      is HCLProperty -> {
+        val value = r.value
+        if (value is HCLObject) {
+          val property = value.findProperty(name)
+          if (property != null) {
+            found.add(property)
+          }
+        }
+      }
+    }
   }
 
 
@@ -132,7 +146,7 @@ private fun getSelectFieldText(expression: ILExpression): String? {
 }
 
 
-fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable, skipStars:Boolean = true): ILExpression? {
+fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable, skipStars: Boolean = true): ILExpression? {
   // select = left.right
   val left = select.from
   if (left is ILSelectExpression) {

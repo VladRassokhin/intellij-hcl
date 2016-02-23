@@ -17,9 +17,7 @@ package org.intellij.plugins.hcl.terraform.config.model
 
 import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFileSystemItem
+import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.GlobalSearchScopes
 import com.intellij.psi.search.PsiElementProcessor
@@ -60,6 +58,10 @@ class Variable(val name: String, vararg properties: PropertyOrBlock = arrayOf())
 fun HCLElement.getTerraformModule(): Module {
   val file = this.containingFile.originalFile
   assert(file is HCLFile)
+  return getModule(file)
+}
+
+fun getModule(file: PsiFile): Module {
   val directory = file.containingDirectory
   if (directory == null) {
     // File only in-memory, assume as only file in module
@@ -67,6 +69,23 @@ fun HCLElement.getTerraformModule(): Module {
   } else {
     return Module(directory)
   }
+}
+
+fun getModule(moduleBlock: HCLBlock): Module? {
+  val sourceVal = moduleBlock.`object`?.findProperty("source")?.value ?: return null
+  if (sourceVal !is HCLStringLiteral) return null
+  val source = sourceVal.value
+
+  // !!! Only local file paths supported
+
+  val file = moduleBlock.containingFile
+  val directory = file.containingDirectory ?: return null
+
+  val relative = directory.virtualFile.findFileByRelativePath(source) ?: return null
+  if (!relative.exists() || !relative.isDirectory) return null
+  val dir = PsiManager.getInstance(moduleBlock.project).findDirectory(relative) ?: return null
+  return Module(dir)
+
 }
 
 fun PsiElement.getTerraformSearchScope(): GlobalSearchScope {
@@ -214,6 +233,20 @@ class Module private constructor(val item: PsiFileSystemItem) {
       file.acceptChildren(object : HCLElementVisitor() {
         override fun visitBlock(o: HCLBlock) {
           if ("module" != o.getNameElementUnquoted(0)) return;
+          o.getNameElementUnquoted(1) ?: return;
+          found.add(o)
+        }
+      }); true
+    })
+    return found
+  }
+
+  fun getDefinedOutputs(): List<HCLBlock> {
+    val found = ArrayList<HCLBlock>()
+    process(PsiElementProcessor { file ->
+      file.acceptChildren(object : HCLElementVisitor() {
+        override fun visitBlock(o: HCLBlock) {
+          if ("output" != o.getNameElementUnquoted(0)) return;
           o.getNameElementUnquoted(1) ?: return;
           found.add(o)
         }

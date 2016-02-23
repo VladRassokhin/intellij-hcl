@@ -20,8 +20,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.impl.FakePsiElement
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.HCLElement
+import org.intellij.plugins.hcl.psi.HCLProperty
+import org.intellij.plugins.hcl.psi.HCLValue
+import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.getProvisionerResource
 import org.intellij.plugins.hil.codeinsight.getResource
@@ -29,6 +33,10 @@ import org.intellij.plugins.hil.psi.impl.ILExpressionBase
 
 object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
+    return getReferencesByElement(element)
+  }
+
+  fun getReferencesByElement(element: PsiElement): Array<out PsiReference> {
     if (element !is ILVariable) return PsiReference.EMPTY_ARRAY
     val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return PsiReference.EMPTY_ARRAY
     if (host !is HCLElement) return PsiReference.EMPTY_ARRAY
@@ -46,13 +54,28 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
       })
     }
     if (from.name == "count") {
-      return arrayOf(HCLBlockPropertyLazyReference(from, true) {
+      return arrayOf(HCLBlockPropertyLazyReference(from, true) { incomplete, fake ->
         listOf(getResource(this.element)?.`object`?.findProperty("count")).filterNotNull()
       })
     }
     if (from.name == "self") {
-      return arrayOf(HCLBlockPropertyLazyReference(element, true) {
-        listOf(getProvisionerResource(this.element)?.`object`?.findProperty(name)).filterNotNull()
+      return arrayOf(HCLBlockPropertyLazyReference(element, false) { incomplete, fake ->
+        @Suppress("NAME_SHADOWING")
+        val name = this.element.name
+        val resource = getProvisionerResource(this.element) ?: return@HCLBlockPropertyLazyReference emptyList()
+
+        val found = resource.`object`?.findProperty(name)
+        if (found != null) return@HCLBlockPropertyLazyReference listOf(found)
+
+        if (fake) {
+          val properties = ModelHelper.getResourceProperties(resource)
+          for (p in properties) {
+            if (p.name == name) {
+              return@HCLBlockPropertyLazyReference listOf(FakeHCLProperty(p.name))
+            }
+          }
+        }
+        emptyList()
       })
     }
     if (from.name == "path") {
@@ -70,4 +93,27 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
     }
     return PsiReference.EMPTY_ARRAY;
   }
+}
+
+class FakeHCLProperty(val _name: String) : FakePsiElement(), HCLProperty {
+  override fun getName(): String {
+    return _name
+  }
+
+  override fun getNameElement(): HCLValue {
+    throw UnsupportedOperationException()
+  }
+
+  override fun getValue(): HCLValue? {
+    throw UnsupportedOperationException()
+  }
+
+  override fun getParent(): PsiElement? {
+    throw UnsupportedOperationException()
+  }
+
+  override fun getNameIdentifier(): PsiElement? {
+    throw UnsupportedOperationException()
+  }
+
 }

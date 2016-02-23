@@ -56,7 +56,7 @@ object SimpleReferenceProvider : PsiReferenceProvider() {
     val parent = element.parent
     if (parent !is HCLProperty) return PsiReference.EMPTY_ARRAY
     if (parent.nameElement == element) return PsiReference.EMPTY_ARRAY
-    return arrayOf(HCLBlockNameLazyReference(element, true, 1) {
+    return arrayOf(HCLBlockNameLazyReference(element, false, 1) {
       if (it) {
         element.getTerraformModule().getDefinedProviders().map { it.first }
       } else {

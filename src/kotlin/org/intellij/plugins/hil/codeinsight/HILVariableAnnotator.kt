@@ -63,29 +63,29 @@ class HILVariableAnnotator : Annotator {
     }
   }
 
-  private fun isScopeElementReference(element: ILVariable, parent: ILSelectExpression): Boolean {
-    val left = getGoodLeftElement(parent, element, false) ?: return false
-    if (left !is ILVariable) return false
-    val lp = left.parent
-    if (lp !is ILSelectExpression) return false
-    return (left === lp.from) && scopes.contains(left.name)
-  }
+}
 
-  private fun isResourceInstanceReference(element: ILVariable, parent: ILSelectExpression): Boolean {
-    val left = getGoodLeftElement(parent, element, false) ?: return false
-    if (left !is ILVariable) return false
-    val lp = left.parent
-    if (lp !is ILSelectExpression) return false
-    return (left === lp.from) && !scopes.contains(left.name)
-  }
+fun isScopeElementReference(element: ILVariable, parent: ILSelectExpression): Boolean {
+  val left = getGoodLeftElement(parent, element, false) ?: return false
+  if (left !is ILVariable) return false
+  val lp = left.parent
+  if (lp !is ILSelectExpression) return false
+  return (left === lp.from) && HILVariableAnnotator.scopes.contains(left.name)
+}
 
-  private fun isResourcePropertyReference(element: ILVariable, parent: ILSelectExpression): Boolean {
-    // TODO: Improve. Somehow. See ILSelectFromSomethingReferenceProvider
-    // Since this function called after another two, other variants are already used
-    if (parent.from !is ILSelectExpression) return false
-    val left = getGoodLeftElement(parent, element)
-    if (left !is ILVariable) return false
-    return true
-  }
+fun isResourceInstanceReference(element: ILVariable, parent: ILSelectExpression): Boolean {
+  val left = getGoodLeftElement(parent, element, false) ?: return false
+  if (left !is ILVariable) return false
+  val lp = left.parent
+  if (lp !is ILSelectExpression) return false
+  return (left === lp.from) && !HILVariableAnnotator.scopes.contains(left.name)
+}
 
+fun isResourcePropertyReference(element: ILVariable, parent: ILSelectExpression): Boolean {
+  // TODO: Improve. Somehow. See ILSelectFromSomethingReferenceProvider
+  // Since this function called after another two, other variants are already used
+  if (parent.from !is ILSelectExpression) return false
+  val left = getGoodLeftElement(parent, element)
+  if (left !is ILVariable) return false
+  return true
 }
