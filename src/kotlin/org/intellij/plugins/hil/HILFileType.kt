@@ -19,13 +19,14 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.fileTypes.FileTypeConsumer
 import com.intellij.openapi.fileTypes.FileTypeFactory
 import com.intellij.openapi.fileTypes.LanguageFileType
+import org.intellij.plugins.hcl.Icons
 import javax.swing.Icon
 
 object HILFileType : LanguageFileType(HILLanguage) {
   val DEFAULT_EXTENSION: String = "hil";
 
   override fun getIcon(): Icon? {
-    return AllIcons.FileTypes.Custom
+    return Icons.FileTypes.HIL
   }
 
   override fun getDefaultExtension(): String {

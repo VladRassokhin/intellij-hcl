@@ -25,6 +25,7 @@ object Icons {
     // TODO: Create icons
     val HCL: Icon by lazy { AllIcons.FileTypes.Text }
     val Terraform: Icon by lazy { HCL }
+    val HIL: Icon by lazy { AllIcons.FileTypes.Custom }
   }
 
   val Property: Icon by lazy { PlatformIcons.PROPERTY_ICON }
