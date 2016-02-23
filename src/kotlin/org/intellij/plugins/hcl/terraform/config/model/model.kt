@@ -21,7 +21,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.GlobalSearchScopes
 import com.intellij.psi.search.PsiElementProcessor
-import com.intellij.testFramework.LightVirtualFileBase
+import com.intellij.testFramework.LightVirtualFile
 import getNameElementUnquoted
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hil.psi.ILExpression
@@ -99,7 +99,7 @@ fun PsiElement.getTerraformSearchScope(): GlobalSearchScope {
   if (directory == null) {
     // File only in-memory, assume as only file in module
     var vf: VirtualFile = file.virtualFile
-    if (vf is LightVirtualFileBase) {
+    if (vf is LightVirtualFile) {
       vf = vf.originalFile?:vf
     }
     return GlobalSearchScopes.directoryScope(file.project, vf.parent, false)
