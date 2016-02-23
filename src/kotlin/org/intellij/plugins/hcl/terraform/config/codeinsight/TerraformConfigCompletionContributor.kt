@@ -24,7 +24,6 @@ import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.PlatformPatterns.psiFile
 import com.intellij.patterns.StandardPatterns
@@ -37,6 +36,7 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.DebugUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
+import com.intellij.util.SmartList
 import getNameElementUnquoted
 import getPrevSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.HCLElementTypes
@@ -239,9 +239,16 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     }
   }
 
-  private object BlockTypeOrNameCompletionProvider : OurCompletionProvider() {
+  object BlockTypeOrNameCompletionProvider : OurCompletionProvider() {
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val position = parameters.position
+      val list = SmartList<LookupElementBuilder>()
+      doCompletion(position, list)
+      result.addAllElements(list)
+    }
+
+    public fun doCompletion(position: PsiElement, consumer: MutableList<LookupElementBuilder>) {
       val parent = position.parent
       LOG.debug("TF.BlockTypeOrNameCompletionProvider{position=$position, parent=$parent}")
       val obj = when {
@@ -263,13 +270,13 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       }
       when (type) {
         "resource" ->
-          result.addAllElements(getTypeModel().resources.map { create(it.type) })
+          consumer.addAll(getTypeModel().resources.map { create(it.type) })
 
         "provider" ->
-          result.addAllElements(getTypeModel().providers.map { create(it.type) })
+          consumer.addAll(getTypeModel().providers.map { create(it.type) })
 
         "provisioner" ->
-          result.addAllElements(getTypeModel().provisioners.map { create(it.type) })
+          consumer.addAll(getTypeModel().provisioners.map { create(it.type) })
       }
       return
     }
