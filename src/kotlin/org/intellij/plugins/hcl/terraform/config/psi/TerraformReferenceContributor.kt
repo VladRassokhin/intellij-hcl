@@ -57,7 +57,7 @@ object SimpleReferenceProvider : PsiReferenceProvider() {
       if (incomplete) {
         element.getTerraformModule().getDefinedProviders().map { it.first.nameIdentifier as HCLElement }
       } else {
-        element.getTerraformModule().findProviders(element.value)
+        element.getTerraformModule().findProviders(element.value).map { it.nameIdentifier as HCLElement }
       }
     })
   }
