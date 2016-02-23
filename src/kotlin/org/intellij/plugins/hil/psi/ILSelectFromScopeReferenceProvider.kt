@@ -46,50 +46,49 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
     val from = parent.from
     if (from !is ILVariable) return PsiReference.EMPTY_ARRAY
 
-    val name = element.name
+    when (from.name) {
+      "var" -> {
+        return arrayOf(HCLBlockNameLazyReference(element, false, 1) {
+          listOf((this.element as ILExpressionBase).getHCLHost()?.getTerraformModule()?.findVariable(this.element.name)?.second).filterNotNull()
+        })
+      }
+      "count" -> {
+        return arrayOf(HCLBlockPropertyLazyReference(from, true) { incomplete, fake ->
+          listOf(getResource(this.element)?.`object`?.findProperty("count")).filterNotNull()
+        })
+      }
+      "self" -> {
+        return arrayOf(HCLBlockPropertyLazyReference(element, false) { incomplete, fake ->
+          val name = this.element.name
+          val resource = getProvisionerResource(this.element) ?: return@HCLBlockPropertyLazyReference emptyList()
 
-    if (from.name == "var") {
-      return arrayOf(HCLBlockNameLazyReference(element, false, 1) {
-        listOf((this.element as ILExpressionBase).getHCLHost()?.getTerraformModule()?.findVariable(this.element.name)?.second).filterNotNull()
-      })
-    }
-    if (from.name == "count") {
-      return arrayOf(HCLBlockPropertyLazyReference(from, true) { incomplete, fake ->
-        listOf(getResource(this.element)?.`object`?.findProperty("count")).filterNotNull()
-      })
-    }
-    if (from.name == "self") {
-      return arrayOf(HCLBlockPropertyLazyReference(element, false) { incomplete, fake ->
-        @Suppress("NAME_SHADOWING")
-        val name = this.element.name
-        val resource = getProvisionerResource(this.element) ?: return@HCLBlockPropertyLazyReference emptyList()
+          val found = resource.`object`?.findProperty(name)
+          if (found != null) return@HCLBlockPropertyLazyReference listOf(found)
 
-        val found = resource.`object`?.findProperty(name)
-        if (found != null) return@HCLBlockPropertyLazyReference listOf(found)
-
-        if (fake) {
-          val properties = ModelHelper.getResourceProperties(resource)
-          for (p in properties) {
-            if (p.name == name) {
-              return@HCLBlockPropertyLazyReference listOf(FakeHCLProperty(p.name))
+          if (fake) {
+            val properties = ModelHelper.getResourceProperties(resource)
+            for (p in properties) {
+              if (p.name == name) {
+                return@HCLBlockPropertyLazyReference listOf(FakeHCLProperty(p.name))
+              }
             }
           }
-        }
-        emptyList()
-      })
-    }
-    if (from.name == "path") {
-      // TODO: Resolve some paths
-      if (name == "module") {
-        @Suppress("USELESS_CAST")
-        val file = (host as HCLElement).containingFile.originalFile
-        return arrayOf(PsiReferenceBase.Immediate<ILVariable>(element, true, file.containingDirectory ?: file))
+          emptyList()
+        })
       }
-    }
-    if (from.name == "module") {
-      return arrayOf(HCLBlockNameLazyReference(element, false, 1) {
-        (this.element as ILExpressionBase).getHCLHost()?.getTerraformModule()?.findModules(this.element.name) ?: emptyList()
-      })
+      "path" -> {
+        // TODO: Resolve 'cwd' and 'root' paths
+        if (element.name == "module") {
+          @Suppress("USELESS_CAST")
+          val file = (host as HCLElement).containingFile.originalFile
+          return arrayOf(PsiReferenceBase.Immediate<ILVariable>(element, true, file.containingDirectory ?: file))
+        }
+      }
+      "module" -> {
+        return arrayOf(HCLBlockNameLazyReference(element, false, 1) {
+          (this.element as ILExpressionBase).getHCLHost()?.getTerraformModule()?.findModules(this.element.name) ?: emptyList()
+        })
+      }
     }
     return PsiReference.EMPTY_ARRAY;
   }
