@@ -50,9 +50,9 @@ abstract class ILExpressionBase(node: ASTNode) : ASTWrapperPsiElement(node), ILE
     return trimmed
   }
 
-  fun getHCLHost(): HCLElement? {
-    val host = InjectedLanguageManager.getInstance(this.project).getInjectionHost(this)
-    if (host is  HCLElement) return host
-    return null
-  }
+}
+
+fun ILExpression.getHCLHost(): HCLElement? {
+  val host = InjectedLanguageManager.getInstance(this.project).getInjectionHost(this)
+  return if (host is HCLElement) host else null
 }

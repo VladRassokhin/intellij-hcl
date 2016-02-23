@@ -21,13 +21,10 @@ import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
 import getNameElementUnquoted
-import org.intellij.plugins.hcl.psi.HCLBlock
-import org.intellij.plugins.hcl.psi.HCLFile
-import org.intellij.plugins.hcl.psi.HCLProperty
-import org.intellij.plugins.hcl.psi.HCLStringLiteral
+import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
-import org.intellij.plugins.hil.psi.HCLBlockNameLazyReference
+import org.intellij.plugins.hil.psi.HCLElementLazyReference
 
 class TerraformReferenceContributor : PsiReferenceContributor() {
   override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
@@ -56,9 +53,9 @@ object SimpleReferenceProvider : PsiReferenceProvider() {
     val parent = element.parent
     if (parent !is HCLProperty) return PsiReference.EMPTY_ARRAY
     if (parent.nameElement == element) return PsiReference.EMPTY_ARRAY
-    return arrayOf(HCLBlockNameLazyReference(element, false, 1) {
-      if (it) {
-        element.getTerraformModule().getDefinedProviders().map { it.first }
+    return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
+      if (incomplete) {
+        element.getTerraformModule().getDefinedProviders().map { it.first.nameIdentifier as HCLElement }
       } else {
         element.getTerraformModule().findProviders(element.value)
       }

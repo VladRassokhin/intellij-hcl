@@ -31,7 +31,7 @@ import org.intellij.plugins.hcl.terraform.config.model.getModule
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
 import org.intellij.plugins.hil.inspection.PsiFakeAwarePolyVariantReference
-import org.intellij.plugins.hil.psi.impl.ILExpressionBase
+import org.intellij.plugins.hil.psi.impl.getHCLHost
 
 object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
@@ -79,8 +79,8 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     val ev = getSelectFieldText(expression) ?: return PsiReference.EMPTY_ARRAY
 
     // TODO: get suitable resource/provider/etc
-    return arrayOf(HCLBlockNameLazyReference(element, false, 2) {
-      (this.element as ILExpressionBase).getHCLHost()?.getTerraformModule()?.findResources(ev, this.element.name) ?: emptyList()
+    return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
+      this.element.getHCLHost()?.getTerraformModule()?.findResources(ev, this.element.name)?.map { it.nameIdentifier as HCLElement } ?: emptyList()
     })
     // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
   }

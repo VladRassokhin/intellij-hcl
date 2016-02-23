@@ -29,7 +29,7 @@ import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.getProvisionerResource
 import org.intellij.plugins.hil.codeinsight.getResource
-import org.intellij.plugins.hil.psi.impl.ILExpressionBase
+import org.intellij.plugins.hil.psi.impl.getHCLHost
 
 object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
@@ -48,8 +48,8 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
 
     when (from.name) {
       "var" -> {
-        return arrayOf(HCLBlockNameLazyReference(element, false, 1) {
-          listOf((this.element as ILExpressionBase).getHCLHost()?.getTerraformModule()?.findVariable(this.element.name)?.second).filterNotNull()
+        return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
+          listOf(this.element.getHCLHost()?.getTerraformModule()?.findVariable(this.element.name)?.second?.nameIdentifier as HCLElement?).filterNotNull()
         })
       }
       "count" -> {
@@ -87,8 +87,8 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
         }
       }
       "module" -> {
-        return arrayOf(HCLBlockNameLazyReference(element, false, 1) {
-          (this.element as ILExpressionBase).getHCLHost()?.getTerraformModule()?.findModules(this.element.name) ?: emptyList()
+        return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
+          this.element.getHCLHost()?.getTerraformModule()?.findModules(this.element.name)?.map { it.nameIdentifier as HCLElement } ?: emptyList()
         })
       }
     }
