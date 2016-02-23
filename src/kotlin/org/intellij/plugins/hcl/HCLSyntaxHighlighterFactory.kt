@@ -54,6 +54,7 @@ open class HCLSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
     val HCL_BLOCK_SECOND_TYPE_KEY: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BLOCK_SECOND_TYPE_KEY", CLASS_REFERENCE)
     val HCL_BLOCK_OTHER_TYPES_KEY: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BLOCK_TYPES_KEY", CLASS_REFERENCE)
     val HCL_BLOCK_NAME_KEY: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BLOCK_NAME_KEY", CLASS_NAME)
+    val HCL_BLOCK_ONLY_NAME_KEY: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.BLOCK_ONLY_NAME_KEY", HCL_BLOCK_FIRST_TYPE_KEY)
 
     // String escapes
     val HCL_VALID_ESCAPE: TextAttributesKey = TextAttributesKey.createTextAttributesKey("HCL.VALID_ESCAPE", VALID_STRING_ESCAPE)

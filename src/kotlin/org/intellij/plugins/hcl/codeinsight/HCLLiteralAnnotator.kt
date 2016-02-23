@@ -45,7 +45,9 @@ class HCLLiteralAnnotator : Annotator {
         holder.createInfoAnnotation(element, if (DEBUG) "property key" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY
       } else if (parent is HCLBlock) {
         val ne = parent.nameElements
-        for (i in ne.indices) {
+        if (ne.size == 1 && ne[0] === element) {
+          holder.createInfoAnnotation(element, if (DEBUG) "block only name identifier" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_ONLY_NAME_KEY
+        } else for (i in ne.indices) {
           if (ne[i] === element) {
             if (i == ne.lastIndex) {
               holder.createInfoAnnotation(element, if (DEBUG) "block name identifier" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY

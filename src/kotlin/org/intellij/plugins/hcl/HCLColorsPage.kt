@@ -42,6 +42,7 @@ class HCLColorsPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPri
         AttributesDescriptor("Identifier", HCLSyntaxHighlighterFactory.HCL_IDENTIFIER),
 
         AttributesDescriptor("Property key", HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY),
+        AttributesDescriptor("Block only name/type", HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY),
         AttributesDescriptor("Block first type", HCLSyntaxHighlighterFactory.HCL_BLOCK_FIRST_TYPE_KEY),
         AttributesDescriptor("Block second type", HCLSyntaxHighlighterFactory.HCL_BLOCK_SECOND_TYPE_KEY),
         AttributesDescriptor("Block other types", HCLSyntaxHighlighterFactory.HCL_BLOCK_OTHER_TYPES_KEY),
@@ -55,7 +56,8 @@ class HCLColorsPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPri
         "bt1" to HCLSyntaxHighlighterFactory.HCL_BLOCK_FIRST_TYPE_KEY,
         "bt2" to HCLSyntaxHighlighterFactory.HCL_BLOCK_SECOND_TYPE_KEY,
         "btO" to HCLSyntaxHighlighterFactory.HCL_BLOCK_OTHER_TYPES_KEY,
-        "bn" to HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY
+        "bn" to HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY,
+        "bon" to HCLSyntaxHighlighterFactory.HCL_BLOCK_ONLY_NAME_KEY
     )
   }
 
@@ -84,7 +86,10 @@ class HCLColorsPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPri
     <pk>bad</pk> = "Invalid escaping:\c"
     <pk>'good'</pk> = "Valid escaping:\"\n\"\"
   }
-}"""
+}
+<bon>block_with_only_one_name</bon> {
+}
+"""
   }
 
   override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey>? {
