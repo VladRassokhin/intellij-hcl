@@ -82,4 +82,16 @@ public class HILParserTest extends ParsingTestCase {
   public void testUnaryMathExpressions() throws Exception {
     doCodeTest("${format(\"\", +10 - 9, -10 + -9, -10 + (-9), -1 * -1)}");
   }
+
+  public void testSimpleMath() throws Exception {
+    doCodeTest("${format(\"\", 2 + 2, 2 - 2, 2 * 2, 2 / 2, 2 % 2)}");
+  }
+
+  public void testSimpleMathCompact() throws Exception {
+    doCodeTest("${format(\"\", 2+2, 2-2, 2*2, 2/2, 2%2)}");
+  }
+
+  public void testWeirdMath() throws Exception {
+    doCodeTest("${format(\"\", 2 + 2 * 2, 2 + (2 * 2))}");
+  }
 }

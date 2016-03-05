@@ -25,8 +25,7 @@ open class HILElementType(debugName: String) : IElementType(debugName, HILLangua
     val IL_EXPRESSIONS: TokenSet = TokenSet.create(
         IL_VARIABLE,
         IL_UNARY_EXPRESSION,
-        IL_BINARY_ADD_EXPRESSION,
-        IL_BINARY_MUL_EXPRESSION,
+        IL_BINARY_ADD_MUL_EXPRESSION,
         IL_LITERAL_EXPRESSION,
         IL_METHOD_CALL_EXPRESSION
     )

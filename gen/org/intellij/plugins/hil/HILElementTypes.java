@@ -8,8 +8,7 @@ import org.intellij.plugins.hil.psi.impl.*;
 
 public interface HILElementTypes {
 
-  IElementType IL_BINARY_ADD_EXPRESSION = new HILElementType("IL_BINARY_ADD_EXPRESSION");
-  IElementType IL_BINARY_MUL_EXPRESSION = new HILElementType("IL_BINARY_MUL_EXPRESSION");
+  IElementType IL_BINARY_ADD_MUL_EXPRESSION = new HILElementType("IL_BINARY_ADD_MUL_EXPRESSION");
   IElementType IL_EXPRESSION = new HILElementType("IL_EXPRESSION");
   IElementType IL_EXPRESSION_HOLDER = new HILElementType("IL_EXPRESSION_HOLDER");
   IElementType IL_LITERAL_EXPRESSION = new HILElementType("IL_LITERAL_EXPRESSION");
@@ -42,11 +41,8 @@ public interface HILElementTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == IL_BINARY_ADD_EXPRESSION) {
-        return new ILBinaryAddExpressionImpl(node);
-      }
-      else if (type == IL_BINARY_MUL_EXPRESSION) {
-        return new ILBinaryMulExpressionImpl(node);
+       if (type == IL_BINARY_ADD_MUL_EXPRESSION) {
+        return new ILBinaryAddMulExpressionImpl(node);
       }
       else if (type == IL_EXPRESSION) {
         return new ILExpressionImpl(node);

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import org.intellij.plugins.hil.ILBinaryExpression;
 
-public interface ILBinaryAddExpression extends ILExpression, ILBinaryExpression {
+public interface ILBinaryAddMulExpression extends ILExpression, ILBinaryExpression {
 
   @NotNull
   List<ILExpression> getILExpressionList();

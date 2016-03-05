@@ -10,12 +10,7 @@ import com.intellij.psi.PsiNamedElement;
 
 public class ILGeneratedVisitor extends PsiElementVisitor {
 
-  public void visitILBinaryAddExpression(@NotNull ILBinaryAddExpression o) {
-    visitILExpression(o);
-    // visitILBinaryExpression(o);
-  }
-
-  public void visitILBinaryMulExpression(@NotNull ILBinaryMulExpression o) {
+  public void visitILBinaryAddMulExpression(@NotNull ILBinaryAddMulExpression o) {
     visitILExpression(o);
     // visitILBinaryExpression(o);
   }

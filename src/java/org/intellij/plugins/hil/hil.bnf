@@ -39,7 +39,7 @@
     FALSE='false'
     NULL='null'
 
-    ID="regexp:[a-zA-Z_*][0-9a-zA-Z\-_*]*"
+    ID="regexp:[a-zA-Z_][0-9a-zA-Z\-_*]*"
   ]
 
 }
@@ -51,8 +51,7 @@ private root ::= ILExpression
 ILExpression ::= ILParenthesizedExpression
   | ILExpressionHolder
   | ILSelectExpression
-  | ILBinaryAddExpression
-  | ILBinaryMulExpression
+  | ILBinaryAddMulExpression
   | ILMethodCallExpression
   | ILLiteralExpression
   | ILUnaryExpression
@@ -78,12 +77,9 @@ ILUnaryExpression ::= AddOp ILExpression
     getOperationSign
   ]
 }
-ILBinaryAddExpression ::= ILExpression AddOp ILExpression
-{
-  implements="org.intellij.plugins.hil.ILBinaryExpression"
-  mixin="org.intellij.plugins.hil.psi.impl.ILBinaryExpressionImpl"
-}
-ILBinaryMulExpression ::= ILExpression MulOp ILExpression
+
+// TODO: Split back into ILBinaryAddExpression and ILBinaryMulExpression when (if) normal operations order would be done in HIL
+ILBinaryAddMulExpression ::= ILExpression (AddOp|MulOp) ILExpression
 {
   implements="org.intellij.plugins.hil.ILBinaryExpression"
   mixin="org.intellij.plugins.hil.psi.impl.ILBinaryExpressionImpl"
