@@ -19,6 +19,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
 import org.intellij.plugins.hil.psi.*;
 import org.jetbrains.annotations.NotNull;
@@ -79,5 +80,15 @@ public class HILPsiImplUtilJ {
   @Nullable
   public static String getUnquotedText(ILLiteralExpression literal){
     return HILPsiImplUtils.INSTANCE.getUnquotedText(literal);
+  }
+
+  @NotNull
+  public static ILExpression getOperand(ILUnaryExpression expression) {
+    return HILPsiImplUtils.INSTANCE.getOperand(expression);
+  }
+
+  @NotNull
+  public static IElementType getOperationSign(ILUnaryExpression expression) {
+    return HILPsiImplUtils.INSTANCE.getOperationSign(expression);
   }
 }

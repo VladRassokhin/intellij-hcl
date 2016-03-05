@@ -23,8 +23,8 @@ LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
 DOUBLE_QUOTED_STRING=\"([^\\\"\r\n]|\\[^\r\n])*\"?
-NUMBER=-?(0x)?(0|[1-9])[0-9]*(\.[0-9]+)?([eE][-+]?[0-9]+)?
-ID=[a-zA-Z\-_*][0-9a-zA-Z\-_*]*
+NUMBER=(0x)?(0|[1-9])[0-9]*(\.[0-9]+)?([eE][-+]?[0-9]+)?
+ID=[a-zA-Z_*][0-9a-zA-Z\-_*]*
 
 %%
 <YYINITIAL> {

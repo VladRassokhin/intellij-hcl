@@ -33,13 +33,13 @@
 
     DOUBLE_QUOTED_STRING="regexp:\"([^\\\"\r\n]|\\[^\r\n])*\"?"
 
-    NUMBER='regexp:-?(0x)?(0|[1-9])\d*(\.\d+)?([eE][-+]?\d+)?'
+    NUMBER='regexp:(0x)?(0|[1-9])\d*(\.\d+)?([eE][-+]?\d+)?'
 
     TRUE='true'
     FALSE='false'
     NULL='null'
 
-    ID="regexp:[a-zA-Z\-_*][0-9a-zA-Z\-_*]*"
+    ID="regexp:[a-zA-Z_*][0-9a-zA-Z\-_*]*"
   ]
 
 }
@@ -55,6 +55,7 @@ ILExpression ::= ILParenthesizedExpression
   | ILBinaryMulExpression
   | ILMethodCallExpression
   | ILLiteralExpression
+  | ILUnaryExpression
   | ILVariable
 {
   name="expression"
@@ -70,6 +71,13 @@ ILExpressionHolder ::= '${' ILExpression '}' {
 
 ILParenthesizedExpression ::= '(' ILExpression ')'
 
+ILUnaryExpression ::= AddOp ILExpression
+{
+  methods = [
+    getOperand
+    getOperationSign
+  ]
+}
 ILBinaryAddExpression ::= ILExpression AddOp ILExpression
 {
   implements="org.intellij.plugins.hil.ILBinaryExpression"

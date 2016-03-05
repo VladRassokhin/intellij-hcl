@@ -22,9 +22,12 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.impl.source.tree.LeafElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
+import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.IncorrectOperationException
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformSearchScope
+import org.intellij.plugins.hil.HILElementType
+import org.intellij.plugins.hil.HILTokenType
 import org.intellij.plugins.hil.psi.*
 
 object HILPsiImplUtils {
@@ -104,5 +107,15 @@ object HILPsiImplUtils {
       return StringUtil.unquoteString(dqs.text)
     }
     return literal.text
+  }
+
+  fun getOperand(expression: ILUnaryExpression): ILExpression {
+    val nodes = expression.node.getChildren(HILElementType.IL_EXPRESSIONS)
+    return nodes.first() as ILExpression
+  }
+
+  fun getOperationSign(expression: ILUnaryExpression): IElementType {
+    val nodes = expression.node.getChildren(HILTokenType.IL_UNARY_OPERATIONS)
+    return nodes.first().elementType
   }
 }

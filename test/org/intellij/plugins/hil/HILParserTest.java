@@ -74,4 +74,12 @@ public class HILParserTest extends ParsingTestCase {
   public void testString() throws Exception {
     doCodeTest("${file(\"ecs-container-definitions.json\")}");
   }
+
+  public void testUnaryNumbers() throws Exception {
+    doCodeTest("${format(\"\", 0, 1, -1, +1, -0, +0, -10.0e5, +10.5e-2)}");
+  }
+
+  public void testUnaryMathExpressions() throws Exception {
+    doCodeTest("${format(\"\", +10 - 9, -10 + -9, -10 + (-9), -1 * -1)}");
+  }
 }

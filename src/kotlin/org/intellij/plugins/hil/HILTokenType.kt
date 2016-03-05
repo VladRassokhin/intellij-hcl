@@ -25,5 +25,9 @@ open class HILTokenType(debugName: String) : IElementType(debugName, HILLanguage
     val IL_BINARY_OPERATIONS: TokenSet = TokenSet.create(
         OP_PLUS, OP_MINUS, OP_MUL, OP_DIV, OP_MOD
     )
+
+    val IL_UNARY_OPERATIONS: TokenSet = TokenSet.create(
+        OP_PLUS, OP_MINUS
+    )
   }
 }

@@ -17,6 +17,7 @@ public interface HILElementTypes {
   IElementType IL_PARAMETER_LIST = new HILElementType("IL_PARAMETER_LIST");
   IElementType IL_PARENTHESIZED_EXPRESSION = new HILElementType("IL_PARENTHESIZED_EXPRESSION");
   IElementType IL_SELECT_EXPRESSION = new HILElementType("IL_SELECT_EXPRESSION");
+  IElementType IL_UNARY_EXPRESSION = new HILElementType("IL_UNARY_EXPRESSION");
   IElementType IL_VARIABLE = new HILElementType("IL_VARIABLE");
 
   IElementType COMMA = new HILTokenType(",");
@@ -67,6 +68,9 @@ public interface HILElementTypes {
       }
       else if (type == IL_SELECT_EXPRESSION) {
         return new ILSelectExpressionImpl(node);
+      }
+      else if (type == IL_UNARY_EXPRESSION) {
+        return new ILUnaryExpressionImpl(node);
       }
       else if (type == IL_VARIABLE) {
         return new ILVariableImpl(node);

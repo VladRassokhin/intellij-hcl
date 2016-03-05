@@ -49,6 +49,10 @@ public class ILGeneratedVisitor extends PsiElementVisitor {
     visitILExpression(o);
   }
 
+  public void visitILUnaryExpression(@NotNull ILUnaryExpression o) {
+    visitILExpression(o);
+  }
+
   public void visitILVariable(@NotNull ILVariable o) {
     visitILExpression(o);
     // visitPsiNamedElement(o);
