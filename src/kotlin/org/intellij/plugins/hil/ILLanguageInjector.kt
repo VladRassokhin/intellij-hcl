@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2015 JetBrains s.r.o.
+ * Copyright 2000-2016 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,10 +39,10 @@ class ILLanguageInjector : LanguageInjector {
   }
 
   private fun getStringLiteralInjections(host: HCLStringLiteral, places: InjectedLanguagePlaces) {
-    val text = host.text
     val value = host.value
-    val offset = if (value != text) 1 else 0
     val ranges = getILRangesInText(value)
+    if (ranges.isEmpty()) return
+    val offset = if (value != host.text) 1 else 0
     for (range in ranges) {
       val rng = range.shiftRight(offset)
       places.addPlace(HILLanguage, rng, null, null)
