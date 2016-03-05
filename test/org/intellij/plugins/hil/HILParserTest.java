@@ -94,4 +94,24 @@ public class HILParserTest extends ParsingTestCase {
   public void testWeirdMath() throws Exception {
     doCodeTest("${format(\"\", 2 + 2 * 2, 2 + (2 * 2))}");
   }
+
+  public void testSimpleIndexes() throws Exception {
+    doCodeTest("${format(foo[1], baz[0])}");
+  }
+
+  public void testGreedyIndexes() throws Exception {
+    doCodeTest("${aws_instance.web.*.list[2]}");
+  }
+
+  public void testInceptionIndexes() throws Exception {
+    doCodeTest("${foo[bar[0]]}");
+  }
+
+  public void testMultipleIndexes() throws Exception {
+    doCodeTest("${foo[0][1][2][3]}");
+  }
+
+  public void testTooManyIndexes() throws Exception {
+    doCodeTest("${foo[a[0]][b[1]][c[2]][d[3]]}");
+  }
 }

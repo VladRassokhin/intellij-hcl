@@ -23,6 +23,10 @@ public class ILGeneratedVisitor extends PsiElementVisitor {
     visitILExpression(o);
   }
 
+  public void visitILIndexSelectExpression(@NotNull ILIndexSelectExpression o) {
+    visitILExpression(o);
+  }
+
   public void visitILLiteralExpression(@NotNull ILLiteralExpression o) {
     visitILExpression(o);
   }

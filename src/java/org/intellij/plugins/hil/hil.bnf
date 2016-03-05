@@ -20,6 +20,8 @@
     INTERPOLATION_END='}'
     L_PAREN='('
     R_PAREN=')'
+    L_BRACKET='['
+    R_BRACKET=']'
     COMMA=','
     EQUALS='='
     POINT='.'
@@ -50,6 +52,7 @@ private root ::= ILExpression
 // Expressions
 ILExpression ::= ILParenthesizedExpression
   | ILExpressionHolder
+  | ILIndexSelectExpression
   | ILSelectExpression
   | ILBinaryAddMulExpression
   | ILMethodCallExpression
@@ -112,10 +115,20 @@ ILParameterList ::= '(' (ILExpression? (',' ILExpression )* )?')' {
 }
 
 ILSelectExpression ::= ILExpression DotOp ILVariable {
+//  pin=2
   methods=[
     ILExpression=""
     from="ILExpression[0]"
     getField
+  ]
+}
+
+ILIndexSelectExpression ::= ILExpression '[' (ILExpression ']') {
+  pin(".*")=2 // ¯\_(ツ)_/¯ Fixes testInceptionIndexes
+  methods=[
+    ILExpression=""
+    from="ILExpression[0]"
+    index="ILExpression[1]"
   ]
 }
 

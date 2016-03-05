@@ -24,7 +24,7 @@ public class HILParser implements PsiParser, LightPsiParser {
     b = adapt_builder_(t, b, this, EXTENDS_SETS_);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
     if (t == IL_BINARY_ADD_MUL_EXPRESSION) {
-      r = ILExpression(b, 0, 2);
+      r = ILExpression(b, 0, 3);
     }
     else if (t == IL_EXPRESSION) {
       r = ILExpression(b, 0, -1);
@@ -32,11 +32,14 @@ public class HILParser implements PsiParser, LightPsiParser {
     else if (t == IL_EXPRESSION_HOLDER) {
       r = ILExpressionHolder(b, 0);
     }
+    else if (t == IL_INDEX_SELECT_EXPRESSION) {
+      r = ILExpression(b, 0, 1);
+    }
     else if (t == IL_LITERAL_EXPRESSION) {
       r = ILLiteralExpression(b, 0);
     }
     else if (t == IL_METHOD_CALL_EXPRESSION) {
-      r = ILExpression(b, 0, 3);
+      r = ILExpression(b, 0, 4);
     }
     else if (t == IL_PARAMETER_LIST) {
       r = ILParameterList(b, 0);
@@ -45,7 +48,7 @@ public class HILParser implements PsiParser, LightPsiParser {
       r = ILParenthesizedExpression(b, 0);
     }
     else if (t == IL_SELECT_EXPRESSION) {
-      r = ILExpression(b, 0, 1);
+      r = ILExpression(b, 0, 2);
     }
     else if (t == IL_UNARY_EXPRESSION) {
       r = ILUnaryExpression(b, 0);
@@ -64,9 +67,9 @@ public class HILParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(IL_BINARY_ADD_MUL_EXPRESSION, IL_EXPRESSION, IL_EXPRESSION_HOLDER, IL_LITERAL_EXPRESSION,
-      IL_METHOD_CALL_EXPRESSION, IL_PARENTHESIZED_EXPRESSION, IL_SELECT_EXPRESSION, IL_UNARY_EXPRESSION,
-      IL_VARIABLE),
+    create_token_set_(IL_BINARY_ADD_MUL_EXPRESSION, IL_EXPRESSION, IL_EXPRESSION_HOLDER, IL_INDEX_SELECT_EXPRESSION,
+      IL_LITERAL_EXPRESSION, IL_METHOD_CALL_EXPRESSION, IL_PARENTHESIZED_EXPRESSION, IL_SELECT_EXPRESSION,
+      IL_UNARY_EXPRESSION, IL_VARIABLE),
   };
 
   /* ********************************************************** */
@@ -195,12 +198,13 @@ public class HILParser implements PsiParser, LightPsiParser {
   // Operator priority table:
   // 0: PREFIX(ILParenthesizedExpression)
   // 1: PREFIX(ILExpressionHolder)
-  // 2: BINARY(ILSelectExpression)
-  // 3: BINARY(ILBinaryAddMulExpression)
-  // 4: POSTFIX(ILMethodCallExpression)
-  // 5: ATOM(ILLiteralExpression)
-  // 6: PREFIX(ILUnaryExpression)
-  // 7: ATOM(ILVariable)
+  // 2: POSTFIX(ILIndexSelectExpression)
+  // 3: BINARY(ILSelectExpression)
+  // 4: BINARY(ILBinaryAddMulExpression)
+  // 5: POSTFIX(ILMethodCallExpression)
+  // 6: ATOM(ILLiteralExpression)
+  // 7: PREFIX(ILUnaryExpression)
+  // 8: ATOM(ILVariable)
   public static boolean ILExpression(PsiBuilder b, int l, int g) {
     if (!recursion_guard_(b, l, "ILExpression")) return false;
     addVariant(b, "<expression>");
@@ -222,15 +226,19 @@ public class HILParser implements PsiParser, LightPsiParser {
     boolean r = true;
     while (true) {
       Marker m = enter_section_(b, l, _LEFT_, null);
-      if (g < 2 && DotOp(b, l + 1)) {
-        r = ILExpression(b, l, 6);
+      if (g < 2 && ILIndexSelectExpression_0(b, l + 1)) {
+        r = true;
+        exit_section_(b, l, m, IL_INDEX_SELECT_EXPRESSION, r, true, null);
+      }
+      else if (g < 3 && DotOp(b, l + 1)) {
+        r = ILExpression(b, l, 7);
         exit_section_(b, l, m, IL_SELECT_EXPRESSION, r, true, null);
       }
-      else if (g < 3 && ILBinaryAddMulExpression_0(b, l + 1)) {
-        r = ILExpression(b, l, 3);
+      else if (g < 4 && ILBinaryAddMulExpression_0(b, l + 1)) {
+        r = ILExpression(b, l, 4);
         exit_section_(b, l, m, IL_BINARY_ADD_MUL_EXPRESSION, r, true, null);
       }
-      else if (g < 4 && ILParameterList(b, l + 1)) {
+      else if (g < 5 && ILParameterList(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, IL_METHOD_CALL_EXPRESSION, r, true, null);
       }
@@ -268,6 +276,28 @@ public class HILParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
+  // '[' (ILExpression ']')
+  private static boolean ILIndexSelectExpression_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ILIndexSelectExpression_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokenSmart(b, L_BRACKET);
+    r = r && ILIndexSelectExpression_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ILExpression ']'
+  private static boolean ILIndexSelectExpression_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ILIndexSelectExpression_0_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = ILExpression(b, l + 1, -1);
+    r = r && consumeToken(b, R_BRACKET);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
   // AddOp|MulOp
   private static boolean ILBinaryAddMulExpression_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ILBinaryAddMulExpression_0")) return false;
@@ -300,7 +330,7 @@ public class HILParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, null);
     r = AddOp(b, l + 1);
     p = r;
-    r = p && ILExpression(b, l, 6);
+    r = p && ILExpression(b, l, 7);
     exit_section_(b, l, m, IL_UNARY_EXPRESSION, r, p, null);
     return r || p;
   }

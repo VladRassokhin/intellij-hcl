@@ -34,6 +34,8 @@ ID=[a-zA-Z_][0-9a-zA-Z\-_*]*
   "}"                         { return INTERPOLATION_END; }
   "("                         { return L_PAREN; }
   ")"                         { return R_PAREN; }
+  "["                         { return L_BRACKET; }
+  "]"                         { return R_BRACKET; }
   ","                         { return COMMA; }
   "="                         { return EQUALS; }
   "."                         { return POINT; }

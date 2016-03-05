@@ -11,6 +11,7 @@ public interface HILElementTypes {
   IElementType IL_BINARY_ADD_MUL_EXPRESSION = new HILElementType("IL_BINARY_ADD_MUL_EXPRESSION");
   IElementType IL_EXPRESSION = new HILElementType("IL_EXPRESSION");
   IElementType IL_EXPRESSION_HOLDER = new HILElementType("IL_EXPRESSION_HOLDER");
+  IElementType IL_INDEX_SELECT_EXPRESSION = new HILElementType("IL_INDEX_SELECT_EXPRESSION");
   IElementType IL_LITERAL_EXPRESSION = new HILElementType("IL_LITERAL_EXPRESSION");
   IElementType IL_METHOD_CALL_EXPRESSION = new HILElementType("IL_METHOD_CALL_EXPRESSION");
   IElementType IL_PARAMETER_LIST = new HILElementType("IL_PARAMETER_LIST");
@@ -26,6 +27,7 @@ public interface HILElementTypes {
   IElementType ID = new HILTokenType("ID");
   IElementType INTERPOLATION_END = new HILTokenType("}");
   IElementType INTERPOLATION_START = new HILTokenType("${");
+  IElementType L_BRACKET = new HILTokenType("[");
   IElementType L_PAREN = new HILTokenType("(");
   IElementType NULL = new HILTokenType("null");
   IElementType NUMBER = new HILTokenType("NUMBER");
@@ -35,6 +37,7 @@ public interface HILElementTypes {
   IElementType OP_MUL = new HILTokenType("*");
   IElementType OP_PLUS = new HILTokenType("+");
   IElementType POINT = new HILTokenType(".");
+  IElementType R_BRACKET = new HILTokenType("]");
   IElementType R_PAREN = new HILTokenType(")");
   IElementType TRUE = new HILTokenType("true");
 
@@ -49,6 +52,9 @@ public interface HILElementTypes {
       }
       else if (type == IL_EXPRESSION_HOLDER) {
         return new ILExpressionHolderImpl(node);
+      }
+      else if (type == IL_INDEX_SELECT_EXPRESSION) {
+        return new ILIndexSelectExpressionImpl(node);
       }
       else if (type == IL_LITERAL_EXPRESSION) {
         return new ILLiteralExpressionImpl(node);
