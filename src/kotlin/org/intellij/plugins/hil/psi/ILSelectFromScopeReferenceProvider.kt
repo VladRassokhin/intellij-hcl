@@ -29,6 +29,7 @@ import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.getProvisionerResource
 import org.intellij.plugins.hil.codeinsight.getResource
+import org.intellij.plugins.hil.psi.impl.ILVariableMixin
 import org.intellij.plugins.hil.psi.impl.getHCLHost
 
 object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
@@ -37,7 +38,7 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
   }
 
   fun getReferencesByElement(element: PsiElement): Array<out PsiReference> {
-    if (element !is ILVariable) return PsiReference.EMPTY_ARRAY
+    if (element !is ILVariableMixin) return PsiReference.EMPTY_ARRAY
     val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return PsiReference.EMPTY_ARRAY
     if (host !is HCLElement) return PsiReference.EMPTY_ARRAY
 

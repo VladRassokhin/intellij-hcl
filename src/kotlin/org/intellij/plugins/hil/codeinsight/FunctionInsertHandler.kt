@@ -67,9 +67,9 @@ object FunctionInsertHandler : BasicInsertHandler<LookupElement>() {
     }
     if (parent is ILMethodCallExpression) {
       // Looks like function name modified
-      current = parent.ilParameterList.parameters.size
+      current = parent.parameterList.parametersList.size
       if (current != 0) {
-        place = parent.ilParameterList.parameters.last().textOffset
+        place = parent.parameterList.parametersList.last().textOffset
       }
     } else {
       current = 0

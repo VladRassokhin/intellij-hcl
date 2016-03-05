@@ -31,11 +31,12 @@ import org.intellij.plugins.hcl.terraform.config.model.getModule
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
 import org.intellij.plugins.hil.inspection.PsiFakeAwarePolyVariantReference
+import org.intellij.plugins.hil.psi.impl.ILVariableMixin
 import org.intellij.plugins.hil.psi.impl.getHCLHost
 
 object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
-    if (element !is ILVariable) return PsiReference.EMPTY_ARRAY
+    if (element !is ILVariableMixin) return PsiReference.EMPTY_ARRAY
     val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return PsiReference.EMPTY_ARRAY
     if (host !is HCLElement) return PsiReference.EMPTY_ARRAY
 
@@ -173,7 +174,7 @@ fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable, skipStars:
   return null
 }
 
-fun isStarOrNumber(element: ILVariable): Boolean {
+fun isStarOrNumber(element: ILVariableMixin): Boolean {
   val text = element.name
   return isStarOrNumber(text)
 }
