@@ -53,6 +53,12 @@ abstract class HCLHeredocContentMixin(node: ASTNode?) : HCLLiteralImpl(node), Ps
 
       override fun getRelevantTextRange(): TextRange {
         if (myHost.textLength == 0) return TextRange.EMPTY_RANGE
+        // Everything except last EOL
+        val chars = myHost.node.chars
+        if (chars.length > 1 && chars[chars.length - 2] == '\r') {
+          // DOS/Windows style EOL
+          return TextRange.from(0, myHost.textLength - 2)
+        }
         return TextRange.from(0, myHost.textLength - 1)
       }
     }
