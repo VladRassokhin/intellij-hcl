@@ -22,12 +22,17 @@ import org.intellij.plugins.hil.HILElementTypes.*
 
 open class HILElementType(debugName: String) : IElementType(debugName, HILLanguage) {
   companion object {
+    // Ensure this token set equals to ILExpression bnf rule
     val IL_EXPRESSIONS: TokenSet = TokenSet.create(
-        IL_VARIABLE,
-        IL_UNARY_EXPRESSION,
+        IL_PARENTHESIZED_EXPRESSION,
+        IL_EXPRESSION_HOLDER,
+        IL_INDEX_SELECT_EXPRESSION,
+        IL_SELECT_EXPRESSION,
         IL_BINARY_ADD_MUL_EXPRESSION,
+        IL_METHOD_CALL_EXPRESSION,
         IL_LITERAL_EXPRESSION,
-        IL_METHOD_CALL_EXPRESSION
+        IL_UNARY_EXPRESSION,
+        IL_VARIABLE
     )
   }
 }
