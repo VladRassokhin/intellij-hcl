@@ -34,7 +34,7 @@ import org.intellij.plugins.hil.psi.ILElementVisitor
 import org.intellij.plugins.hil.psi.ILSelectExpression
 import org.intellij.plugins.hil.psi.ILVariable
 
-class UnresolvedReferencedInspection : LocalInspectionTool() {
+class HILUnresolvedReferenceInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     val file = InjectedLanguageManager.getInstance(holder.project).getTopLevelFile(holder.file)
     val ft = file.fileType
@@ -46,7 +46,7 @@ class UnresolvedReferencedInspection : LocalInspectionTool() {
   }
 
   companion object {
-    private val LOG = Logger.getInstance(UnresolvedReferencedInspection::class.java)
+    private val LOG = Logger.getInstance(HILUnresolvedReferenceInspection::class.java)
 
   }
 

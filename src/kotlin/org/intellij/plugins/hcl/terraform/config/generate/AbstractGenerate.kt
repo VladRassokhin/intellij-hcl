@@ -33,7 +33,7 @@ import org.intellij.plugins.hcl.psi.HCLElementVisitor
 import org.intellij.plugins.hcl.psi.HCLFile
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor
-import org.intellij.plugins.hcl.terraform.config.inspection.BlockMissingPropertyInspection
+import org.intellij.plugins.hcl.terraform.config.inspection.HCLBlockMissingPropertyInspection
 import java.util.*
 
 
@@ -53,7 +53,7 @@ abstract class AbstractGenerate() : SimpleCodeInsightAction() {
             if (TextRange(marker.startOffset, marker.endOffset).contains(block.textOffset)) {
               // It's out new block
               // TODO: Invoke add properties quick fix
-              val inspection = BlockMissingPropertyInspection()
+              val inspection = HCLBlockMissingPropertyInspection()
               val holder = ProblemsHolder(InspectionManager.getInstance(project), file, true)
               val visitor = inspection.buildVisitor(holder, true)
               if (visitor is HCLElementVisitor) {

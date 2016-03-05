@@ -15,10 +15,11 @@
  */
 package org.intellij.plugins.hcl.terraform.config.inspection
 
-import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
-import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.*
+import com.intellij.openapi.application.Result
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.progress.ProgressIndicatorProvider
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
 import getNameElementUnquoted
 import org.intellij.plugins.hcl.psi.HCLBlock
@@ -26,9 +27,10 @@ import org.intellij.plugins.hcl.psi.HCLElementVisitor
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
+import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
 import java.util.*
 
-class DeprecatedElementInspection : LocalInspectionTool() {
+class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
 
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     val ft = holder.file.fileType
@@ -54,26 +56,44 @@ class DeprecatedElementInspection : LocalInspectionTool() {
     val obj = block.`object` ?: return
     ProgressIndicatorProvider.checkCanceled()
 
-    val candidates = ArrayList<PropertyOrBlockType>(properties.filter { it.deprecated != null })
+    val candidates = ArrayList<PropertyOrBlockType>(properties.filter { it.required })
     if (candidates.isEmpty()) return
+    val all = ArrayList<String>()
+    all.addAll(obj.propertyList.map { it.name })
+    all.addAll(obj.blockList.map { it.name }) // TODO: Better block name selection
 
     ProgressIndicatorProvider.checkCanceled()
-    val dpn = candidates.filter { it.property != null }.map { it.name }.toHashSet()
-    if (dpn.isNotEmpty()) for (hclProperty in obj.propertyList) {
-      val name = hclProperty.name
-      if (dpn.contains(name)) {
-        holder.registerProblem(hclProperty, "Deprecated property: $name", ProblemHighlightType.LIKE_DEPRECATED)
-      }
-    }
+
+    val required = candidates.filterNot { it.name in all }
+
+    if (required.isEmpty()) return
 
     ProgressIndicatorProvider.checkCanceled()
-    val dbn = candidates.filter { it.block != null }.map { it.name }.toHashSet()
-    if (dbn.isNotEmpty()) for (hclBlock in obj.blockList) {
-      val name = hclBlock.name
-      if (dbn.contains(name)) {
-        holder.registerProblem(hclBlock, "Deprecated block: $name", ProblemHighlightType.LIKE_DEPRECATED)
-      }
-    }
+
+    holder.registerProblem(block, "Missing required properties: ${required.map { it.name }.joinToString(", ")}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING, AddResourcePropertiesFix(required))
   }
 
+}
+
+class AddResourcePropertiesFix(val add: Collection<PropertyOrBlockType>) : LocalQuickFixBase("Add properties: ${add.map { it.name }.joinToString(", ")}", "Add missing properties") {
+  override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
+    val element = descriptor.psiElement
+    if (element !is HCLBlock) return
+    val block = element;
+    val obj = block.`object` ?: return
+    object : WriteCommandAction<Any?>(project) {
+      override fun run(result: Result<Any?>) {
+        val generator = TerraformElementGenerator(project)
+        val elements = add.map {
+          if (it.property != null) generator.createProperty(it.name, "\"\"");
+          else generator.createBlock(it.name)
+        }
+        @Suppress("UNUSED_VARIABLE")
+        val added = elements.map { obj.addBefore(it, obj.lastChild) }
+        // TODO: Investigate why reformat fails
+        // CodeStyleManager.getInstance(project).reformat(block, true)
+        // TODO: Navigate cursor to added.last() or added.first()
+      }
+    }.execute()
+  }
 }

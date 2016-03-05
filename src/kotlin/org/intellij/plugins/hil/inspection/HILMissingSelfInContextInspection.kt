@@ -21,16 +21,14 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.psi.PsiElementVisitor
-import getNameElementUnquoted
 import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
-import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
-import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
+import org.intellij.plugins.hil.codeinsight.getProvisionerResource
 import org.intellij.plugins.hil.psi.ILElementVisitor
 import org.intellij.plugins.hil.psi.ILSelectExpression
 import org.intellij.plugins.hil.psi.ILVariable
 
-class UnknownResourceTypeReferencedInspection : LocalInspectionTool() {
+class HILMissingSelfInContextInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     val file = InjectedLanguageManager.getInstance(holder.project).getTopLevelFile(holder.file)
     val ft = file.fileType
@@ -44,27 +42,20 @@ class UnknownResourceTypeReferencedInspection : LocalInspectionTool() {
   inner class MyEV(val holder: ProblemsHolder) : ILElementVisitor() {
     override fun visitILVariable(element: ILVariable) {
       ProgressIndicatorProvider.checkCanceled()
+      val name = element.name
+      if ("self" != name) return
+
       val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return
       if (host !is HCLElement) return
       val parent = element.parent
       if (parent !is ILSelectExpression) return
       if (parent.from !== element) return
 
-      val name = element.name
+      if (getProvisionerResource(host) != null) return
 
-      if (HILCompletionContributor.SCOPES.contains(name)) return
-      if (isExistingResourceType(element, host)) return
-
-      holder.registerProblem(element, "Unknown resource type", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+      holder.registerProblem(element, "Referencing 'self' allowed only in 'provisioner' block inside resource definition", ProblemHighlightType.GENERIC_ERROR)
     }
   }
 
 }
 
-
-fun isExistingResourceType(element: ILVariable, host: HCLElement): Boolean {
-  val name = element.name
-  val module = host.getTerraformModule()
-  val resources = module.getDeclaredResources()
-  return resources.any { name == it.getNameElementUnquoted(1) }
-}
