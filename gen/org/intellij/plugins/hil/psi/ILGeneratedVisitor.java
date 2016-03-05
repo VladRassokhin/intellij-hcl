@@ -5,7 +5,6 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import org.intellij.plugins.hil.ILBinaryExpression;
 import com.intellij.psi.templateLanguages.OuterLanguageElement;
-import org.intellij.plugins.hil.ILCallExpression;
 import com.intellij.psi.PsiNamedElement;
 
 public class ILGeneratedVisitor extends PsiElementVisitor {
@@ -33,7 +32,6 @@ public class ILGeneratedVisitor extends PsiElementVisitor {
 
   public void visitILMethodCallExpression(@NotNull ILMethodCallExpression o) {
     visitILExpression(o);
-    // visitILCallExpression(o);
   }
 
   public void visitILParameterList(@NotNull ILParameterList o) {

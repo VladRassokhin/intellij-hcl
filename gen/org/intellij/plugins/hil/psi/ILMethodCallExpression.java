@@ -4,21 +4,18 @@ package org.intellij.plugins.hil.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import org.intellij.plugins.hil.ILCallExpression;
 
-public interface ILMethodCallExpression extends ILExpression, ILCallExpression {
-
-  @NotNull
-  ILExpression getILExpression();
+public interface ILMethodCallExpression extends ILExpression {
 
   @NotNull
-  ILParameterList getILParameterList();
+  ILExpression getExpression();
+
+  @NotNull
+  ILParameterList getParameterList();
 
   ILExpression getQualifier();
 
   @Nullable
   ILVariable getMethod();
-
-  ILParameterList getParameterList();
 
 }

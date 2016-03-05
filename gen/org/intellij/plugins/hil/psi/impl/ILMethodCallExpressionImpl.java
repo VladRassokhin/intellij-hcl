@@ -23,13 +23,13 @@ public class ILMethodCallExpressionImpl extends ILExpressionImpl implements ILMe
 
   @Override
   @NotNull
-  public ILExpression getILExpression() {
+  public ILExpression getExpression() {
     return findNotNullChildByClass(ILExpression.class);
   }
 
   @Override
   @NotNull
-  public ILParameterList getILParameterList() {
+  public ILParameterList getParameterList() {
     return findNotNullChildByClass(ILParameterList.class);
   }
 
@@ -40,10 +40,6 @@ public class ILMethodCallExpressionImpl extends ILExpressionImpl implements ILMe
   @Nullable
   public ILVariable getMethod() {
     return HILPsiImplUtilJ.getMethod(this);
-  }
-
-  public ILParameterList getParameterList() {
-    return HILPsiImplUtilJ.getParameterList(this);
   }
 
 }

@@ -28,9 +28,11 @@ public class ILSelectExpressionImpl extends ILExpressionImpl implements ILSelect
     return p1.get(0);
   }
 
+  @Override
   @Nullable
   public ILExpression getField() {
-    return HILPsiImplUtilJ.getField(this);
+    List<ILExpression> p1 = PsiTreeUtil.getChildrenOfTypeAsList(this, ILExpression.class);
+    return p1.size() < 2 ? null : p1.get(1);
   }
 
 }

@@ -9,11 +9,8 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hil.HILElementTypes.*;
 import org.intellij.plugins.hil.psi.*;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.SearchScope;
 
-public class ILVariableImpl extends ILExpressionWithReference implements ILVariable {
+public class ILVariableImpl extends ILVariableMixin implements ILVariable {
 
   public ILVariableImpl(ASTNode node) {
     super(node);
@@ -28,25 +25,6 @@ public class ILVariableImpl extends ILExpressionWithReference implements ILVaria
   @Nullable
   public PsiElement getId() {
     return findChildByType(ID);
-  }
-
-  @NotNull
-  public String getName() {
-    return HILPsiImplUtilJ.getName(this);
-  }
-
-  public PsiNamedElement setName(String name) {
-    return HILPsiImplUtilJ.setName(this, name);
-  }
-
-  @NotNull
-  public SearchScope getUseScope() {
-    return HILPsiImplUtilJ.getUseScope(this);
-  }
-
-  @NotNull
-  public GlobalSearchScope getResolveScope() {
-    return HILPsiImplUtilJ.getResolveScope(this);
   }
 
 }

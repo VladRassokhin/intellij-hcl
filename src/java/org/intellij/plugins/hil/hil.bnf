@@ -12,7 +12,7 @@
   psiPackage = 'org.intellij.plugins.hil.psi'
   psiImplPackage = 'org.intellij.plugins.hil.psi.impl'
 
-  extends(".*Expression|.*Variable")=ILExpression
+  extends(".*Expression|.*Variable|ILExpressionHolder")=ILExpression
 
   tokens = [
 //    space = "regexp:\s+"
@@ -68,16 +68,14 @@ ILExpression ::= ILParenthesizedExpression
   ]
 }
 
-ILExpressionHolder ::= '${' ILExpression '}' {
-  extends=ILExpression
-}
+ILExpressionHolder ::= '${' ILExpression '}'
 
 ILParenthesizedExpression ::= '(' ILExpression ')'
 
 ILUnaryExpression ::= AddOp ILExpression
 {
   methods = [
-    getOperand
+    operand="ILExpression"
     getOperationSign
   ]
 }
@@ -90,37 +88,36 @@ ILBinaryAddMulExpression ::= ILExpression (AddOp|MulOp) ILExpression
 }
 ILMethodCallExpression ::= ILExpression ILParameterList
 {
-  implements="org.intellij.plugins.hil.ILCallExpression"
   methods=[
+    Expression="ILExpression"
+    ParameterList="ILParameterList"
     getQualifier
     getMethod
-    getParameterList
   ]
 }
 
 ILLiteralExpression ::= literal /*| identifier*/ | number | 'true' | 'false' | 'null' {
-   name="Literal"
-   mixin="org.intellij.plugins.hil.psi.impl.ILExpressionWithReference"
-   methods=[
+  name="Literal"
+  mixin="org.intellij.plugins.hil.psi.impl.ILExpressionWithReference"
+  methods=[
     getTypeClass
     getUnquotedText
-   ]
+  ]
 }
 
 ILParameterList ::= '(' (ILExpression? (',' ILExpression )* )?')' {
   pin(".*")=1
   methods=[
     ILExpression=""
-    getParameters
+    Parameters="ILExpression"
   ]
 }
 
 ILSelectExpression ::= ILExpression DotOp ILVariable {
-//  pin=2
   methods=[
     ILExpression=""
     from="ILExpression[0]"
-    getField
+    field="ILExpression[1]"
   ]
 }
 
@@ -136,13 +133,7 @@ ILIndexSelectExpression ::= ILExpression '[' (ILExpression ']') {
 ILVariable ::= identifier | '*' {
   name="Identifier"
   implements="com.intellij.psi.PsiNamedElement"
-  mixin="org.intellij.plugins.hil.psi.impl.ILExpressionWithReference"
-  methods=[
-    getName
-    setName
-    getUseScope
-    getResolveScope
-  ]
+  mixin="org.intellij.plugins.hil.psi.impl.ILVariableMixin"
 }
 
 // Operators

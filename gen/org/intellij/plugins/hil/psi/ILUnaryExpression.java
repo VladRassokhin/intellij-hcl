@@ -9,9 +9,6 @@ import com.intellij.psi.tree.IElementType;
 public interface ILUnaryExpression extends ILExpression {
 
   @Nullable
-  ILExpression getILExpression();
-
-  @NotNull
   ILExpression getOperand();
 
   @NotNull

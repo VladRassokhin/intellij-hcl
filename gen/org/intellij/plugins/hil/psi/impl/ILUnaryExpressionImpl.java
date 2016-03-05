@@ -24,13 +24,8 @@ public class ILUnaryExpressionImpl extends ILExpressionImpl implements ILUnaryEx
 
   @Override
   @Nullable
-  public ILExpression getILExpression() {
-    return findChildByClass(ILExpression.class);
-  }
-
-  @NotNull
   public ILExpression getOperand() {
-    return HILPsiImplUtilJ.getOperand(this);
+    return findChildByClass(ILExpression.class);
   }
 
   @NotNull

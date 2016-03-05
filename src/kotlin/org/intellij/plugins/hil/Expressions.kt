@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2015 JetBrains s.r.o.
+ * Copyright 2000-2016 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,7 @@ package org.intellij.plugins.hil
 
 import com.intellij.psi.tree.IElementType
 import org.intellij.plugins.hil.psi.ILExpression
-import org.intellij.plugins.hil.psi.ILParameterList
-import org.intellij.plugins.hil.psi.ILVariable
 
-
-interface ILCallExpression : ILExpression {
-  fun getParameterList(): ILParameterList?
-
-  fun getMethod(): ILVariable
-}
 
 interface ILBinaryExpression : ILExpression {
   fun getLOperand(): ILExpression?
