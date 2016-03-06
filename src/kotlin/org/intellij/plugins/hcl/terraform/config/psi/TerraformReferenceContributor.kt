@@ -54,6 +54,8 @@ object SimpleReferenceProvider : PsiReferenceProvider() {
     if (parent !is HCLProperty) return PsiReference.EMPTY_ARRAY
     if (parent.nameElement == element) return PsiReference.EMPTY_ARRAY
     return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
+      @Suppress("NAME_SHADOWING")
+      val element = this.element
       if (incomplete) {
         element.getTerraformModule().getDefinedProviders().map { it.first.nameIdentifier as HCLElement }
       } else {

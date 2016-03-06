@@ -26,4 +26,10 @@ class HCLStringLiteralManipulator : AbstractElementManipulator<HCLStringLiteralM
     val replacement = range.replace(element.text, newContent)
     return element.updateText(replacement)
   }
+
+  override fun getRangeInElement(element: HCLStringLiteralMixin): TextRange {
+    if (element.textLength == 0) return TextRange.EMPTY_RANGE
+    else if (element.textLength == 1) return TextRange(0, element.textLength)
+    return TextRange(1, element.textLength - 1);
+  }
 }
