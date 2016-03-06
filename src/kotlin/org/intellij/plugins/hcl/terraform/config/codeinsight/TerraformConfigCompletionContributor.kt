@@ -383,7 +383,7 @@ object ModelHelper {
   private val LOG = Logger.getInstance(ModelHelper::class.java)
 
   public fun getBlockProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
-    val type = block.getNameElementUnquoted(0)
+    val type = block.getNameElementUnquoted(0) ?: return emptyArray()
     val props: Array<out PropertyOrBlockType>
     if (type in TypeModel.RootBlocksMap.keys && block.parent !is PsiFile) {
       return emptyArray()
@@ -397,9 +397,23 @@ object ModelHelper {
       "provisioner" -> getProvisionerProperties(block)
     // Can be inner for both 'resource' and 'provisioner'
       "connection" -> getConnectionProperties(block)
-      else -> return TypeModel.RootBlocksMap[type]?.properties?:emptyArray()
+      else -> return TypeModel.RootBlocksMap[type]?.properties?:getModelBlockProperties(block, type)
     }
     return props
+  }
+
+  private fun getModelBlockProperties(block: HCLBlock, type: String): Array<out PropertyOrBlockType> {
+    // TODO: Speedup, remove recursive up-traverse
+    val bp = block.parent
+    if (bp is HCLObject) {
+      val bpp = bp.parent
+      if (bpp is HCLBlock) {
+        val properties = getBlockProperties(bpp)
+        val candidates = properties.mapNotNull { it.block }.filter { it.literal == type }
+        return candidates.map { it.properties.toList() }.flatMap { it }.toTypedArray()
+      } else return emptyArray()
+    }
+    return emptyArray()
   }
 
   public fun getProviderProperties(block: HCLBlock): Array<out PropertyOrBlockType> {

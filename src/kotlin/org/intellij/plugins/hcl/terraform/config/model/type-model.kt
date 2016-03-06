@@ -302,14 +302,14 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       if (et == "ResourceSchemaElements") {
         val a = elem.array<Any>("value")
         if (a != null) {
-          val parsed = parseSchemaElement("__inner__", a, "$fqn.__inner__")
+          val parsed = parseSchemaElement("__inner__", a, "$fqn")
           hint = parsed.property?.type?.let { TypeHint(it) } ?: parsed.block?.properties?.let { ListHint(it.asList()) }
         }
       }
       if (et == "ResourceSchemaInfo") {
         val o = elem.obj("value")
         if (o != null) {
-          val innerTypeProperties = o.map { parseSchemaElement(it, "$fqn.__inner__") }
+          val innerTypeProperties = o.map { parseSchemaElement(it, "$fqn") }
           hint = ListHint(innerTypeProperties)
           if (type == Types.Array) {
             isBlock = true
@@ -331,8 +331,8 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
     if (isBlock) {
       // TODO: Do something with a additional.hint
       var bh: Array<out PropertyOrBlockType> = emptyArray()
-      if (hint is Array<*> && hint.size > 0 && hint.first() is PropertyOrBlockType) {
-        bh = hint as Array<out PropertyOrBlockType>
+      if (hint is ListHint) {
+        bh = hint.hint.toTypedArray()
       }
       return BlockType(name, required = required,
           deprecated = deprecated,

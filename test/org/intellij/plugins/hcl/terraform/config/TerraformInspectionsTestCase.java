@@ -16,6 +16,7 @@
 package org.intellij.plugins.hcl.terraform.config;
 
 import com.intellij.testFramework.InspectionFixtureTestCase;
+import org.intellij.plugins.hcl.terraform.config.inspection.HCLUnknownBlockTypeInspection;
 import org.intellij.plugins.hil.inspection.HILUnresolvedReferenceInspection;
 
 public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
@@ -37,6 +38,10 @@ public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
 
   public void testMappingVariableReference() throws Exception {
     doTest("mapping_variable_reference", new HILUnresolvedReferenceInspection());
+  }
+
+  public void testKnownBlockNameFromModel() throws Exception {
+    doTest("unknown_block_name", new HCLUnknownBlockTypeInspection());
   }
 
 }
