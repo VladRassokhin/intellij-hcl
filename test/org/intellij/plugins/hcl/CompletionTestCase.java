@@ -56,7 +56,7 @@ public abstract class CompletionTestCase extends LightCodeInsightFixtureTestCase
     final List<String> strings = myFixture.getLookupElementStrings();
     assertNotNull(strings);
     System.out.println("LookupStrings = " + strings);
-    assertTrue("Mather expected to return true", matcher.fun(strings));
+    assertTrue("Matcher expected to return true", matcher.fun(strings));
   }
 
   @NotNull
