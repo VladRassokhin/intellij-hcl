@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2015 JetBrains s.r.o.
+ * Copyright 2000-2016 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -341,6 +341,7 @@ fun getProvisionerResource(position: ILExpression): HCLBlock? {
 
 fun getProvisionerResource(host: HCLElement): HCLBlock? {
   val provisioner = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java) ?: return null
+  if (provisioner.getNameElementUnquoted(0) == "connection") return getProvisionerResource(provisioner)
   if (provisioner.getNameElementUnquoted(0) != "provisioner") return null
   val resource = PsiTreeUtil.getParentOfType(provisioner, HCLBlock::class.java, true) ?: return null
   if (resource.getNameElementUnquoted(0) != "resource") return null

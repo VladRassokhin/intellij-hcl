@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2015 JetBrains s.r.o.
+ * Copyright 2000-2016 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,8 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
     val from = parent.from
     if (from !is ILVariable) return PsiReference.EMPTY_ARRAY
 
+    if (from === element) return PsiReference.EMPTY_ARRAY
+
     when (from.name) {
       "var" -> {
         return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
@@ -72,7 +74,7 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
             val properties = ModelHelper.getResourceProperties(resource)
             for (p in properties) {
               if (p.name == name) {
-                return@HCLElementLazyReference listOf(FakeHCLProperty(p.name))
+                return@HCLElementLazyReference listOf(FakeHCLProperty(p.name, resource))
               }
             }
           }
@@ -97,7 +99,7 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
   }
 }
 
-class FakeHCLProperty(val _name: String) : FakePsiElement(), HCLProperty {
+class FakeHCLProperty(val _name: String, val _parent: PsiElement) : FakePsiElement(), HCLProperty {
   override fun getName(): String {
     return _name
   }
@@ -111,7 +113,7 @@ class FakeHCLProperty(val _name: String) : FakePsiElement(), HCLProperty {
   }
 
   override fun getParent(): PsiElement? {
-    throw UnsupportedOperationException()
+    return _parent
   }
 
   override fun getNameIdentifier(): PsiElement? {

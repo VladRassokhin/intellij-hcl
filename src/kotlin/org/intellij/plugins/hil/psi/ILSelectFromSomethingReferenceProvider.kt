@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2015 JetBrains s.r.o.
+ * Copyright 2000-2016 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
           if (module == null) {
             // Resolve everything
             if (fake) {
-              found.add(FakeHCLProperty(name))
+              found.add(FakeHCLProperty(name, r))
             }
           } else {
             val outputs = module.getDefinedOutputs().filter { it.name == name }
@@ -122,12 +122,20 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
         } else if (!blocks.isEmpty()) {
           found.addAll(blocks.map { it.nameIdentifier as HCLElement })
         } else if (fake) {
-          ModelHelper.getBlockProperties(r).filter { it.name == name }.map { FakeHCLProperty(it.name) }.toCollection(found)
+          ModelHelper.getBlockProperties(r).filter { it.name == name }.map { FakeHCLProperty(it.name, r) }.toCollection(found)
         }
       }
       is HCLProperty -> {
         if (r is FakeHCLProperty) {
-          assert(fake)
+          if (fake) {
+            // TODO: Ugly fix until 'terraform_remote_state' properly resolved
+            if (r._name == "output" && r._parent is HCLBlock) {
+              if (r._parent.getNameElementUnquoted(0) == "resource"
+                  && r._parent.getNameElementUnquoted(1) == "terraform_remote_state") {
+                found.add(FakeHCLProperty(name, r))
+              }
+            }
+          }
         } else {
           val value = r.value
           if (value is HCLObject) {
