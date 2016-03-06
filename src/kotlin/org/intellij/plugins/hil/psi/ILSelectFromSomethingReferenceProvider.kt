@@ -98,11 +98,21 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
           return collectReferences(p, name, found, fake)
         }
       }
+      is HCLObject -> {
+        val property = r.findProperty(name)
+        val blocks = r.blockList.filter { it.nameElements.any { it.name == name } }.orEmpty()
+        if (property != null) {
+          found.add(property)
+        } else if (!blocks.isEmpty()) {
+          found.addAll(blocks.map { it.nameIdentifier as HCLElement })
+        }
+      }
       is HCLBlock -> {
         val property = r.`object`?.findProperty(name)
         val blocks = r.`object`?.blockList?.filter { it.nameElements.any { it.name == name } }.orEmpty()
         // TODO: Move this special support somewhere else
-        if ("module" == r.getNameElementUnquoted(0)) {
+        val blockType = r.getNameElementUnquoted(0)
+        if ("module" == blockType) {
           val module = getModule(r)
           if (module == null) {
             // Resolve everything
@@ -116,6 +126,11 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
             } else if (fake) {
               //              found.add(FakeHCLProperty(name))
             }
+          }
+        } else if ("variable" == blockType) {
+          val defaultMap = r.`object`?.findProperty("default")?.value
+          if (defaultMap is HCLObject) {
+            collectReferences(defaultMap, name, found, fake)
           }
         } else if (property != null) {
           found.add(property)

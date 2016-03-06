@@ -287,6 +287,16 @@ class HILCompletionContributor : CompletionContributor() {
     }
 
     private fun getBlockProperties(r: HCLBlock, found: ArrayList<LookupElement>) {
+      if (r.getNameElementUnquoted(0) == "variable") {
+        val defaultMap = r.`object`?.findProperty("default")?.value
+        if (defaultMap is HCLObject) {
+          val names = HashSet<String>()
+          defaultMap.propertyList.mapNotNullTo(names) { it.name }
+          defaultMap.blockList.mapNotNullTo(names) { it.name }
+          names.mapTo(found) { create(it) }
+        }
+        return
+      }
       val properties = ModelHelper.getBlockProperties(r)
       val done = properties.map { it.name }.toSet()
       found.addAll(properties.map { create(it) })

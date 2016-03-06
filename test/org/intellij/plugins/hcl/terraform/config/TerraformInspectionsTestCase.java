@@ -35,4 +35,8 @@ public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
     doTest("resource_property_reference", new HILUnresolvedReferenceInspection());
   }
 
+  public void testMappingVariableReference() throws Exception {
+    doTest("mapping_variable_reference", new HILUnresolvedReferenceInspection());
+  }
+
 }
