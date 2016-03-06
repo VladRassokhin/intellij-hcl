@@ -98,26 +98,3 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
     return PsiReference.EMPTY_ARRAY;
   }
 }
-
-class FakeHCLProperty(val _name: String, val _parent: PsiElement) : FakePsiElement(), HCLProperty {
-  override fun getName(): String {
-    return _name
-  }
-
-  override fun getNameElement(): HCLValue {
-    throw UnsupportedOperationException()
-  }
-
-  override fun getValue(): HCLValue? {
-    throw UnsupportedOperationException()
-  }
-
-  override fun getParent(): PsiElement? {
-    return _parent
-  }
-
-  override fun getNameIdentifier(): PsiElement? {
-    throw UnsupportedOperationException()
-  }
-
-}
