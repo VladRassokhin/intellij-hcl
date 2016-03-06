@@ -38,6 +38,12 @@ open class SimpleHint(val hint: String) : Hint
 open class TypeHint(val hint: Type) : Hint
 open class ListHint(val hint: List<PropertyOrBlockType>) : Hint
 
+// TODO: Use some 'Reference' class
+open class ReferenceHint(vararg val hint: String) : Hint
+
+// TODO: Use Interpolation result type
+open class InterpolationHint(hint: String) : SimpleHint(hint)
+
 open class PropertyType(val name: String, val type: Type, val hint: Hint? = null, val injectionAllowed: Boolean = true, description: String? = null, required: Boolean = false, deprecated: String? = null) : BaseModelType(description = description, required = required, deprecated = deprecated)
 
 open class BlockType(val literal: String, val args: Int = 0, description: String? = null, required: Boolean = false, deprecated: String? = null, vararg val properties: PropertyOrBlockType = arrayOf()) : BaseModelType(description = description, required = required, deprecated = deprecated)
@@ -384,7 +390,7 @@ class TypeModel(
   companion object {
     val Atlas: BlockType = BlockType("atlas", 0, properties = PropertyType("name", Types.String, injectionAllowed = false, required = true).toPOBT())
     val Module: BlockType = BlockType("module", 1, properties = PropertyType("source", Types.String, hint = SimpleHint("Url"), required = true).toPOBT())
-    val Output: BlockType = BlockType("output", 1, properties = PropertyType("value", Types.String, hint = SimpleHint("Interpolation(Any)"), required = true).toPOBT())
+    val Output: BlockType = BlockType("output", 1, properties = PropertyType("value", Types.String, hint = InterpolationHint("Any"), required = true).toPOBT())
 
     val Variable_Default = PropertyType("default", Type("String|Object"))
     val Variable_Description = PropertyType("description", Types.String)
@@ -434,8 +440,8 @@ class TypeModel(
     @JvmField val AbstractResource: BlockType = BlockType("resource", 2, properties = *arrayOf(
         PropertyType("id", Types.String, injectionAllowed = false, description = "A unique ID for this resource", required = false).toPOBT(),
         PropertyType("count", Types.Number).toPOBT(),
-        PropertyType("depends_on", Types.Array, hint = SimpleHint("String")).toPOBT(),
-        PropertyType("provider", Types.String, hint = SimpleHint("Reference(provider.type|provider.alias)")).toPOBT(),
+        PropertyType("depends_on", Types.Array, hint = TypeHint(Types.String)).toPOBT(),
+        PropertyType("provider", Types.String, hint = ReferenceHint("provider.type", "provider.alias")).toPOBT(),
         ResourceLifecycle.toPOBT(),
         // Also may have connection? and provisioner+ blocks
         Connection.toPOBT(),
