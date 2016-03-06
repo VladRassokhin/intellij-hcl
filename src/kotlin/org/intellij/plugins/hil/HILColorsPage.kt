@@ -33,6 +33,7 @@ class HILColorPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPrio
     private val descriptors: Array<out AttributesDescriptor> = arrayOf(
         AttributesDescriptor("Parentheses", HILSyntaxHighlighterFactory.TIL_PARENS),
         AttributesDescriptor("Braces", HILSyntaxHighlighterFactory.TIL_BRACES),
+        AttributesDescriptor("Brackets", HILSyntaxHighlighterFactory.TIL_BRACKETS),
         AttributesDescriptor("Comma", HILSyntaxHighlighterFactory.TIL_COMMA),
         AttributesDescriptor("Operator", HILSyntaxHighlighterFactory.TIL_OPERATOR),
         AttributesDescriptor("Number", HILSyntaxHighlighterFactory.TIL_NUMBER),
@@ -64,8 +65,8 @@ class HILColorPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPrio
 
   override fun getDemoText(): String {
     return "\${\"interpolati\\o\\n\".example.call(10, \"a\", \n" +
-        "<s>var</s>.foo, <s>path</s>.module, 1-0+11*4/2%1, true, false, null,\n" +
-        "<rt>aws_instance</rt>.<ri>inst</ri>.<pr>availability_zone</pr>)}"
+        "<s>var</s>.foo, <s>path</s>.module, 1-0+(11*4)/2%1, true, false, null,\n" +
+        "<rt>aws_instance</rt>.<ri>inst</ri>.<pr>availability_zone</pr>[0])}"
   }
 
   override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey>? {

@@ -76,10 +76,12 @@ class HILParserDefinition : ParserDefinition {
     val FILE: IFileElementType = IFileElementType(HILLanguage)
 
     val TIL_BRACES: TokenSet = TokenSet.create(HILElementTypes.INTERPOLATION_START, HILElementTypes.INTERPOLATION_END)
+    val TIL_BRACKETS: TokenSet = TokenSet.create(HILElementTypes.L_BRACKET, HILElementTypes.R_BRACKET)
     val TIL_PARENS: TokenSet = TokenSet.create(HILElementTypes.L_PAREN, HILElementTypes.R_PAREN)
     val TIL_BOOLEANS: TokenSet = TokenSet.create(HILElementTypes.TRUE, HILElementTypes.FALSE)
     val TIL_KEYWORDS: TokenSet = TokenSet.create(HILElementTypes.TRUE, HILElementTypes.FALSE, HILElementTypes.NULL)
     val TIL_LITERALS: TokenSet = TokenSet.create(HILElementTypes.IL_LITERAL_EXPRESSION, HILElementTypes.TRUE, HILElementTypes.FALSE)
+    val TIL_OPERATORS: TokenSet = TokenSet.create(HILElementTypes.OP_PLUS, HILElementTypes.OP_MINUS, HILElementTypes.OP_MUL, HILElementTypes.OP_DIV, HILElementTypes.OP_MOD)
     val TIL_VALUES: TokenSet = TokenSet.orSet(TIL_LITERALS)
 
     private val ourContextNodeKey: Key<ASTNode> = Key.create("Terraform-IL.context.node");

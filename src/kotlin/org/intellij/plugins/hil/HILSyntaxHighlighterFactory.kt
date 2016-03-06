@@ -39,6 +39,7 @@ class HILSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
   companion object {
     val TIL_PARENS: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.PARENS", DefaultLanguageHighlighterColors.PARENTHESES)
     val TIL_BRACES: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.BRACES", DefaultLanguageHighlighterColors.BRACES)
+    val TIL_BRACKETS: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.BRACKETS", DefaultLanguageHighlighterColors.BRACKETS)
     val TIL_COMMA: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.COMMA", DefaultLanguageHighlighterColors.COMMA)
     val TIL_EQUALS: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.EQUALS", DefaultLanguageHighlighterColors.OPERATION_SIGN)
     val TIL_OPERATOR: TextAttributesKey = TextAttributesKey.createTextAttributesKey("TIL.OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN)
@@ -64,16 +65,15 @@ class HILSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
     val ourAttributes: Map<IElementType, TextAttributesKey> = HashMap()
 
     init {
-      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_BRACES, INTERPOLATION_START, INTERPOLATION_END)
-      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_PARENS, L_PAREN, R_PAREN)
+      SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.TIL_BRACES, TIL_BRACES)
+      SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.TIL_BRACKETS, TIL_BRACKETS)
+      SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.TIL_PARENS, TIL_PARENS)
       SyntaxHighlighterBase.fillMap(ourAttributes, TIL_COMMA, COMMA)
       SyntaxHighlighterBase.fillMap(ourAttributes, TIL_EQUALS, EQUALS)
-      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_OPERATOR, OP_PLUS, OP_MINUS, OP_MUL, OP_DIV, OP_MOD)
-      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_STRING, DOUBLE_QUOTED_STRING)
-      //      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_STRING, SINGLE_QUOTED_STRING)
+      SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.TIL_OPERATORS, TIL_OPERATOR)
+      SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.STRING_LITERALS, TIL_STRING)
       SyntaxHighlighterBase.fillMap(ourAttributes, TIL_NUMBER, NUMBER)
-      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_KEYWORD, TRUE, FALSE, NULL)
-      // TODO may be it's worth to add more sensible highlighting for identifiers
+      SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.TIL_KEYWORDS, TIL_KEYWORD)
       SyntaxHighlighterBase.fillMap(ourAttributes, TIL_IDENTIFIER, ID)
       SyntaxHighlighterBase.fillMap(ourAttributes, HighlighterColors.BAD_CHARACTER, TokenType.BAD_CHARACTER)
 
