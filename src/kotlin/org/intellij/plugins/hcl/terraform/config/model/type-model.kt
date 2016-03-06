@@ -410,7 +410,8 @@ class TypeModel(
     ))
     val ConnectionPropertiesSSH: Array<out PropertyOrBlockType> = arrayOf(
         // ssh
-        PropertyType("key_file", Types.String).toPOBT(),
+        PropertyType("key_file", Types.String, deprecated = "Use 'private_key'").toPOBT(),
+        PropertyType("private_key", Types.String).toPOBT(),
         PropertyType("agent", Types.Boolean).toPOBT(),
 
         // bastion ssh
@@ -418,7 +419,8 @@ class TypeModel(
         PropertyType("bastion_port", Types.Number).toPOBT(),
         PropertyType("bastion_user", Types.String).toPOBT(),
         PropertyType("bastion_password", Types.String).toPOBT(),
-        PropertyType("bastion_key_file", Types.String).toPOBT()
+        PropertyType("bastion_private_key", Types.String).toPOBT(),
+        PropertyType("bastion_key_file", Types.String, deprecated = "Use 'bastion_private_key'").toPOBT()
     );
     val ConnectionPropertiesWinRM: Array<out PropertyOrBlockType> = arrayOf(
         // winrm
@@ -431,7 +433,8 @@ class TypeModel(
         description = "Describe to Terraform how to connect to the resource for provisioning", // TODO: Improve description
         properties = *arrayOf(
             PropertyType("create_before_destroy", Types.Boolean).toPOBT(),
-            PropertyType("prevent_destroy", Types.Boolean).toPOBT()
+            PropertyType("prevent_destroy", Types.Boolean).toPOBT(),
+            PropertyType("ignore_changes", Types.Array, hint = TypeHint(Types.String)).toPOBT()
         ))
     val AbstractResourceProvisioner: BlockType = BlockType("provisioner", 1, properties = *arrayOf(
         Connection.toPOBT()
