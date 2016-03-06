@@ -385,20 +385,19 @@ object ModelHelper {
   public fun getBlockProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
     val type = block.getNameElementUnquoted(0)
     val props: Array<out PropertyOrBlockType>
+    if (type in TypeModel.RootBlocksMap.keys && block.parent !is PsiFile) {
+      return emptyArray()
+    }
     props = when (type) {
-      "atlas" -> TypeModel.Atlas.properties
-      "module" -> TypeModel.Module.properties
-      "output" -> TypeModel.Output.properties
       "provider" -> getProviderProperties(block)
       "resource" -> getResourceProperties(block)
-      "variable" -> TypeModel.Variable.properties
 
     // Inner for 'resource'
       "lifecycle" -> TypeModel.ResourceLifecycle.properties
       "provisioner" -> getProvisionerProperties(block)
     // Can be inner for both 'resource' and 'provisioner'
       "connection" -> getConnectionProperties(block)
-      else -> return emptyArray()
+      else -> return TypeModel.RootBlocksMap[type]?.properties?:emptyArray()
     }
     return props
   }

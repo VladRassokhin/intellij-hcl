@@ -126,11 +126,15 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
         }
       }
       is HCLProperty -> {
-        val value = r.value
-        if (value is HCLObject) {
-          val property = value.findProperty(name)
-          if (property != null) {
-            found.add(property)
+        if (r is FakeHCLProperty) {
+          assert(fake)
+        } else {
+          val value = r.value
+          if (value is HCLObject) {
+            val property = value.findProperty(name)
+            if (property != null) {
+              found.add(property)
+            }
           }
         }
       }

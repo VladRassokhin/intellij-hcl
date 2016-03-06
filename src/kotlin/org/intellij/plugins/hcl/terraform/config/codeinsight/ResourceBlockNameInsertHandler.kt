@@ -26,6 +26,7 @@ import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import getNextSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.HCLBlock
@@ -69,6 +70,9 @@ object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {
 
     if (parent is HCLProperty) {
       // ??? Do nothing
+      return
+    }
+    if (item.lookupString in TypeModel.RootBlocksMap.keys && parent.parent !is PsiFile) {
       return
     }
     var offset: Int? = null

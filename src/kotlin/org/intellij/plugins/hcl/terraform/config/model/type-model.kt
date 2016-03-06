@@ -452,6 +452,7 @@ class TypeModel(
     )
 
     val RootBlocks = listOf(Atlas, Module, Output, Variable, AbstractProvider, AbstractResource)
+    val RootBlocksMap = RootBlocks.map { it.literal to it }.toMap()
   }
 
   fun getResourceType(name: String): ResourceType? {
