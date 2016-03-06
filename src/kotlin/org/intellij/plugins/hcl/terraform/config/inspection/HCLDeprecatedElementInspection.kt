@@ -57,21 +57,22 @@ class HCLDeprecatedElementInspection : LocalInspectionTool() {
     val candidates = ArrayList<PropertyOrBlockType>(properties.filter { it.deprecated != null })
     if (candidates.isEmpty()) return
 
+    val reasons = candidates.map { it.name to it.deprecated!! }.toMap(HashMap())
     ProgressIndicatorProvider.checkCanceled()
-    val dpn = candidates.filter { it.property != null }.map { it.name }.toHashSet()
-    if (dpn.isNotEmpty()) for (hclProperty in obj.propertyList) {
+    if (candidates.filter { it.property != null }.isNotEmpty()) for (hclProperty in obj.propertyList) {
       val name = hclProperty.name
-      if (dpn.contains(name)) {
-        holder.registerProblem(hclProperty, "Deprecated property: $name", ProblemHighlightType.LIKE_DEPRECATED)
+      val reason = reasons[name]
+      if (reason != null) {
+        holder.registerProblem(hclProperty, "Deprecated property: $name" + if (!reason.isNullOrEmpty()) " : $reason" else "", ProblemHighlightType.LIKE_DEPRECATED)
       }
     }
 
     ProgressIndicatorProvider.checkCanceled()
-    val dbn = candidates.filter { it.block != null }.map { it.name }.toHashSet()
-    if (dbn.isNotEmpty()) for (hclBlock in obj.blockList) {
+    if (candidates.filter { it.block != null }.isNotEmpty()) for (hclBlock in obj.blockList) {
       val name = hclBlock.name
-      if (dbn.contains(name)) {
-        holder.registerProblem(hclBlock, "Deprecated block: $name", ProblemHighlightType.LIKE_DEPRECATED)
+      val reason = reasons[name]
+      if (reason != null) {
+        holder.registerProblem(hclBlock, "Deprecated block: $name" + if (!reason.isNullOrEmpty()) " : $reason" else "", ProblemHighlightType.LIKE_DEPRECATED)
       }
     }
   }
