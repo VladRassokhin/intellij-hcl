@@ -22,9 +22,11 @@ import com.intellij.openapi.editor.highlighter.EditorHighlighter;
 import com.intellij.openapi.editor.highlighter.EditorHighlighterFactory;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.ui.ComboBox;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.ui.ListCellRendererWrapper;
+import com.intellij.ui.components.JBPanel;
 import org.intellij.plugins.hcl.HCLFileType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,9 +46,9 @@ public class HCLCodeStylePanel extends CodeStyleAbstractPanel {
       "_5 = true\n" +
       "w1th.num8er5 = 'acceptable'";
 
-  private JComboBox myPropertiesAlignmentCombo;
-  private JPanel myPreviewPanel;
-  private JPanel myPanel;
+  private ComboBox myPropertiesAlignmentCombo;
+  private JBPanel myPreviewPanel;
+  private JBPanel myPanel;
 
   @SuppressWarnings("unchecked")
   public HCLCodeStylePanel(@NotNull Language language, @NotNull CodeStyleSettings settings) {
