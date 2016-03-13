@@ -32,7 +32,10 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
   val myPropertyValueAlignment: Alignment?
 
   init {
-    myPropertyValueAlignment = if (getCustomSettings().PROPERTY_ALIGNMENT == HCLCodeStyleSettings.DO_NOT_ALIGN_PROPERTY || !isElementType(node, OBJECT, HCLParserDefinition.FILE)) null else Alignment.createAlignment(true)
+    myPropertyValueAlignment =
+        if (getCustomSettings().PROPERTY_ALIGNMENT == HCLCodeStyleSettings.DO_NOT_ALIGN_PROPERTY) null
+        else if (isElementType(node, OBJECT) || isFile(node)) Alignment.createAlignment(true)
+        else null
     myChildWrap = when (node.elementType) {
       OBJECT -> Wrap.createWrap(getCustomSettings().OBJECT_WRAPPING, true)
       ARRAY -> Wrap.createWrap(getCustomSettings().ARRAY_WRAPPING, true)
@@ -115,14 +118,14 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     if (isElementType(myNode, ARRAY)) {
       return Indent.getNormalIndent();
     }
-    if (myNode.elementType is IFileElementType) {
+    if (isFile(myNode)) {
       return Indent.getNoneIndent();
     }
     return null;
   }
 
   fun getFirstChildAlignment(newChildIndex: Int): Alignment? {
-    if (isElementType(myNode, OBJECT, HCLParserDefinition.FILE)) {
+    if (isElementType(myNode, OBJECT) || isFile(myNode)) {
       return null;
     }
     if (isElementType(myNode, PROPERTY)) {
@@ -149,6 +152,10 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
 
   private fun isElementType(node: ASTNode, vararg types: IElementType): Boolean {
     return types.contains(node.elementType)
+  }
+
+  private fun isFile(node: ASTNode): Boolean {
+    return node.elementType is IFileElementType
   }
 
   private fun isWhitespaceOrEmpty(node: ASTNode): Boolean {

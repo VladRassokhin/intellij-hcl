@@ -16,43 +16,77 @@
 package org.intellij.plugins.hcl;
 
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import org.intellij.plugins.hcl.formatter.HCLCodeStyleSettings;
+import org.intellij.plugins.hcl.terraform.config.TerraformFileType;
 import org.jetbrains.annotations.Nullable;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 
+@RunWith(Parameterized.class)
 public class HCLFormatterTest extends LightCodeInsightFixtureTestCase {
-  private static final Logger LOG = Logger.getInstance(HCLFormatterTest.class);
 
+  @Parameterized.Parameters
+  public static Collection<Object[]> data() {
+    return Arrays.asList(new Object[][]{
+        {HCLFileType.INSTANCE}, {TerraformFileType.INSTANCE}
+    });
+  }
+
+  @SuppressWarnings("WeakerAccess")
+  @Parameterized.Parameter
+  public LanguageFileType myFileType;
+
+  @Override
+  @Before
+  public void setUp() throws Exception {
+    super.setUp();
+  }
+
+  @Override
+  @After
+  public void tearDown() throws Exception {
+    super.tearDown();
+  }
 
   @Override
   protected String getTestDataPath() {
     return "tests/data";
   }
 
+  @Test
   public void testBasicFormatting() throws Exception {
     doSimpleTest("a=1", "a = 1");
     doSimpleTest("'a'=1", "'a' = 1");
   }
 
+  @Test
   public void testFormatBlock_Brace() throws Exception {
     doSimpleTest("a b c {\n  a = true}", "a b c {\n  a = true\n}");
     doSimpleTest("block x {a=true}", "block x {\n  a = true\n}");
     doSimpleTest("block x {}", "block x {\n}");
   }
 
+  @Test
   public void testFormatBlock_Space() throws Exception {
     doSimpleTest("block x{}", "block x {\n}");
     doSimpleTest("block 'x'{}", "block 'x' {\n}");
     doSimpleTest("block x{a=true}", "block x {\n  a = true\n}");
   }
 
+  @Test
   public void testAlignPropertiesOnEquals() throws Exception {
     CodeStyleSettingsManager.getSettings(getProject()).getCustomSettings(HCLCodeStyleSettings.class).PROPERTY_ALIGNMENT = HCLCodeStyleSettings.ALIGN_PROPERTY_ON_EQUALS;
     doSimpleTest("a=true\nbaz=42", "a   = true\nbaz = 42");
@@ -61,6 +95,7 @@ public class HCLFormatterTest extends LightCodeInsightFixtureTestCase {
     doSimpleTest("a=true\nbaz = 42", "a   = true\nbaz = 42");
   }
 
+  @Test
   public void testAlignPropertiesOnValue() throws Exception {
     CodeStyleSettingsManager.getSettings(getProject()).getCustomSettings(HCLCodeStyleSettings.class).PROPERTY_ALIGNMENT = HCLCodeStyleSettings.ALIGN_PROPERTY_ON_VALUE;
     doSimpleTest("a=true\nbaz=42", "a =   true\nbaz = 42");
@@ -74,7 +109,7 @@ public class HCLFormatterTest extends LightCodeInsightFixtureTestCase {
   }
 
   public void doSimpleTest(String input, String expected, @Nullable Runnable setupSettings) throws Exception {
-    myFixture.configureByText(HCLFileType.INSTANCE, input);
+    myFixture.configureByText(myFileType, input);
     final Project project = getProject();
     final PsiFile file = myFixture.getFile();
     if (setupSettings != null) setupSettings.run();
