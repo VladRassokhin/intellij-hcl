@@ -370,8 +370,8 @@ fun getResource(position: ILExpression): HCLBlock? {
 
 private fun getScopeSelectPatternCondition(scopes: Set<String>): PatternCondition<ILSelectExpression?> {
   return object : PatternCondition<ILSelectExpression?>("ScopeSelect($scopes)") {
-    override fun accepts(t: ILSelectExpression?, context: ProcessingContext?): Boolean {
-      val from = t?.from
+    override fun accepts(t: ILSelectExpression, context: ProcessingContext?): Boolean {
+      val from = t.from
       return from is ILVariable && from.name in scopes
     }
   }

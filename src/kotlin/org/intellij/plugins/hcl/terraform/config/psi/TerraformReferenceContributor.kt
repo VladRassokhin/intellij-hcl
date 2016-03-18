@@ -34,13 +34,13 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
         psiElement(HCLStringLiteral::class.java)
             .inFile(TerraformConfigFile)
             .withParent(psiElement(HCLProperty::class.java).with(object : PatternCondition<HCLProperty?>("HCLProperty(provider)") {
-              override fun accepts(t: HCLProperty?, context: ProcessingContext?): Boolean {
-                return "provider" == t?.name
+              override fun accepts(t: HCLProperty, context: ProcessingContext?): Boolean {
+                return "provider" == t.name
               }
             }))
             .withSuperParent(3, psiElement(HCLBlock::class.java).with(object : PatternCondition<HCLBlock?>("HCLBlock(resource)") {
-              override fun accepts(t: HCLBlock?, context: ProcessingContext?): Boolean {
-                return t?.getNameElementUnquoted(0) == "resource"
+              override fun accepts(t: HCLBlock, context: ProcessingContext?): Boolean {
+                return t.getNameElementUnquoted(0) == "resource"
               }
             }))
         , SimpleReferenceProvider);

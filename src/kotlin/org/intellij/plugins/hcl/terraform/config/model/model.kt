@@ -136,11 +136,9 @@ class Module private constructor(val item: PsiFileSystemItem) {
       return processor.execute(item)
     }
     assert(item is PsiDirectory)
-    return item.processChildren(object : PsiElementProcessor<PsiFileSystemItem?> {
-      override fun execute(element: PsiFileSystemItem?): Boolean {
-        if (element !is HCLFile) return true
-        return processor.execute(element)
-      }
+    return item.processChildren(PsiElementProcessor { element ->
+      if (element !is HCLFile) return@PsiElementProcessor true
+      processor.execute(element)
     })
   }
 
