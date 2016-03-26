@@ -46,4 +46,14 @@ public class HCLHeredocLiteralImpl extends HCLLiteralImpl implements HCLHeredocL
     return p1.size() < 2 ? null : p1.get(1);
   }
 
+  @NotNull
+  public boolean isIndented() {
+    return HCLPsiImplUtilJ.isIndented(this);
+  }
+
+  @Nullable
+  public Integer getIndentation() {
+    return HCLPsiImplUtilJ.getIndentation(this);
+  }
+
 }

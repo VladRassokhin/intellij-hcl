@@ -109,13 +109,32 @@ public class HCLPsiImplUtilJ {
   }
 
   @NotNull
+  public static boolean isIndented(@NotNull HCLHeredocLiteral literal) {
+    return HCLPsiImplUtils.INSTANCE.isIndented(literal);
+  }
+
+  @Nullable
+  public static Integer getIndentation(@NotNull HCLHeredocLiteral literal) {
+    return HCLPsiImplUtils.INSTANCE.getIndentation(literal);
+  }
+
+  @Nullable
+  public static Integer getMinimalIndentation(@NotNull HCLHeredocContent content) {
+    return HCLPsiImplUtils.INSTANCE.getMinimalIndentation(content);
+  }
+
+  @NotNull
   public static String getValue(@NotNull HCLHeredocContent content) {
-    return HCLPsiImplUtils.INSTANCE.getValue(content);
+    return HCLPsiImplUtils.INSTANCE.getValue(content, 0);
   }
 
   @NotNull
   public static List<String> getLines(@NotNull HCLHeredocContent content) {
     return HCLPsiImplUtils.INSTANCE.getLines(content);
+  }
+  @NotNull
+  public static List<CharSequence> getLinesRaw(@NotNull HCLHeredocContent content) {
+    return HCLPsiImplUtils.INSTANCE.getLinesRaw(content);
   }
 
   public static int getLinesCount(@NotNull HCLHeredocContent content) {

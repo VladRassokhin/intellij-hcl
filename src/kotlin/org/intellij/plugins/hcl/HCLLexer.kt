@@ -26,7 +26,8 @@ class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(HCLCapa
     private val IN_STRING = 1 shl 14
     private val HIL_MASK = 0x00003F00 // 8-13
 
-    private val HEREDOC_MARKER_LENGTH: Int = 0xFF00 // 0-255
+    private val HEREDOC_MARKER_LENGTH: Int = 0x7F00 // 7bit positive number (0-127)
+    private val HEREDOC_MARKER_INDENTED: Int = 0x8000 // boolean
     private val HEREDOC_MARKER_WEAK_HASH: Int = STRING_START_MASK // half of int
 
     private val JFLEX_STATE_MASK: Int = 0xFF
@@ -40,6 +41,7 @@ class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(HCLCapa
     val lexer = flex
     if (isLexerInHereDocLineState(state)) {
       lexer.myHereDocMarkerLength = (state and HEREDOC_MARKER_LENGTH) ushr 0x8;
+      lexer.myHereDocIndented = (state and HEREDOC_MARKER_INDENTED) != 0;
       lexer.myHereDocMarkerWeakHash = (state and HEREDOC_MARKER_WEAK_HASH) ushr 0x10;
     } else if (capabilities.contains(HCLCapability.INTERPOLATION_LANGUAGE)) {
       if (!isLexerInStringOrHILState(state) || state and IN_STRING == 0) {
@@ -74,7 +76,8 @@ class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(HCLCapa
     assert(state and (JFLEX_STATE_MASK.inv()) == 0) { "State outside JFLEX_STATE_MASK ($JFLEX_STATE_MASK) should not be used by JFLex lexer" }
     state = state and JFLEX_STATE_MASK;
     if (isLexerInHereDocLineState(state)) {
-      state = state or (((lexer.myHereDocMarkerLength and 0xFF) shl 0x8 ) and HEREDOC_MARKER_LENGTH);
+      state = state or (((lexer.myHereDocMarkerLength and 0x7F) shl 0x8 ) and HEREDOC_MARKER_LENGTH);
+      state = state or (((if (lexer.myHereDocIndented) 0x80 else 0x0) shl 0x8 ) and HEREDOC_MARKER_LENGTH);
       state = state or (((lexer.myHereDocMarkerWeakHash and 0xFFFF) shl 0x10 ) and HEREDOC_MARKER_WEAK_HASH);
     } else if (capabilities.contains(HCLCapability.INTERPOLATION_LANGUAGE)) {
       val type = lexer.stringType!!

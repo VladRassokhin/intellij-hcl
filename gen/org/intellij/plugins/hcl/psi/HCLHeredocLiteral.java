@@ -19,4 +19,10 @@ public interface HCLHeredocLiteral extends HCLLiteral {
   @Nullable
   HCLHeredocMarker getMarkerEnd();
 
+  @NotNull
+  boolean isIndented();
+
+  @Nullable
+  Integer getIndentation();
+
 }

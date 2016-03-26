@@ -1,6 +1,7 @@
 package org.intellij.plugins.hcl;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.openapi.util.text.StringUtil;
 import java.util.EnumSet;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
@@ -53,6 +54,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
     int hil = 0;
     int myHereDocMarkerLength = 0;
     int myHereDocMarkerWeakHash = 0;
+    boolean myHereDocIndented = false;
 
     private void hil_inc() {
       hil++;
@@ -82,8 +84,19 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
       hil=0; return stringType == StringType.SingleQ ? eoss(): eods();
     }
     private void setHereDocMarker(CharSequence marker) {
-      myHereDocMarkerLength = marker.length() & 0xFF;
-      int hash = marker.toString().hashCode();
+      myHereDocIndented = false;
+      int length = marker.length();
+      String value = marker.toString();
+      assert(length > 0);
+      if (marker.charAt(0) == '-') {
+        assert(length > 1);
+        // Indented heredoc
+        myHereDocIndented = true;
+        length--;
+        value = value.substring(1);
+      }
+      myHereDocMarkerLength = length & 0xFF;
+      int hash = value.hashCode();
       myHereDocMarkerWeakHash = hash & 0xFFFF;
     }
     private void resetHereDocMarker() {
@@ -94,6 +107,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
       return myHereDocMarkerLength != 0 && myHereDocMarkerWeakHash != 0;
     }
     private boolean isHereDocMarker(CharSequence input) {
+      if (myHereDocIndented) input = StringUtil.trimLeading(input);
       if ((input.length() & 0xFF) != myHereDocMarkerLength) return false;
       int hash = input.toString().hashCode();
       return myHereDocMarkerWeakHash == (hash & 0xFFFF);
@@ -167,7 +181,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
     int len = yylength();
     int len_eff = len - eol;
     assert len_eff >= 0;
-    if((len_eff & 0xFF) == myHereDocMarkerLength
+    if((len_eff & 0xFF) >= myHereDocMarkerLength
        && isHereDocMarker(yytext().subSequence(0, len_eff))) {
       // End of HereDoc
       yypushback(eol);

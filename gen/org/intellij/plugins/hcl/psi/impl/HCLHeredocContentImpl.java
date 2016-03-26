@@ -26,6 +26,11 @@ public class HCLHeredocContentImpl extends HCLHeredocContentMixin implements HCL
     return HCLPsiImplUtilJ.getLines(this);
   }
 
+  @NotNull
+  public List<CharSequence> getLinesRaw() {
+    return HCLPsiImplUtilJ.getLinesRaw(this);
+  }
+
   public int getLinesCount() {
     return HCLPsiImplUtilJ.getLinesCount(this);
   }
@@ -33,6 +38,11 @@ public class HCLHeredocContentImpl extends HCLHeredocContentMixin implements HCL
   @NotNull
   public String getValue() {
     return HCLPsiImplUtilJ.getValue(this);
+  }
+
+  @Nullable
+  public Integer getMinimalIndentation() {
+    return HCLPsiImplUtilJ.getMinimalIndentation(this);
   }
 
 }

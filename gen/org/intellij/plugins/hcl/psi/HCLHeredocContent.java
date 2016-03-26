@@ -10,9 +10,15 @@ public interface HCLHeredocContent extends PsiElement {
   @NotNull
   List<String> getLines();
 
+  @NotNull
+  List<CharSequence> getLinesRaw();
+
   int getLinesCount();
 
   @NotNull
   String getValue();
+
+  @Nullable
+  Integer getMinimalIndentation();
 
 }

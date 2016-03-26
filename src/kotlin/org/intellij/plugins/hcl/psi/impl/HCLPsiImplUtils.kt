@@ -30,6 +30,16 @@ import org.intellij.plugins.hcl.Icons
 import org.intellij.plugins.hcl.psi.*
 import javax.swing.Icon
 
+val CharSequence.indentation: Int
+  get() {
+    var x = 0;
+    forEach {
+      if (it.isWhitespace()) x++
+      else return x
+    }
+    return x
+  }
+
 object HCLPsiImplUtils {
   fun getName(property: HCLProperty): String {
     return StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(property.nameElement.text))
@@ -206,20 +216,47 @@ object HCLPsiImplUtils {
   }
 
   fun getValue(literal: HCLHeredocLiteral): String {
-    return literal.content.value
+    return getValue(literal.content, literal.indentation ?: 0)
   }
 
-  fun getValue(content: HCLHeredocContent): String {
+  fun isIndented(literal: HCLHeredocLiteral): Boolean {
+    return literal.markerStart.text.startsWith('-')
+  }
+
+  fun getIndentation(literal: HCLHeredocLiteral): Int? {
+    if (!isIndented(literal)) return null
+    val markerEnd = literal.markerEnd ?: return null
+    var indentation = markerEnd.text.indentation
+    val contentMinIndentation = literal.content.minimalIndentation ?: return indentation
+    if (contentMinIndentation < indentation) return 0
+    return indentation
+  }
+
+  fun getMinimalIndentation(content: HCLHeredocContent): Int? {
+    val children = content.node.getChildren(null)
+    return children.map { it.chars.indentation }.min()
+  }
+
+  fun getValue(content: HCLHeredocContent, trimFirst: Int = 0): String {
     val builder = StringBuilder()
-    content.lines.forEach { builder.append(it) }
+    content.linesRaw.forEach { builder.append(it.substring(trimFirst)) }
     // Last line EOL is not part of value
     builder.removeSuffix("\n")
     return builder.toString()
   }
 
   fun getLines(content: HCLHeredocContent): List<String> {
+    val parent = content.parent
+    val indentation: Int =
+        if (parent is HCLHeredocLiteral) parent.indentation ?: 0
+        else 0
     val children = content.node.getChildren(null)
-    return children.mapTo(SmartList<String>()) { it.text }
+    return children.mapTo(SmartList<String>()) { it.text.substring(indentation) }
+  }
+
+  fun getLinesRaw(content: HCLHeredocContent): List<CharSequence> {
+    val children = content.node.getChildren(null)
+    return children.mapTo(SmartList<CharSequence>()) { it.chars }
   }
 
   fun getLinesCount(content: HCLHeredocContent): Int {
