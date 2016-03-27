@@ -115,10 +115,10 @@ class Module private constructor(val item: PsiFileSystemItem) {
   constructor(directory: PsiDirectory) : this(directory as PsiFileSystemItem) {
   }
 
-  fun getAllVariables(): List<Variable> {
+  fun getAllVariables(): List<Pair<Variable, HCLBlock>> {
     val visitor = CollectVariablesVisitor()
     process(PsiElementProcessor { file -> file.acceptChildren(visitor); true })
-    return visitor.collected.map { it.first }.toList()
+    return visitor.collected.toList()
   }
 
   fun findVariable(name: String): Pair<Variable, HCLBlock>? {

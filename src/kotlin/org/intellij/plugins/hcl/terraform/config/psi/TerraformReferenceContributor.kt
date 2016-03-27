@@ -16,19 +16,24 @@
 package org.intellij.plugins.hcl.terraform.config.psi
 
 import com.intellij.patterns.PatternCondition
-import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
 import getNameElementUnquoted
+import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.psi.HCLElementLazyReference
 
 class TerraformReferenceContributor : PsiReferenceContributor() {
   override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-    val TerraformConfigFile = PlatformPatterns.psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
+    val TerraformVariablesFile = psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
+        .inVirtualFile(virtualFile().withExtension(TerraformFileType.TFVARS_EXTENSION))
+    val TerraformConfigFile = psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
+        .andNot(TerraformVariablesFile)
+
 
     registrar.registerReferenceProvider(
         psiElement(HCLStringLiteral::class.java)
@@ -43,7 +48,14 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
                 return t.getNameElementUnquoted(0) == "resource"
               }
             }))
-        , SimpleReferenceProvider);
+        , SimpleReferenceProvider)
+
+    // Resolve variables usage from .tfvars
+    registrar.registerReferenceProvider(
+        psiElement(HCLIdentifier::class.java)
+            .inFile(TerraformVariablesFile)
+            .withParent(psiElement(HCLProperty::class.java))
+        , VariableReferenceProvider)
   }
 }
 
@@ -63,4 +75,29 @@ object SimpleReferenceProvider : PsiReferenceProvider() {
       }
     })
   }
+}
+
+object VariableReferenceProvider : PsiReferenceProvider() {
+  override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
+    if (element !is HCLValue) return PsiReference.EMPTY_ARRAY
+    if (element !is HCLStringLiteral && element !is HCLIdentifier) return PsiReference.EMPTY_ARRAY
+    val parent = element.parent
+    if (parent !is HCLProperty) return PsiReference.EMPTY_ARRAY
+    if (parent.nameElement != element) return PsiReference.EMPTY_ARRAY
+
+    return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
+      @Suppress("NAME_SHADOWING")
+      val element = this.element
+      if (incomplete) {
+        element.getTerraformModule().getAllVariables().map { it.second.nameIdentifier as HCLElement }.filterNotNull()
+      } else {
+        val value =
+            if (element is HCLStringLiteral) element.value
+            else if (element is HCLIdentifier) element.id
+            else throw IllegalArgumentException("Expected either HCLStringLiteral or HCLIdentifier, got ${element.javaClass.name}")
+        listOf(element.getTerraformModule().findVariable(value.substringBefore('.'))?.second?.nameIdentifier as HCLElement?).filterNotNull()
+      }
+    })
+  }
+
 }

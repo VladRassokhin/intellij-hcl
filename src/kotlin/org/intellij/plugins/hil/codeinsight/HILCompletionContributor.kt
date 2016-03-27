@@ -339,7 +339,7 @@ fun getTerraformModule(element: ILExpression): Module? {
 }
 
 fun getLocalDefinedVariables(element: ILExpression): List<Variable> {
-  return getTerraformModule(element)?.getAllVariables() ?: emptyList()
+  return getTerraformModule(element)?.getAllVariables()?.map { it.first } ?: emptyList()
 }
 
 fun getProvisionerResource(position: ILExpression): HCLBlock? {
