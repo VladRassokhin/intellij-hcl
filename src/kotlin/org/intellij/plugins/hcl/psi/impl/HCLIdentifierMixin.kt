@@ -25,7 +25,7 @@ import org.intellij.plugins.hcl.psi.HCLIdentifier
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformSearchScope
 import java.util.regex.Pattern
 
-abstract class HCLIdentifierMixin(node: ASTNode) : HCLValueImpl(node), HCLIdentifier, PsiNamedElement {
+abstract class HCLIdentifierMixin(node: ASTNode) : HCLValueWithReferencesMixin(node), HCLIdentifier, PsiNamedElement {
   companion object {
     private val pattern = Pattern.compile("[a-zA-Z\\.\\-_][0-9a-zA-Z\\.\\-_]*")
   }
