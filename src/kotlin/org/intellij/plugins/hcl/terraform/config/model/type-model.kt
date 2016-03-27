@@ -34,7 +34,7 @@ open class Type(val name: String)
 open class BaseModelType(val description: String? = null, val required: Boolean = false, val deprecated: String? = null)
 
 interface Hint
-open class SimpleHint(val hint: String) : Hint
+open class SimpleHint(vararg val hint: String) : Hint
 open class TypeHint(val hint: Type) : Hint
 open class ListHint(val hint: List<PropertyOrBlockType>) : Hint
 
@@ -392,9 +392,11 @@ class TypeModel(
     val Module: BlockType = BlockType("module", 1, properties = PropertyType("source", Types.String, hint = SimpleHint("Url"), required = true).toPOBT())
     val Output: BlockType = BlockType("output", 1, properties = PropertyType("value", Types.String, hint = InterpolationHint("Any"), required = true).toPOBT())
 
+    val Variable_Type = PropertyType("type", Types.String, SimpleHint("string", "map"), false)
     val Variable_Default = PropertyType("default", Type("String|Object"))
     val Variable_Description = PropertyType("description", Types.String)
     val Variable: BlockType = BlockType("variable", 1, properties = *arrayOf(
+        Variable_Type.toPOBT(),
         Variable_Default.toPOBT(),
         Variable_Description.toPOBT()
     ))
