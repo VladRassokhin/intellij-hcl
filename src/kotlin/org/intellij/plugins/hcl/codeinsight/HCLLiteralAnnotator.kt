@@ -32,7 +32,7 @@ class HCLLiteralAnnotator : Annotator {
     private val DQS_VALID_ESCAPE = Pattern.compile("\\\\([\"\\\\/bfnrt]|u[0-9a-fA-F]{4})")
     private val SQS_VALID_ESCAPE = Pattern.compile("\\\\([\'\\\\/bfnrt]|u[0-9a-fA-F]{4})")
     // TODO: AFAIK that should be handled by lexer/parser
-    private val VALID_NUMBER_LITERAL = Pattern.compile("-?(0x)?(0|[1-9])\\d*(\\.\\d+)?([eE][+-]?\\d+)?")
+    private val VALID_NUMBER_LITERAL = Pattern.compile("-?(0x)?(0|[1-9])\\d*(\\.\\d+)?([eE][+-]?\\d+)?([KMGBkmgb][Bb]?)?")
 
     private val DEBUG = ApplicationManager.getApplication().isUnitTestMode
   }
