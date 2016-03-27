@@ -24,11 +24,8 @@ import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.patterns.PlatformPatterns.psiElement
-import com.intellij.patterns.PlatformPatterns.psiFile
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.patterns.StandardPatterns
-import com.intellij.patterns.StandardPatterns.not
-import com.intellij.patterns.StandardPatterns.or
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiLanguageInjectionHost
@@ -43,6 +40,7 @@ import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionContributor
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hil.HILFileType
@@ -61,6 +59,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     val Object = psiElement(HCLObject::class.java)
 
     val TerraformConfigFile = psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
+        .andNot(psiFile().inVirtualFile(virtualFile().withExtension(TerraformFileType.TFVARS_EXTENSION)))
 
     val AtLeastOneEOL = psiElement(PsiWhiteSpace::class.java).withText(StandardPatterns.string().contains("\n"))
     val Nothing = StandardPatterns.alwaysFalse<PsiElement>()

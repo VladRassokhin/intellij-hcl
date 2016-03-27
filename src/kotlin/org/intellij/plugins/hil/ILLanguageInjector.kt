@@ -22,6 +22,7 @@ import com.intellij.psi.PsiLanguageInjectionHost
 import org.intellij.plugins.hcl.psi.HCLFile
 import org.intellij.plugins.hcl.psi.HCLHeredocContent
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
+import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hil.HILElementTypes.INTERPOLATION_END
 import org.intellij.plugins.hil.HILElementTypes.INTERPOLATION_START
 import org.intellij.plugins.hil.psi.HILLexer
@@ -33,6 +34,8 @@ class ILLanguageInjector : LanguageInjector {
     // Only .tf (Terraform config) files
     val file = host.containingFile
     if (file !is HCLFile || !file.isInterpolationsAllowed()) return;
+    // Restrict interpolations in .tfvars files // TODO: This file shouldn't know about .tfvars here
+    if (file.fileType == TerraformFileType && file.name.endsWith("." + TerraformFileType.TFVARS_EXTENSION)) return
     if (host is HCLStringLiteral) return getStringLiteralInjections(host, places);
     if (host is HCLHeredocContent) return getHCLHeredocContentInjections(host, places);
     return;

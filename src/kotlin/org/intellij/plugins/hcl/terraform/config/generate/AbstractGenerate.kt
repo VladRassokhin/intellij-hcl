@@ -72,7 +72,7 @@ abstract class AbstractGenerate() : SimpleCodeInsightAction() {
   abstract val template: Template
 
   override fun isValidForFile(project: Project, editor: Editor, file: PsiFile): Boolean {
-    return file is HCLFile && file.fileType == TerraformFileType
+    return file is HCLFile && file.fileType == TerraformFileType && !file.name.endsWith("." + TerraformFileType.TFVARS_EXTENSION)
   }
 
   companion object {

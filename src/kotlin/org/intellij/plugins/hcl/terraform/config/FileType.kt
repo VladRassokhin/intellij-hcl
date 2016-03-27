@@ -23,6 +23,7 @@ import org.intellij.plugins.hcl.Icons
 
 object TerraformFileType : LanguageFileType(TerraformLanguage) {
   val DEFAULT_EXTENSION: String = "tf"
+  val TFVARS_EXTENSION: String = "tfvars"
 
   override fun getIcon() = Icons.FileTypes.Terraform
 
@@ -36,5 +37,6 @@ object TerraformFileType : LanguageFileType(TerraformLanguage) {
 class TerraformFileTypeFactory : FileTypeFactory() {
   override fun createFileTypes(consumer: FileTypeConsumer) {
     consumer.consume(TerraformFileType, TerraformFileType.DEFAULT_EXTENSION)
+    consumer.consume(TerraformFileType, TerraformFileType.TFVARS_EXTENSION)
   }
 }
