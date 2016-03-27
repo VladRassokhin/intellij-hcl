@@ -15,12 +15,12 @@
  */
 package org.intellij.plugins.hcl.terraform.config.psi
 
+import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
 import getNameElementUnquoted
-import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
@@ -79,25 +79,48 @@ object SimpleReferenceProvider : PsiReferenceProvider() {
 
 object VariableReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
-    if (element !is HCLValue) return PsiReference.EMPTY_ARRAY
-    if (element !is HCLStringLiteral && element !is HCLIdentifier) return PsiReference.EMPTY_ARRAY
+    if (element !is HCLIdentifier) return PsiReference.EMPTY_ARRAY
     val parent = element.parent
     if (parent !is HCLProperty) return PsiReference.EMPTY_ARRAY
     if (parent.nameElement != element) return PsiReference.EMPTY_ARRAY
 
-    return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
+    val varReference = HCLElementLazyReference(element, false) { incomplete, fake ->
       @Suppress("NAME_SHADOWING")
       val element = this.element
       if (incomplete) {
         element.getTerraformModule().getAllVariables().map { it.second.nameIdentifier as HCLElement }.filterNotNull()
       } else {
-        val value =
-            if (element is HCLStringLiteral) element.value
-            else if (element is HCLIdentifier) element.id
-            else throw IllegalArgumentException("Expected either HCLStringLiteral or HCLIdentifier, got ${element.javaClass.name}")
+        @Suppress("NAME_SHADOWING")
+        val value = element.id
         listOf(element.getTerraformModule().findVariable(value.substringBefore('.'))?.second?.nameIdentifier as HCLElement?).filterNotNull()
       }
-    })
+    }
+
+    val value = element.id
+    val dotIndex = value.indexOf('.')
+    if (dotIndex != -1) {
+      // Mapped variable
+      // Two references: variable name (hard) and variable subvalue (soft)
+      val subReference = HCLElementLazyReference(element, true) { incomplete, fake ->
+        @Suppress("NAME_SHADOWING")
+        val element = this.element
+        @Suppress("NAME_SHADOWING")
+        val value = element.id
+        val variable = element.getTerraformModule().findVariable(value.substringBefore('.')) ?: return@HCLElementLazyReference emptyList()
+        val default = variable.second.`object`?.findProperty("default")?.value
+        if (default !is HCLObject) return@HCLElementLazyReference emptyList()
+        if (incomplete) {
+          default.propertyList.map { it.nameElement }
+        } else {
+          listOf(default.findProperty(value.substringAfter('.'))?.nameElement).filterNotNull()
+        }
+      }
+      varReference.rangeInElement = TextRange(0, dotIndex)
+      subReference.rangeInElement = TextRange(dotIndex + 1, value.length)
+      return arrayOf(varReference, subReference)
+    }
+
+    return arrayOf(varReference)
   }
 
 }
