@@ -47,7 +47,7 @@ public class HCLElementGeneratorTest extends LightPlatformTestCase {
   }
 
   public void testCreateStringLiteral() throws Exception {
-    final HCLStringLiteral element = myElementGenerator.createStringLiteral("literal");
+    final HCLStringLiteral element = myElementGenerator.createStringLiteral("literal", '"');
     assertEquals("literal", element.getValue());
 //    assertEquals("literal", element.getName());
     final List<Pair<TextRange, String>> fragments = element.getTextFragments();

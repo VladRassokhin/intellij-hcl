@@ -71,8 +71,19 @@ open class HCLElementGenerator(private val project: Project) {
    * *
    * @return HCL string literal created from given text
    */
-  fun createStringLiteral(unescapedContent: String): HCLStringLiteral {
-    return createValue("\"${StringUtil.escapeStringCharacters(unescapedContent)}\"")
+  fun createStringLiteral(unescapedContent: String, quoteSymbol: Char? = '"'): HCLStringLiteral {
+    return createValue(buildString {
+      if (quoteSymbol == null) {
+        if (unescapedContent.length < 2) throw IllegalArgumentException()
+        append(unescapedContent.first())
+        append(StringUtil.escapeStringCharacters(unescapedContent.substring(1..unescapedContent.lastIndex - 1)))
+        append(unescapedContent.last())
+      } else {
+        append(quoteSymbol)
+        append(StringUtil.escapeStringCharacters(unescapedContent))
+        append(quoteSymbol)
+      }
+    })
   }
 
   fun createProperty(name: String, value: String): HCLProperty {

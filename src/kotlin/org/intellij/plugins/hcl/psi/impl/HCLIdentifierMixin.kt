@@ -27,11 +27,11 @@ import java.util.regex.Pattern
 
 abstract class HCLIdentifierMixin(node: ASTNode) : HCLValueWithReferencesMixin(node), HCLIdentifier, PsiNamedElement {
   companion object {
-    private val pattern = Pattern.compile("[a-zA-Z\\.\\-_][0-9a-zA-Z\\.\\-_]*")
+    val IDENTIFIER_PATTERN = Pattern.compile("[a-zA-Z\\.\\-_][0-9a-zA-Z\\.\\-_]*")
   }
 
   override fun setName(s: String): PsiElement? {
-    if (pattern.matcher(s).matches()) {
+    if (IDENTIFIER_PATTERN.matcher(s).matches()) {
       // Safe to replace ast node
       (node.firstChildNode as LeafElement).replaceWithText(s);
       return this

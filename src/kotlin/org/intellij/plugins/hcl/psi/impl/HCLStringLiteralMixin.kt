@@ -26,6 +26,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.IncorrectOperationException
 import org.intellij.plugins.hcl.HCLElementTypes
+import org.intellij.plugins.hcl.psi.HCLElementGenerator
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformSearchScope
 
@@ -37,6 +38,10 @@ abstract class HCLStringLiteralMixin(node: ASTNode?) : HCLLiteralImpl(node), HCL
   }
 
   override fun updateText(s: String): HCLStringLiteralMixin {
+    return updateText(s, true)
+  }
+
+  fun updateText(s: String, changeQuotes: Boolean): HCLStringLiteralMixin {
     if (s.length < 2) {
       val message = "New text '$s' too short: ${s.length}"
       LOG.error(message)
@@ -60,8 +65,12 @@ abstract class HCLStringLiteralMixin(node: ASTNode?) : HCLLiteralImpl(node), HCL
 
     // Fix quotes if needed
     if (quote != quoteSymbol) {
-      buffer[0] = quoteSymbol
-      buffer[buffer.lastIndex] = quoteSymbol
+      if (changeQuotes) {
+        buffer[0] = quoteSymbol
+        buffer[buffer.lastIndex] = quoteSymbol
+      } else {
+        return replace(HCLElementGenerator(project).createStringLiteral(buffer.toString(), null)) as HCLStringLiteralMixin
+      }
     }
     (node.firstChildNode as LeafElement).replaceWithText(buffer.toString())
     return this
