@@ -52,6 +52,213 @@
     ]
   },
   "resources": {
+    "triton_fabric": {
+      "description": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "optional description of network"
+        }
+      ],
+      "fabric": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "whether or not this network is on a fabric"
+        }
+      ],
+      "gateway": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "optional gateway IP"
+        }
+      ],
+      "internet_nat": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "if a NAT zone is provisioned at Gateway IP address"
+        }
+      ],
+      "name": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "network name"
+        }
+      ],
+      "provision_end_ip": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "last assignable IP on the network"
+        }
+      ],
+      "provision_start_ip": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "first IP on the network that can be assigned"
+        }
+      ],
+      "public": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "whether or not this is an RFC1918 network"
+        }
+      ],
+      "resolvers": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeList"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "array of IP addresses for resolvers"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaElements",
+          "value": [
+            {
+              "name": "Type",
+              "type": "schema.ValueType",
+              "value": "TypeString"
+            }
+          ]
+        }
+      ],
+      "routes": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeMap"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "map of CIDR block to Gateway IP address"
+        }
+      ],
+      "subnet": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "CIDR formatted string describing network"
+        }
+      ],
+      "vlan_id": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "VLAN network is on"
+        }
+      ]
+    },
     "triton_firewall_rule": {
       "enabled": [
         {
@@ -433,6 +640,59 @@
           "name": "Description",
           "type": "string",
           "value": "user script to run on boot (every boot on SmartMachines)"
+        }
+      ]
+    },
+    "triton_vlan": {
+      "description": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Optional description of the VLAN"
+        }
+      ],
+      "name": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Unique name to identify VLAN"
+        }
+      ],
+      "vlan_id": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "number between 0-4095 indicating VLAN ID"
         }
       ]
     }
