@@ -83,7 +83,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
       hil=0; return stringType == StringType.SingleQ ? eoss(): eods();
     }
     private void setHereDocMarker(CharSequence marker) {
-      myHereDocIndented = false;
+      myHereDocIndented = true; // Temprorarly set to true see #30
       int length = marker.length();
       String value = marker.toString();
       assert(length > 0);

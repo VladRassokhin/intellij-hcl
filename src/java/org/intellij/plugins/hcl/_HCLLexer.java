@@ -346,7 +346,7 @@ public class _HCLLexer implements FlexLexer {
       hil=0; return stringType == StringType.SingleQ ? eoss(): eods();
     }
     private void setHereDocMarker(CharSequence marker) {
-      myHereDocIndented = false;
+      myHereDocIndented = true; // Temprorarly set to true. See #30
       int length = marker.length();
       String value = marker.toString();
       assert(length > 0);

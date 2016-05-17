@@ -92,6 +92,10 @@ public class HCLParserTest extends ParsingTestCase {
     doTest();
   }
 
+  public void testHereDoc_Indented_End() throws Exception {
+    doTest();
+  }
+
   public void testIdentifiers() throws Exception {
     doTest();
   }
