@@ -30,7 +30,7 @@ HIL_STOP=(\})
 
 HEREDOC_START="<<"
 
-STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])*
+STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
 
 %state D_STRING, S_STRING, HIL_EXPRESSION, IN_NUMBER
 %state S_HEREDOC_MARKER, S_HEREDOC_LINE

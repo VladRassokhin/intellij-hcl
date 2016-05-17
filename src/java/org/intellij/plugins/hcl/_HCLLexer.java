@@ -69,14 +69,14 @@ public class _HCLLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\3\1\3\0\1\2\1\3\1\2\1\4\1\5"+
-    "\1\6\1\5\1\6\1\7\1\10\1\2\1\11\1\12"+
-    "\1\13\1\14\1\15\1\16\3\5\1\1\2\17\3\1"+
-    "\1\20\2\21\1\22\2\23\1\1\1\24\1\0\2\25"+
-    "\1\26\2\27\1\30\2\31\1\32\2\6\3\0\1\33"+
-    "\3\5\1\34\1\35\3\0\1\25\2\26\2\30\1\0"+
-    "\3\5\1\6\1\0\1\6\3\5\1\25\1\0\2\25"+
-    "\1\32\1\6\1\5\1\6\1\36\1\5\1\37\1\40";
+    "\7\0\1\1\1\2\1\1\1\3\1\4\1\5\1\4"+
+    "\1\5\1\6\1\7\1\1\1\10\1\11\1\12\1\13"+
+    "\1\14\1\15\3\4\1\16\2\17\3\16\1\20\2\21"+
+    "\1\22\2\23\1\16\1\24\1\0\2\25\1\26\2\27"+
+    "\1\30\2\31\1\32\2\5\3\0\1\33\3\4\1\34"+
+    "\1\35\3\0\1\25\2\26\2\30\1\0\3\4\1\5"+
+    "\1\0\1\5\3\4\1\25\1\0\2\25\1\32\1\5"+
+    "\1\4\1\5\1\36\1\4\1\37\1\40";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[92];
@@ -234,12 +234,12 @@ public class _HCLLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\3\1\3\0\1\11\7\1\2\11\1\1\6\11"+
-    "\5\1\1\11\1\1\1\11\1\1\1\11\1\1\2\11"+
-    "\1\1\1\11\1\1\1\11\1\0\4\1\1\11\2\1"+
-    "\1\11\3\1\3\0\1\11\3\1\2\11\3\0\2\1"+
-    "\1\11\1\1\1\11\1\0\4\1\1\0\5\1\1\0"+
-    "\1\1\2\11\7\1";
+    "\7\0\1\11\7\1\2\11\1\1\6\11\5\1\1\11"+
+    "\1\1\1\11\1\1\1\11\1\1\2\11\1\1\1\11"+
+    "\1\1\1\11\1\0\4\1\1\11\2\1\1\11\3\1"+
+    "\3\0\1\11\3\1\2\11\3\0\2\1\1\11\1\1"+
+    "\1\11\1\0\4\1\1\0\5\1\1\0\1\1\2\11"+
+    "\7\1";
 
   private static int [] zzUnpackAttribute() {
     int [] result = new int[92];
@@ -643,60 +643,60 @@ public class _HCLLexer implements FlexLexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { 
+            { return BAD_CHARACTER;
             }
           case 33: break;
           case 2: 
-            { return BAD_CHARACTER;
+            { return com.intellij.psi.TokenType.WHITE_SPACE;
             }
           case 34: break;
           case 3: 
-            { return com.intellij.psi.TokenType.WHITE_SPACE;
+            { return LINE_COMMENT;
             }
           case 35: break;
           case 4: 
-            { return LINE_COMMENT;
+            { return ID;
             }
           case 36: break;
           case 5: 
-            { return ID;
-            }
-          case 37: break;
-          case 6: 
             { if (!withNumbersWithBytesPostfix) return NUMBER;
                                 yybegin(IN_NUMBER); yypushback(yylength());
             }
+          case 37: break;
+          case 6: 
+            { return L_CURLY;
+            }
           case 38: break;
           case 7: 
-            { return L_CURLY;
+            { return R_CURLY;
             }
           case 39: break;
           case 8: 
-            { return R_CURLY;
+            { stringType = StringType.SingleQ; stringStart = zzStartRead; yybegin(S_STRING);
             }
           case 40: break;
           case 9: 
-            { stringType = StringType.SingleQ; stringStart = zzStartRead; yybegin(S_STRING);
+            { stringType = StringType.DoubleQ; stringStart = zzStartRead; yybegin(D_STRING);
             }
           case 41: break;
           case 10: 
-            { stringType = StringType.DoubleQ; stringStart = zzStartRead; yybegin(D_STRING);
+            { return L_BRACKET;
             }
           case 42: break;
           case 11: 
-            { return L_BRACKET;
+            { return R_BRACKET;
             }
           case 43: break;
           case 12: 
-            { return R_BRACKET;
+            { return COMMA;
             }
           case 44: break;
           case 13: 
-            { return COMMA;
+            { return EQUALS;
             }
           case 45: break;
           case 14: 
-            { return EQUALS;
+            { 
             }
           case 46: break;
           case 15: 
