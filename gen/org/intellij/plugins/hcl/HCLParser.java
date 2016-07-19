@@ -109,7 +109,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (literal | array) (','|&']')
+  // (literal | array | object) (','|&']')
   static boolean array_element(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "array_element")) return false;
     boolean r, p;
@@ -121,13 +121,14 @@ public class HCLParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // literal | array
+  // literal | array | object
   private static boolean array_element_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "array_element_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = literal(b, l + 1);
     if (!r) r = array(b, l + 1);
+    if (!r) r = object(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }

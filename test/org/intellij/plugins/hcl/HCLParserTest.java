@@ -135,7 +135,20 @@ public class HCLParserTest extends ParsingTestCase {
   public void testExtraQuoteNoNewLine() throws Exception {
     doTest();
   }
+
   public void testIAM_Role_Policy() throws Exception {
+    doTest();
+  }
+
+  public void testAssign_Deep() throws Exception {
+    doTest();
+  }
+
+  public void testList_Of_Maps() throws Exception {
+    doTest();
+  }
+
+  public void testObject_List_Comma() throws Exception {
     doTest();
   }
 }
