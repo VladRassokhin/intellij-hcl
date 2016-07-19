@@ -19,6 +19,57 @@
         "value": "If set, VMware vSphere client will permit unverifiable SSL certificates."
       }
     ],
+    "client_debug": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeBool"
+      },
+      {
+        "name": "Optional",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "govomomi debug"
+      }
+    ],
+    "client_debug_path": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeString"
+      },
+      {
+        "name": "Optional",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "govomomi debug path for debug"
+      }
+    ],
+    "client_debug_path_run": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeString"
+      },
+      {
+        "name": "Optional",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "govomomi debug path for a single run"
+      }
+    ],
     "password": [
       {
         "name": "Type",
@@ -172,12 +223,29 @@
         }
       ]
     },
-    "vsphere_virtual_machine": {
-      "boot_delay": [
+    "vsphere_virtual_disk": {
+      "adapter_type": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeInt"
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "ide"
+        }
+      ],
+      "datacenter": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
         },
         {
           "name": "Optional",
@@ -185,6 +253,61 @@
           "value": "true"
         }
       ],
+      "datastore": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "size": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "type": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "eagerZeroedThick"
+        }
+      ],
+      "vmdk_path": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ]
+    },
+    "vsphere_virtual_machine": {
       "cdrom": [
         {
           "name": "Type",
@@ -267,7 +390,7 @@
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeList"
+          "value": "TypeSet"
         },
         {
           "name": "Required",
@@ -288,11 +411,23 @@
                 "name": "Optional",
                 "type": "bool",
                 "value": "true"
+              }
+            ],
+            "controller_type": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
               },
               {
                 "name": "Default",
                 "type": "interface {}",
-                "value": "false"
+                "value": "scsi"
               }
             ],
             "datastore": [
@@ -312,6 +447,37 @@
                 "name": "Type",
                 "type": "schema.ValueType",
                 "value": "TypeInt"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
+            "keep_on_remove": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeBool"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
+            "key": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeInt"
+              }
+            ],
+            "name": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
               },
               {
                 "name": "Optional",
@@ -360,6 +526,13 @@
                 "value": "eager_zeroed"
               }
             ],
+            "uuid": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              }
+            ],
             "vmdk": [
               {
                 "name": "Type",
@@ -370,11 +543,6 @@
                 "name": "Optional",
                 "type": "bool",
                 "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": ""
               }
             ]
           }
@@ -441,6 +609,23 @@
           "name": "Default",
           "type": "interface {}",
           "value": "vsphere.local"
+        }
+      ],
+      "enable_disk_uuid": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "false"
         }
       ],
       "folder": [
@@ -654,6 +839,18 @@
               },
               {
                 "name": "Required",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
+            "mac_address": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              },
+              {
+                "name": "Optional",
                 "type": "bool",
                 "value": "true"
               }
