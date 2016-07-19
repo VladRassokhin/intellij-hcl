@@ -16,8 +16,12 @@ public class ILParenthesizedExpressionImpl extends ILExpressionImpl implements I
     super(node);
   }
 
+  public void accept(@NotNull ILGeneratedVisitor visitor) {
+    visitor.visitILParenthesizedExpression(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ILGeneratedVisitor) ((ILGeneratedVisitor)visitor).visitILParenthesizedExpression(this);
+    if (visitor instanceof ILGeneratedVisitor) accept((ILGeneratedVisitor)visitor);
     else super.accept(visitor);
   }
 

@@ -16,8 +16,12 @@ public class ILParameterListImpl extends ILExpressionBase implements ILParameter
     super(node);
   }
 
+  public void accept(@NotNull ILGeneratedVisitor visitor) {
+    visitor.visitILParameterList(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ILGeneratedVisitor) ((ILGeneratedVisitor)visitor).visitILParameterList(this);
+    if (visitor instanceof ILGeneratedVisitor) accept((ILGeneratedVisitor)visitor);
     else super.accept(visitor);
   }
 

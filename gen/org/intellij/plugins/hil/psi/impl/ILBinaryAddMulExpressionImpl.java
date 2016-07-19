@@ -16,8 +16,12 @@ public class ILBinaryAddMulExpressionImpl extends ILBinaryExpressionImpl impleme
     super(node);
   }
 
+  public void accept(@NotNull ILGeneratedVisitor visitor) {
+    visitor.visitILBinaryAddMulExpression(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ILGeneratedVisitor) ((ILGeneratedVisitor)visitor).visitILBinaryAddMulExpression(this);
+    if (visitor instanceof ILGeneratedVisitor) accept((ILGeneratedVisitor)visitor);
     else super.accept(visitor);
   }
 

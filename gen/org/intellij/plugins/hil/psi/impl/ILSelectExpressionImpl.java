@@ -16,8 +16,12 @@ public class ILSelectExpressionImpl extends ILExpressionImpl implements ILSelect
     super(node);
   }
 
+  public void accept(@NotNull ILGeneratedVisitor visitor) {
+    visitor.visitILSelectExpression(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ILGeneratedVisitor) ((ILGeneratedVisitor)visitor).visitILSelectExpression(this);
+    if (visitor instanceof ILGeneratedVisitor) accept((ILGeneratedVisitor)visitor);
     else super.accept(visitor);
   }
 

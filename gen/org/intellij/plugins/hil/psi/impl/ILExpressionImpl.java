@@ -16,8 +16,12 @@ public class ILExpressionImpl extends ILExpressionBase implements ILExpression {
     super(node);
   }
 
+  public void accept(@NotNull ILGeneratedVisitor visitor) {
+    visitor.visitILExpression(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof ILGeneratedVisitor) ((ILGeneratedVisitor)visitor).visitILExpression(this);
+    if (visitor instanceof ILGeneratedVisitor) accept((ILGeneratedVisitor)visitor);
     else super.accept(visitor);
   }
 

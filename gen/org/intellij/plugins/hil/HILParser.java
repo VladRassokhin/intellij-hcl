@@ -23,38 +23,11 @@ public class HILParser implements PsiParser, LightPsiParser {
     boolean r;
     b = adapt_builder_(t, b, this, EXTENDS_SETS_);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
-    if (t == IL_BINARY_ADD_MUL_EXPRESSION) {
-      r = ILExpression(b, 0, 3);
-    }
-    else if (t == IL_EXPRESSION) {
+    if (t == IL_EXPRESSION) {
       r = ILExpression(b, 0, -1);
-    }
-    else if (t == IL_EXPRESSION_HOLDER) {
-      r = ILExpressionHolder(b, 0);
-    }
-    else if (t == IL_INDEX_SELECT_EXPRESSION) {
-      r = ILExpression(b, 0, 1);
-    }
-    else if (t == IL_LITERAL_EXPRESSION) {
-      r = ILLiteralExpression(b, 0);
-    }
-    else if (t == IL_METHOD_CALL_EXPRESSION) {
-      r = ILExpression(b, 0, 4);
     }
     else if (t == IL_PARAMETER_LIST) {
       r = ILParameterList(b, 0);
-    }
-    else if (t == IL_PARENTHESIZED_EXPRESSION) {
-      r = ILParenthesizedExpression(b, 0);
-    }
-    else if (t == IL_SELECT_EXPRESSION) {
-      r = ILExpression(b, 0, 2);
-    }
-    else if (t == IL_UNARY_EXPRESSION) {
-      r = ILUnaryExpression(b, 0);
-    }
-    else if (t == IL_VARIABLE) {
-      r = ILVariable(b, 0);
     }
     else {
       r = parse_root_(t, b, 0);
@@ -97,12 +70,12 @@ public class HILParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "ILParameterList")) return false;
     if (!nextTokenIs(b, L_PAREN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
+    Marker m = enter_section_(b, l, _NONE_, IL_PARAMETER_LIST, null);
     r = consumeToken(b, L_PAREN);
     p = r; // pin = 1
     r = r && report_error_(b, ILParameterList_1(b, l + 1));
     r = p && consumeToken(b, R_PAREN) && r;
-    exit_section_(b, l, m, IL_PARAMETER_LIST, r, p, null);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
@@ -117,11 +90,11 @@ public class HILParser implements PsiParser, LightPsiParser {
   private static boolean ILParameterList_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ILParameterList_1_0")) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
+    Marker m = enter_section_(b, l, _NONE_);
     r = ILParameterList_1_0_0(b, l + 1);
     p = r; // pin = 1
     r = r && ILParameterList_1_0_1(b, l + 1);
-    exit_section_(b, l, m, null, r, p, null);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
@@ -148,11 +121,11 @@ public class HILParser implements PsiParser, LightPsiParser {
   private static boolean ILParameterList_1_0_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ILParameterList_1_0_1_0")) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
+    Marker m = enter_section_(b, l, _NONE_);
     r = consumeToken(b, COMMA);
     p = r; // pin = 1
     r = r && ILExpression(b, l + 1, -1);
-    exit_section_(b, l, m, null, r, p, null);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
@@ -252,7 +225,7 @@ public class HILParser implements PsiParser, LightPsiParser {
 
   public static boolean ILParenthesizedExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ILParenthesizedExpression")) return false;
-    if (!nextTokenIsFast(b, L_PAREN)) return false;
+    if (!nextTokenIsSmart(b, L_PAREN)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeTokenSmart(b, L_PAREN);
@@ -265,7 +238,7 @@ public class HILParser implements PsiParser, LightPsiParser {
 
   public static boolean ILExpressionHolder(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ILExpressionHolder")) return false;
-    if (!nextTokenIsFast(b, INTERPOLATION_START)) return false;
+    if (!nextTokenIsSmart(b, INTERPOLATION_START)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeTokenSmart(b, INTERPOLATION_START);
@@ -313,19 +286,19 @@ public class HILParser implements PsiParser, LightPsiParser {
   public static boolean ILLiteralExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ILLiteralExpression")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<Literal>");
+    Marker m = enter_section_(b, l, _NONE_, IL_LITERAL_EXPRESSION, "<Literal>");
     r = literal(b, l + 1);
     if (!r) r = number(b, l + 1);
     if (!r) r = consumeTokenSmart(b, TRUE);
     if (!r) r = consumeTokenSmart(b, FALSE);
     if (!r) r = consumeTokenSmart(b, NULL);
-    exit_section_(b, l, m, IL_LITERAL_EXPRESSION, r, false, null);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   public static boolean ILUnaryExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ILUnaryExpression")) return false;
-    if (!nextTokenIsFast(b, OP_PLUS, OP_MINUS)) return false;
+    if (!nextTokenIsSmart(b, OP_PLUS, OP_MINUS)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, null);
     r = AddOp(b, l + 1);
@@ -338,12 +311,12 @@ public class HILParser implements PsiParser, LightPsiParser {
   // identifier | '*'
   public static boolean ILVariable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ILVariable")) return false;
-    if (!nextTokenIsFast(b, OP_MUL, ID)) return false;
+    if (!nextTokenIsSmart(b, OP_MUL, ID)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<Identifier>");
+    Marker m = enter_section_(b, l, _NONE_, IL_VARIABLE, "<Identifier>");
     r = identifier(b, l + 1);
     if (!r) r = consumeTokenSmart(b, OP_MUL);
-    exit_section_(b, l, m, IL_VARIABLE, r, false, null);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
