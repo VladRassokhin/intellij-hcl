@@ -23,9 +23,9 @@ import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLProperty
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 
-class HCLBreadcrumbsInfoProvider : BreadcrumbsInfoProvider() {
+open class HCLBreadcrumbsInfoProvider : BreadcrumbsInfoProvider() {
   override fun getLanguages(): Array<Language> {
-    return arrayOf(HCLLanguage, TerraformLanguage)
+    return arrayOf(HCLLanguage)
   }
 
   override fun acceptElement(e: PsiElement): Boolean {
@@ -34,7 +34,7 @@ class HCLBreadcrumbsInfoProvider : BreadcrumbsInfoProvider() {
 
   override fun getElementInfo(e: PsiElement): String {
     if (e is HCLBlock) {
-      return e.name
+      return e.fullName
     }
     if (e is HCLProperty) {
       return e.name
