@@ -17,7 +17,9 @@ package org.intellij.plugins.hcl;
 
 import com.intellij.lexer.Lexer;
 
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 
 public class TerraformConfigLexerTest extends HCLLexerTest {
   @Override
@@ -153,5 +155,16 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "ID ('x')\n" +
         "= ('=')\n" +
         "ID ('y')");
+  }
+
+  public void testSimpleTokens_String_With_Interpolation() throws Exception {
+    List<String> strings = Arrays.asList(
+        "\"${file(\"foo\")}\"",
+        "\"${file(\\\"foo\\\")}\"",
+        "\"${file(\\\"" + f100 + "\\\")}\""
+    );
+    for (String input : strings) {
+      doSimpleTokenTest(HCLElementTypes.DOUBLE_QUOTED_STRING, input);
+    }
   }
 }

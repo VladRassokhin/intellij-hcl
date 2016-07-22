@@ -311,9 +311,9 @@ public class HCLLexerTest extends LexerTestCase {
             "WHITE_SPACE ('\\n')");
   }
 
-  private final static String f100 = Strings.repeat("f", 100);
+  protected final static String f100 = Strings.repeat("f", 100);
 
-  private void doSimpleTokenTest(@NotNull IElementType expected, @NotNull String text) {
+  protected void doSimpleTokenTest(@NotNull IElementType expected, @NotNull String text) {
     final Lexer lexer = createLexer();
     lexer.start(text, 0, text.length());
     final IElementType first = lexer.getTokenType();
@@ -398,8 +398,6 @@ public class HCLLexerTest extends LexerTestCase {
         "\" \"",
         "\"a\"",
         "\"本\"",
-//        "\"${file(\"foo\")}\"",
-//        "\"${file(\\\"foo\\\")}\"",
         "\"\\a\"",
         "\"\\b\"",
         "\"\\f\"",
