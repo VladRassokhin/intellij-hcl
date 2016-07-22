@@ -28,6 +28,8 @@ class HCLQuoterTest {
     doUnquoteTest("\"\\u0050\"", "P")
     doUnquoteTest("\"\\U00000050\"", "P")
     doUnquoteTest("\"\\\"x\\\"\"", "\"x\"")
+
+    doUnquoteTest("\"\${join(\"\\\\\",\\\\\"\", values(var.developers))}\"", "\${join(\"\\\",\\\"\", values(var.developers))}")
   }
 
   @Test

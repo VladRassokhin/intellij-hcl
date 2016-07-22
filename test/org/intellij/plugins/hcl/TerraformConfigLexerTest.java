@@ -161,10 +161,21 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
     List<String> strings = Arrays.asList(
         "\"${file(\"foo\")}\"",
         "\"${file(\\\"foo\\\")}\"",
-        "\"${file(\\\"" + f100 + "\\\")}\""
+        "\"${file(\\\"" + f100 + "\\\")}\"",
+        "\"${join(\"\\\\\",\\\\\"\", values(var.developers))}\""
     );
     for (String input : strings) {
       doSimpleTokenTest(HCLElementTypes.DOUBLE_QUOTED_STRING, input);
+    }
+  }
+
+  public void testSimpleTokens_Number_With_Modifier() throws Exception {
+    List<String> strings = Arrays.asList(
+        "1k",
+        "1Kb"
+    );
+    for (String input : strings) {
+      doSimpleTokenTest(HCLElementTypes.NUMBER, input);
     }
   }
 }

@@ -42,4 +42,9 @@ public class TerraformConfigParserTest extends HCLParserTest {
     setTerraformExtension();
     doTest();
   }
+
+  public void testBackslash_Escaping_In_Interpolation() throws Exception {
+    setTerraformExtension();
+    doTest();
+  }
 }
