@@ -56,6 +56,11 @@ public class HILInjectorTest extends UsefulTestCase {
     doTestRanges("${a(\"b\",12)}", 0, 12);
   }
 
+  public void testInjectionWithEscapes() throws Exception {
+    String text = "${join(\"\\\",\\\"\", values(var.developers))}";
+    doTestRanges(text, 0, text.length());
+  }
+
   /**
    * @param range pairs of [start, length]
    */

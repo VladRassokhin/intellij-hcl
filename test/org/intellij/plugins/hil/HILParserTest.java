@@ -114,4 +114,8 @@ public class HILParserTest extends ParsingTestCase {
   public void testTooManyIndexes() throws Exception {
     doCodeTest("${foo[a[0]][b[1]][c[2]][d[3]]}");
   }
+
+  public void testSlashesEscaping() throws Exception {
+    doCodeTest("${join(\"\\\",\\\"\", values(var.developers))}");
+  }
 }
