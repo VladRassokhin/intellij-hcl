@@ -22,7 +22,12 @@ WHITE_SPACE=({LINE_WS}|{EOL})+
 LINE_COMMENT=("/""/"|"#")[^\r\n]*
 BLOCK_COMMENT="/*"([^"*"]|"*"[^/])*("*/")?
 
-NUMBER=-?(0[xX])?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?
+SIMPLE_NUMBER=-?[0-9]+
+OCT_NUMBER=-?0[0-7]+
+HEX_NUMBER=-?0[xX][0-9a-fA-F]+
+FLOAT_NUMBER=-?[0-9]*\.[0-9]*([eE][-+]?[0-9]+)?
+SCI_NUMBER=-?[0-9]+[eE][-+]?[0-9]+?
+NUMBER=({FLOAT_NUMBER}|{SCI_NUMBER}|{HEX_NUMBER}|{SIMPLE_NUMBER}|{OCT_NUMBER})
 ID=[a-zA-Z\.\-_][0-9a-zA-Z\.\-_]*
 
 HIL_START=(\$\{)

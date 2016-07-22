@@ -321,7 +321,7 @@ public class HCLLexerTest extends LexerTestCase {
     assertEquals(0, lexer.getState());
 
     lexer.advance();
-    assertNull("Should be only one token in: " + text + "\nSecond is " + lexer.getTokenType(), lexer.getTokenType());
+    assertNull("Should be only one token in: " + text + "\nSecond is " + lexer.getTokenType() + "(" + lexer.getTokenText() + ")", lexer.getTokenType());
 
     assertEquals(0, lexer.getState());
     assertEquals(expected, first);
@@ -437,16 +437,16 @@ public class HCLLexerTest extends LexerTestCase {
         "01234567",
         "0x0",
         "0x1",
-//        "0xf",
+        "0xf",
         "0x42",
-//        "0x123456789abcDEF",
-//        "0x" + f100,
+        "0x123456789abcDEF",
+        "0x" + f100,
         "0X0",
         "0X1",
-//        "0XF",
+        "0XF",
         "0X42",
-//        "0X123456789abcDEF",
-//        "0X" + f100,
+        "0X123456789abcDEF",
+        "0X" + f100,
         "-0",
         "-1",
         "-9",
@@ -460,16 +460,16 @@ public class HCLLexerTest extends LexerTestCase {
         "-01234567",
         "-0x0",
         "-0x1",
-//        "-0xf",
+        "-0xf",
         "-0x42",
-//        "-0x123456789abcDEF",
-//        "-0x" + f100,
+        "-0x123456789abcDEF",
+        "-0x" + f100,
         "-0X0",
         "-0X1",
-//        "-0XF",
+        "-0XF",
         "-0X42",
-//        "-0X123456789abcDEF",
-//        "-0X" + f100
+        "-0X123456789abcDEF",
+        "-0X" + f100,
         "0"
     );
     for (String input : numbers) {
@@ -479,15 +479,14 @@ public class HCLLexerTest extends LexerTestCase {
 
   public void testSimpleTokens_Float() throws Exception {
     List<String> floats = Arrays.asList(
-        // TODO: Support floats without number after dot
-//        "0.",
-//        "1.",
-//        "42.",
-//        "01234567890.",
-//        ".0",
-//        ".1",
-//        ".42",
-//        ".0123456789",
+        "0.",
+        "1.",
+        "42.",
+        "01234567890.",
+        ".0",
+        ".1",
+        ".42",
+        ".0123456789",
         "0.0",
         "1.0",
         "42.0",
@@ -512,7 +511,7 @@ public class HCLLexerTest extends LexerTestCase {
         "1.4e0",
         "42.2e0",
         "01234567890.12e0",
-//        "0.E0",
+        "0.E0",
         "1.12E0",
         "42.123E0",
         "01234567890.213E0",
@@ -548,7 +547,7 @@ public class HCLLexerTest extends LexerTestCase {
         "-1.4e0",
         "-42.2e0",
         "-01234567890.12e0",
-//        "-0.E0",
+        "-0.E0",
         "-1.12E0",
         "-42.123E0",
         "-01234567890.213E0",
