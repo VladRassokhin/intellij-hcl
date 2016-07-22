@@ -378,14 +378,13 @@ public class HCLLexerTest extends LexerTestCase {
         "_abc123",
         "abc123_",
         "_abc_123",
-        // TODO: Support Unicode in identifiers
-//        "_äöü",
-//        "_本",
-//        "äöü",
-//        "本",
-//        "a۰۱۸",
-//        "foo६४",
-//        "bar９８７６",
+        "_äöü",
+        "_本",
+        "äöü",
+        "本",
+        "a۰۱۸",
+        "foo६४",
+        "bar９８７６",
         "_0_"
     );
     for (String input : identifiers) {
