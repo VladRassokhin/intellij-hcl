@@ -15,9 +15,14 @@
  */
 package org.intellij.plugins.hcl;
 
+import com.google.common.base.Strings;
 import com.intellij.lexer.Lexer;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.testFramework.LexerTestCase;
-import org.junit.Test;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class HCLLexerTest extends LexerTestCase {
   @Override
@@ -304,5 +309,260 @@ public class HCLLexerTest extends LexerTestCase {
             "BAD_CHARACTER ('\\n')\n" +
             "ID ('bar')\n" +
             "WHITE_SPACE ('\\n')");
+  }
+
+  private final static String f100 = Strings.repeat("f", 100);
+
+  private void doSimpleTokenTest(@NotNull IElementType expected, @NotNull String text) {
+    final Lexer lexer = createLexer();
+    lexer.start(text, 0, text.length());
+    final IElementType first = lexer.getTokenType();
+    assertNotNull(first);
+    assertEquals(0, lexer.getState());
+
+    lexer.advance();
+    assertNull("Should be only one token in: " + text + "\nSecond is " + lexer.getTokenType(), lexer.getTokenType());
+
+    assertEquals(0, lexer.getState());
+    assertEquals(expected, first);
+  }
+
+  // testSimpleTokens_* methods uses inputs from hcl/scanner/scanner_test.go#tokenLists
+
+  public void testSimpleTokens_Comment() throws Exception {
+    List<String> line_comments = Arrays.asList(
+        "//",
+        "////",
+        "// comment",
+        "// /* comment */",
+        "// // comment //",
+        "//" + f100,
+        "#",
+        "##",
+        "# comment",
+        "# /* comment */",
+        "# # comment #",
+        "#" + f100
+    );
+    List<String> block_comments = Arrays.asList(
+        "/**/",
+        "/***/",
+        "/* comment */",
+        "/* // comment */",
+        "/* /* comment */",
+        "/*\n comment\n*/",
+        "/*" + f100 + "*/"
+    );
+    for (String comment : line_comments) {
+      doSimpleTokenTest(HCLElementTypes.LINE_COMMENT, comment);
+    }
+    for (String comment : block_comments) {
+      doSimpleTokenTest(HCLElementTypes.BLOCK_COMMENT, comment);
+    }
+  }
+
+  public void testSimpleTokens_Boolean() throws Exception {
+    doSimpleTokenTest(HCLElementTypes.TRUE, "true");
+    doSimpleTokenTest(HCLElementTypes.FALSE, "false");
+  }
+
+  public void testSimpleTokens_Identifier() throws Exception {
+    List<String> identifiers = Arrays.asList(
+        "a",
+        "a0",
+        "foobar",
+        "foo-bar",
+        "abc123",
+        "LGTM",
+        "_",
+        "_abc123",
+        "abc123_",
+        "_abc_123",
+        // TODO: Support Unicode in identifiers
+//        "_äöü",
+//        "_本",
+//        "äöü",
+//        "本",
+//        "a۰۱۸",
+//        "foo६४",
+//        "bar９８７６",
+        "_0_"
+    );
+    for (String input : identifiers) {
+      doSimpleTokenTest(HCLElementTypes.ID, input);
+    }
+  }
+
+  public void testSimpleTokens_String() throws Exception {
+    List<String> strings = Arrays.asList(
+        "\" \"",
+        "\"a\"",
+        "\"本\"",
+//        "\"${file(\"foo\")}\"",
+//        "\"${file(\\\"foo\\\")}\"",
+        "\"\\a\"",
+        "\"\\b\"",
+        "\"\\f\"",
+        "\"\\n\"",
+        "\"\\r\"",
+        "\"\\t\"",
+        "\"\\v\"",
+        "\"\\\"\"",
+        "\"\\000\"",
+        "\"\\777\"",
+        "\"\\x00\"",
+        "\"\\xff\"",
+        "\"\\u0000\"",
+        "\"\\ufA16\"",
+        "\"\\U00000000\"",
+        "\"\\U0000ffAB\"",
+        "\"" + f100 + "\""
+    );
+    for (String input : strings) {
+      doSimpleTokenTest(HCLElementTypes.DOUBLE_QUOTED_STRING, input);
+    }
+  }
+
+  public void testSimpleTokens_Number() throws Exception {
+    List<String> numbers = Arrays.asList(
+        "0",
+        "1",
+        "9",
+        "42",
+        "1234567890",
+        "00",
+        "01",
+        "07",
+        "042",
+        "01234567",
+        "0x0",
+        "0x1",
+//        "0xf",
+        "0x42",
+//        "0x123456789abcDEF",
+//        "0x" + f100,
+        "0X0",
+        "0X1",
+//        "0XF",
+        "0X42",
+//        "0X123456789abcDEF",
+//        "0X" + f100,
+        "-0",
+        "-1",
+        "-9",
+        "-42",
+        "-1234567890",
+        "-00",
+        "-01",
+        "-07",
+        "-29",
+        "-042",
+        "-01234567",
+        "-0x0",
+        "-0x1",
+//        "-0xf",
+        "-0x42",
+//        "-0x123456789abcDEF",
+//        "-0x" + f100,
+        "-0X0",
+        "-0X1",
+//        "-0XF",
+        "-0X42",
+//        "-0X123456789abcDEF",
+//        "-0X" + f100
+        "0"
+    );
+    for (String input : numbers) {
+      doSimpleTokenTest(HCLElementTypes.NUMBER, input);
+    }
+  }
+
+  public void testSimpleTokens_Float() throws Exception {
+    List<String> floats = Arrays.asList(
+        // TODO: Support floats without number after dot
+//        "0.",
+//        "1.",
+//        "42.",
+//        "01234567890.",
+//        ".0",
+//        ".1",
+//        ".42",
+//        ".0123456789",
+        "0.0",
+        "1.0",
+        "42.0",
+        "01234567890.0",
+        "0e0",
+        "1e0",
+        "42e0",
+        "01234567890e0",
+        "0E0",
+        "1E0",
+        "42E0",
+        "01234567890E0",
+        "0e+10",
+        "1e-10",
+        "42e+10",
+        "01234567890e-10",
+        "0E+10",
+        "1E-10",
+        "42E+10",
+        "01234567890E-10",
+        "01.8e0",
+        "1.4e0",
+        "42.2e0",
+        "01234567890.12e0",
+//        "0.E0",
+        "1.12E0",
+        "42.123E0",
+        "01234567890.213E0",
+        "0.2e+10",
+        "1.2e-10",
+        "42.54e+10",
+        "01234567890.98e-10",
+        "0.1E+10",
+        "1.1E-10",
+        "42.1E+10",
+        "01234567890.1E-10",
+        "-0.0",
+        "-1.0",
+        "-42.0",
+        "-01234567890.0",
+        "-0e0",
+        "-1e0",
+        "-42e0",
+        "-01234567890e0",
+        "-0E0",
+        "-1E0",
+        "-42E0",
+        "-01234567890E0",
+        "-0e+10",
+        "-1e-10",
+        "-42e+10",
+        "-01234567890e-10",
+        "-0E+10",
+        "-1E-10",
+        "-42E+10",
+        "-01234567890E-10",
+        "-01.8e0",
+        "-1.4e0",
+        "-42.2e0",
+        "-01234567890.12e0",
+//        "-0.E0",
+        "-1.12E0",
+        "-42.123E0",
+        "-01234567890.213E0",
+        "-0.2e+10",
+        "-1.2e-10",
+        "-42.54e+10",
+        "-01234567890.98e-10",
+        "-0.1E+10",
+        "-1.1E-10",
+        "-42.1E+10",
+        "-01234567890.1E-10"
+    );
+    for (String input : floats) {
+      doSimpleTokenTest(HCLElementTypes.NUMBER, input);
+    }
   }
 }
