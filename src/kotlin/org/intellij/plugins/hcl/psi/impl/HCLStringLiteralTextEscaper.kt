@@ -18,6 +18,7 @@ package org.intellij.plugins.hcl.psi.impl
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.LiteralTextEscaper
 
+// TODO: Implement something similar to JSStringLiteralEscaper.parseStringCharacters and JsonPsiImplUtils.getTextFragments
 class HCLStringLiteralTextEscaper(host: HCLStringLiteralMixin) : LiteralTextEscaper<HCLStringLiteralMixin>(host) {
   override fun isOneLine(): Boolean = true
 
