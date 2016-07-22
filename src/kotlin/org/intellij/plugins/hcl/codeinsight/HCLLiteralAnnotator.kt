@@ -76,6 +76,7 @@ class HCLLiteralAnnotator : Annotator {
         '\"' -> DQS_VALID_ESCAPE
         else -> throw IllegalStateException("Unexpected string quote symbol '${element.quoteSymbol}'")
       }
+      // TODO: Use HCLQuoter instead of pattern
 
       val elementOffset = element.getTextOffset()
       for (fragment in element.textFragments) {

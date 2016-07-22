@@ -17,6 +17,7 @@ package org.intellij.plugins.hcl.psi.impl
 
 import com.intellij.lang.ASTNode
 import com.intellij.navigation.ItemPresentation
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
@@ -25,6 +26,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ArrayUtil
 import com.intellij.util.SmartList
+import isInHCLFileWithInterpolations
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.Icons
 import org.intellij.plugins.hcl.psi.*
@@ -41,6 +43,8 @@ val CharSequence.indentation: Int
   }
 
 object HCLPsiImplUtils {
+  private val LOG = Logger.getInstance(HCLPsiImplUtils::class.java)
+
   fun getName(property: HCLProperty): String {
     return StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(property.nameElement.text))
   }
@@ -207,8 +211,19 @@ object HCLPsiImplUtils {
   }
 
   fun getValue(literal: HCLStringLiteral): String {
-    // FIXME: Fix unescaping for single quoted string
-    return StringUtil.unescapeStringCharacters(HCLPsiUtil.stripQuotes(literal.text))
+    val interpolations = literal.isInHCLFileWithInterpolations()
+    val text = literal.text
+    val unquote: String?
+    try {
+      unquote = HCLQuoter.unquote(text, interpolations)
+    } catch(e: Exception) {
+      LOG.warn("Failed to unquote string: ${e.message}", e)
+      unquote = null
+    }
+    if (unquote == null) {
+      return HCLQuoter.unquote(text, interpolations, safe = true)!!
+    }
+    return unquote
   }
 
   fun getQuoteSymbol(literal: HCLStringLiteral): Char {
