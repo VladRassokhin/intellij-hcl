@@ -19,11 +19,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.search.ProjectScopeBuilder
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.search.UseScopeEnlarger
-import getNameElementUnquoted
-import org.intellij.plugins.hcl.psi.HCLBlock
-import org.intellij.plugins.hcl.psi.HCLElement
-import org.intellij.plugins.hcl.psi.HCLIdentifier
-import org.intellij.plugins.hcl.psi.HCLStringLiteral
+import org.intellij.plugins.hcl.psi.*
 
 class OutputBlocksUseScopeEnlarger : UseScopeEnlarger() {
   override fun getAdditionalUseScope(element: PsiElement): SearchScope? {

@@ -20,7 +20,6 @@ import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
-import getNameElementUnquoted
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage

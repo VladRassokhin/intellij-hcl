@@ -31,8 +31,6 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import com.intellij.util.SmartList
-import getNameElementUnquoted
-import getPrevSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor

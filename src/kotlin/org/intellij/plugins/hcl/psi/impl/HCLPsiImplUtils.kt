@@ -26,7 +26,6 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ArrayUtil
 import com.intellij.util.SmartList
-import isInHCLFileWithInterpolations
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.Icons
 import org.intellij.plugins.hcl.psi.*

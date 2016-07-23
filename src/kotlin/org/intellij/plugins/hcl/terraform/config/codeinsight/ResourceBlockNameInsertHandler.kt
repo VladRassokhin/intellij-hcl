@@ -27,12 +27,8 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import getNextSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.HCLElementTypes
-import org.intellij.plugins.hcl.psi.HCLBlock
-import org.intellij.plugins.hcl.psi.HCLIdentifier
-import org.intellij.plugins.hcl.psi.HCLObject
-import org.intellij.plugins.hcl.psi.HCLProperty
+import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 
 object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {

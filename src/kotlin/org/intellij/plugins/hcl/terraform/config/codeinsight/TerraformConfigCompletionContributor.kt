@@ -15,7 +15,6 @@
  */
 package org.intellij.plugins.hcl.terraform.config.codeinsight
 
-import afterSiblingSkipping2
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
@@ -34,8 +33,6 @@ import com.intellij.psi.impl.DebugUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import com.intellij.util.SmartList
-import getNameElementUnquoted
-import getPrevSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionContributor

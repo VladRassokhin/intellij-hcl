@@ -22,7 +22,6 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.GlobalSearchScopes
 import com.intellij.psi.search.PsiElementProcessor
 import com.intellij.testFramework.LightVirtualFile
-import getNameElementUnquoted
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hil.psi.ILExpression
 import java.util.*

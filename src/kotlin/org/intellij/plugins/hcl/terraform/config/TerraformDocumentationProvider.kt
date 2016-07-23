@@ -18,12 +18,7 @@ package org.intellij.plugins.hcl.terraform.config
 import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
-import getNameElementUnquoted
-import isInHCLFileWithInterpolations
-import org.intellij.plugins.hcl.psi.HCLBlock
-import org.intellij.plugins.hcl.psi.HCLIdentifier
-import org.intellij.plugins.hcl.psi.HCLProperty
-import org.intellij.plugins.hcl.psi.HCLStringLiteral
+import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 

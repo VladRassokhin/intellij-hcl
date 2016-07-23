@@ -21,9 +21,9 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import getNextSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.HCLIdentifier
+import org.intellij.plugins.hcl.psi.getNextSiblingNonWhiteSpace
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
 import org.intellij.plugins.hcl.terraform.config.model.Type
 import org.intellij.plugins.hcl.terraform.config.model.Types
