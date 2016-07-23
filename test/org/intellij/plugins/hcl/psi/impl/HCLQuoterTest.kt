@@ -43,6 +43,7 @@ class HCLQuoterTest {
     doUnquoteTest("\"\\U00050\"", "\\U00050", true)
     doUnquoteTest("\"\\U00R00050\"", "\\U00R00050", true)
     doUnquoteTest("\"\\'\"", "\\'", true)
+    doUnquoteTest("\"\\\"\"", "\"", true)
   }
 
   @Test
@@ -56,8 +57,33 @@ class HCLQuoterTest {
     doFailedUnquoteTest("\"\\'\"")
   }
 
+  @Test
+  fun testEscape() {
+    doEscapeTest("", "")
+    doEscapeTest("aba", "aba")
+    doEscapeTest("a\nb", "a\\nb")
+    doEscapeTest("a\tb", "a\\tb")
+    doEscapeTest("a\rb", "a\\rb")
+    doEscapeTest("a\"b", "a\\\"b")
+    doEscapeTest("a\uE000b", "a\\uE000b")
+    doEscapeTest("a\\nb", "a\\\\nb")
+  }
+
+  @Test
+  fun testEscape_Interpolation() {
+    doEscapeTest("\${}", "\${}")
+    doEscapeTest("\${baz}", "\${baz}")
+    doEscapeTest("\${\"\"}", "\${\"\"}")
+    doEscapeTest("\${\\\"}", "\${\\\\\"}")
+  }
+
   private fun doUnquoteTest(text: String, expected: String, safe: Boolean = false) {
     val unquote = HCLQuoter.unquote(text, safe = safe)
+    Assert.assertEquals(expected, unquote)
+  }
+
+  private fun doEscapeTest(text: String, expected: String) {
+    val unquote = HCLQuoter.escape(text)
     Assert.assertEquals(expected, unquote)
   }
 

@@ -15,7 +15,9 @@
  */
 package org.intellij.plugins.hcl.psi.impl
 
+import com.intellij.openapi.util.text.StringUtil
 import org.intellij.plugins.hcl.psi.HCLPsiUtil
+import org.intellij.plugins.hil.ILLanguageInjector
 
 object HCLQuoter {
   /**
@@ -27,10 +29,51 @@ object HCLQuoter {
     return unescapeStringCharacters(stripQuotes, supportInterpolations, safe)
   }
 
+  fun escape(text: String, supportInterpolations: Boolean = true): String {
+    return escapeStringCharacters(text, supportInterpolations)
+  }
+
   private fun unescapeStringCharacters(s: String, supportInterpolations: Boolean, safe: Boolean): String {
     val buffer = StringBuilder(s.length)
     unescapeStringCharacters(s.length, s, buffer, supportInterpolations, safe)
     return buffer.toString()
+  }
+
+  private fun escapeStringCharacters(s: String, supportInterpolations: Boolean): String {
+    val length = s.length
+    val buffer = StringBuilder(length)
+    if (supportInterpolations && s.contains("\${")) {
+      val ranges = ILLanguageInjector.getILRangesInText(s)
+      var last = 0
+      for (range in ranges) {
+        if (last < range.startOffset) {
+          val sub = s.substring(last, range.startOffset)
+          StringUtil.escapeStringCharacters(sub.length, sub, JavaUtil.ourEscapedSymbols, true, true, buffer)
+        }
+        escapeInterpolation(range.substring(s), buffer)
+        last = range.endOffset
+      }
+      if (last < length) {
+        val sub = s.substring(last, length)
+        StringUtil.escapeStringCharacters(sub.length, sub, JavaUtil.ourEscapedSymbols, true, true, buffer)
+      }
+    } else {
+      StringUtil.escapeStringCharacters(length, s, JavaUtil.ourEscapedSymbols, true, true, buffer)
+    }
+    return buffer.toString()
+  }
+
+  private fun escapeInterpolation(s: String, buffer: StringBuilder) {
+    if (!s.contains('\\')) {
+      buffer.append(s)
+      return
+    }
+    for (c in s) {
+      if (c == '\\') {
+        buffer.append('\\')
+      }
+      buffer.append(c)
+    }
   }
 
   private val OCTAL_REGEX = "[0-7]{3}".toRegex()

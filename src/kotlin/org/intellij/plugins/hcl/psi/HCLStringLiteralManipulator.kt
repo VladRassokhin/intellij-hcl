@@ -18,12 +18,14 @@ package org.intellij.plugins.hcl.psi
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.AbstractElementManipulator
 import com.intellij.util.IncorrectOperationException
+import org.intellij.plugins.hcl.psi.impl.HCLQuoter
 import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralMixin
 
 class HCLStringLiteralManipulator : AbstractElementManipulator<HCLStringLiteralMixin>() {
   @Throws(IncorrectOperationException::class)
   override fun handleContentChange(element: HCLStringLiteralMixin, range: TextRange, newContent: String): HCLStringLiteralMixin {
-    val replacement = range.replace(element.text, newContent)
+    val escaped = HCLQuoter.escape(newContent, element.isInHCLFileWithInterpolations())
+    val replacement = range.replace(element.text, escaped)
     return element.updateText(replacement)
   }
 
