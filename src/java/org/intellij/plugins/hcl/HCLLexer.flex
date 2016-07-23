@@ -29,8 +29,9 @@ FLOAT_NUMBER=-?[0-9]*\.[0-9]*([eE][-+]?[0-9]+)?
 SCI_NUMBER=-?[0-9]+[eE][-+]?[0-9]+?
 NUMBER=({FLOAT_NUMBER}|{SCI_NUMBER}|{HEX_NUMBER}|{SIMPLE_NUMBER}|{OCT_NUMBER})
 
+DIGIT=[:digit:]
 LETTER=(_|[:letter:])
-ID={LETTER}({LETTER}|[:digit:]|[\.\-])*
+ID={LETTER}({LETTER}|{DIGIT}|[\.\-])*
 
 HIL_START=(\$\{)
 HIL_STOP=(\})
@@ -164,7 +165,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
 }
 
 <S_HEREDOC_MARKER> {
-  ([^\r\n]|\\[^\r\n])+ {EOL}? {
+  -?({DIGIT}|{LETTER})+ {EOL}? {
     yypushback(getEOLLength());
     setHereDocMarker(yytext());
     return HD_MARKER;
