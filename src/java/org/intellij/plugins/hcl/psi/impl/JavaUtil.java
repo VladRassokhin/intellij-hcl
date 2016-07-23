@@ -30,14 +30,17 @@ import java.util.List;
 public class JavaUtil {
   private static final Key<List<Pair<TextRange, String>>> STRING_FRAGMENTS = new Key<List<Pair<TextRange, String>>>("HCL string fragments");
   public static final String ourEscapesTable = "\"\"\\\\//b\bf\fn\nr\rt\tv\013a\007";
+  public static final String ourEscapedSymbols = "\"\\/\b\f\n\r\t\013\007";
+  @SuppressWarnings("SpellCheckingInspection")
+  public static final String ourUnescapedSymbols = "\"\\/bfnrtva";
 
   @NotNull
   public static List<Pair<TextRange, String>> getTextFragments(@NotNull HCLStringLiteral literal) {
-    List<Pair<TextRange, String>> result = literal.getUserData(STRING_FRAGMENTS);
+    List<Pair<TextRange, String>> result = literal.getFirstChild().getUserData(STRING_FRAGMENTS);
     if (result != null) return result;
     result = doGetTextFragments(literal.getText(), UtilKt.isInHCLFileWithInterpolations(literal));
 
-    literal.putUserData(STRING_FRAGMENTS, result);
+    literal.getFirstChild().putUserData(STRING_FRAGMENTS, result);
     return result;
   }
 
