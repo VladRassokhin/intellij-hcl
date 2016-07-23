@@ -19,6 +19,7 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
+import org.intellij.lang.annotations.Language
 import org.intellij.plugins.hcl.HCLSyntaxHighlighterFactory
 import org.intellij.plugins.hcl.psi.*
 import java.util.regex.Pattern
@@ -29,8 +30,10 @@ import java.util.regex.Pattern
 class HCLLiteralAnnotator : Annotator {
   companion object {
     // TODO: Check HCL supported escapes
-    private val DQS_VALID_ESCAPE = Pattern.compile("\\\\([\"\\\\/bfnrt]|u[0-9a-fA-F]{4})")
-    private val SQS_VALID_ESCAPE = Pattern.compile("\\\\([\'\\\\/bfnrt]|u[0-9a-fA-F]{4})")
+    @Language("RegExp")
+    private val COMMON_REGEX = "[\\\\abfntrv]|([0-7]{3})|(X[0-9a-fA-F]{2})|(u[0-9a-fA-F]{4})|(U[0-9a-fA-F]{8})"
+    private val DQS_VALID_ESCAPE = Pattern.compile("\\\\(\"|$COMMON_REGEX")
+    private val SQS_VALID_ESCAPE = Pattern.compile("\\\\(\'|$COMMON_REGEX")
     // TODO: AFAIK that should be handled by lexer/parser
     private val VALID_NUMBER_LITERAL = Pattern.compile("-?(0x)?(0|[1-9])\\d*(\\.\\d+)?([eE][+-]?\\d+)?([KMGBkmgb][Bb]?)?")
 
@@ -76,18 +79,20 @@ class HCLLiteralAnnotator : Annotator {
         '\"' -> DQS_VALID_ESCAPE
         else -> throw IllegalStateException("Unexpected string quote symbol '${element.quoteSymbol}'")
       }
-      // TODO: Use HCLQuoter instead of pattern
 
       val elementOffset = element.getTextOffset()
       for (fragment in element.textFragments) {
         val fragmentText = fragment.getSecond()
-        if (fragmentText.startsWith("\\") && fragmentText.length > 1 && !pattern.matcher(fragmentText).matches()) {
-          val fragmentRange = fragment.getFirst()
-          if (fragmentText.startsWith("\\u")) {
-            holder.createErrorAnnotation(fragmentRange.shiftRight(elementOffset), "Illegal unicode escape sequence")
-          } else {
-            holder.createErrorAnnotation(fragmentRange.shiftRight(elementOffset), "Illegal escape sequence")
+        if (fragmentText.length > 1 && fragmentText[0] == '\\' && !pattern.matcher(fragmentText).matches()) {
+          val shifted = fragment.getFirst().shiftRight(elementOffset)
+          val c = fragmentText[1]
+          val errText = when (c) {
+            in '0'..'7' -> "Illegal octal escape sequence"
+            'X' -> "Illegal hex escape sequence"
+            'u', 'U' -> "Illegal unicode escape sequence"
+            else -> "Illegal escape sequence"
           }
+          errText.let { holder.createErrorAnnotation(shifted, errText) }
         }
       }
     } else if (element is HCLNumberLiteral) {
