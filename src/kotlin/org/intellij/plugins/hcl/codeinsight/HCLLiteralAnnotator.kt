@@ -32,8 +32,8 @@ class HCLLiteralAnnotator : Annotator {
     // TODO: Check HCL supported escapes
     @Language("RegExp")
     private val COMMON_REGEX = "[\\\\abfntrv]|([0-7]{3})|(X[0-9a-fA-F]{2})|(u[0-9a-fA-F]{4})|(U[0-9a-fA-F]{8})"
-    private val DQS_VALID_ESCAPE = Pattern.compile("\\\\(\"|$COMMON_REGEX")
-    private val SQS_VALID_ESCAPE = Pattern.compile("\\\\(\'|$COMMON_REGEX")
+    private val DQS_VALID_ESCAPE = Pattern.compile("\\\\(\"|$COMMON_REGEX)")
+    private val SQS_VALID_ESCAPE = Pattern.compile("\\\\(\'|$COMMON_REGEX)")
     // TODO: AFAIK that should be handled by lexer/parser
     private val VALID_NUMBER_LITERAL = Pattern.compile("-?(0x)?(0|[1-9])\\d*(\\.\\d+)?([eE][+-]?\\d+)?([KMGBkmgb][Bb]?)?")
 
