@@ -54,6 +54,15 @@ class JavaUtilTest {
 
   }
 
+  @Test
+  @Throws(Exception::class)
+  fun testDoGetTextFragments_EscapeCodes_WithNumbers() {
+    doTestDoGetTextFragments("\"\\120 \"", 1 to 4 to "\\120", 5 to 1 to " ")
+    doTestDoGetTextFragments("\"\\X50 \"", 1 to 4 to "\\X50",  5 to 1 to " ")
+    doTestDoGetTextFragments("\"\\u0050 \"", 1 to 6 to "\\u0050", 7 to 1 to " ")
+    doTestDoGetTextFragments("\"\\U00000050 \"", 1 to 10 to "\\U00000050", 11 to 1 to " ")
+  }
+
   private fun doTestDoGetTextFragments(text: String, vararg expected: Pair<Pair<Int, Int>, String>) {
     val rangesAndValues: List<Pair<TextRange, String>> = expected.map { TextRange.from(it.first.first, it.first.second) to it.second }
     val fragments: List<Pair<TextRange, String>> = JavaUtil.doGetTextFragments(text, true).map { it.first to it.second }

@@ -106,6 +106,43 @@ public class JavaUtil {
             result.add(Pair.create(new TextRange(pos, i), text.substring(pos, i)));
             pos = i;
             break;
+          case 'U':
+            i = pos + 2;
+            for (; i < pos + 10; i++) {
+              if (i == length || !StringUtil.isHexDigit(text.charAt(i))) {
+                break;
+              }
+            }
+            result.add(Pair.create(new TextRange(pos, i), text.substring(pos, i)));
+            pos = i;
+            break;
+          case 'X':
+            i = pos + 2;
+            for (; i < pos + 4; i++) {
+              if (i == length || !StringUtil.isHexDigit(text.charAt(i))) {
+                break;
+              }
+            }
+            result.add(Pair.create(new TextRange(pos, i), text.substring(pos, i)));
+            pos = i;
+            break;
+          case '0':
+          case '1':
+          case '2':
+          case '3':
+          case '4':
+          case '5':
+          case '6':
+          case '7':
+            i = pos + 1;
+            for (; i < pos + 4; i++) {
+              if (i == length || !StringUtil.isOctalDigit(text.charAt(i))) {
+                break;
+              }
+            }
+            result.add(Pair.create(new TextRange(pos, i), text.substring(pos, i)));
+            pos = i;
+            break;
           default:
             result.add(Pair.create(new TextRange(pos, pos + 2), text.substring(pos, pos + 2)));
             pos += 2;
