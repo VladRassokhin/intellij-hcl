@@ -76,10 +76,8 @@ abstract class HCLStringLiteralMixin(node: ASTNode?) : HCLLiteralImpl(node), HCL
     return this
   }
 
-  private val escaper by lazy { HCLStringLiteralTextEscaper(this) }
-
   override fun createLiteralTextEscaper(): LiteralTextEscaper<out PsiLanguageInjectionHost> {
-    return escaper
+    return HCLStringLiteralTextEscaper(this)
   }
 
   override fun getName(): String? {

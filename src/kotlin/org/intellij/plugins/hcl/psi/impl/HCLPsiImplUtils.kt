@@ -210,19 +210,12 @@ object HCLPsiImplUtils {
   }
 
   fun getValue(literal: HCLStringLiteral): String {
+    val stripQuotes = HCLPsiUtil.stripQuotes(literal.text)
     val interpolations = literal.isInHCLFileWithInterpolations()
-    val text = literal.text
-    val unquote: String?
-    try {
-      unquote = HCLQuoter.unquote(text, interpolations)
-    } catch(e: Exception) {
-      LOG.warn("Failed to unquote string: ${e.message}", e)
-      unquote = null
-    }
-    if (unquote == null) {
-      return HCLQuoter.unquote(text, interpolations, safe = true)!!
-    }
-    return unquote
+    val out = StringBuilder(stripQuotes.length)
+    val decode = HCLStringLiteralTextEscaper.parseStringCharacters(stripQuotes, out, null, interpolations)
+    if (decode) return out.toString()
+    else return HCLQuoter.unquote(literal.text, interpolations, true)!! // TODO: Could be replaced with #getTextFragments?
   }
 
   fun getQuoteSymbol(literal: HCLStringLiteral): Char {
