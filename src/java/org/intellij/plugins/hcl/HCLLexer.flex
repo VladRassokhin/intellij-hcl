@@ -180,6 +180,10 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
     return com.intellij.psi.TokenType.WHITE_SPACE;
   }
   <<EOF>> { yybegin(YYINITIAL); return BAD_CHARACTER; }
+  .+ {
+      yybegin(YYINITIAL);
+      return BAD_CHARACTER;
+  }
 }
 
 <S_HEREDOC_LINE> {
