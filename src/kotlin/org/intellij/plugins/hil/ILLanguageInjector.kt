@@ -42,13 +42,15 @@ class ILLanguageInjector : LanguageInjector {
   }
 
   private fun getStringLiteralInjections(host: HCLStringLiteral, places: InjectedLanguagePlaces) {
-    val value = host.value
-    val ranges = getILRangesInText(value)
-    if (ranges.isEmpty()) return
-    val offset = if (value != host.text) 1 else 0
-    for (range in ranges) {
-      val rng = range.shiftRight(offset)
-      places.addPlace(HILLanguage, rng, null, null)
+    if (!host.text.contains("\${")) return
+    for (pair in host.textFragments) {
+      val fragment = pair.second
+      if (!fragment.startsWith("\${")) continue
+      val ranges = getILRangesInText(fragment)
+      for (range in ranges) {
+        val rng = range.shiftRight(pair.first.startOffset)
+        places.addPlace(HILLanguage, rng, null, null)
+      }
     }
   }
 
@@ -72,7 +74,7 @@ class ILLanguageInjector : LanguageInjector {
 
   companion object {
     fun getILRangesInText(text: String): ArrayList<TextRange> {
-      if (!text.contains("${"$"}{")) return arrayListOf();
+      if (!text.contains("\${")) return arrayListOf();
 
       val ranges: ArrayList<TextRange> = ArrayList()
       var skip = text.indexOf("\${");
