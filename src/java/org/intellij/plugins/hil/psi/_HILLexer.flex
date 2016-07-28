@@ -1,4 +1,5 @@
 package org.intellij.plugins.hil.psi;
+
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import static org.intellij.plugins.hil.HILElementTypes.*;
@@ -18,9 +19,8 @@ import static org.intellij.plugins.hil.HILElementTypes.*;
 %type IElementType
 %unicode
 
-EOL="\r"|"\n"|"\r\n"
-LINE_WS=[\ \t\f]
-WHITE_SPACE=({LINE_WS}|{EOL})+
+EOL=\R
+WHITE_SPACE=\s
 
 DOUBLE_QUOTED_STRING=\"([^\\\"\r\n]|\\[^\r\n])*\"?
 NUMBER=(0x)?(0|[1-9])[0-9]*(\.[0-9]+)?([eE][-+]?[0-9]+)?
@@ -52,5 +52,6 @@ ID=[a-zA-Z_][0-9a-zA-Z\-_*]*
   {NUMBER}                    { return NUMBER; }
   {ID}                        { return ID; }
 
-  [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
+
+[^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
