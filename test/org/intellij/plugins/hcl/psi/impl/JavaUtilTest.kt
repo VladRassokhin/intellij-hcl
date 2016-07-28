@@ -39,6 +39,8 @@ class JavaUtilTest {
     doTestDoGetTextFragments("\"\${baz}\"", 1 to 6 to "\${baz}")
     doTestDoGetTextFragments("\"\${\"baz\"}\"", 1 to 8 to "\${\"baz\"}")
     doTestDoGetTextFragments("\"\${\\\"baz\\\"}\"", 1 to 10 to "\${\\\"baz\\\"}")
+
+    doTestDoGetTextFragments("\"a\$\${}b\"", 1 to 6 to "a\$\${}b")
   }
 
   @Test

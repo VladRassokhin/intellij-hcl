@@ -76,8 +76,10 @@ class ILLanguageInjector : LanguageInjector {
     fun getILRangesInText(text: String): ArrayList<TextRange> {
       if (!text.contains("\${")) return arrayListOf();
 
+      var skip = findInterpolationStart(text)
+      if (skip == -1) return arrayListOf()
+
       val ranges: ArrayList<TextRange> = ArrayList()
-      var skip = text.indexOf("\${");
       out@ while (true) {
         if (skip >= text.length) break;
 
@@ -133,6 +135,14 @@ class ILLanguageInjector : LanguageInjector {
         }
       }
       return ranges;
+    }
+
+    private fun findInterpolationStart(text: String): Int {
+      var index: Int = -1
+      do {
+        index = text.indexOf("\${", index + 1)
+      } while (index > 0 && text[index - 1] == '$')
+      return index
     }
 
   }

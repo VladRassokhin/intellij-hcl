@@ -54,7 +54,7 @@ public class JavaUtil {
     while (pos < length) {
 
       final char c = text.charAt(pos);
-      if (interpolations && c == '$' && pos + 1 < length && text.charAt(pos + 1) == '{') {
+      if (interpolations && c == '$' && pos + 1 < length && text.charAt(pos + 1) == '{' && (pos == 0 || text.charAt(pos - 1) != '$')) {
         if (unescapedSequenceStart != pos) {
           result.add(Pair.create(new TextRange(unescapedSequenceStart, pos), text.substring(unescapedSequenceStart, pos)));
         }

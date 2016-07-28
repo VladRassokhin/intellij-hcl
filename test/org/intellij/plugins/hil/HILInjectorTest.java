@@ -61,6 +61,13 @@ public class HILInjectorTest extends UsefulTestCase {
     doTestRanges(text, 0, text.length());
   }
 
+  public void testNoInjection() throws Exception {
+    doTestRanges("$${}");
+    doTestRanges("  $${}  ");
+    doTestRanges("'$${}'");
+    doTestRanges("\"$${}\"");
+  }
+
   /**
    * @param range pairs of [start, length]
    */
