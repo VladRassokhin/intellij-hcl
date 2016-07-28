@@ -104,6 +104,16 @@ public class HCLFormatterTest extends LightCodeInsightFixtureTestCase {
     doSimpleTest("a=true\nbaz = 42", "a =   true\nbaz = 42");
   }
 
+  @Test
+  public void testFormatHeredoc() throws Exception {
+    doSimpleTest("a=<<E\nE", "a = <<E\nE");
+    doSimpleTest("a=<<E\n  E", "a = <<E\n  E");
+    doSimpleTest("a=<<E\n\tE", "a = <<E\n\tE");
+    doSimpleTest("a=<<E\n inner\nE", "a = <<E\n inner\nE");
+    doSimpleTest("a=<<E\n inner\n  E", "a = <<E\n inner\n  E");
+    doSimpleTest("a=<<E\n inner\n\tE", "a = <<E\n inner\n\tE");
+  }
+
   public void doSimpleTest(String input, String expected) throws Exception {
     doSimpleTest(input, expected, null);
   }
