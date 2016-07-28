@@ -41,7 +41,7 @@ abstract class HCLHeredocContentMixin(node: ASTNode?) : HCLLiteralImpl(node), Ps
       }
 
       override fun getOffsetInHost(offsetInDecoded: Int, rangeInsideHost: TextRange): Int {
-        var offset = offsetInDecoded + rangeInsideHost.startOffset
+        val offset = offsetInDecoded + rangeInsideHost.startOffset
         if (offset < rangeInsideHost.startOffset) {
           return -1
         }
@@ -52,15 +52,19 @@ abstract class HCLHeredocContentMixin(node: ASTNode?) : HCLLiteralImpl(node), Ps
       }
 
       override fun getRelevantTextRange(): TextRange {
-        if (myHost.textLength == 0) return TextRange.EMPTY_RANGE
-        // Everything except last EOL
-        val chars = myHost.node.chars
-        if (chars.length > 1 && chars[chars.length - 2] == '\r') {
-          // DOS/Windows style EOL
-          return TextRange.from(0, myHost.textLength - 2)
-        }
-        return TextRange.from(0, myHost.textLength - 1)
+        return myHost.getInnerRange()
       }
+
     }
+  }
+
+  fun getInnerRange(): TextRange {
+    if (this.textLength == 0) return TextRange.EMPTY_RANGE
+    // Everything except last EOL
+    val lastChild = this.lastChild
+    if (lastChild != null) {
+      return TextRange.create(0, lastChild.startOffsetInParent)
+    }
+    return TextRange.from(0, this.textLength)
   }
 }

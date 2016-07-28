@@ -26,9 +26,11 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ArrayUtil
 import com.intellij.util.SmartList
+import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.Icons
 import org.intellij.plugins.hcl.psi.*
+import java.util.*
 import javax.swing.Icon
 
 val CharSequence.indentation: Int
@@ -241,14 +243,33 @@ object HCLPsiImplUtils {
 
   fun getMinimalIndentation(content: HCLHeredocContent): Int? {
     val children = content.node.getChildren(null)
-    return children.map { it.chars.indentation }.min()
+    var prev: ASTNode? = null
+    var indentation: Int = Int.MAX_VALUE
+    for (child in children) {
+      if (child.elementType == HCLElementTypes.HD_EOL) {
+        if (prev?.elementType == HCLElementTypes.HD_EOL) {
+          return 0
+        }
+      } else {
+        indentation = Math.min(indentation, child.chars.indentation)
+      }
+      prev = child
+    }
+    if (indentation == Int.MAX_VALUE) return null
+    else return indentation
   }
 
   fun getValue(content: HCLHeredocContent, trimFirst: Int = 0): String {
     val builder = StringBuilder()
-    content.linesRaw.forEach { builder.append(it.substring(trimFirst)) }
-    // Last line EOL is not part of value
-    builder.removeSuffix("\n")
+    val children = content.node.getChildren(null)
+    children
+        .forEach {
+          if (it.elementType == HCLElementTypes.HD_EOL) {
+            builder.append(it.chars) // TODO: maybe just simple '\n' ?
+          } else {
+            builder.append(it.chars.substring(trimFirst))
+          }
+        }
     return builder.toString()
   }
 
@@ -257,13 +278,42 @@ object HCLPsiImplUtils {
     val indentation: Int =
         if (parent is HCLHeredocLiteral) parent.indentation ?: 0
         else 0
-    val children = content.node.getChildren(null)
-    return children.mapTo(SmartList<String>()) { it.text.substring(indentation) }
+    return getLinesInternal(content, indentation, false)
+  }
+
+  fun getLinesWithEOL(content: HCLHeredocContent): List<String> {
+    val parent = content.parent
+    val indentation: Int =
+        if (parent is HCLHeredocLiteral) parent.indentation ?: 0
+        else 0
+    return getLinesInternal(content, indentation, true)
   }
 
   fun getLinesRaw(content: HCLHeredocContent): List<CharSequence> {
+    return getLinesInternal(content, eols = false)
+  }
+
+  fun getLinesInternal(content: HCLHeredocContent, indentation: Int = 0, eols: Boolean = true): List<String> {
     val children = content.node.getChildren(null)
-    return children.mapTo(SmartList<CharSequence>()) { it.chars }
+    val result = ArrayList<String>((children.size + 1) / 2)
+    var prev: ASTNode? = null
+    for (child in children) {
+      if (child.elementType == HCLElementTypes.HD_EOL) {
+        if (prev != null) {
+          result.add(prev.text.substring(indentation) + if (eols) child.text else "")
+          prev = null
+        } else {
+          result.add(if (eols) child.text else "")
+        }
+      } else {
+        assert(prev == null)
+        prev = child
+      }
+    }
+    if (prev != null) {
+      result.add(prev.text.substring(indentation))
+    }
+    return result
   }
 
   fun getLinesCount(content: HCLHeredocContent): Int {
@@ -271,8 +321,8 @@ object HCLPsiImplUtils {
     var cn: ASTNode? = node.firstChildNode
     var counter: Int = 0
     while (cn != null) {
+      if (cn.elementType == HCLElementTypes.HD_EOL) counter++
       cn = cn.treeNext
-      counter++
     }
     return counter
   }

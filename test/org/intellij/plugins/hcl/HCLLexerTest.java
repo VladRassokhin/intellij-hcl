@@ -212,8 +212,10 @@ public class HCLLexerTest extends LexerTestCase {
             "HD_START ('<<')\n" +
             "HD_MARKER ('EOF')\n" +
             "WHITE_SPACE ('\\n')\n" +
-            "HD_LINE ('bar\\n')\n" +
-            "HD_LINE ('baz\\n')\n" +
+            "HD_LINE ('bar')\n" +
+            "HD_EOL ('\\n')\n" +
+            "HD_LINE ('baz')\n" +
+            "HD_EOL ('\\n')\n" +
             "HD_MARKER ('EOF')\n");
   }
 
@@ -229,8 +231,10 @@ public class HCLLexerTest extends LexerTestCase {
             "HD_START ('<<')\n" +
             "HD_MARKER ('EOF')\n" +
             "WHITE_SPACE ('\\n')\n" +
-            "HD_LINE ('bar\\n')\n" +
-            "HD_LINE ('baz\\n')\n" +
+            "HD_LINE ('bar')\n" +
+            "HD_EOL ('\\n')\n" +
+            "HD_LINE ('baz')\n" +
+            "HD_EOL ('\\n')\n" +
             "HD_MARKER ('EOF')\n" +
             "WHITE_SPACE ('\\n')");
   }
@@ -247,8 +251,10 @@ public class HCLLexerTest extends LexerTestCase {
             "HD_START ('<<')\n" +
             "HD_MARKER ('-EOF')\n" +
             "WHITE_SPACE ('\\n')\n" +
-            "HD_LINE ('  bar\\n')\n" +
-            "HD_LINE ('  baz\\n')\n" +
+            "HD_LINE ('  bar')\n" +
+            "HD_EOL ('\\n')\n" +
+            "HD_LINE ('  baz')\n" +
+            "HD_EOL ('\\n')\n" +
             "HD_MARKER ('  EOF')\n" +
             "WHITE_SPACE ('\\n')");
   }
@@ -265,8 +271,10 @@ public class HCLLexerTest extends LexerTestCase {
             "HD_START ('<<')\n" +
             "HD_MARKER ('EOF')\n" +
             "WHITE_SPACE ('\\n')\n" +
-            "HD_LINE ('  bar\\n')\n" +
-            "HD_LINE ('  baz\\n')\n" +
+            "HD_LINE ('  bar')\n" +
+            "HD_EOL ('\\n')\n" +
+            "HD_LINE ('  baz')\n" +
+            "HD_EOL ('\\n')\n" +
             "HD_MARKER ('  EOF')\n" +
             "WHITE_SPACE ('\\n')");
   }
@@ -284,6 +292,41 @@ public class HCLLexerTest extends LexerTestCase {
             "HD_MARKER ('EOF')\n");
   }
 
+  public void testHereDoc_EmptyLines() throws Exception {
+    doTest("foo = <<EOF\n" +
+            "\n" +
+            "\n" +
+            "EOF",
+        "ID ('foo')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "= ('=')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "HD_START ('<<')\n" +
+            "HD_MARKER ('EOF')\n" +
+            "WHITE_SPACE ('\\n')\n" +
+            "HD_LINE ('')\n" +
+            "HD_EOL ('\\n')\n" +
+            "HD_LINE ('')\n" +
+            "HD_EOL ('\\n')\n" +
+            "HD_MARKER ('EOF')\n");
+  }
+
+  public void testHereDoc_SingleLineEmpty() throws Exception {
+    doTest("foo = <<EOF\n" +
+            "\n" +
+            "EOF",
+        "ID ('foo')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "= ('=')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "HD_START ('<<')\n" +
+            "HD_MARKER ('EOF')\n" +
+            "WHITE_SPACE ('\\n')\n" +
+            "HD_LINE ('')\n" +
+            "HD_EOL ('\\n')\n" +
+            "HD_MARKER ('EOF')\n");
+  }
+
   public void testHereDoc_Incomplete() throws Exception {
     doTest("foo = <<EOF\n" +
             "bar\n",
@@ -294,7 +337,8 @@ public class HCLLexerTest extends LexerTestCase {
             "HD_START ('<<')\n" +
             "HD_MARKER ('EOF')\n" +
             "WHITE_SPACE ('\\n')\n" +
-            "HD_LINE ('bar\\n')\n" +
+            "HD_LINE ('bar')\n" +
+            "HD_EOL ('\\n')\n" +
             "BAD_CHARACTER ('')");
   }
 

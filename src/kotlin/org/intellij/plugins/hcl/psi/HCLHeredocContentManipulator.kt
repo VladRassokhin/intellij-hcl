@@ -22,9 +22,9 @@ import com.intellij.psi.AbstractElementManipulator
 import com.intellij.psi.impl.source.tree.LeafElement
 import com.intellij.psi.impl.source.tree.TreeElement
 import com.intellij.util.IncorrectOperationException
-import com.intellij.util.SmartList
 import org.intellij.plugins.hcl.HCLElementTypes
-import org.intellij.plugins.hcl.terraform.config.model.ensureHaveSuffix
+import org.intellij.plugins.hcl.psi.impl.HCLHeredocContentMixin
+import org.intellij.plugins.hcl.psi.impl.HCLPsiImplUtils
 
 class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocContent>() {
 
@@ -40,17 +40,17 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
   override fun handleContentChange(element: HCLHeredocContent, range: TextRange, newContent: String): HCLHeredocContent {
     if (range.length == 0 && element.linesCount == 0) {
       // Replace empty with something
-      return handleContentChange(element, newContent)
+      return replaceStupidly(element, newContent)
     }
 
     //////////
-    // Calculate affected strings (based on offsets)
+    // Calculate affected elements (strings) (based on offsets)
 
-    var offset: Int = 0;
-    val lines = element.lines
+    var offset: Int = 0
+    val lines = HCLPsiImplUtils.getLinesWithEOL(element)
     val ranges = lines.map {
-      val r: TextRange = TextRange.from(offset, it.length);
-      offset += it.length;
+      val r: TextRange = TextRange.from(offset, it.length)
+      offset += it.length
       r
     }
 
@@ -64,33 +64,52 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
 
     val node = element.node as TreeElement
 
-    val children = node.getChildren(null)
-    val prefixStartString = children[startString].text.substring(0, range.startOffset - ranges[startString].startOffset)
-    val suffixEndString = children[endString].text.substring(range.endOffset - ranges[endString].startOffset).removeSuffix("\n")
+    val prefixStartString = lines[startString].substring(0, range.startOffset - ranges[startString].startOffset)
+    val suffixEndString = lines[endString].substring(range.endOffset - ranges[endString].startOffset).removeSuffix("\n")
 
     //////////
     // Prepare new lines content
 
     val newText = prefixStartString + newContent + suffixEndString
-    val newLines: MutableList<String> = getReplacementLines(newText)
+    val newLines: List<String> = getReplacementLines(newText).let { if (it.size >= 2 && element.textLength <= range.endOffset && it.last() == "") it.dropLast(1) else it }
 
     //////////
     // Replace nodes
 
-    var stopNode: ASTNode? = children[endString].treeNext
-    var iter: ASTNode? = children[startString]
+    var stopNode: ASTNode? = lookupLine(node, endString)?.let { nextLine(it) } // children[endString].treeNext?.treeNext
+    if (range.endOffset == ranges[endString].startOffset) {
+      stopNode = stopNode?.let { nextLine(it) }
+    }
+    var iter: ASTNode? = lookupLine(node, startString) //children[startString]
     for (line in newLines) {
       if (iter != null && iter != stopNode) {
         // Replace existing lines
-        val next = iter.treeNext
-        if (iter.text != line) {
-          // Replace node text
-          (iter as LeafElement).replaceWithText(line)
+        val next = nextLine(iter) // .treeNext?.treeNext
+        if (iter.isHD_EOL) {
+          // Line was empty.
+          if (line.isEmpty()) {
+            // Left intact
+          } else {
+            // Add HD_LINE before 'iter' (HD_EOL)
+            node.addLeaf(HCLElementTypes.HD_LINE, line, iter)
+          }
+        } else {
+          assert(iter.elementType == HCLElementTypes.HD_LINE)
+          if (line.isEmpty()) {
+            // Remove HD_LINE; HD_EOL would be preserved
+            node.removeChild(iter)
+          } else {
+            if (iter.text != line) {
+              // Replace node text
+              (iter as LeafElement).replaceWithText(line)
+            }
+          }
         }
         iter = next
       } else {
         // Add new lines to end
         node.addLeaf(HCLElementTypes.HD_LINE, line, stopNode)
+        node.addLeaf(HCLElementTypes.HD_EOL, "\n", stopNode)
       }
     }
     // Remove extra lines
@@ -101,16 +120,42 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
   }
 
   companion object {
-    fun getReplacementLines(newText: String): MutableList<String> {
-      if (newText == "") (return SmartList())
-      val newLines: MutableList<String>
-      newLines = SmartList<String>(StringUtil.split(newText, "\n", false, false))
-      newLines[newLines.lastIndex] = newLines[newLines.lastIndex].ensureHaveSuffix("\n")
-      return newLines
+    fun getReplacementLines(newText: String): List<String> {
+      if (newText == "") (return emptyList())
+      // TODO: Convert line separators to \n ?
+      val list = StringUtil.splitByLinesKeepSeparators(newText).toList().map { it.removeSuffix("\n") }
+      if (newText.endsWith("\n")) return list + ""
+      return list
+    }
+
+    private fun lookupLine(node: TreeElement, n: Int): ASTNode? {
+      var cn: ASTNode? = node.firstChildNode
+      var counter: Int = 0
+      while (cn != null) {
+        if (counter == n) return cn
+        if (cn.elementType == HCLElementTypes.HD_EOL) counter++
+        cn = cn.treeNext
+      }
+      return null
+    }
+
+    private fun nextLine(node: ASTNode): ASTNode? {
+      if (node.isHD_EOL) {
+        return node.treeNext
+      } else {
+        return node.treeNext?.treeNext
+      }
     }
   }
 
   override fun handleContentChange(element: HCLHeredocContent, newContent: String): HCLHeredocContent {
+    if (element is HCLHeredocContentMixin) {
+      return handleContentChange(element, TextRange.from(0, element.textLength), newContent)
+    }
+    return replaceStupidly(element, newContent);
+  }
+
+  fun replaceStupidly(element: HCLHeredocContent, newContent: String): HCLHeredocContent {
     // Do simple full replacement
     val newLines = getReplacementLines(newContent)
 
@@ -119,7 +164,8 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
       node.removeRange(node.firstChildNode, null)
     }
     for (line in newLines) {
-      node.addLeaf(HCLElementTypes.HD_LINE, line, null)
+      if (line.isNotEmpty()) node.addLeaf(HCLElementTypes.HD_LINE, line, null)
+      node.addLeaf(HCLElementTypes.HD_EOL, "\n", null)
     }
     return element
   }
@@ -129,3 +175,8 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
     return TextRange.from(0, element.textLength - 1)
   }
 }
+
+val ASTNode.isHD_EOL: Boolean
+  get() = this.elementType == HCLElementTypes.HD_EOL
+
+

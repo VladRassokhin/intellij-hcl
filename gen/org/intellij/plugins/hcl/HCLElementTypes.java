@@ -28,6 +28,7 @@ public interface HCLElementTypes {
   IElementType DOUBLE_QUOTED_STRING = new HCLTokenType("DOUBLE_QUOTED_STRING");
   IElementType EQUALS = new HCLTokenType("=");
   IElementType FALSE = new HCLTokenType("false");
+  IElementType HD_EOL = new HCLTokenType("HD_EOL");
   IElementType HD_LINE = new HCLTokenType("HD_LINE");
   IElementType HD_MARKER = new HCLTokenType("HD_MARKER");
   IElementType HD_START = new HCLTokenType("HD_START");

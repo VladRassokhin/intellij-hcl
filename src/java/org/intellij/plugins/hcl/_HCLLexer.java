@@ -6,6 +6,7 @@ import com.intellij.psi.tree.IElementType;
 import java.util.EnumSet;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
 
 @SuppressWarnings({"ALL"})
 
@@ -30,6 +31,7 @@ public class _HCLLexer implements FlexLexer {
   public static final int IN_NUMBER = 8;
   public static final int S_HEREDOC_MARKER = 10;
   public static final int S_HEREDOC_LINE = 12;
+  public static final int S_HEREDOC_LINE_END = 14;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -38,7 +40,7 @@ public class _HCLLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = { 
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6, 6
+     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7, 7
   };
 
   /** 
@@ -189,17 +191,17 @@ public class _HCLLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\7\0\1\1\1\2\1\1\1\3\1\1\2\4\1\5"+
+    "\10\0\1\1\1\2\1\1\1\3\1\1\2\4\1\5"+
     "\1\4\1\6\1\7\1\1\1\10\1\11\1\12\1\13"+
     "\1\14\1\15\3\5\1\16\2\17\3\16\1\20\2\21"+
-    "\1\22\2\23\1\16\1\24\1\0\3\25\1\26\2\27"+
-    "\1\26\1\30\1\31\2\32\1\33\1\4\2\0\1\34"+
-    "\3\5\1\35\1\36\2\25\2\0\2\30\2\31\1\0"+
-    "\2\4\1\0\3\5\3\25\1\0\1\33\1\37\1\5"+
-    "\1\40\1\41";
+    "\1\22\2\23\1\16\1\24\1\1\3\25\1\26\2\27"+
+    "\1\26\1\30\1\31\2\32\2\33\1\34\1\4\2\0"+
+    "\1\35\3\5\1\36\1\37\2\25\2\0\2\30\1\0"+
+    "\2\4\1\0\3\5\3\25\1\0\1\34\1\40\1\5"+
+    "\1\41\1\42";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[88];
+    int [] result = new int[89];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -226,18 +228,19 @@ public class _HCLLexer implements FlexLexer {
   private static final String ZZ_ROWMAP_PACKED_0 =
     "\0\0\0\51\0\122\0\173\0\244\0\315\0\366\0\u011f"+
     "\0\u0148\0\u0171\0\u019a\0\u01c3\0\u01ec\0\u0215\0\u023e\0\u0267"+
-    "\0\u011f\0\u011f\0\u0290\0\u011f\0\u011f\0\u011f\0\u011f\0\u011f"+
-    "\0\u011f\0\u02b9\0\u02e2\0\u030b\0\u0334\0\u035d\0\u011f\0\u0386"+
-    "\0\u011f\0\u03af\0\u011f\0\u03d8\0\u011f\0\u011f\0\u0401\0\u011f"+
-    "\0\u042a\0\u011f\0\u0453\0\u047c\0\u04a5\0\u04ce\0\u04f7\0\u0520"+
-    "\0\u011f\0\u0549\0\u0572\0\u059b\0\u05c4\0\u011f\0\u05ed\0\u0616"+
-    "\0\u063f\0\u0668\0\u011f\0\u0691\0\u06ba\0\u06e3\0\u011f\0\u011f"+
-    "\0\u070c\0\u0735\0\u075e\0\u0787\0\u07b0\0\u011f\0\u07d9\0\u011f"+
-    "\0\u0802\0\u082b\0\u063f\0\u082b\0\u0854\0\u087d\0\u08a6\0\u08cf"+
-    "\0\u011f\0\u08f8\0\u0921\0\u011f\0\u023e\0\u094a\0\u023e\0\u023e";
+    "\0\u0290\0\u0148\0\u0148\0\u02b9\0\u0148\0\u0148\0\u0148\0\u0148"+
+    "\0\u0148\0\u0148\0\u02e2\0\u030b\0\u0334\0\u035d\0\u0386\0\u0148"+
+    "\0\u03af\0\u0148\0\u03d8\0\u0148\0\u0401\0\u0148\0\u0148\0\u042a"+
+    "\0\u0148\0\u0453\0\u0148\0\u047c\0\u04a5\0\u04ce\0\u04f7\0\u0520"+
+    "\0\u0549\0\u0148\0\u0572\0\u059b\0\u05c4\0\u05ed\0\u0148\0\u0616"+
+    "\0\u0148\0\u063f\0\u0668\0\u0691\0\u06ba\0\u0148\0\u06e3\0\u070c"+
+    "\0\u0735\0\u0148\0\u0148\0\u075e\0\u0787\0\u07b0\0\u07d9\0\u0802"+
+    "\0\u0148\0\u082b\0\u0854\0\u0691\0\u0854\0\u087d\0\u08a6\0\u08cf"+
+    "\0\u08f8\0\u0148\0\u0921\0\u094a\0\u0148\0\u0267\0\u0973\0\u0267"+
+    "\0\u0267";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[88];
+    int [] result = new int[89];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -260,58 +263,58 @@ public class _HCLLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\10\3\11\1\12\1\13\1\10\1\14\1\15\1\16"+
-    "\2\17\1\20\1\17\2\10\1\17\1\10\1\21\1\22"+
-    "\1\23\1\24\1\10\1\25\1\10\1\11\1\26\1\27"+
-    "\1\30\1\31\1\32\3\17\1\33\3\17\1\34\2\17"+
-    "\1\35\1\36\1\37\16\35\1\40\2\41\1\35\1\41"+
-    "\1\42\1\43\22\35\1\44\1\45\16\35\1\40\2\41"+
-    "\1\35\1\46\1\42\1\41\22\35\1\47\1\50\16\35"+
-    "\1\51\1\41\1\52\1\35\1\41\1\42\1\41\21\35"+
-    "\7\0\1\53\1\54\1\55\2\0\1\56\34\0\1\57"+
-    "\1\60\1\61\4\57\1\62\4\63\1\57\1\63\1\57"+
-    "\2\63\7\57\2\0\4\57\13\63\1\64\1\65\1\66"+
-    "\46\64\52\0\3\11\25\0\1\11\23\0\1\13\1\0"+
-    "\1\67\42\0\1\13\2\0\46\13\10\0\1\15\1\16"+
-    "\2\0\1\20\44\0\2\15\2\0\1\20\1\70\23\0"+
-    "\1\70\17\0\2\15\1\71\1\0\1\20\1\70\23\0"+
-    "\1\70\16\0\7\17\1\0\2\17\15\0\13\17\10\0"+
-    "\2\20\3\0\1\72\23\0\1\72\33\0\1\73\33\0"+
-    "\7\17\1\0\2\17\15\0\1\17\1\74\11\17\7\0"+
-    "\7\17\1\0\2\17\15\0\5\17\1\75\5\17\7\0"+
-    "\7\17\1\0\2\17\15\0\2\17\1\76\10\17\1\35"+
-    "\2\0\16\35\3\0\1\35\1\0\1\42\1\0\21\35"+
-    "\2\0\1\37\70\0\1\77\26\0\1\35\2\0\23\35"+
-    "\1\42\22\35\2\0\1\45\50\0\1\50\70\0\1\100"+
-    "\36\0\1\54\1\55\2\0\1\56\44\0\2\54\2\0"+
-    "\1\56\1\101\23\0\1\101\5\0\1\102\11\0\2\54"+
-    "\1\103\1\0\1\56\1\101\23\0\1\101\5\0\1\102"+
-    "\11\0\2\56\3\0\1\104\23\0\1\104\5\0\1\102"+
-    "\1\0\1\57\2\0\25\57\2\0\17\57\2\0\1\61"+
-    "\46\0\1\57\2\0\5\57\4\63\1\57\1\63\1\57"+
-    "\2\63\7\57\2\0\4\57\13\63\1\57\1\105\1\106"+
-    "\5\57\4\63\1\57\1\63\1\57\2\63\7\57\2\0"+
-    "\4\57\13\63\1\64\1\107\1\110\46\64\2\0\1\66"+
-    "\46\0\6\67\1\111\42\67\7\0\3\112\4\0\1\112"+
-    "\42\0\2\113\1\0\1\113\1\0\1\113\23\0\3\113"+
-    "\4\0\1\113\7\0\1\114\2\112\4\0\1\114\41\0"+
-    "\7\17\1\0\2\17\15\0\2\17\1\115\10\17\7\0"+
-    "\7\17\1\0\2\17\15\0\6\17\1\116\4\17\7\0"+
-    "\7\17\1\0\2\17\15\0\6\17\1\117\4\17\7\0"+
-    "\3\120\4\0\1\120\30\0\1\102\51\0\1\121\10\0"+
-    "\2\122\1\0\1\122\1\0\1\122\23\0\3\122\4\0"+
-    "\1\122\7\0\1\123\2\120\4\0\1\123\34\0\1\106"+
-    "\50\0\1\110\46\0\4\67\1\124\44\67\10\0\2\112"+
-    "\46\0\7\17\1\0\2\17\15\0\3\17\1\125\7\17"+
-    "\7\0\7\17\1\0\2\17\15\0\7\17\1\126\3\17"+
-    "\7\0\7\17\1\0\2\17\15\0\6\17\1\127\4\17"+
-    "\10\0\2\120\35\0\1\102\11\0\2\122\1\0\1\122"+
-    "\1\0\1\122\23\0\3\122\3\0\1\102\1\122\10\0"+
-    "\2\120\46\0\7\17\1\0\2\17\15\0\3\17\1\130"+
-    "\7\17";
+    "\1\11\3\12\1\13\1\14\1\11\1\15\1\16\1\17"+
+    "\2\20\1\21\1\20\2\11\1\20\1\11\1\22\1\23"+
+    "\1\24\1\25\1\11\1\26\1\11\1\12\1\27\1\30"+
+    "\1\31\1\32\1\33\3\20\1\34\3\20\1\35\2\20"+
+    "\1\36\1\37\1\40\16\36\1\41\2\42\1\36\1\42"+
+    "\1\43\1\44\22\36\1\45\1\46\16\36\1\41\2\42"+
+    "\1\36\1\47\1\43\1\42\22\36\1\50\1\51\16\36"+
+    "\1\52\1\42\1\53\1\36\1\42\1\43\1\42\21\36"+
+    "\7\11\1\54\1\55\1\56\2\11\1\57\34\11\1\60"+
+    "\1\61\1\62\4\60\1\63\4\64\1\60\1\64\1\60"+
+    "\2\64\7\60\2\11\4\60\13\64\1\65\1\66\1\67"+
+    "\46\65\1\11\1\70\1\71\46\11\52\0\3\12\25\0"+
+    "\1\12\23\0\1\14\1\0\1\72\42\0\1\14\2\0"+
+    "\46\14\10\0\1\16\1\17\2\0\1\21\44\0\2\16"+
+    "\2\0\1\21\1\73\23\0\1\73\17\0\2\16\1\74"+
+    "\1\0\1\21\1\73\23\0\1\73\16\0\7\20\1\0"+
+    "\2\20\15\0\13\20\10\0\2\21\3\0\1\75\23\0"+
+    "\1\75\33\0\1\76\33\0\7\20\1\0\2\20\15\0"+
+    "\1\20\1\77\11\20\7\0\7\20\1\0\2\20\15\0"+
+    "\5\20\1\100\5\20\7\0\7\20\1\0\2\20\15\0"+
+    "\2\20\1\101\10\20\1\36\2\0\16\36\3\0\1\36"+
+    "\1\0\1\43\1\0\21\36\2\0\1\40\70\0\1\102"+
+    "\26\0\1\36\2\0\23\36\1\43\22\36\2\0\1\46"+
+    "\50\0\1\51\70\0\1\103\36\0\1\55\1\56\2\0"+
+    "\1\57\44\0\2\55\2\0\1\57\1\104\23\0\1\104"+
+    "\5\0\1\105\11\0\2\55\1\106\1\0\1\57\1\104"+
+    "\23\0\1\104\5\0\1\105\11\0\2\57\3\0\1\107"+
+    "\23\0\1\107\5\0\1\105\1\0\1\60\2\0\25\60"+
+    "\2\0\17\60\2\0\1\62\46\0\1\60\2\0\5\60"+
+    "\4\64\1\60\1\64\1\60\2\64\7\60\2\0\4\60"+
+    "\13\64\1\60\1\110\1\111\5\60\4\64\1\60\1\64"+
+    "\1\60\2\64\7\60\2\0\4\60\13\64\1\65\2\0"+
+    "\46\65\2\0\1\67\50\0\1\71\46\0\6\72\1\112"+
+    "\42\72\7\0\3\113\4\0\1\113\42\0\2\114\1\0"+
+    "\1\114\1\0\1\114\23\0\3\114\4\0\1\114\7\0"+
+    "\1\115\2\113\4\0\1\115\41\0\7\20\1\0\2\20"+
+    "\15\0\2\20\1\116\10\20\7\0\7\20\1\0\2\20"+
+    "\15\0\6\20\1\117\4\20\7\0\7\20\1\0\2\20"+
+    "\15\0\6\20\1\120\4\20\7\0\3\121\4\0\1\121"+
+    "\30\0\1\105\51\0\1\122\10\0\2\123\1\0\1\123"+
+    "\1\0\1\123\23\0\3\123\4\0\1\123\7\0\1\124"+
+    "\2\121\4\0\1\124\34\0\1\111\46\0\4\72\1\125"+
+    "\44\72\10\0\2\113\46\0\7\20\1\0\2\20\15\0"+
+    "\3\20\1\126\7\20\7\0\7\20\1\0\2\20\15\0"+
+    "\7\20\1\127\3\20\7\0\7\20\1\0\2\20\15\0"+
+    "\6\20\1\130\4\20\10\0\2\121\35\0\1\105\11\0"+
+    "\2\123\1\0\1\123\1\0\1\123\23\0\3\123\3\0"+
+    "\1\105\1\123\10\0\2\121\46\0\7\20\1\0\2\20"+
+    "\15\0\3\20\1\131\7\20";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[2419];
+    int [] result = new int[2460];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -349,15 +352,15 @@ public class _HCLLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\7\0\1\11\10\1\2\11\1\1\6\11\5\1\1\11"+
+    "\10\0\1\11\10\1\2\11\1\1\6\11\5\1\1\11"+
     "\1\1\1\11\1\1\1\11\1\1\2\11\1\1\1\11"+
-    "\1\1\1\11\1\0\5\1\1\11\4\1\1\11\2\1"+
-    "\2\0\1\11\3\1\2\11\2\1\2\0\1\1\1\11"+
-    "\1\1\1\11\1\0\2\1\1\0\4\1\1\11\1\1"+
-    "\1\0\1\11\4\1";
+    "\1\1\1\11\6\1\1\11\4\1\1\11\1\1\1\11"+
+    "\2\1\2\0\1\11\3\1\2\11\2\1\2\0\1\1"+
+    "\1\11\1\0\2\1\1\0\4\1\1\11\1\1\1\0"+
+    "\1\11\4\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[88];
+    int [] result = new int[89];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -734,23 +737,27 @@ public class _HCLLexer implements FlexLexer {
             case D_STRING: {
               return eods();
             }
-            case 89: break;
+            case 90: break;
             case S_STRING: {
               return eoss();
             }
-            case 90: break;
+            case 91: break;
             case HIL_EXPRESSION: {
               return eoil();
             }
-            case 91: break;
+            case 92: break;
             case S_HEREDOC_MARKER: {
               yybegin(YYINITIAL); return BAD_CHARACTER;
             }
-            case 92: break;
+            case 93: break;
             case S_HEREDOC_LINE: {
               yybegin(YYINITIAL); return BAD_CHARACTER;
             }
-            case 93: break;
+            case 94: break;
+            case S_HEREDOC_LINE_END: {
+              yybegin(YYINITIAL); return BAD_CHARACTER;
+            }
+            case 95: break;
             default:
         return null;
         }
@@ -760,109 +767,108 @@ public class _HCLLexer implements FlexLexer {
           case 1: 
             { return BAD_CHARACTER;
             }
-          case 34: break;
-          case 2: 
-            { return com.intellij.psi.TokenType.WHITE_SPACE;
-            }
           case 35: break;
+          case 2: 
+            { return WHITE_SPACE;
+            }
+          case 36: break;
           case 3: 
             { return LINE_COMMENT;
             }
-          case 36: break;
+          case 37: break;
           case 4: 
             { if (!withNumbersWithBytesPostfix) return NUMBER;
                                 yybegin(IN_NUMBER); yypushback(yylength());
             }
-          case 37: break;
+          case 38: break;
           case 5: 
             { return ID;
             }
-          case 38: break;
+          case 39: break;
           case 6: 
             { return L_CURLY;
             }
-          case 39: break;
+          case 40: break;
           case 7: 
             { return R_CURLY;
             }
-          case 40: break;
+          case 41: break;
           case 8: 
             { stringType = StringType.SingleQ; stringStart = zzStartRead; yybegin(S_STRING);
             }
-          case 41: break;
+          case 42: break;
           case 9: 
             { stringType = StringType.DoubleQ; stringStart = zzStartRead; yybegin(D_STRING);
             }
-          case 42: break;
+          case 43: break;
           case 10: 
             { return L_BRACKET;
             }
-          case 43: break;
+          case 44: break;
           case 11: 
             { return R_BRACKET;
             }
-          case 44: break;
+          case 45: break;
           case 12: 
             { return COMMA;
             }
-          case 45: break;
+          case 46: break;
           case 13: 
             { return EQUALS;
             }
-          case 46: break;
+          case 47: break;
           case 14: 
             { 
             }
-          case 47: break;
+          case 48: break;
           case 15: 
             { push_eol(); return eods();
             }
-          case 48: break;
+          case 49: break;
           case 16: 
             { return eods();
             }
-          case 49: break;
+          case 50: break;
           case 17: 
             { push_eol(); return eoss();
             }
-          case 50: break;
+          case 51: break;
           case 18: 
             { return eoss();
             }
-          case 51: break;
+          case 52: break;
           case 19: 
             { push_eol(); return eoil();
             }
-          case 52: break;
+          case 53: break;
           case 20: 
             { if (hil_dec() <= 0) yybegin(stringType == StringType.SingleQ ? S_STRING: D_STRING);
             }
-          case 53: break;
+          case 54: break;
           case 21: 
             { yybegin(YYINITIAL); return NUMBER;
             }
-          case 54: break;
+          case 55: break;
           case 22: 
             { yybegin(YYINITIAL);
       return BAD_CHARACTER;
             }
-          case 55: break;
+          case 56: break;
           case 23: 
             { if (!isHereDocMarkerDefined()) {
       yybegin(YYINITIAL);
       return BAD_CHARACTER;
     }
     yybegin(S_HEREDOC_LINE);
-//    zzStartRead+=getEOLLength();
-    return com.intellij.psi.TokenType.WHITE_SPACE;
+    return WHITE_SPACE;
             }
-          case 56: break;
+          case 57: break;
           case 24: 
             { yypushback(getEOLLength());
     setHereDocMarker(yytext());
     return HD_MARKER;
             }
-          case 57: break;
+          case 58: break;
           case 25: 
             { int eol = getEOLLength();
     int len = yylength();
@@ -876,42 +882,47 @@ public class _HCLLexer implements FlexLexer {
       resetHereDocMarker();
       return HD_MARKER;
     } else {
+      yybegin(S_HEREDOC_LINE_END);
       return HD_LINE;
     }
             }
-          case 58: break;
-          case 26: 
-            { return HD_LINE;
-            }
           case 59: break;
-          case 27: 
-            { return BLOCK_COMMENT;
+          case 26: 
+            { yypushback(getEOLLength()); yybegin(S_HEREDOC_LINE_END); return HD_LINE;
             }
           case 60: break;
-          case 28: 
-            { yybegin(S_HEREDOC_MARKER); return HD_START;
+          case 27: 
+            { yybegin(S_HEREDOC_LINE); return HD_EOL;
             }
           case 61: break;
-          case 29: 
-            { if (withInterpolationLanguage) {hil_inc(); yybegin(HIL_EXPRESSION);}
+          case 28: 
+            { return BLOCK_COMMENT;
             }
           case 62: break;
-          case 30: 
-            { hil_inc();
+          case 29: 
+            { yybegin(S_HEREDOC_MARKER); return HD_START;
             }
           case 63: break;
-          case 31: 
-            { return TRUE;
+          case 30: 
+            { if (withInterpolationLanguage) {hil_inc(); yybegin(HIL_EXPRESSION);}
             }
           case 64: break;
-          case 32: 
-            { return NULL;
+          case 31: 
+            { hil_inc();
             }
           case 65: break;
-          case 33: 
-            { return FALSE;
+          case 32: 
+            { return TRUE;
             }
           case 66: break;
+          case 33: 
+            { return NULL;
+            }
+          case 67: break;
+          case 34: 
+            { return FALSE;
+            }
+          case 68: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

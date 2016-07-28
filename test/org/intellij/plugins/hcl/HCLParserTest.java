@@ -80,6 +80,10 @@ public class HCLParserTest extends ParsingTestCase {
     doTest();
   }
 
+  public void testHereDoc_EmptyLines() throws Exception {
+    doTest();
+  }
+
   public void testHereDoc_Incomplete() throws Exception {
     doTest();
   }

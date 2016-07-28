@@ -17,7 +17,9 @@ package org.intellij.plugins.hcl.psi;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.impl.DebugUtil;
 import com.intellij.testFramework.LightPlatformTestCase;
+import org.assertj.core.api.BDDAssertions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "ArraysAsListWithZeroOrOneArgument"})
 public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
   protected HCLElementGenerator myElementGenerator;
   protected HCLHeredocContentManipulator myContentManipulator;
@@ -50,14 +52,25 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
 
   public void testSingleEmptyLineContent() throws Exception {
     final HCLHeredocContent content = content("");
+    System.out.println(DebugUtil.psiToString(content, false, true));
     final List<String> lines = content.getLines();
-    assertEquals(Arrays.asList("\n"), lines);
+    BDDAssertions.then(lines).hasSize(1).containsOnly("");
   }
 
   public void testContentLines() throws Exception {
     final HCLHeredocContent content = content("abc");
+    System.out.println(DebugUtil.psiToString(content, false, true));
     final List<String> lines = content.getLines();
-    assertEquals(Arrays.asList("abc\n"), lines);
+    assertEquals(Arrays.asList("abc"), lines);
+  }
+
+  public void testContentNodeTree() throws Exception {
+    final HCLHeredocContent content = content("abc");
+    System.out.println(DebugUtil.psiToString(content, false, true));
+    assertEquals(1, content.getLinesCount());
+    final List<String> lines = content.getLines();
+    assertEquals(Arrays.asList("abc"), lines);
+    assertEquals("abc\n", content.getValue());
   }
 
   public void testKeepSame() throws Exception {
@@ -95,7 +108,7 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
     doTest(content("abc"), TextRange.create(0, 4), "\nabc", "", "abc");
     doTest(content("abc"), TextRange.create(0, 4), "a\nbc", "a", "bc");
     doTest(content("abc"), TextRange.create(0, 4), "ab\nc", "ab", "c");
-    doTest(content("abc"), TextRange.create(0, 4), "abc\n", "abc", "");
+    doTest(content("abc"), TextRange.create(0, 4), "abc\n", "abc");
   }
 
   public void testSeparateMultipleLines() throws Exception {
@@ -117,6 +130,8 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
     doTest(content(), TextRange.create(0, 0), "te\nxt", "te", "xt");
     doTestFullTextReplacement(content(), "text", content("text"));
     doTestFullTextReplacement(content(), "te\nxt", content("te", "xt"));
+
+    doTest(content("", "", ""), TextRange.create(0, 3), "text", "text");
   }
 
   public void testMayBeEmptiedCompletely() throws Exception {
@@ -160,30 +175,50 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
 
   public void testReplaceFullText() throws Exception {
     doTestFullTextReplacement(content("jenkins"), "leeroy", content("leeroy"));
-    doTestFullTextReplacement(content("jenkins"), "leeroy\n", content("leeroy", ""));
+    doTestFullTextReplacement(content("jenkins"), "leeroy\n", content("leeroy"));
     doTestFullTextReplacement(content("a\nb"), "c", content("c"));
-    doTestFullTextReplacement(content("a\nb"), "c\n", content("c", ""));
-    doTestFullTextReplacement(content("a\nb"), "a\nb\nc\n", content("a\n", "b\n", "c\n", "\n"));
-    doTestFullTextReplacement(content("a\nb"), "a\nb\nc\n", content("a", "b", "c", ""));
-    doTestFullTextReplacement(content("a\nb"), "\n\n\n", content("", "", "", ""));
+    doTestFullTextReplacement(content("a\nb"), "c\n", content("c"));
+    doTestFullTextReplacement(content("a\nb"), "a\nb\nc\n", content("a\n", "b\n", "c\n"));
+    doTestFullTextReplacement(content("a\nb"), "a\nb\nc\n", content("a", "b", "c"));
+    doTestFullTextReplacement(content("a\nb"), "\n\n\n", content("", "", ""));
     doTestFullTextReplacement(content(""), "x", content("x"));
     doTestFullTextReplacement(content(""), "", content());
+    doTestFullTextReplacement(content(""), "\n", content(""));
+    doTestFullTextReplacement(content(), "\n", content(""));
+  }
+
+  public void testReplaceFullText2() throws Exception {
+    doTestFullTextReplacement(content(false, "jenkins\n"), "leeroy\n", content(false, "leeroy\n"));
   }
 
   public void testReplacementLines() throws Exception {
     doReplacementLinesTest("");
-    doReplacementLinesTest("a", "a\n");
-    doReplacementLinesTest("leeroy\njenkins", "leeroy\n", "jenkins\n");
-    doReplacementLinesTest("a\n", "a\n", "\n");
-    doReplacementLinesTest("leeroy\njenkins\n", "leeroy\n", "jenkins\n", "\n");
+    doReplacementLinesTest("\n", "", "");
+    doReplacementLinesTest("a\n", "a", "");
+    doReplacementLinesTest("leeroy\njenkins\n", "leeroy", "jenkins");
+    doReplacementLinesTest("a", "a");
+    doReplacementLinesTest("leeroy\njenkins", "leeroy", "jenkins");
   }
 
   private void doReplacementLinesTest(String input, String... expected) {
     final List<String> list = HCLHeredocContentManipulator.Companion.getReplacementLines(input);
-    assertEquals(Arrays.asList(expected), list);
+    assertEquals(replaceEOLs(Arrays.asList(expected)), replaceEOLs(list));
+  }
+
+  protected List<String> replaceEOLs(List<String> list) {
+    final List<String> result = new ArrayList<String>(list.size());
+    for (String s : list) {
+      result.add(replaceEOLs(s));
+    }
+    return result;
+  }
+
+  private String replaceEOLs(String s) {
+    return s.replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n");
   }
 
   protected void doTest(final HCLHeredocContent content, final TextRange range, final String replacement, String... expected) {
+    System.out.println(DebugUtil.psiToString(content, false, true));
     final HCLHeredocContent[] changed = new HCLHeredocContent[1];
     ApplicationManager.getApplication().runWriteAction(new Runnable() {
       @Override
@@ -192,11 +227,13 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
       }
     });
     assertNotNull(changed[0]);
+    System.out.println(DebugUtil.psiToString(changed[0], false, true));
     final List<String> lines = changed[0].getLines();
     assertEquals(Arrays.asList(expected), removeSuffix(lines, "\n"));
   }
 
   protected void doTestText(final HCLHeredocContent content, final TextRange range, final String replacement, HCLHeredocContent expected) {
+    System.out.println(DebugUtil.psiToString(content, false, true));
     final HCLHeredocContent[] changed = new HCLHeredocContent[1];
     ApplicationManager.getApplication().runWriteAction(new Runnable() {
       @Override
@@ -205,10 +242,12 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
       }
     });
     assertNotNull(changed[0]);
+    System.out.println(DebugUtil.psiToString(changed[0], false, true));
     assertEquals(expected.getText(), changed[0].getText());
   }
 
   protected void doTestFullTextReplacement(final HCLHeredocContent content, final String replacement, HCLHeredocContent expected) {
+    System.out.println(DebugUtil.psiToString(content, false, true));
     final HCLHeredocContent[] changed = new HCLHeredocContent[1];
     ApplicationManager.getApplication().runWriteAction(new Runnable() {
       @Override
@@ -217,7 +256,8 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
       }
     });
     assertNotNull(changed[0]);
-    assertEquals(expected.getText(), changed[0].getText());
+    System.out.println(DebugUtil.psiToString(changed[0], false, true));
+    assertEquals(replaceEOLs(expected.getText()), replaceEOLs(changed[0].getText()));
   }
 
   private List<String> removeSuffix(List<String> input, String suffix) {
@@ -232,6 +272,18 @@ public class HCLHeredocContentManipulatorTest extends LightPlatformTestCase {
   }
 
   protected HCLHeredocContent content(String... lines) {
-    return myElementGenerator.createHeredocContent(Arrays.asList(lines));
+    return content(true, lines);
+  }
+
+  protected HCLHeredocContent content(boolean appendNewLines, String... lines) {
+    return myElementGenerator.createHeredocContent(Arrays.asList(lines), appendNewLines, false, 0);
+  }
+
+  protected HCLHeredocContent indentedContent(int endIndent, String... lines) {
+    return indentedContent(endIndent, true, lines);
+  }
+
+  protected HCLHeredocContent indentedContent(int endIndent, boolean appendNewLines, String... lines) {
+    return myElementGenerator.createHeredocContent(Arrays.asList(lines), appendNewLines, true, endIndent);
   }
 }

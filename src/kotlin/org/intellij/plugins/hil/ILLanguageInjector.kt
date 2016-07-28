@@ -22,6 +22,7 @@ import com.intellij.psi.PsiLanguageInjectionHost
 import org.intellij.plugins.hcl.psi.HCLFile
 import org.intellij.plugins.hcl.psi.HCLHeredocContent
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
+import org.intellij.plugins.hcl.psi.impl.HCLPsiImplUtils
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hil.HILElementTypes.INTERPOLATION_END
 import org.intellij.plugins.hil.HILElementTypes.INTERPOLATION_START
@@ -56,9 +57,9 @@ class ILLanguageInjector : LanguageInjector {
 
   private fun getHCLHeredocContentInjections(host: HCLHeredocContent, places: InjectedLanguagePlaces) {
     if (host.linesCount == 0) return
-    val lines = host.lines
+    val lines = HCLPsiImplUtils.getLinesInternal(host)
     if (lines.isEmpty()) return
-    var off:Int = 0
+    var off: Int = host.firstChild.startOffsetInParent
     for (line in lines) {
       val ranges = getILRangesInText(line)
       if (!ranges.isEmpty()) {

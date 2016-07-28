@@ -4,6 +4,7 @@ import com.intellij.psi.tree.IElementType;
 import java.util.EnumSet;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
 
 @SuppressWarnings({"ALL"})
 %%
@@ -41,7 +42,7 @@ HEREDOC_START="<<"
 STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
 
 %state D_STRING, S_STRING, HIL_EXPRESSION, IN_NUMBER
-%state S_HEREDOC_MARKER, S_HEREDOC_LINE
+%state S_HEREDOC_MARKER, S_HEREDOC_LINE, S_HEREDOC_LINE_END
 %{
   // This parameters can be getted from capabilities
     private boolean withNumbersWithBytesPostfix;
@@ -134,7 +135,6 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
   \' {}
   {EOL} { push_eol(); return eods(); }
   <<EOF>> { return eods(); }
-  [^] { return BAD_CHARACTER; }
 }
 
 <S_STRING> {
@@ -147,7 +147,6 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
   \" {}
   {EOL} { push_eol(); return eoss(); }
   <<EOF>> { return eoss(); }
-  [^] { return BAD_CHARACTER; }
 }
 
 
@@ -161,7 +160,6 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
   \{ {}
   {EOL} { push_eol(); return eoil(); }
   <<EOF>> { return eoil(); }
-  [^] { return BAD_CHARACTER; }
 }
 
 <S_HEREDOC_MARKER> {
@@ -176,8 +174,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
       return BAD_CHARACTER;
     }
     yybegin(S_HEREDOC_LINE);
-//    zzStartRead+=getEOLLength();
-    return com.intellij.psi.TokenType.WHITE_SPACE;
+    return WHITE_SPACE;
   }
   <<EOF>> { yybegin(YYINITIAL); return BAD_CHARACTER; }
   .+ {
@@ -187,7 +184,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
 }
 
 <S_HEREDOC_LINE> {
-  ([^\r\n]|\\[^\r\n])+ {EOL}? {
+  ([^\r\n]|\\[^\r\n])+ {
     int eol = getEOLLength();
     int len = yylength();
     int len_eff = len - eol;
@@ -200,10 +197,16 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
       resetHereDocMarker();
       return HD_MARKER;
     } else {
+      yybegin(S_HEREDOC_LINE_END);
       return HD_LINE;
     }
   }
-  {EOL} { return HD_LINE; }
+  {EOL} { yypushback(getEOLLength()); yybegin(S_HEREDOC_LINE_END); return HD_LINE; }
+  <<EOF>> { yybegin(YYINITIAL); return BAD_CHARACTER; }
+}
+
+<S_HEREDOC_LINE_END> {
+  {EOL} { yybegin(S_HEREDOC_LINE); return HD_EOL; }
   <<EOF>> { yybegin(YYINITIAL); return BAD_CHARACTER; }
 }
 
@@ -212,7 +215,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
 <YYINITIAL>   {HEREDOC_START}  { yybegin(S_HEREDOC_MARKER); return HD_START; }
 
 <YYINITIAL> {
-  {WHITE_SPACE}               { return com.intellij.psi.TokenType.WHITE_SPACE; }
+  {WHITE_SPACE}               { return WHITE_SPACE; }
 
   "["                         { return L_BRACKET; }
   "]"                         { return R_BRACKET; }
@@ -229,11 +232,11 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
   {NUMBER}                    { if (!withNumbersWithBytesPostfix) return NUMBER;
                                 yybegin(IN_NUMBER); yypushback(yylength());}
   {ID}                        { return ID; }
-
-  [^] { return BAD_CHARACTER; }
 }
 
 <IN_NUMBER> {
   {NUMBER} ([kKmMgG][bB]?) { yybegin(YYINITIAL); return NUMBER; }
   {NUMBER} { yybegin(YYINITIAL); return NUMBER; }
 }
+
+[^] { return BAD_CHARACTER; }

@@ -117,15 +117,18 @@ open class HCLElementGenerator(private val project: Project) {
     return property.nameElement as HCLIdentifier
   }
 
-  fun createHeredocContent(lines: List<String>): HCLHeredocContent {
+  fun createHeredocContent(lines: List<String>, appendNewlines: Boolean = true, indented: Boolean = false, endIndent: Int = 0): HCLHeredocContent {
     var text = buildString {
-      append("x=<<___EOF___\n")
+      append("x=<<")
+      if (indented) append('-')
+      append("___EOF___\n")
       for (l in lines) {
         append(l)
-        if (!l.endsWith('\n')) {
+        if (appendNewlines && !l.endsWith('\n')) {
           append('\n')
         }
       }
+      0.rangeTo(endIndent).forEach { append(' ') }
       append("___EOF___")
     }
     val file = createDummyFile(text)

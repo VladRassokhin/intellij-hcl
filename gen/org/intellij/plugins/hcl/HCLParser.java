@@ -233,9 +233,15 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // HD_LINE
+  // HD_LINE HD_EOL
   static boolean heredoc_line(PsiBuilder b, int l) {
-    return consumeToken(b, HD_LINE);
+    if (!recursion_guard_(b, l, "heredoc_line")) return false;
+    if (!nextTokenIs(b, HD_LINE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, HD_LINE, HD_EOL);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */
