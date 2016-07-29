@@ -16,8 +16,12 @@ public class HCLHeredocContentImpl extends HCLHeredocContentMixin implements HCL
     super(node);
   }
 
+  public void accept(@NotNull HCLElementVisitor visitor) {
+    visitor.visitHeredocContent(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HCLElementVisitor) ((HCLElementVisitor)visitor).visitHeredocContent(this);
+    if (visitor instanceof HCLElementVisitor) accept((HCLElementVisitor)visitor);
     else super.accept(visitor);
   }
 

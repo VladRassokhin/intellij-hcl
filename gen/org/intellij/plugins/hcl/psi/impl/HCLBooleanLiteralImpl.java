@@ -16,8 +16,12 @@ public class HCLBooleanLiteralImpl extends HCLLiteralImpl implements HCLBooleanL
     super(node);
   }
 
+  public void accept(@NotNull HCLElementVisitor visitor) {
+    visitor.visitBooleanLiteral(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HCLElementVisitor) ((HCLElementVisitor)visitor).visitBooleanLiteral(this);
+    if (visitor instanceof HCLElementVisitor) accept((HCLElementVisitor)visitor);
     else super.accept(visitor);
   }
 

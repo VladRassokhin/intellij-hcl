@@ -16,8 +16,12 @@ public class HCLLiteralImpl extends HCLLiteralMixin implements HCLLiteral {
     super(node);
   }
 
+  public void accept(@NotNull HCLElementVisitor visitor) {
+    visitor.visitLiteral(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HCLElementVisitor) ((HCLElementVisitor)visitor).visitLiteral(this);
+    if (visitor instanceof HCLElementVisitor) accept((HCLElementVisitor)visitor);
     else super.accept(visitor);
   }
 

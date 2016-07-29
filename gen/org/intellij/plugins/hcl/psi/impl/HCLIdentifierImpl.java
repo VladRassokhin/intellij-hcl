@@ -16,8 +16,12 @@ public class HCLIdentifierImpl extends HCLIdentifierMixin implements HCLIdentifi
     super(node);
   }
 
+  public void accept(@NotNull HCLElementVisitor visitor) {
+    visitor.visitIdentifier(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HCLElementVisitor) ((HCLElementVisitor)visitor).visitIdentifier(this);
+    if (visitor instanceof HCLElementVisitor) accept((HCLElementVisitor)visitor);
     else super.accept(visitor);
   }
 

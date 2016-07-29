@@ -76,9 +76,6 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(ARRAY, OBJECT),
-    create_token_set_(BOOLEAN_LITERAL, HEREDOC_LITERAL, LITERAL, NULL_LITERAL,
-      NUMBER_LITERAL, STRING_LITERAL),
     create_token_set_(ARRAY, BOOLEAN_LITERAL, HEREDOC_LITERAL, IDENTIFIER,
       LITERAL, NULL_LITERAL, NUMBER_LITERAL, OBJECT,
       STRING_LITERAL, VALUE),
@@ -90,12 +87,12 @@ public class HCLParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "array")) return false;
     if (!nextTokenIs(b, L_BRACKET)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
+    Marker m = enter_section_(b, l, _NONE_, ARRAY, null);
     r = consumeToken(b, L_BRACKET);
     p = r; // pin = 1
     r = r && report_error_(b, array_1(b, l + 1));
     r = p && consumeToken(b, R_BRACKET) && r;
-    exit_section_(b, l, m, ARRAY, r, p, null);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
@@ -116,11 +113,11 @@ public class HCLParser implements PsiParser, LightPsiParser {
   static boolean array_element(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "array_element")) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
+    Marker m = enter_section_(b, l, _NONE_);
     r = array_element_0(b, l + 1);
     p = r; // pin = 1
     r = r && array_element_1(b, l + 1);
-    exit_section_(b, l, m, null, r, p, not_bracket_or_next_value_parser_);
+    exit_section_(b, l, m, r, p, not_bracket_or_next_value_parser_);
     return r || p;
   }
 
@@ -150,9 +147,9 @@ public class HCLParser implements PsiParser, LightPsiParser {
   private static boolean array_element_1_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "array_element_1_1")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _AND_, null);
+    Marker m = enter_section_(b, l, _AND_);
     r = consumeToken(b, R_BRACKET);
-    exit_section_(b, l, m, null, r, false, null);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -161,10 +158,10 @@ public class HCLParser implements PsiParser, LightPsiParser {
   public static boolean block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _LEFT_, "<block>");
+    Marker m = enter_section_(b, l, _LEFT_, BLOCK, "<block>");
     r = block_0(b, l + 1);
     r = r && object(b, l + 1);
-    exit_section_(b, l, m, BLOCK, r, false, null);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -198,10 +195,10 @@ public class HCLParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "boolean_literal")) return false;
     if (!nextTokenIs(b, "<boolean literal>", FALSE, TRUE)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<boolean literal>");
+    Marker m = enter_section_(b, l, _NONE_, BOOLEAN_LITERAL, "<boolean literal>");
     r = consumeToken(b, TRUE);
     if (!r) r = consumeToken(b, FALSE);
-    exit_section_(b, l, m, BOOLEAN_LITERAL, r, false, null);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -224,14 +221,14 @@ public class HCLParser implements PsiParser, LightPsiParser {
   // heredoc_line*
   public static boolean heredoc_content(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "heredoc_content")) return false;
-    Marker m = enter_section_(b, l, _NONE_, "<heredoc content>");
+    Marker m = enter_section_(b, l, _NONE_, HEREDOC_CONTENT, "<heredoc content>");
     int c = current_position_(b);
     while (true) {
       if (!heredoc_line(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "heredoc_content", c)) break;
       c = current_position_(b);
     }
-    exit_section_(b, l, m, HEREDOC_CONTENT, true, false, null);
+    exit_section_(b, l, m, true, false, null);
     return true;
   }
 
@@ -282,13 +279,13 @@ public class HCLParser implements PsiParser, LightPsiParser {
   public static boolean literal(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "literal")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _COLLAPSE_, "<literal>");
+    Marker m = enter_section_(b, l, _COLLAPSE_, LITERAL, "<literal>");
     r = string_literal(b, l + 1);
     if (!r) r = number_literal(b, l + 1);
     if (!r) r = boolean_literal(b, l + 1);
     if (!r) r = null_literal(b, l + 1);
     if (!r) r = heredoc_literal(b, l + 1);
-    exit_section_(b, l, m, LITERAL, r, false, null);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -297,9 +294,9 @@ public class HCLParser implements PsiParser, LightPsiParser {
   static boolean not_brace_or_next_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "not_brace_or_next_value")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NOT_, null);
+    Marker m = enter_section_(b, l, _NOT_);
     r = !not_brace_or_next_value_0(b, l + 1);
-    exit_section_(b, l, m, null, r, false, null);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -319,9 +316,9 @@ public class HCLParser implements PsiParser, LightPsiParser {
   static boolean not_bracket_or_next_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "not_bracket_or_next_value")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NOT_, null);
+    Marker m = enter_section_(b, l, _NOT_);
     r = !not_bracket_or_next_value_0(b, l + 1);
-    exit_section_(b, l, m, null, r, false, null);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -366,12 +363,12 @@ public class HCLParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "object")) return false;
     if (!nextTokenIs(b, L_CURLY)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
+    Marker m = enter_section_(b, l, _NONE_, OBJECT, null);
     r = consumeToken(b, L_CURLY);
     p = r; // pin = 1
     r = r && report_error_(b, object_1(b, l + 1));
     r = p && consumeToken(b, R_CURLY) && r;
-    exit_section_(b, l, m, OBJECT, r, p, null);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
@@ -392,11 +389,11 @@ public class HCLParser implements PsiParser, LightPsiParser {
   static boolean object_element(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "object_element")) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
+    Marker m = enter_section_(b, l, _NONE_);
     r = object_element_0(b, l + 1);
     p = r; // pin = 1
     r = r && object_element_1(b, l + 1);
-    exit_section_(b, l, m, null, r, p, not_brace_or_next_value_parser_);
+    exit_section_(b, l, m, r, p, not_brace_or_next_value_parser_);
     return r || p;
   }
 
@@ -433,9 +430,9 @@ public class HCLParser implements PsiParser, LightPsiParser {
   private static boolean object_element_1_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "object_element_1_0_1")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _AND_, null);
+    Marker m = enter_section_(b, l, _AND_);
     r = consumeToken(b, R_CURLY);
-    exit_section_(b, l, m, null, r, false, null);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -445,11 +442,11 @@ public class HCLParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "property")) return false;
     if (!nextTokenIs(b, EQUALS)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _LEFT_, null);
+    Marker m = enter_section_(b, l, _LEFT_, PROPERTY, null);
     r = consumeToken(b, EQUALS);
     p = r; // pin = 1
     r = r && value(b, l + 1);
-    exit_section_(b, l, m, PROPERTY, r, p, null);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
@@ -509,10 +506,10 @@ public class HCLParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "string_literal")) return false;
     if (!nextTokenIs(b, "<string literal>", DOUBLE_QUOTED_STRING, SINGLE_QUOTED_STRING)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<string literal>");
+    Marker m = enter_section_(b, l, _NONE_, STRING_LITERAL, "<string literal>");
     r = consumeToken(b, DOUBLE_QUOTED_STRING);
     if (!r) r = consumeToken(b, SINGLE_QUOTED_STRING);
-    exit_section_(b, l, m, STRING_LITERAL, r, false, null);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -521,12 +518,12 @@ public class HCLParser implements PsiParser, LightPsiParser {
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _COLLAPSE_, "<value>");
+    Marker m = enter_section_(b, l, _COLLAPSE_, VALUE, "<value>");
     r = literal(b, l + 1);
     if (!r) r = identifier(b, l + 1);
     if (!r) r = array(b, l + 1);
     if (!r) r = object(b, l + 1);
-    exit_section_(b, l, m, VALUE, r, false, null);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 

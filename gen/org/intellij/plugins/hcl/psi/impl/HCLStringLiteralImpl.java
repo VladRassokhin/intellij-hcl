@@ -18,8 +18,12 @@ public class HCLStringLiteralImpl extends HCLStringLiteralMixin implements HCLSt
     super(node);
   }
 
+  public void accept(@NotNull HCLElementVisitor visitor) {
+    visitor.visitStringLiteral(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HCLElementVisitor) ((HCLElementVisitor)visitor).visitStringLiteral(this);
+    if (visitor instanceof HCLElementVisitor) accept((HCLElementVisitor)visitor);
     else super.accept(visitor);
   }
 

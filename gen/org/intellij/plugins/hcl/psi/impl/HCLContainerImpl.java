@@ -16,9 +16,19 @@ public class HCLContainerImpl extends HCLValueImpl implements HCLContainer {
     super(node);
   }
 
+  public void accept(@NotNull HCLElementVisitor visitor) {
+    visitor.visitContainer(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HCLElementVisitor) ((HCLElementVisitor)visitor).visitContainer(this);
+    if (visitor instanceof HCLElementVisitor) accept((HCLElementVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public HCLValue getValue() {
+    return findNotNullChildByClass(HCLValue.class);
   }
 
 }
