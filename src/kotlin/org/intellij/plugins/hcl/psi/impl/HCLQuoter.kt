@@ -48,17 +48,17 @@ object HCLQuoter {
       for (range in ranges) {
         if (last < range.startOffset) {
           val sub = s.substring(last, range.startOffset)
-          StringUtil.escapeStringCharacters(sub.length, sub, JavaUtil.ourEscapedSymbols, true, true, buffer)
+          StringUtil.escapeStringCharacters(sub.length, sub, JavaUtil.ourEscapedSymbols, true, buffer)
         }
         escapeInterpolation(range.substring(s), buffer)
         last = range.endOffset
       }
       if (last < length) {
         val sub = s.substring(last, length)
-        StringUtil.escapeStringCharacters(sub.length, sub, JavaUtil.ourEscapedSymbols, true, true, buffer)
+        StringUtil.escapeStringCharacters(sub.length, sub, JavaUtil.ourEscapedSymbols, true, buffer)
       }
     } else {
-      StringUtil.escapeStringCharacters(length, s, JavaUtil.ourEscapedSymbols, true, true, buffer)
+      StringUtil.escapeStringCharacters(length, s, JavaUtil.ourEscapedSymbols, true, buffer)
     }
     return buffer.toString()
   }
