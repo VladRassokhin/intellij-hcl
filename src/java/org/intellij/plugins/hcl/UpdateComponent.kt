@@ -27,10 +27,14 @@ import com.intellij.openapi.editor.event.EditorFactoryAdapter
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.updateSettings.impl.UpdateChecker
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.JDOMUtil
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.io.HttpRequests
+import org.intellij.plugins.hcl.terraform.config.TerraformFileType
+import org.intellij.plugins.hil.HILFileType
 import org.jdom.JDOMException
 import java.io.IOException
 import java.net.URLEncoder
@@ -40,28 +44,34 @@ import java.util.concurrent.TimeUnit
 /**
  * Based on org.rust.ide.update.UpdateComponent
  */
-class UpdateComponent : ApplicationComponent, Disposable {
-  override fun getComponentName(): String = javaClass.name
+class UpdateComponent() : ApplicationComponent.Adapter(), Disposable {
+
+  init {
+    Disposer.register(ApplicationManager.getApplication(), this)
+    val pluginId = PluginManager.getPluginByClassName(this.javaClass.name)
+    val descriptor = PluginManager.getPlugin(pluginId)
+    ourCurrentPluginVersion = descriptor?.version
+  }
+
 
   override fun initComponent() {
-    if (!ApplicationManager.getApplication().isUnitTestMode) {
+    val application = ApplicationManager.getApplication()
+    if (!application.isUnitTestMode) {
       EditorFactory.getInstance().addEditorFactoryListener(EDITOR_LISTENER, this)
     }
   }
 
-  override fun disposeComponent() {
-    // NOP
+  override fun dispose() {
   }
-
-  override fun dispose() = disposeComponent()
-
 
   object EDITOR_LISTENER : EditorFactoryAdapter() {
     override fun editorCreated(event: EditorFactoryEvent) {
       val document = event.editor.document
       val file = FileDocumentManager.getInstance().getFile(document)
-      if (file != null && file.fileType == HCLFileType) {
-        update()
+      if (file != null && file.fileType in FILE_TYPES) {
+        ApplicationManager.getApplication().executeOnPooledThread {
+          update()
+        }
       }
     }
   }
@@ -69,31 +79,44 @@ class UpdateComponent : ApplicationComponent, Disposable {
   companion object {
     private val PLUGIN_ID: String = "org.intellij.plugins.hcl"
     private val LAST_UPDATE: String = "$PLUGIN_ID.LAST_UPDATE"
+    private val LAST_VERSION: String = "$PLUGIN_ID.LAST_VERSION"
+
+    private val FILE_TYPES: Set<FileType> = setOf(HCLFileType, TerraformFileType, HILFileType)
 
     private val LOG = Logger.getInstance(UpdateComponent::class.java)
 
+    private var ourCurrentPluginVersion: String? = null
+
     fun update() {
       val properties = PropertiesComponent.getInstance()
-      val lastUpdate = properties.getOrInitLong(LAST_UPDATE, 0L)
-      val shouldUpdate = lastUpdate == 0L || System.currentTimeMillis() - lastUpdate > TimeUnit.DAYS.toMillis(1)
-      if (shouldUpdate) {
-        properties.setValue(LAST_UPDATE, System.currentTimeMillis().toString())
-        val url = updateUrl
-        try {
-          HttpRequests.request(url).connect {
-            try {
-              JDOMUtil.load(it.reader)
-            } catch (e: JDOMException) {
-              LOG.warn(e)
-            }
-            LOG.info("updated: $url")
-          }
-        } catch (ignored: UnknownHostException) {
-          // No internet connections, no need to log anything
-        } catch (e: IOException) {
-          LOG.warn(e)
+      synchronized(PLUGIN_ID) {
+        val lastPluginVersion = properties.getValue(LAST_VERSION)
+        val lastUpdate = properties.getOrInitLong(LAST_UPDATE, 0L)
+        val shouldUpdate = lastUpdate == 0L
+                || System.currentTimeMillis() - lastUpdate > TimeUnit.DAYS.toMillis(1)
+                || lastPluginVersion == null
+                || lastPluginVersion != ourCurrentPluginVersion
+        if (shouldUpdate) {
+          properties.setValue(LAST_UPDATE, System.currentTimeMillis().toString())
+          properties.setValue(LAST_VERSION, ourCurrentPluginVersion)
+        } else {
+          return
         }
-
+      }
+      val url = updateUrl
+      try {
+        HttpRequests.request(url).connect {
+          try {
+            JDOMUtil.load(it.reader)
+          } catch (e: JDOMException) {
+            LOG.warn(e)
+          }
+          LOG.info("updated: $url")
+        }
+      } catch (ignored: UnknownHostException) {
+        // No internet connections, no need to log anything
+      } catch (e: IOException) {
+        LOG.warn(e)
       }
     }
 
