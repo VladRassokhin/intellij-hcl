@@ -1,25 +1,8 @@
 {
-  "name": "chef",
+  "name": "scaleway",
   "type": "provider",
   "schema": {
-    "allow_unverified_ssl": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeBool"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "If set, the Chef client will permit unverifiable SSL certificates."
-      }
-    ],
-    "client_name": [
+    "access_key": [
       {
         "name": "Type",
         "type": "schema.ValueType",
@@ -33,10 +16,10 @@
       {
         "name": "Description",
         "type": "string",
-        "value": "Name of a registered client within the Chef server."
+        "value": "The API key for Scaleway API operations."
       }
     ],
-    "private_key_pem": [
+    "organization": [
       {
         "name": "Type",
         "type": "schema.ValueType",
@@ -50,107 +33,20 @@
       {
         "name": "Description",
         "type": "string",
-        "value": "PEM-formatted private key for client authentication."
-      }
-    ],
-    "server_url": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Required",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "URL of the root of the target Chef server or organization."
+        "value": "The Organization ID for Scaleway API operations."
       }
     ]
   },
   "resources": {
-    "chef_data_bag": {
-      "api_uri": [
+    "scaleway_ip": {
+      "ip": [
         {
           "name": "Type",
           "type": "schema.ValueType",
           "value": "TypeString"
         }
       ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
-    },
-    "chef_data_bag_item": {
-      "content_json": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "data_bag_name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "id": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        }
-      ]
-    },
-    "chef_environment": {
-      "cookbook_constraints": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeMap"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "default_attributes_json": [
+      "server": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -160,13 +56,10 @@
           "name": "Optional",
           "type": "bool",
           "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "{}"
         }
-      ],
+      ]
+    },
+    "scaleway_security_group": {
       "description": [
         {
           "name": "Type",
@@ -174,14 +67,9 @@
           "value": "TypeString"
         },
         {
-          "name": "Optional",
+          "name": "Required",
           "type": "bool",
           "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "Managed by Terraform"
         }
       ],
       "name": [
@@ -194,62 +82,85 @@
           "name": "Required",
           "type": "bool",
           "value": "true"
-        }
-      ],
-      "override_attributes_json": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "{}"
         }
       ]
     },
-    "chef_node": {
-      "automatic_attributes_json": [
+    "scaleway_security_group_rule": {
+      "action": [
         {
           "name": "Type",
           "type": "schema.ValueType",
           "value": "TypeString"
         },
         {
-          "name": "Optional",
+          "name": "Required",
           "type": "bool",
           "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "{}"
         }
       ],
-      "default_attributes_json": [
+      "direction": [
         {
           "name": "Type",
           "type": "schema.ValueType",
           "value": "TypeString"
         },
         {
-          "name": "Optional",
+          "name": "Required",
           "type": "bool",
           "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "{}"
         }
       ],
-      "environment_name": [
+      "ip_range": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "port": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "protocol": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "security_group": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ]
+    },
+    "scaleway_server": {
+      "bootscript": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -259,11 +170,47 @@
           "name": "Optional",
           "type": "bool",
           "value": "true"
+        }
+      ],
+      "dynamic_ip_required": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "enable_ipv6": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
         },
         {
           "name": "Default",
           "type": "interface {}",
-          "value": "_default"
+          "value": "false"
+        }
+      ],
+      "image": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
         }
       ],
       "name": [
@@ -278,7 +225,21 @@
           "value": "true"
         }
       ],
-      "normal_attributes_json": [
+      "private_ip": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        }
+      ],
+      "public_ip": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        }
+      ],
+      "security_group": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -288,14 +249,9 @@
           "name": "Optional",
           "type": "bool",
           "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "{}"
         }
       ],
-      "override_attributes_json": [
+      "state": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -305,14 +261,16 @@
           "name": "Optional",
           "type": "bool",
           "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "{}"
         }
       ],
-      "run_list": [
+      "state_detail": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        }
+      ],
+      "tags": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -334,43 +292,21 @@
             }
           ]
         }
+      ],
+      "type": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
       ]
     },
-    "chef_role": {
-      "default_attributes_json": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "{}"
-        }
-      ],
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "Managed by Terraform"
-        }
-      ],
+    "scaleway_volume": {
       "name": [
         {
           "name": "Type",
@@ -383,44 +319,61 @@
           "value": "true"
         }
       ],
-      "override_attributes_json": [
+      "server": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        }
+      ],
+      "size_in_gb": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "type": [
         {
           "name": "Type",
           "type": "schema.ValueType",
           "value": "TypeString"
         },
         {
-          "name": "Optional",
+          "name": "Required",
           "type": "bool",
           "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "{}"
         }
-      ],
-      "run_list": [
+      ]
+    },
+    "scaleway_volume_attachment": {
+      "server": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeList"
+          "value": "TypeString"
         },
         {
-          "name": "Optional",
+          "name": "Required",
           "type": "bool",
           "value": "true"
+        }
+      ],
+      "volume": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
         },
         {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
         }
       ]
     }
