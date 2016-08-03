@@ -80,12 +80,19 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
 
     val ev = getSelectFieldText(expression) ?: return PsiReference.EMPTY_ARRAY
 
+    if (HILCompletionContributor.ILSE_DATA_SOURCE.accepts(parent)) {
+      return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
+        val module = this.element.getHCLHost()?.getTerraformModule()
+        val dataSources = module?.findDataSource(ev, this.element.name) ?: emptyList()
+        dataSources.map { it.nameIdentifier as HCLElement }
+      })
+    }
+
     // TODO: get suitable resource/provider/etc
     return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
       val module = this.element.getHCLHost()?.getTerraformModule()
       val resources = module?.findResources(ev, this.element.name) ?: emptyList()
-      val dataSources = module?.findDataSource(ev, this.element.name) ?: emptyList()
-      (resources + dataSources).map { it.nameIdentifier as HCLElement }
+      resources.map { it.nameIdentifier as HCLElement }
     })
     // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
   }

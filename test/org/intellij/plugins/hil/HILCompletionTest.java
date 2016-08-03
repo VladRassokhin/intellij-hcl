@@ -16,8 +16,13 @@
 package org.intellij.plugins.hil;
 
 import com.intellij.lang.Language;
+import com.intellij.util.BooleanFunction;
 import org.intellij.plugins.hcl.CompletionTestCase;
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor;
+
+import java.util.Collection;
+
+import static org.assertj.core.api.BDDAssertions.then;
 
 public class HILCompletionTest extends CompletionTestCase {
   @Override
@@ -92,6 +97,13 @@ public class HILCompletionTest extends CompletionTestCase {
   public void testResourceNameCompletion() throws Exception {
     doBasicCompletionTest("resource 'res_a' 'b' {} foo='${res_a.<caret>}'", "b");
     doBasicCompletionTest("resource 'res_a' 'b' {} foo='${concat(res_a.<caret>)}'", "b");
+    doBasicCompletionTest("resource 'res_a' 'b' {}\ndata 'data_a' 'c' {}\n foo='${res_a.<caret>}'", new BooleanFunction<Collection<String>>() {
+      @Override
+      public boolean fun(Collection<String> strings) {
+        then(strings).contains("b").doesNotContain("c");
+        return true;
+      }
+    });
   }
 
   public void testResourcePropertyCompletion() throws Exception {
@@ -130,6 +142,8 @@ public class HILCompletionTest extends CompletionTestCase {
   public void testDataSourceNameCompletion() throws Exception {
     doBasicCompletionTest("data 'data_a' 'b' {} foo='${data.data_a.<caret>}'", 1, "b");
     doBasicCompletionTest("data 'data_a' 'b' {} foo='${concat(data.data_a.<caret>)}'", 1, "b");
+
+    doBasicCompletionTest("data 'data_a' 'b' {}\nresource 'res_a' 'a' {}\nfoo='${data.data_a.<caret>}'", 1, "b");
   }
 
   public void testDataSourcePropertyCompletion() throws Exception {

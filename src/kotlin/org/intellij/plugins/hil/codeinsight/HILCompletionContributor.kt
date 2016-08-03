@@ -298,11 +298,14 @@ class HILCompletionContributor : CompletionContributor() {
 
       if (expression is ILVariable) {
         val module = host.getTerraformModule()
-        val resources = module.findResources(expression.name, null)
-        val dataSources = module.findDataSource(expression.name, null)
-        val resourceNames = resources.map { it.getNameElementUnquoted(2) }.filterNotNull()
-        val dataSourceNames = dataSources.map { it.getNameElementUnquoted(2) }.filterNotNull()
-        val names = (resourceNames + dataSourceNames).toSortedSet()
+        val names = TreeSet<String>()
+        if (HILCompletionContributor.ILSE_DATA_SOURCE.accepts(parent)) {
+          val dataSources = module.findDataSource(expression.name, null)
+          dataSources.map { it.getNameElementUnquoted(2) }.filterNotNull().toCollection(names)
+        } else {
+          val resources = module.findResources(expression.name, null)
+          resources.map { it.getNameElementUnquoted(2) }.filterNotNull().toCollection(names)
+        }
         result.addAllElements(names.map { create(it) })
         // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
       }
