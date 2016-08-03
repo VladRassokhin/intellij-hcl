@@ -150,11 +150,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
         "WHITE_SPACE (' ')\n" +
-        "DOUBLE_QUOTED_STRING ('\"${b(\"c\")}${\"')\n" +
-        "WHITE_SPACE ('\\n')\n" +
-        "ID ('x')\n" +
-        "= ('=')\n" +
-        "ID ('y')");
+        "DOUBLE_QUOTED_STRING ('\"${b(\"c\")}${\"\\nx=y')");
   }
 
   public void testSimpleTokens_String_With_Interpolation() throws Exception {
