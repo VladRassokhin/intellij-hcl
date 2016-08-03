@@ -468,7 +468,7 @@ class TypeModel(
         Connection.toPOBT(),
         AbstractResourceProvisioner.toPOBT()
     ))
-    val AbstractDataSource: BlockType = BlockType("data", 2, properties = *arrayOf(
+    @JvmField val AbstractDataSource: BlockType = BlockType("data", 2, properties = *arrayOf(
         PropertyType("id", Types.String, injectionAllowed = false, description = "A unique ID for this data source", required = false).toPOBT(),
         PropertyType("count", Types.Number).toPOBT(),
         PropertyType("depends_on", Types.Array, hint = TypeHint(Types.String)).toPOBT(),

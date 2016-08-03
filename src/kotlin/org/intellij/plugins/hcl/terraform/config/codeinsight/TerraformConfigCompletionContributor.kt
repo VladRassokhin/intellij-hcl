@@ -268,6 +268,9 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         "resource" ->
           consumer.addAll(getTypeModel().resources.map { create(it.type) })
 
+        "data" ->
+          consumer.addAll(getTypeModel().dataSources.map { create(it.type) })
+
         "provider" ->
           consumer.addAll(getTypeModel().providers.map { create(it.type) })
 
@@ -360,7 +363,8 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       val property = PsiTreeUtil.getParentOfType(position, HCLProperty::class.java) ?: return
       val block = PsiTreeUtil.getParentOfType(property, HCLBlock::class.java) ?: return
 
-      if (property.name == "provider" && block.getNameElementUnquoted(0) == "resource") {
+      val type = block.getNameElementUnquoted(0)
+      if (property.name == "provider" && (type == "resource" || type == "data")) {
         val providers = property.getTerraformModule().getDefinedProviders()
         result.addAllElements(providers.map { create(it.second) })
       }
@@ -387,6 +391,7 @@ object ModelHelper {
     props = when (type) {
       "provider" -> getProviderProperties(block)
       "resource" -> getResourceProperties(block)
+      "data" -> getDataSourceProperties(block)
 
     // Inner for 'resource'
       "lifecycle" -> TypeModel.ResourceLifecycle.properties
@@ -463,6 +468,17 @@ object ModelHelper {
       properties.addAll(resourceType?.properties)
     }
     return ( properties.toTypedArray())
+  }
+
+  public fun getDataSourceProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+    val type = block.getNameElementUnquoted(1)
+    val dataSourceType = if (type != null) getTypeModel().getDataSourceType(type) else null
+    val properties = ArrayList<PropertyOrBlockType>()
+    properties.addAll(TypeModel.AbstractDataSource.properties)
+    if (dataSourceType?.properties != null) {
+      properties.addAll(dataSourceType?.properties)
+    }
+    return (properties.toTypedArray())
   }
 
 

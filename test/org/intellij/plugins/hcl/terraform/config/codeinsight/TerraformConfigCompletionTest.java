@@ -21,10 +21,7 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.components.ServiceManager;
 import org.intellij.plugins.hcl.CompletionTestCase;
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage;
-import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType;
-import org.intellij.plugins.hcl.terraform.config.model.ResourceType;
-import org.intellij.plugins.hcl.terraform.config.model.TypeModel;
-import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider;
+import org.intellij.plugins.hcl.terraform.config.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -32,6 +29,12 @@ import java.util.*;
 public class TerraformConfigCompletionTest extends CompletionTestCase {
 
   public static final Collection<String> COMMON_RESOURCE_PROPERTIES = new TreeSet<String>(Collections2.transform(Arrays.asList(TypeModel.AbstractResource.getProperties()), new Function<PropertyOrBlockType, String>() {
+    @Override
+    public String apply(@SuppressWarnings("NullableProblems") @NotNull PropertyOrBlockType propertyOrBlockType) {
+      return propertyOrBlockType.getName();
+    }
+  }));
+  public static final Collection<String> COMMON_DATA_SOURCE_PROPERTIES = new TreeSet<String>(Collections2.transform(Arrays.asList(TypeModel.AbstractDataSource.getProperties()), new Function<PropertyOrBlockType, String>() {
     @Override
     public String apply(@SuppressWarnings("NullableProblems") @NotNull PropertyOrBlockType propertyOrBlockType) {
       return propertyOrBlockType.getName();
@@ -66,6 +69,7 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("a={\n<caret>\n}", 0);
   }
 
+  //<editor-fold desc="Resources completion tests">
   public void testResourceTypeCompletion() throws Exception {
     final TreeSet<String> set = new TreeSet<String>();
     final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
@@ -130,5 +134,71 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("resource \"x\" {\nid='a'\n<caret>\nlifecycle {}\n}", set);
     doBasicCompletionTest("resource abc {\n<caret> = true\nlifecycle {}\n}", Collections.<String>emptySet());
   }
+  //</editor-fold>
+
+  //<editor-fold desc="Data Sources completion tests">
+  public void testDataSourceTypeCompletion() throws Exception {
+    final TreeSet<String> set = new TreeSet<String>();
+    final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
+    for (DataSourceType ds : provider.get().getDataSources()) {
+      set.add(ds.getType());
+    }
+    doBasicCompletionTest("data <caret>", set);
+    doBasicCompletionTest("data <caret> {}", set);
+    doBasicCompletionTest("data <caret> \"aaa\" {}", set);
+  }
+
+  public void testDataSourceQuotedTypeCompletion() throws Exception {
+    final TreeSet<String> set = new TreeSet<String>();
+    final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
+    for (DataSourceType ds : provider.get().getDataSources()) {
+      set.add(ds.getType());
+    }
+    doBasicCompletionTest("data \"<caret>", set);
+    doBasicCompletionTest("data \'<caret>", set);
+    doBasicCompletionTest("data \"<caret>\n{}", set);
+    doBasicCompletionTest("data \'<caret>\n{}", set);
+    doBasicCompletionTest("data \"<caret>\" {}", set);
+    doBasicCompletionTest("data \"<caret>\" \"aaa\" {}", set);
+  }
+
+  public void testDataSourceCommonPropertyCompletion() throws Exception {
+    doBasicCompletionTest("data abc {\n<caret>\n}", COMMON_DATA_SOURCE_PROPERTIES);
+    final HashSet<String> set = new HashSet<String>(COMMON_DATA_SOURCE_PROPERTIES);
+    set.remove("id");
+    doBasicCompletionTest("data \"x\" {\nid='a'\n<caret>\n}", set);
+    doBasicCompletionTest("data abc {\n<caret> = true\n}", Collections.<String>emptySet());
+    doBasicCompletionTest("data abc {\n<caret> {}\n}", 0);
+  }
+
+  public void testDataSourceCommonPropertyCompletionFromModel() throws Exception {
+    final HashSet<String> base = new HashSet<String>(COMMON_DATA_SOURCE_PROPERTIES);
+    final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
+    final DataSourceType type = provider.get().getDataSourceType("aws_ecs_container_definition");
+    assertNotNull(type);
+    for (PropertyOrBlockType it : type.getProperties()) {
+      base.add(it.getName());
+    }
+    doBasicCompletionTest("data aws_ecs_container_definition x {\n<caret>\n}", base);
+    doBasicCompletionTest("data aws_ecs_container_definition x {\n<caret> = \"name\"\n}",
+        "container_name",
+        "task_definition",
+        "image",
+        "image_digest",
+        "provider"
+    );
+    doBasicCompletionTest("data aws_ecs_container_definition x {\n<caret> = true\n}", "disable_networking");
+    doBasicCompletionTest("data aws_ecs_container_definition x {\n<caret> {}\n}", "docker_labels", "environment");
+  }
+
+  public void testDataSourceProviderCompletionFromModel() throws Exception {
+    doBasicCompletionTest("provider Z {}\ndata a b {provider=<caret>}", "Z");
+    doBasicCompletionTest("provider Z {}\ndata a b {provider='<caret>'}", "Z");
+    doBasicCompletionTest("provider Z {}\ndata a b {provider=\"<caret>\"}", "Z");
+    doBasicCompletionTest("provider Z {alias='Y'}\ndata a b {provider=<caret>}", "Z.Y");
+    doBasicCompletionTest("provider Z {alias='Y'}\ndata a b {provider='<caret>'}", "Z.Y");
+    doBasicCompletionTest("provider Z {alias='Y'}\ndata a b {provider=\"<caret>\"}", "Z.Y");
+  }
+  //</editor-fold>
 
 }

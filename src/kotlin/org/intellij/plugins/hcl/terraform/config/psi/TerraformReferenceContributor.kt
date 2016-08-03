@@ -44,7 +44,8 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
             }))
             .withSuperParent(3, psiElement(HCLBlock::class.java).with(object : PatternCondition<HCLBlock?>("HCLBlock(resource)") {
               override fun accepts(t: HCLBlock, context: ProcessingContext?): Boolean {
-                return t.getNameElementUnquoted(0) == "resource"
+                val type = t.getNameElementUnquoted(0)
+                return type == "resource" || type == "data"
               }
             }))
         , SimpleReferenceProvider)

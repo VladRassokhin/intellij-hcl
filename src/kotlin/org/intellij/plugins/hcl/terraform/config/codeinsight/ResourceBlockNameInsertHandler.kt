@@ -42,6 +42,7 @@ object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {
       "output" -> TypeModel.Output
       "variable" -> TypeModel.Variable
       "resource" -> TypeModel.AbstractResource
+      "data" -> TypeModel.AbstractDataSource
       "provider" -> TypeModel.AbstractProvider
       "provisioner" -> TypeModel.AbstractResourceProvisioner
       "connection" -> TypeModel.Connection
