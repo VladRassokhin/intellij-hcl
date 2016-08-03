@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface ILParameterList extends ILExpression {
 
   @NotNull
-  List<ILExpression> getParametersList();
+  List<ILExpression> getParameters();
 
 }

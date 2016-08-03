@@ -27,7 +27,7 @@ public class ILParameterListImpl extends ILExpressionBase implements ILParameter
 
   @Override
   @NotNull
-  public List<ILExpression> getParametersList() {
+  public List<ILExpression> getParameters() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ILExpression.class);
   }
 
