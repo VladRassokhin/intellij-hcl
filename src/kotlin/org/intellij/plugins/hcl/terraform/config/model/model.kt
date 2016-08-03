@@ -161,6 +161,26 @@ class Module private constructor(val item: PsiFileSystemItem) {
     return findResources(null, null)
   }
 
+  fun findDataSource(type: String?, name: String?): List<HCLBlock> {
+    val found = ArrayList<HCLBlock>()
+    process(PsiElementProcessor { file ->
+      file.acceptChildren(object : HCLElementVisitor() {
+        override fun visitBlock(o: HCLBlock) {
+          if ("data" != o.getNameElementUnquoted(0)) return;
+          val t = o.getNameElementUnquoted(1) ?: return
+          if (type != null && type != t) return
+          val n = o.getNameElementUnquoted(2) ?: return;
+          if (name == null || name == n) found.add(o)
+        }
+      }); true
+    })
+    return found
+  }
+
+  fun getDeclaredDataSources(): List<HCLBlock> {
+    return findDataSource(null, null)
+  }
+
   // search is either 'type' or 'type.alias'
   fun findProviders(search: String): List<HCLBlock> {
     val split = search.split('.')

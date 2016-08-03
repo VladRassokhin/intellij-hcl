@@ -20,13 +20,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.PsiReferenceProvider
-import com.intellij.psi.impl.FakePsiElement
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.HCLElement
-import org.intellij.plugins.hcl.psi.HCLProperty
-import org.intellij.plugins.hcl.psi.HCLValue
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
+import org.intellij.plugins.hil.codeinsight.getDataSource
 import org.intellij.plugins.hil.codeinsight.getProvisionerResource
 import org.intellij.plugins.hil.codeinsight.getResource
 import org.intellij.plugins.hil.psi.impl.ILVariableMixin
@@ -57,7 +55,10 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
       }
       "count" -> {
         return arrayOf(HCLElementLazyReference(from, true) { incomplete, fake ->
-          listOf(getResource(this.element)?.`object`?.findProperty("count")).filterNotNull()
+          listOf(
+              getResource(this.element)?.`object`?.findProperty("count"),
+              getDataSource(this.element)?.`object`?.findProperty("count")
+          ).filterNotNull()
         })
       }
       "self" -> {

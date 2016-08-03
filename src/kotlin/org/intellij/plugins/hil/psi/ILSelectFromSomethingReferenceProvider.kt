@@ -82,7 +82,10 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
 
     // TODO: get suitable resource/provider/etc
     return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
-      this.element.getHCLHost()?.getTerraformModule()?.findResources(ev, this.element.name)?.map { it.nameIdentifier as HCLElement } ?: emptyList()
+      val module = this.element.getHCLHost()?.getTerraformModule()
+      val resources = module?.findResources(ev, this.element.name) ?: emptyList()
+      val dataSources = module?.findDataSource(ev, this.element.name) ?: emptyList()
+      (resources + dataSources).map { it.nameIdentifier as HCLElement }
     })
     // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
   }

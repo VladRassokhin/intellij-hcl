@@ -30,5 +30,8 @@ class ILReferenceContributor : PsiReferenceContributor() {
 
     registrar.registerReferenceProvider(psiElement(ILVariable::class.java)
         .withParent(HILCompletionContributor.ILSE_FROM_KNOWN_SCOPE), ILScopeReferenceProvider)
+
+    registrar.registerReferenceProvider(psiElement(ILVariable::class.java)
+        .withParent(HILCompletionContributor.ILSE_DATA_SOURCE), ILSelectFromSomethingReferenceProvider)
   }
 }

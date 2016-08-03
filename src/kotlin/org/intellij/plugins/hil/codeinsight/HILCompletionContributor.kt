@@ -54,6 +54,9 @@ class HILCompletionContributor : CompletionContributor() {
     extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(HILLanguage)
         .withParent(ILVariable::class.java).withSuperParent(2, ILSE_NOT_FROM_KNOWN_SCOPE)
         , SelectCompletionProvider)
+    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(HILLanguage)
+        .withParent(ILVariable::class.java).withSuperParent(2, ILSE_DATA_SOURCE)
+        , SelectCompletionProvider)
   }
 
 
@@ -67,6 +70,7 @@ class HILCompletionContributor : CompletionContributor() {
 
     private val PATH_REFERENCES = sortedSetOf("root", "module", "cwd")
     private val SCOPE_PROVIDERS = mapOf(
+        Pair("data", DataSourceCompletionProvider),
         Pair("var", VariableCompletionProvider),
         Pair("self", SelfCompletionProvider),
         Pair("path", PathCompletionProvider),
@@ -83,6 +87,16 @@ class HILCompletionContributor : CompletionContributor() {
         .with(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
     val ILSE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
         .without(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
+    val ILSE_FROM_DATA_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
+        .with(getScopeSelectPatternCondition(setOf("data")))
+    val ILSE_DATA_SOURCE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
+        .with(object : PatternCondition<ILSelectExpression?>("ILSE_Data_Source()") {
+          override fun accepts(t: ILSelectExpression, context: ProcessingContext?): Boolean {
+            val from = t.from
+            if (from !is ILSelectExpression) return false
+            return ILSE_FROM_DATA_SCOPE.accepts(from)
+          }
+        })
 
 
     private val LOG = Logger.getInstance(HILCompletionContributor::class.java)
@@ -133,7 +147,7 @@ class HILCompletionContributor : CompletionContributor() {
       result.addAllElements(FUNCTIONS.map { create(it) })
       result.addAllElements(GLOBAL_SCOPES.map { createScope(it) })
       if (getProvisionerResource(parent) != null) result.addElement(createScope("self"))
-      if (getResource(parent) != null) result.addElement(createScope("count"))
+      if (getResource(parent) != null || getDataSource(parent) != null) result.addElement(createScope("count"))
     }
   }
 
@@ -203,7 +217,7 @@ class HILCompletionContributor : CompletionContributor() {
 
   private object CountCompletionProvider : SelectFromScopeCompletionProvider("count") {
     override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
-      getResource(variable) ?: return
+      getResource(variable) ?: getDataSource(variable) ?: return
       result.addElement(create("index"))
     }
   }
@@ -215,6 +229,20 @@ class HILCompletionContributor : CompletionContributor() {
       for (m in modules) {
         val name = m.getNameElementUnquoted(1)
         if (name != null) result.addElement(create(name))
+      }
+    }
+  }
+
+  private object DataSourceCompletionProvider : SelectFromScopeCompletionProvider("data") {
+    override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      val module = getTerraformModule(variable) ?: return
+
+      val dataSources = module.getDeclaredDataSources()
+      val types = dataSources.map { it.getNameElementUnquoted(1) }.filterNotNull().toSortedSet()
+      result.addAllElements(types.map { create(it) })
+
+      if (parameters.isExtendedCompletion) {
+        result.addAllElements(ModelHelper.getTypeModel().dataSources.map { it.type }.filter { it !in types }.map { create(it) })
       }
     }
   }
@@ -271,8 +299,11 @@ class HILCompletionContributor : CompletionContributor() {
       if (expression is ILVariable) {
         val module = host.getTerraformModule()
         val resources = module.findResources(expression.name, null)
-        if (resources.isEmpty()) return
-        result.addAllElements(resources.map { it.getNameElementUnquoted(2) }.filterNotNull().map { create(it) })
+        val dataSources = module.findDataSource(expression.name, null)
+        val resourceNames = resources.map { it.getNameElementUnquoted(2) }.filterNotNull()
+        val dataSourceNames = dataSources.map { it.getNameElementUnquoted(2) }.filterNotNull()
+        val names = (resourceNames + dataSourceNames).toSortedSet()
+        result.addAllElements(names.map { create(it) })
         // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
       }
     }
@@ -364,6 +395,14 @@ fun getResource(position: ILExpression): HCLBlock? {
   val resource = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java, true) ?: return null
   if (resource.getNameElementUnquoted(0) != "resource") return null
   return resource
+}
+
+fun getDataSource(position: ILExpression): HCLBlock? {
+  val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
+
+  val dataSource = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java, true) ?: return null
+  if (dataSource.getNameElementUnquoted(0) != "data") return null
+  return dataSource
 }
 
 private fun getScopeSelectPatternCondition(scopes: Set<String>): PatternCondition<ILSelectExpression?> {
