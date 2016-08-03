@@ -28,6 +28,9 @@ class ILReferenceContributor : PsiReferenceContributor() {
     registrar.registerReferenceProvider(psiElement(ILVariable::class.java)
         .withParent(HILCompletionContributor.ILSE_NOT_FROM_KNOWN_SCOPE), ILSelectFromSomethingReferenceProvider)
 
+    registrar.registerReferenceProvider(psiElement(ILLiteralExpression::class.java)
+        .withParent(HILCompletionContributor.ILISE_NOT_FROM_KNOWN_SCOPE), ILSelectFromSomethingReferenceProvider)
+
     registrar.registerReferenceProvider(psiElement(ILVariable::class.java)
         .withParent(HILCompletionContributor.ILSE_FROM_KNOWN_SCOPE), ILScopeReferenceProvider)
 

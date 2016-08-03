@@ -38,10 +38,7 @@ import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformLookupElem
 import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.model.Function
 import org.intellij.plugins.hil.HILLanguage
-import org.intellij.plugins.hil.psi.ILExpression
-import org.intellij.plugins.hil.psi.ILSelectExpression
-import org.intellij.plugins.hil.psi.ILVariable
-import org.intellij.plugins.hil.psi.getGoodLeftElement
+import org.intellij.plugins.hil.psi.*
 import java.util.*
 
 class HILCompletionContributor : CompletionContributor() {
@@ -56,6 +53,10 @@ class HILCompletionContributor : CompletionContributor() {
         , SelectCompletionProvider)
     extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(HILLanguage)
         .withParent(ILVariable::class.java).withSuperParent(2, ILSE_DATA_SOURCE)
+        , SelectCompletionProvider)
+
+    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(HILLanguage)
+        .withParent(ILLiteralExpression::class.java).withSuperParent(2, ILISE_NOT_FROM_KNOWN_SCOPE)
         , SelectCompletionProvider)
   }
 
@@ -86,6 +87,8 @@ class HILCompletionContributor : CompletionContributor() {
     val ILSE_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
         .with(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
     val ILSE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
+        .without(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
+    val ILISE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILIndexSelectExpression::class.java)
         .without(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
     val ILSE_FROM_DATA_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
         .with(getScopeSelectPatternCondition(setOf("data")))
@@ -252,7 +255,8 @@ class HILCompletionContributor : CompletionContributor() {
       val position = parameters.position
 
       val element = position.parent
-      if (element !is ILVariable) return
+      if (element !is ILExpression) return
+      if (element !is ILVariable && element !is ILLiteralExpression) return
       val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return
       if (host !is HCLElement) return
 

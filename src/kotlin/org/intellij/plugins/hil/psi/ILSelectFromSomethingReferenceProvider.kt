@@ -30,26 +30,25 @@ import org.intellij.plugins.hcl.terraform.config.model.getModule
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
 import org.intellij.plugins.hil.inspection.PsiFakeAwarePolyVariantReference
-import org.intellij.plugins.hil.psi.impl.ILVariableMixin
 import org.intellij.plugins.hil.psi.impl.getHCLHost
 
 object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
-    if (element !is ILVariableMixin) return PsiReference.EMPTY_ARRAY
+    if (element !is ILExpression) return PsiReference.EMPTY_ARRAY
+    val name = getSelectFieldText(element) ?: return PsiReference.EMPTY_ARRAY
+    if (name in HILCompletionContributor.SCOPES) return PsiReference.EMPTY_ARRAY
+
     val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return PsiReference.EMPTY_ARRAY
     if (host !is HCLElement) return PsiReference.EMPTY_ARRAY
 
     val parent = element.parent
     if (parent !is ILSelectExpression) return PsiReference.EMPTY_ARRAY
 
-    val name = element.name
-    if (name in HILCompletionContributor.SCOPES) return PsiReference.EMPTY_ARRAY
-
-    val expression = getGoodLeftElement(parent, element);
+    val expression = getGoodLeftElement(parent, element)
     @Suppress("IfNullToElvis")
     if (expression == null) {
       // v is leftmost, no idea what to do
-      return PsiReference.EMPTY_ARRAY;
+      return PsiReference.EMPTY_ARRAY
     }
 
     // FIXME: Support module outputs
@@ -58,7 +57,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     if (references.isNotEmpty()) {
       val refs = SmartList<PsiReference>()
 
-      if (isStarOrNumber(element)) return references
+      if (isStarOrNumber(name)) return references
 
       for (reference in references) {
         refs.add(HCLElementLazyReference(element, false) { incompleteCode, fake ->
@@ -83,7 +82,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     if (HILCompletionContributor.ILSE_DATA_SOURCE.accepts(parent)) {
       return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
         val module = this.element.getHCLHost()?.getTerraformModule()
-        val dataSources = module?.findDataSource(ev, this.element.name) ?: emptyList()
+        val dataSources = module?.findDataSource(ev, getSelectFieldText(element)!!) ?: emptyList()
         dataSources.map { it.nameIdentifier as HCLElement }
       })
     }
@@ -91,7 +90,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     // TODO: get suitable resource/provider/etc
     return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
       val module = this.element.getHCLHost()?.getTerraformModule()
-      val resources = module?.findResources(ev, this.element.name) ?: emptyList()
+      val resources = module?.findResources(ev, getSelectFieldText(element)!!) ?: emptyList()
       resources.map { it.nameIdentifier as HCLElement }
     })
     // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
@@ -185,7 +184,7 @@ private fun getSelectFieldText(expression: ILExpression): String? {
 }
 
 
-fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable, skipStars: Boolean = true): ILExpression? {
+fun getGoodLeftElement(select: ILSelectExpression, right: ILExpression, skipStars: Boolean = true): ILExpression? {
   // select = left.right
   val left = select.from
   if (left is ILSelectExpression) {
@@ -208,11 +207,6 @@ fun getGoodLeftElement(select: ILSelectExpression, right: ILVariable, skipStars:
   if (left !== right) return left
   // TODO: Investigate is that enough
   return null
-}
-
-fun isStarOrNumber(element: ILVariableMixin): Boolean {
-  val text = element.name
-  return isStarOrNumber(text)
 }
 
 fun isStarOrNumber(text: String) = text == "*" || text.isNumber()

@@ -156,6 +156,11 @@ public class HILCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("data 'data_a' 'b' {x='y'} foo='${concat(data.data_a.b.1.<caret>)}'", "count", "x");
   }
 
+  public void testDataSourcePropertyCompletionAfterSelect() throws Exception {
+    doBasicCompletionTest("data 'data_a' 'b' {x='y'} foo='${data.data_a.b[1].<caret>}'", "count", "x");
+    doBasicCompletionTest("data 'data_a' 'b' {x='y'} foo='${concat(data.data_a.b[1].<caret>)}'", "count", "x");
+  }
+
   public void testDataSourcePropertyCompletionAfterStar() throws Exception {
     doBasicCompletionTest("data 'data_a' 'b' {x='y'} foo='${data.data_a.b.*.<caret>}'", "count", "x");
     doBasicCompletionTest("data 'data_a' 'b' {x='y'} foo='${concat(data.data_a.b.*.<caret>)}'", "count", "x");
