@@ -151,4 +151,8 @@ public class HCLParserTest extends ParsingTestCase {
   public void testObject_List_Comma() throws Exception {
     doTest();
   }
+
+  public void testMultiline_Literal() throws Exception {
+    doTest();
+  }
 }
