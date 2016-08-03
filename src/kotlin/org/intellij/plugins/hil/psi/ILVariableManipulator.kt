@@ -22,10 +22,8 @@ import com.intellij.util.IncorrectOperationException
 class ILVariableManipulator : AbstractElementManipulator<ILVariable>() {
   @Throws(IncorrectOperationException::class)
   override fun handleContentChange(element: ILVariable, range: TextRange, newContent: String): ILVariable {
-    val generator = ILElementGenerator(element.project)
     val replacement = range.replace(element.text, newContent)
-    val variable = generator.createILVariable(replacement)
-    return element.replace(variable) as ILVariable
+    return element.setName(replacement) as ILVariable
   }
 
 }
