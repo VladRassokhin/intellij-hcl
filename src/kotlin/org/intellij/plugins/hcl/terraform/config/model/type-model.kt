@@ -248,10 +248,10 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       assert(v.string("Name").equals(k)) { "Name mismatch: $k != ${v.string("Name")}" }
       val returnType = parseType(v.string("ReturnType")!!)
       val args = v.array<String>("ArgTypes")!!.map { parseType(it) }.map { Argument(it) }.toMutableList()
-      val variadic = v.boolean("Variadic")!!
+      val variadic = v.boolean("Variadic") ?: false
       var va: VariadicArgument? = null
       if (variadic) {
-        va = VariadicArgument(parseType(v.string("VariadicType")!!))
+        va = VariadicArgument(parseType(v.string("VariadicType")))
       }
       this.functions.add(Function(k, returnType, *args.toTypedArray(), variadic = va))
     }
