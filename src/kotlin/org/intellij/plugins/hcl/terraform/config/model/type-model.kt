@@ -87,6 +87,7 @@ object Types {
 }
 
 class ResourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, properties = *properties)
+class DataSourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("data", 2, properties = *properties)
 class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, properties = *properties)
 class ProvisionerType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provisioner", 1, properties = *properties)
 
@@ -128,6 +129,7 @@ class TypeModelProvider {
 private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
 
   val resources: MutableList<ResourceType> = arrayListOf()
+  val dataSources: MutableList<DataSourceType> = arrayListOf()
   val providers: MutableList<ProviderType> = arrayListOf()
   val provisioners: MutableList<ProvisionerType> = arrayListOf()
   val functions: MutableList<Function> = arrayListOf()
@@ -164,7 +166,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
       // TODO: Fetch latest model from github (?)
 
-      return TypeModel(this.resources, this.providers, this.provisioners, this.functions)
+      return TypeModel(this.resources, this.dataSources, this.providers, this.provisioners, this.functions)
     } catch(e: Exception) {
       if (application.isUnitTestMode || application.isInternal) {
         LOG.error(e);
@@ -224,6 +226,12 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
     }
     val map = resources.map { parseResourceInfo(it) }
     this.resources.addAll(map)
+    val dataSources = json.obj("data-sources")
+    if (dataSources == null) {
+      LOG.warn("No data-sources for provider '$name' in file '$file'")
+      return
+    }
+    this.dataSources.addAll(dataSources.map { parseDataSourceInfo(it) })
   }
 
   private fun parseProvisionerFile(json: JsonObject, file: String) {
@@ -267,9 +275,16 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
   private fun parseResourceInfo(entry: Map.Entry<String, Any?>): ResourceType {
     val name = entry.key
-    assert(entry.value is JsonObject, { "Right part of provider should be object" })
+    assert(entry.value is JsonObject, { "Right part of resource should be object" })
     val obj = entry.value as JsonObject
     return ResourceType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray());
+  }
+
+  private fun parseDataSourceInfo(entry: Map.Entry<String, Any?>): DataSourceType {
+    val name = entry.key
+    assert(entry.value is JsonObject, { "Right part of data-source should be object" })
+    val obj = entry.value as JsonObject
+    return DataSourceType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray());
   }
 
   private fun parseSchemaElement(entry: Map.Entry<String, Any?>, providerName: String): PropertyOrBlockType {
@@ -383,6 +398,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
 class TypeModel(
     val resources: List<ResourceType> = arrayListOf(),
+    val dataSources: List<DataSourceType> = arrayListOf(),
     val providers: List<ProviderType> = arrayListOf(),
     val provisioners: List<ProvisionerType> = arrayListOf(),
     val functions: List<Function> = arrayListOf()
@@ -452,16 +468,24 @@ class TypeModel(
         Connection.toPOBT(),
         AbstractResourceProvisioner.toPOBT()
     ))
+    val AbstractDataSource: BlockType = BlockType("data", 2, properties = *arrayOf(
+        PropertyType("provider", Types.String, hint = ReferenceHint("provider.type", "provider.alias")).toPOBT()
+        // TODO: Investigate other resource-like properties
+    ))
     val AbstractProvider: BlockType = BlockType("provider", 1, required = false, properties = *arrayOf(
         PropertyType("alias", Types.String, injectionAllowed = false).toPOBT())
     )
 
-    val RootBlocks = listOf(Atlas, Module, Output, Variable, AbstractProvider, AbstractResource)
+    val RootBlocks = listOf(Atlas, Module, Output, Variable, AbstractProvider, AbstractResource, AbstractDataSource)
     val RootBlocksMap = RootBlocks.map { it.literal to it }.toMap()
   }
 
   fun getResourceType(name: String): ResourceType? {
     return resources.firstOrNull { it.type == name }
+  }
+
+  fun getDataSourceType(name: String): DataSourceType? {
+    return dataSources.firstOrNull { it.type == name }
   }
 
   fun getProviderType(name: String): ProviderType? {
