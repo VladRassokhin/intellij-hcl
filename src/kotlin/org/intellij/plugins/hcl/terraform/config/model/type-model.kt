@@ -409,7 +409,7 @@ class TypeModel(
     val Output: BlockType = BlockType("output", 1, properties = PropertyType("value", Types.String, hint = InterpolationHint("Any"), required = true).toPOBT())
 
     val Variable_Type = PropertyType("type", Types.String, SimpleHint("string", "list", "map"), false)
-    val Variable_Default = PropertyType("default", Type("String|Object"))
+    val Variable_Default = PropertyType("default", Type("String|Array|Object"))
     val Variable_Description = PropertyType("description", Types.String)
     val Variable: BlockType = BlockType("variable", 1, properties = *arrayOf(
         Variable_Type.toPOBT(),
