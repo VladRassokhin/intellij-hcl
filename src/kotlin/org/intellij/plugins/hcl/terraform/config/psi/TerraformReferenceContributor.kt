@@ -19,7 +19,9 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.*
+import com.intellij.psi.tree.TokenSet
 import com.intellij.util.ProcessingContext
+import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
@@ -50,12 +52,19 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
             }))
         , SimpleReferenceProvider)
 
-    // Resolve variables usage from .tfvars
+    // Resolve variables usage in .tfvars
     registrar.registerReferenceProvider(
         psiElement(HCLIdentifier::class.java)
             .inFile(TerraformVariablesFile)
             .withParent(psiElement(HCLProperty::class.java))
         , VariableReferenceProvider)
+    registrar.registerReferenceProvider(
+        psiElement().withElementType(TokenSet.create(HCLElementTypes.IDENTIFIER, HCLElementTypes.STRING_LITERAL))
+            .inFile(TerraformVariablesFile)
+            .withSuperParent(1, HCLProperty::class.java)
+            .withSuperParent(2, HCLObject::class.java)
+            .withSuperParent(3, HCLProperty::class.java)
+        , MapVariableIndexReferenceProvider)
   }
 }
 
@@ -123,4 +132,39 @@ object VariableReferenceProvider : PsiReferenceProvider() {
     return arrayOf(varReference)
   }
 
+}
+
+object MapVariableIndexReferenceProvider : PsiReferenceProvider() {
+  override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
+    if (element !is HCLElement) return PsiReference.EMPTY_ARRAY
+    if (element !is HCLIdentifier && element !is HCLStringLiteral) return PsiReference.EMPTY_ARRAY
+
+    val parent = element.parent
+    if (parent !is HCLProperty) return PsiReference.EMPTY_ARRAY
+    if (parent.nameElement !== element) return PsiReference.EMPTY_ARRAY
+
+    val pObj = parent.parent
+    if (pObj !is HCLObject) return PsiReference.EMPTY_ARRAY
+
+    val property = pObj.parent
+    if (property !is HCLProperty) return PsiReference.EMPTY_ARRAY
+
+    val subReference = HCLElementLazyReference(element, true) { incomplete, fake ->
+      @Suppress("NAME_SHADOWING")
+      val element = this.element
+      if (element.parent?.parent?.parent !is HCLProperty) {
+        return@HCLElementLazyReference emptyList()
+      }
+      val value = (element.parent?.parent?.parent as HCLProperty).name
+      val variable = element.getTerraformModule().findVariable(value)?.second ?: return@HCLElementLazyReference emptyList()
+      val default = variable.`object`?.findProperty("default")?.value
+      if (default !is HCLObject) return@HCLElementLazyReference emptyList()
+      if (incomplete) {
+        default.propertyList.map { it.nameElement }
+      } else {
+        listOf(default.findProperty(element.name)?.nameElement).filterNotNull()
+      }
+    }
+    return arrayOf(subReference)
+  }
 }

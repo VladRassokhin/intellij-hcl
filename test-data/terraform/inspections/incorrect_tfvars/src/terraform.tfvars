@@ -1,9 +1,10 @@
 foo = "9000"
-//baz = {
-//  a = "1"
-//  b = "2"
-//  c = "3"
-//}
+empty_objects_are_ok = {}
+baz = {
+  a = "1"
+  "b" = "2"
+  c = true
+}
 baz.a = "1"
 baz.b = "2"
 baz.c = "3"
@@ -13,3 +14,8 @@ blocks are not expected here {
 }
 "string" = 42
 "true" = false
+list = [1,2,3]
+list = "string"
+list = {
+  map = true
+}

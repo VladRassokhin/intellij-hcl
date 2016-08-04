@@ -23,6 +23,10 @@ import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.psi.impl.HCLIdentifierMixin
 import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralMixin
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
+import org.intellij.plugins.hcl.terraform.config.model.ModelUtil
+import org.intellij.plugins.hcl.terraform.config.model.TypeModel
+import org.intellij.plugins.hcl.terraform.config.model.Types
+import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 
 class TFVARSIncorrectElementInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -38,18 +42,34 @@ class TFVARSIncorrectElementInspection : LocalInspectionTool() {
     override fun visitBlock(block: HCLBlock) {
       ProgressIndicatorProvider.checkCanceled()
       if (block.parent !is HCLFile) return
-      holder.registerProblem(block, "Only 'key=value' elements allowed in .tfvars files", ProblemHighlightType.GENERIC_ERROR)
+      holder.registerProblem(block, "Only 'key=value' elements allowed", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
     }
 
     override fun visitProperty(property: HCLProperty) {
       val nameElement = property.nameElement
-      if (nameElement !is HCLIdentifier) {
-        holder.registerProblem(nameElement, "Property key should be identifier in .tfvars files", ProblemHighlightType.GENERIC_ERROR, *getUnquoteFix(nameElement))
+      if (nameElement !is HCLIdentifier && nameElement !is HCLStringLiteral) {
+        holder.registerProblem(nameElement, "Property key should be identifier or double quoted string", *getUnquoteFix(nameElement))
       }
       val value = property.value ?: return
-      if (value !is HCLNumberLiteral) {
-        if (value !is HCLStringLiteral || value.quoteSymbol != '"') {
-          holder.registerProblem(value, "Property value should be either number or double quoted string in .tfvars files", ProblemHighlightType.GENERIC_ERROR, *getQuoteFix(value))
+      if (property.parent is HCLFile) {
+        if (value !is HCLNumberLiteral && value !is HCLObject && value !is HCLArray) {
+          if (value !is HCLStringLiteral || value.quoteSymbol != '"') {
+            holder.registerProblem(value, "Property value should be either number, double quoted string, list or object", *getQuoteFix(value))
+          }
+        }
+        val vName = property.name.substringBefore('.')
+        val variable = property.getTerraformModule().findVariable(vName)
+        if (variable == null) {
+          // TODO: Add 'Define variable' quick fix.
+          holder.registerProblem(property.nameElement, "Undefined variable '$vName'", ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+        } else if (!property.name.contains('.')) {
+          val expected = variable.second.`object`?.findProperty(TypeModel.Variable_Type.name)?.value?.name ?: "string"
+          val actual = ModelUtil.getValueType(value)
+          if ((expected == "string" && actual != Types.String)
+              || (expected == "list" && actual != Types.Array)
+              || (expected == "map" && actual != Types.Object)) {
+            holder.registerProblem(value, "Incorrect variable value type, expected '$expected'")
+          }
         }
       }
     }

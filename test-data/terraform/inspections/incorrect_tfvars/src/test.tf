@@ -9,3 +9,11 @@ variable "amis" {
   default = {
   }
 }
+variable "empty_objects_are_ok" {
+  type = "map"
+}
+variable "string" {
+}
+variable "list" {
+  type = "list"
+}
