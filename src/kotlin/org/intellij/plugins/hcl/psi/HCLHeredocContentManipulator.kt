@@ -21,6 +21,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.AbstractElementManipulator
 import com.intellij.psi.impl.source.tree.LeafElement
 import com.intellij.psi.impl.source.tree.TreeElement
+import com.intellij.psi.tree.TokenSet
 import com.intellij.util.IncorrectOperationException
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.impl.HCLHeredocContentMixin
@@ -65,26 +66,27 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
     val node = element.node as TreeElement
 
     val prefixStartString = lines[startString].substring(0, range.startOffset - ranges[startString].startOffset)
-    val suffixEndString = lines[endString].substring(range.endOffset - ranges[endString].startOffset).removeSuffix("\n")
+    val suffixEndString = lines[endString].substring(range.endOffset - ranges[endString].startOffset)
 
     //////////
     // Prepare new lines content
 
     val newText = prefixStartString + newContent + suffixEndString
-    val newLines: List<String> = getReplacementLines(newText).let { if (it.size >= 2 && element.textLength <= range.endOffset && it.last() == "") it.dropLast(1) else it }
+    val newLines: List<Pair<String, Boolean>> = getReplacementLines(newText)
 
     //////////
     // Replace nodes
 
-    var stopNode: ASTNode? = lookupLine(node, endString)?.let { nextLine(it) } // children[endString].treeNext?.treeNext
-    if (range.endOffset == ranges[endString].startOffset) {
-      stopNode = stopNode?.let { nextLine(it) }
+    if (newLines.isNotEmpty() && newLines.last().second == false && !(element.textLength == range.endOffset && !newText.endsWith("\n"))) {
+      throw IllegalStateException("Last line should have line separator. New text: '$newText'\nNew lines:$newLines")
     }
-    var iter: ASTNode? = lookupLine(node, startString) //children[startString]
-    for (line in newLines) {
+
+    val stopNode: ASTNode? = lookupLine(node, endString)?.let { nextLine(it) }
+    var iter: ASTNode? = lookupLine(node, startString)
+    for ((line, eol) in newLines) {
       if (iter != null && iter != stopNode) {
         // Replace existing lines
-        val next = nextLine(iter) // .treeNext?.treeNext
+        val next = nextLine(iter)
         if (iter.isHD_EOL) {
           // Line was empty.
           if (line.isEmpty()) {
@@ -108,23 +110,66 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
         iter = next
       } else {
         // Add new lines to end
-        node.addLeaf(HCLElementTypes.HD_LINE, line, stopNode)
-        node.addLeaf(HCLElementTypes.HD_EOL, "\n", stopNode)
+        if (iter == null) {
+          val lcn = element.node.lastChildNode
+          if (lcn != null) {
+            if (lcn.isHD_EOL) {
+              node.addLeaf(HCLElementTypes.HD_EOL, "\n", lcn)
+              node.addLeaf(HCLElementTypes.HD_LINE, line, lcn)
+            } else assert(false)
+          } else {
+            node.addLeaf(HCLElementTypes.HD_LINE, line, lcn)
+            node.addLeaf(HCLElementTypes.HD_EOL, "\n", lcn)
+          }
+        } else if (stopNode != null) {
+          val sNP = stopNode.treePrev
+          if (sNP == null) {
+            node.addLeaf(HCLElementTypes.HD_LINE, line, stopNode)
+            node.addLeaf(HCLElementTypes.HD_EOL, "\n", stopNode)
+          } else {
+            assert(sNP.isHD_EOL)
+            node.addLeaf(HCLElementTypes.HD_EOL, "\n", sNP)
+            node.addLeaf(HCLElementTypes.HD_LINE, line, sNP)
+          }
+        } else assert(false)
       }
     }
     // Remove extra lines
     if (iter != null && iter != stopNode) {
-      node.removeRange(iter, stopNode)
+      val iTP = iter.treePrev
+      if (iTP != null && iTP.isHD_EOL) {
+        if (stopNode == null) {
+          node.removeRange(iTP, node.lastChildNode)
+        } else {
+          node.removeRange(iTP, stopNode.treePrev)
+        }
+      } else {
+        node.removeRange(iter, stopNode)
+      }
     }
+    assert(node.lastChildNode?.isHD_EOL ?: true)
+
+    check(element)
     return element
   }
 
+  private fun check(element: HCLHeredocContent) {
+    val node = element.node
+    val lines = node.getChildren(TokenSet.create(HCLElementTypes.HD_LINE))
+    for (line in lines) {
+      assert(line.treeNext.isHD_EOL) {
+        "Line HD_LINE (${line.text}) should be terminated with HD_EOL"
+      }
+    }
+  }
+
   companion object {
-    fun getReplacementLines(newText: String): List<String> {
+    fun getReplacementLines(newText: String): List<Pair<String, Boolean>> {
       if (newText == "") (return emptyList())
       // TODO: Convert line separators to \n ?
-      val list = StringUtil.splitByLinesKeepSeparators(newText).toList().map { it.removeSuffix("\n") }
-      if (newText.endsWith("\n")) return list + ""
+      val list = StringUtil.splitByLinesKeepSeparators(newText).toList().map {
+        it.removeSuffix("\n") to it.endsWith("\n")
+      }
       return list
     }
 
@@ -163,7 +208,7 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
     if (node.firstChildNode != null) {
       node.removeRange(node.firstChildNode, null)
     }
-    for (line in newLines) {
+    for ((line, eol) in newLines) {
       if (line.isNotEmpty()) node.addLeaf(HCLElementTypes.HD_LINE, line, null)
       node.addLeaf(HCLElementTypes.HD_EOL, "\n", null)
     }
