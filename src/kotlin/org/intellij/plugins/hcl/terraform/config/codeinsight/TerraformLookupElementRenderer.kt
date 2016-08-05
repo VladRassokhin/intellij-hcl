@@ -21,6 +21,7 @@ import com.intellij.codeInsight.lookup.LookupElementRenderer
 import org.intellij.plugins.hcl.Icons
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
 import org.intellij.plugins.hcl.terraform.config.model.Type
+import org.intellij.plugins.hcl.terraform.config.model.Types
 import javax.swing.Icon
 
 class TerraformLookupElementRenderer : LookupElementRenderer<LookupElement>() {
@@ -30,18 +31,15 @@ class TerraformLookupElementRenderer : LookupElementRenderer<LookupElement>() {
     if (obj is PropertyOrBlockType) {
       if (obj.property != null) {
         presentation.icon = Icons.Property
-        //        presentation.isStrikeout = obj.property.deprecated;
-        presentation.isItemTextBold = obj.property.required;
-        presentation.isStrikeout = obj.property.deprecated != null;
-        presentation.tailText = obj.property.description;
-        presentation.setTypeText(obj.property.type.name, getTypeIcon(obj.property.type));
+        presentation.isItemTextBold = obj.property.required
+        presentation.isStrikeout = obj.property.deprecated != null
+        presentation.tailText = obj.property.description
+        presentation.setTypeText(obj.property.type.name, getTypeIcon(obj.property.type))
       } else if (obj.block != null) {
-        //        presentation.icon = Icons.Property
-        //        presentation.isStrikeout = obj.property.deprecated;
-        presentation.isItemTextBold = obj.block.required;
-        presentation.isStrikeout = obj.block.deprecated != null;
-//        presentation.typeText = "Block";
-        presentation.tailText = obj.block.description;
+        presentation.icon = Icons.Object
+        presentation.isItemTextBold = obj.block.required
+        presentation.isStrikeout = obj.block.deprecated != null
+        presentation.tailText = obj.block.description
       }
     }
   }
@@ -49,6 +47,18 @@ class TerraformLookupElementRenderer : LookupElementRenderer<LookupElement>() {
   @Suppress("UNUSED_PARAMETER")
   private fun getTypeIcon(type: Type): Icon? {
     // TODO: Implement
+    when (type) {
+      Types.Identifier -> com.intellij.icons.AllIcons.Ide.LookupAlphanumeric
+      Types.String -> com.intellij.icons.AllIcons.Ide.LookupAlphanumeric
+      Types.Number -> com.intellij.icons.AllIcons.Ide.LookupRelevance
+      Types.Array -> Icons.Array
+      Types.Object -> Icons.Object
+//      Types.StringWithInjection ->
+//      Types.Boolean ->
+//      Types.Null ->
+//      Types.Invalid ->
+//      Types.Any ->
+    }
     return null
   }
 }
