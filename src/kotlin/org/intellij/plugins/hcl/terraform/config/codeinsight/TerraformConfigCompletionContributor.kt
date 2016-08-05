@@ -37,9 +37,8 @@ import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionContributor
 import org.intellij.plugins.hcl.psi.*
-import org.intellij.plugins.hcl.terraform.config.TerraformFileType
-import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hcl.terraform.config.model.*
+import org.intellij.plugins.hcl.terraform.config.psi.TerraformReferenceContributor
 import org.intellij.plugins.hil.HILFileType
 import java.util.*
 
@@ -55,8 +54,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     val Property = psiElement(HCLProperty::class.java)
     val Object = psiElement(HCLObject::class.java)
 
-    val TerraformConfigFile = psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
-        .andNot(psiFile().inVirtualFile(virtualFile().withExtension(TerraformFileType.TFVARS_EXTENSION)))
+    val TerraformConfigFile = TerraformReferenceContributor.TerraformConfigFile
 
     val AtLeastOneEOL = psiElement(PsiWhiteSpace::class.java).withText(StandardPatterns.string().contains("\n"))
     val Nothing = StandardPatterns.alwaysFalse<PsiElement>()
@@ -151,6 +149,57 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         .withSuperParent(3, Object)
         .withSuperParent(4, Block)
         , PropertyValueCompletionProvider)
+
+
+    // Variables in .tvars files
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformReferenceContributor.TerraformVariablesFile)
+        .andOr(
+            psiElement()
+                .withParent(File),
+            psiElement()
+                .withParent(Identifier)
+                .withSuperParent(2, Property)
+                .withSuperParent(3, File)
+        ), VariableNameTFVARSCompletionProvider)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
+        .inFile(TerraformReferenceContributor.TerraformVariablesFile)
+        .andOr(
+            psiElement()
+                .withParent(File),
+            psiElement()
+                .withParent(Literal)
+                .withSuperParent(2, Property)
+                .withSuperParent(3, File)
+        ), VariableNameTFVARSCompletionProvider)
+    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+        .inFile(TerraformReferenceContributor.TerraformVariablesFile)
+        .andOr(
+            psiElement()
+                .withSuperParent(1, Identifier)
+                .withSuperParent(2, Property)
+                .withSuperParent(3, Object)
+                .withSuperParent(4, Property)
+                .withSuperParent(5, File),
+            psiElement()
+                .withSuperParent(1, Object)
+                .withSuperParent(2, Property)
+                .withSuperParent(3, File)
+        ), MappedVariableTFVARSCompletionProvider)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
+        .inFile(TerraformReferenceContributor.TerraformVariablesFile)
+        .andOr(
+            psiElement()
+                .withSuperParent(1, Literal)
+                .withSuperParent(2, Property)
+                .withSuperParent(3, Object)
+                .withSuperParent(4, Property)
+                .withSuperParent(5, File),
+            psiElement()
+                .withSuperParent(1, Object)
+                .withSuperParent(2, Property)
+                .withSuperParent(3, File)
+        ), MappedVariableTFVARSCompletionProvider)
   }
 
   companion object {
@@ -376,6 +425,56 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       //
     }
 
+  }
+
+  private object VariableNameTFVARSCompletionProvider : OurCompletionProvider() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      val position = parameters.position
+      val parent = position.parent
+      LOG.debug("TF.VariableNameTFVARSCompletionProvider{position=$position, parent=$parent}")
+      val module: Module
+      if (parent is HCLFile) {
+        module = parent.getTerraformModule()
+      } else if (parent is HCLElement) {
+        val pp = parent.parent
+        if (pp !is HCLProperty) return
+        if (parent !== pp.nameIdentifier) return
+        module = parent.getTerraformModule()
+      } else return
+      val variables = module.getAllVariables()
+      result.addAllElements(variables.map { create(it.second.name, false).withInsertHandler(ResourcePropertyInsertHandler) })
+    }
+  }
+
+  private object MappedVariableTFVARSCompletionProvider : OurCompletionProvider() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      val position = parameters.position
+      val parent = position.parent
+      LOG.debug("TF.MappedVariableTFVARSCompletionProvider{position=$position, parent=$parent}")
+      val varProperty: HCLProperty
+      if (parent is HCLObject) {
+        val pp = parent.parent
+        if (pp is HCLProperty) {
+          varProperty = pp
+        } else return
+      } else if (parent is HCLElement) {
+        val pp = parent.parent
+        if (pp !is HCLProperty) return
+        if (pp.nameElement !== parent) return
+        if (pp.parent !is HCLObject) return
+        val pppp = pp.parent.parent
+        if (pppp !is HCLProperty) return
+        varProperty = pppp
+      } else return
+
+      if (varProperty.parent !is HCLFile) return
+
+      val variable = varProperty.getTerraformModule().findVariable(varProperty.name) ?: return
+      val default = variable.second.`object`?.findProperty("default")?.value ?: return
+      if (default !is HCLObject) return
+
+      result.addAllElements(default.propertyList.map { create(it.name).withInsertHandler(ResourcePropertyInsertHandler) })
+    }
   }
 }
 

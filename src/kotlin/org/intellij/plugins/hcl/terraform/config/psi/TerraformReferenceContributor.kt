@@ -18,6 +18,7 @@ package org.intellij.plugins.hcl.terraform.config.psi
 import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns.*
+import com.intellij.patterns.PsiFilePattern
 import com.intellij.psi.*
 import com.intellij.psi.tree.TokenSet
 import com.intellij.util.ProcessingContext
@@ -29,11 +30,14 @@ import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.psi.HCLElementLazyReference
 
 class TerraformReferenceContributor : PsiReferenceContributor() {
-  override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-    val TerraformVariablesFile = psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
+  companion object {
+    val TerraformVariablesFile: PsiFilePattern.Capture<HCLFile> = psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
         .inVirtualFile(virtualFile().withExtension(TerraformFileType.TFVARS_EXTENSION))
-    val TerraformConfigFile = psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
+    val TerraformConfigFile: PsiFilePattern.Capture<HCLFile> = psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
         .andNot(TerraformVariablesFile)
+  }
+
+  override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
 
 
     registrar.registerReferenceProvider(
