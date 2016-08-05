@@ -9,6 +9,8 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
+import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.TextRange;
 
 public class HCLHeredocContentImpl extends HCLHeredocContentMixin implements HCLHeredocContent {
 
@@ -47,6 +49,11 @@ public class HCLHeredocContentImpl extends HCLHeredocContentMixin implements HCL
   @Nullable
   public Integer getMinimalIndentation() {
     return HCLPsiImplUtilJ.getMinimalIndentation(this);
+  }
+
+  @NotNull
+  public List<Pair<TextRange, String>> getTextFragments() {
+    return HCLPsiImplUtilJ.getTextFragments(this);
   }
 
 }

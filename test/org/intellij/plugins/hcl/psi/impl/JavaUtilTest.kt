@@ -67,7 +67,7 @@ class JavaUtilTest {
 
   private fun doTestDoGetTextFragments(text: String, vararg expected: Pair<Pair<Int, Int>, String>) {
     val rangesAndValues: List<Pair<TextRange, String>> = expected.map { TextRange.from(it.first.first, it.first.second) to it.second }
-    val fragments: List<Pair<TextRange, String>> = JavaUtil.doGetTextFragments(text, true).map { it.first to it.second }
+    val fragments: List<Pair<TextRange, String>> = JavaUtil.doGetTextFragments(text, true, true).map { it.first to it.second }
     then(fragments).isEqualTo(rangesAndValues)
   }
 }

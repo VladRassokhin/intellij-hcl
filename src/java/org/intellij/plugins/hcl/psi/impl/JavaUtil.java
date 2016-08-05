@@ -19,6 +19,8 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.impl.source.tree.CompositeElement;
+import org.intellij.plugins.hcl.psi.HCLHeredocContent;
 import org.intellij.plugins.hcl.psi.HCLStringLiteral;
 import org.intellij.plugins.hcl.psi.UtilKt;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +31,7 @@ import java.util.List;
 
 public class JavaUtil {
   private static final Key<List<Pair<TextRange, String>>> STRING_FRAGMENTS = new Key<List<Pair<TextRange, String>>>("HCL string fragments");
+  private static final Key<Integer> STRING_FRAGMENTS_MC = new Key<Integer>("HCL string fragments MC");
   public static final String ourEscapesTable = "\"\"\\\\//b\bf\fn\nr\rt\tv\013a\007";
   public static final String ourEscapedSymbols = "\"\\/\b\f\n\r\t\013\007";
   @SuppressWarnings("SpellCheckingInspection")
@@ -38,18 +41,36 @@ public class JavaUtil {
   public static List<Pair<TextRange, String>> getTextFragments(@NotNull HCLStringLiteral literal) {
     List<Pair<TextRange, String>> result = literal.getFirstChild().getUserData(STRING_FRAGMENTS);
     if (result != null) return result;
-    result = doGetTextFragments(literal.getText(), UtilKt.isInHCLFileWithInterpolations(literal));
+    result = doGetTextFragments(literal.getText(), UtilKt.isInHCLFileWithInterpolations(literal), true);
 
     literal.getFirstChild().putUserData(STRING_FRAGMENTS, result);
     return result;
   }
 
   @NotNull
-  static List<Pair<TextRange, String>> doGetTextFragments(@NotNull String text, boolean interpolations) {
+  public static List<Pair<TextRange, String>> getTextFragments(@NotNull HCLHeredocContent content) {
+    final CompositeElement node = (CompositeElement) content.getNode();
+    final int modificationCount = node.getModificationCount();
+
+    List<Pair<TextRange, String>> result = node.getUserData(STRING_FRAGMENTS);
+    Integer dataModificationCount = node.getUserData(STRING_FRAGMENTS_MC);
+    if (dataModificationCount == null) dataModificationCount = -1;
+    if (dataModificationCount != modificationCount) result = null;
+
+    if (result != null) return result;
+    result = doGetTextFragments(content.getText(), UtilKt.isInHCLFileWithInterpolations(content), false);
+
+    node.putUserData(STRING_FRAGMENTS, result);
+    node.putUserData(STRING_FRAGMENTS_MC, modificationCount);
+    return result;
+  }
+
+  @NotNull
+  static List<Pair<TextRange, String>> doGetTextFragments(@NotNull String text, boolean interpolations, boolean quotes) {
     List<Pair<TextRange, String>> result;
     result = new ArrayList<Pair<TextRange, String>>();
     final int length = text.length();
-    int pos = 1, unescapedSequenceStart = 1;
+    int pos = quotes ? 1 : 0, unescapedSequenceStart = pos;
     int braces = 0;
     while (pos < length) {
 
@@ -155,7 +176,7 @@ public class JavaUtil {
         pos++;
       }
     }
-    final int contentEnd = text.charAt(0) == text.charAt(length - 1) ? length - 1 : length;
+    final int contentEnd = quotes && text.charAt(0) == text.charAt(length - 1) ? length - 1 : length;
     if (unescapedSequenceStart < contentEnd) {
       result.add(Pair.create(new TextRange(unescapedSequenceStart, contentEnd), text.substring(unescapedSequenceStart, contentEnd)));
     }

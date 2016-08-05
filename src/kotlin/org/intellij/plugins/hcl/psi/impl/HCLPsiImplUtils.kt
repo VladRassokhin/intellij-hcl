@@ -196,6 +196,8 @@ object HCLPsiImplUtils {
   }
 
   fun getTextFragments(literal: HCLStringLiteral): List<Pair<TextRange, String>> = JavaUtil.getTextFragments(literal)
+  
+  fun getTextFragments(literal: HCLHeredocContent): List<Pair<TextRange, String>> = JavaUtil.getTextFragments(literal)
 
   //  public static void delete(@NotNull HCLProperty property) {
   //    final ASTNode myNode = property.getNode();

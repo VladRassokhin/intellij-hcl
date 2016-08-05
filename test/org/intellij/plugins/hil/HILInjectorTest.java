@@ -68,6 +68,13 @@ public class HILInjectorTest extends UsefulTestCase {
     doTestRanges("\"$${}\"");
   }
 
+  public void testMultilineInjection() throws Exception {
+    doTestRanges("${\n}", 0, 4);
+    doTestRanges("  ${\n}  ", 2, 4);
+    doTestRanges("'${\n}'", 1, 4);
+    doTestRanges("\"${\n}\"", 1, 4);
+  }
+
   /**
    * @param range pairs of [start, length]
    */

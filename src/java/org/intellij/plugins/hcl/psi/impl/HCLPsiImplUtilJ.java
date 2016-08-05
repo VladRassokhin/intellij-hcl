@@ -142,6 +142,11 @@ public class HCLPsiImplUtilJ {
   }
 
   @NotNull
+  public static List<Pair<TextRange, String>> getTextFragments(@NotNull HCLHeredocContent literal) {
+    return HCLPsiImplUtils.INSTANCE.getTextFragments(literal);
+  }
+
+  @NotNull
   public static String getName(@NotNull HCLHeredocMarker marker) {
     return HCLPsiImplUtils.INSTANCE.getName(marker);
   }

@@ -59,17 +59,15 @@ class ILLanguageInjector : LanguageInjector {
     if (host.linesCount == 0) return
     val lines = HCLPsiImplUtils.getLinesInternal(host)
     if (lines.isEmpty()) return
-    var off: Int = host.firstChild.startOffsetInParent
-    for (line in lines) {
-      val ranges = getILRangesInText(line)
-      if (!ranges.isEmpty()) {
-        val offset = off
-        for (range in ranges) {
-          val rng = range.shiftRight(offset)
-          places.addPlace(HILLanguage, rng, null, null)
-        }
+    if (!host.text.contains("\${")) return
+    for (pair in host.textFragments) {
+      val fragment = pair.second
+      if (!fragment.startsWith("\${")) continue
+      val ranges = getILRangesInText(fragment)
+      for (range in ranges) {
+        val rng = range.shiftRight(pair.first.startOffset)
+        places.addPlace(HILLanguage, rng, null, null)
       }
-      off += line.length
     }
   }
 
