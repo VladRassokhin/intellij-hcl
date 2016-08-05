@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface HCLContainer extends HCLValue {
 
-  @NotNull
-  HCLValue getValue();
-
 }

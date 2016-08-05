@@ -25,10 +25,4 @@ public class HCLContainerImpl extends HCLValueImpl implements HCLContainer {
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public HCLValue getValue() {
-    return findNotNullChildByClass(HCLValue.class);
-  }
-
 }
