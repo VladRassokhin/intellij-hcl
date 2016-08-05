@@ -28,7 +28,6 @@ import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import com.intellij.util.SmartList
 import org.intellij.plugins.hcl.psi.*
@@ -68,6 +67,14 @@ class HILCompletionContributor : CompletionContributor() {
     // For tests purposes
     @JvmField val GLOBAL_AVAILABLE: SortedSet<String> = FUNCTIONS.map { it.name }.toMutableList().plus(GLOBAL_SCOPES).toSortedSet()
 
+    private fun getScopeSelectPatternCondition(scopes: Set<String>): PatternCondition<ILSelectExpression?> {
+      return object : PatternCondition<ILSelectExpression?>("ScopeSelect($scopes)") {
+        override fun accepts(t: ILSelectExpression, context: ProcessingContext?): Boolean {
+          val from = t.from
+          return from is ILVariable && from.name in scopes
+        }
+      }
+    }
 
     private val PATH_REFERENCES = sortedSetOf("root", "module", "cwd")
     private val SCOPE_PROVIDERS = mapOf(
@@ -367,56 +374,3 @@ class HILCompletionContributor : CompletionContributor() {
   }
 }
 
-fun getTerraformModule(element: ILExpression): Module? {
-  val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return null
-  if (host !is HCLElement) return null
-  val module = host.getTerraformModule()
-  return module
-}
-
-fun getLocalDefinedVariables(element: ILExpression): List<Variable> {
-  return getTerraformModule(element)?.getAllVariables()?.map { it.first } ?: emptyList()
-}
-
-fun getProvisionerResource(position: ILExpression): HCLBlock? {
-  val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
-
-  // For now 'self' allowed only for provisioners inside resources
-  return if (host is HCLElement) getProvisionerResource(host) else null
-}
-
-fun getProvisionerResource(host: HCLElement): HCLBlock? {
-  val provisioner = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java) ?: return null
-  if (provisioner.getNameElementUnquoted(0) == "connection") return getProvisionerResource(provisioner)
-  if (provisioner.getNameElementUnquoted(0) != "provisioner") return null
-  val resource = PsiTreeUtil.getParentOfType(provisioner, HCLBlock::class.java, true) ?: return null
-  if (resource.getNameElementUnquoted(0) != "resource") return null
-  return resource
-}
-
-fun getResource(position: ILExpression): HCLBlock? {
-  val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
-
-  // For now 'self' allowed only for provisioners inside resources
-
-  val resource = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java, true) ?: return null
-  if (resource.getNameElementUnquoted(0) != "resource") return null
-  return resource
-}
-
-fun getDataSource(position: ILExpression): HCLBlock? {
-  val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
-
-  val dataSource = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java, true) ?: return null
-  if (dataSource.getNameElementUnquoted(0) != "data") return null
-  return dataSource
-}
-
-private fun getScopeSelectPatternCondition(scopes: Set<String>): PatternCondition<ILSelectExpression?> {
-  return object : PatternCondition<ILSelectExpression?>("ScopeSelect($scopes)") {
-    override fun accepts(t: ILSelectExpression, context: ProcessingContext?): Boolean {
-      val from = t.from
-      return from is ILVariable && from.name in scopes
-    }
-  }
-}

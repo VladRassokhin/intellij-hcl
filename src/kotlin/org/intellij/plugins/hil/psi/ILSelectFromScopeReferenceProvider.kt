@@ -24,9 +24,9 @@ import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
-import org.intellij.plugins.hil.codeinsight.getDataSource
-import org.intellij.plugins.hil.codeinsight.getProvisionerResource
-import org.intellij.plugins.hil.codeinsight.getResource
+import org.intellij.plugins.hil.psi.getDataSource
+import org.intellij.plugins.hil.psi.getProvisionerResource
+import org.intellij.plugins.hil.psi.getResource
 import org.intellij.plugins.hil.psi.impl.ILVariableMixin
 import org.intellij.plugins.hil.psi.impl.getHCLHost
 

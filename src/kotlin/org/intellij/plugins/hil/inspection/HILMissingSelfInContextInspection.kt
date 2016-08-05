@@ -23,7 +23,7 @@ import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.psi.PsiElementVisitor
 import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
-import org.intellij.plugins.hil.codeinsight.getProvisionerResource
+import org.intellij.plugins.hil.psi.getProvisionerResource
 import org.intellij.plugins.hil.psi.ILElementVisitor
 import org.intellij.plugins.hil.psi.ILSelectExpression
 import org.intellij.plugins.hil.psi.ILVariable
