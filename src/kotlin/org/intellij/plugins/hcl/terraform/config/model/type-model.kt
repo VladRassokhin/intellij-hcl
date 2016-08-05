@@ -22,7 +22,6 @@ import org.reflections.Reflections
 import org.reflections.scanners.ResourcesScanner
 import org.reflections.util.ClasspathHelper
 import org.reflections.util.ConfigurationBuilder
-import org.w3c.dom.Document
 import java.io.InputStream
 import java.util.*
 import java.util.regex.Pattern
@@ -117,8 +116,8 @@ class TypeModelProvider {
 
   private fun loadExternalInformation(): Map<String, Additional> {
     val map = HashMap<String, Additional>()
-    val document = TypeModelLoader.getModelResourceXml("external-data.xml")
-    // TODO: Populate map from xml
+    val json = TypeModelLoader.getModelExternalInformation("external-data.json") as JsonObject?
+    // TODO: Populate map from json
     return map
   }
 
@@ -184,13 +183,8 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       return TypeModelProvider::class.java.getResourceAsStream(path)
     }
 
-    fun getModelResource(path: String): InputStream? {
-      return getResource("/terraform/model/$path")
-    }
-
-    fun getModelResourceXml(path: String): Document? {
-      val stream = getModelResource(path) ?: return null
-      return kotlinx.dom.parseXml(stream)
+    fun getModelExternalInformation(path: String): Any? {
+      return getResourceJson("/terraform/model-external/$path")
     }
 
     fun getResourceJson(path: String): Any? {
