@@ -67,7 +67,7 @@ object ResourcePropertyInsertHandler : BasicInsertHandler<LookupElement>() {
     PsiDocumentManager.getInstance(project).commitDocument(editor.document)
   }
 
-  private fun getPlaceholderValue(type: Type): Pair<String, Int>? {
+  fun getPlaceholderValue(type: Type): Pair<String, Int>? {
     return when (type) {
       Types.StringWithInjection -> Pair("\"\${}\"", 2)
       Types.String -> Pair("\"\"", 1)

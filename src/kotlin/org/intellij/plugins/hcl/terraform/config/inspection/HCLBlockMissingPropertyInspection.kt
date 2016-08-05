@@ -21,12 +21,15 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.TokenType
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElementVisitor
 import org.intellij.plugins.hcl.psi.getNameElementUnquoted
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
+import org.intellij.plugins.hcl.terraform.config.codeinsight.ResourcePropertyInsertHandler
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
+import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
 import java.util.*
 
@@ -85,11 +88,21 @@ class AddResourcePropertiesFix(val add: Collection<PropertyOrBlockType>) : Local
       override fun run(result: Result<Any?>) {
         val generator = TerraformElementGenerator(project)
         val elements = add.map {
-          if (it.property != null) generator.createProperty(it.name, "\"\"");
-          else generator.createBlock(it.name)
+          if (it.property != null) {
+            val type = it.property.type
+            // TODO: Use property 'default' value
+            val value: String = ResourcePropertyInsertHandler.getPlaceholderValue(type)?.first ?:
+                if (type == Types.Boolean) "false"
+                else if (type == Types.Number) "0"
+                else if (type == Types.Null) "null"
+                else "\"\""
+            generator.createProperty(it.name, value)
+          } else generator.createBlock(it.name)
         }
-        @Suppress("UNUSED_VARIABLE")
-        val added = elements.map { obj.addBefore(it, obj.lastChild) }
+        for (it in elements) {
+          obj.addBefore(it, obj.lastChild)
+          obj.node.addLeaf(TokenType.WHITE_SPACE, "\n", obj.node.lastChildNode)
+        }
         // TODO: Investigate why reformat fails
         // CodeStyleManager.getInstance(project).reformat(block, true)
         // TODO: Navigate cursor to added.last() or added.first()

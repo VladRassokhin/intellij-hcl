@@ -43,6 +43,7 @@ open class ReferenceHint(vararg val hint: String) : Hint
 // TODO: Use Interpolation result type
 open class InterpolationHint(hint: String) : SimpleHint(hint)
 
+// TODO: Support 'default' values for certain types
 open class PropertyType(val name: String, val type: Type, val hint: Hint? = null, val injectionAllowed: Boolean = true, description: String? = null, required: Boolean = false, deprecated: String? = null) : BaseModelType(description = description, required = required, deprecated = deprecated)
 
 open class BlockType(val literal: String, val args: Int = 0, description: String? = null, required: Boolean = false, deprecated: String? = null, vararg val properties: PropertyOrBlockType = arrayOf()) : BaseModelType(description = description, required = required, deprecated = deprecated)
