@@ -52,7 +52,7 @@ import org.intellij.plugins.hcl.HCLParserDefinition
    */
   fun isPropertyKey(element: PsiElement): Boolean {
     val parent = element.parent
-    return parent is HCLProperty && element == parent.nameElement
+    return parent is HCLProperty && element === parent.nameElement
   }
 
   /**
@@ -64,7 +64,7 @@ import org.intellij.plugins.hcl.HCLParserDefinition
    */
   fun isPropertyValue(element: PsiElement): Boolean {
     val parent = element.parent
-    return parent is HCLProperty && element == parent.value
+    return parent is HCLProperty && element === parent.value
   }
 
   /**
