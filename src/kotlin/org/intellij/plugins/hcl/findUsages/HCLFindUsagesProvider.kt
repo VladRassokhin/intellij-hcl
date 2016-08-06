@@ -59,7 +59,7 @@ open class HCLFindUsagesProvider : FindUsagesProvider {
       if (parent is HCLBlock) {
         return parent.nameElements.first()!!.text
       }
-      if (parent is HCLProperty && parent.nameElement === element) {
+      if (HCLPsiUtil.isPropertyKey(element)) {
         return "Property"
       }
     }

@@ -54,7 +54,7 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
                 return type == "resource" || type == "data"
               }
             }))
-        , SimpleReferenceProvider)
+        , ResourceProviderReferenceProvider)
 
     // Resolve variables usage in .tfvars
     registrar.registerReferenceProvider(
@@ -72,12 +72,10 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
   }
 }
 
-object SimpleReferenceProvider : PsiReferenceProvider() {
+object ResourceProviderReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
     if (element !is HCLStringLiteral) return PsiReference.EMPTY_ARRAY
-    val parent = element.parent
-    if (parent !is HCLProperty) return PsiReference.EMPTY_ARRAY
-    if (parent.nameElement == element) return PsiReference.EMPTY_ARRAY
+    if (!HCLPsiUtil.isPropertyValue(element)) return PsiReference.EMPTY_ARRAY
     return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
       @Suppress("NAME_SHADOWING")
       val element = this.element
@@ -93,9 +91,7 @@ object SimpleReferenceProvider : PsiReferenceProvider() {
 object VariableReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
     if (element !is HCLIdentifier) return PsiReference.EMPTY_ARRAY
-    val parent = element.parent
-    if (parent !is HCLProperty) return PsiReference.EMPTY_ARRAY
-    if (parent.nameElement != element) return PsiReference.EMPTY_ARRAY
+    if (!HCLPsiUtil.isPropertyKey(element)) return PsiReference.EMPTY_ARRAY
 
     val varReference = HCLElementLazyReference(element, false) { incomplete, fake ->
       @Suppress("NAME_SHADOWING")
@@ -143,11 +139,9 @@ object MapVariableIndexReferenceProvider : PsiReferenceProvider() {
     if (element !is HCLElement) return PsiReference.EMPTY_ARRAY
     if (element !is HCLIdentifier && element !is HCLStringLiteral) return PsiReference.EMPTY_ARRAY
 
-    val parent = element.parent
-    if (parent !is HCLProperty) return PsiReference.EMPTY_ARRAY
-    if (parent.nameElement !== element) return PsiReference.EMPTY_ARRAY
+    if (!HCLPsiUtil.isPropertyKey(element)) return PsiReference.EMPTY_ARRAY
 
-    val pObj = parent.parent
+    val pObj = element.parent.parent
     if (pObj !is HCLObject) return PsiReference.EMPTY_ARRAY
 
     val property = pObj.parent

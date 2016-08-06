@@ -458,11 +458,10 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
           varProperty = pp
         } else return
       } else if (parent is HCLElement) {
-        val pp = parent.parent
-        if (pp !is HCLProperty) return
-        if (pp.nameElement !== parent) return
-        if (pp.parent !is HCLObject) return
-        val pppp = pp.parent.parent
+        if (!HCLPsiUtil.isPropertyKey(parent)) return
+        val ppp = parent.parent.parent
+        if (ppp !is HCLObject) return
+        val pppp = ppp.parent
         if (pppp !is HCLProperty) return
         varProperty = pppp
       } else return
