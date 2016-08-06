@@ -20,7 +20,6 @@ import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
 import org.intellij.plugins.hcl.psi.*
-import org.intellij.plugins.hcl.psi.impl.HCLIdentifierMixin
 import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralMixin
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.model.ModelUtil
@@ -46,10 +45,6 @@ class TFVARSIncorrectElementInspection : LocalInspectionTool() {
     }
 
     override fun visitProperty(property: HCLProperty) {
-      val nameElement = property.nameElement
-      if (nameElement !is HCLIdentifier && nameElement !is HCLStringLiteral) {
-        holder.registerProblem(nameElement, "Property key should be identifier or double quoted string", *getUnquoteFix(nameElement))
-      }
       val value = property.value ?: return
       if (property.parent is HCLFile) {
         if (value !is HCLNumberLiteral && value !is HCLObject && value !is HCLArray) {
@@ -75,25 +70,11 @@ class TFVARSIncorrectElementInspection : LocalInspectionTool() {
     }
   }
 
-  private fun getUnquoteFix(element: HCLValue): Array<LocalQuickFix> {
-    if (element !is HCLStringLiteral) return emptyArray()
-    if (!HCLIdentifierMixin.IDENTIFIER_PATTERN.matcher(element.value).matches()) return emptyArray()
-    return arrayOf(UnquoteStringLiteral)
-  }
-
   private fun getQuoteFix(element: HCLValue): Array<LocalQuickFix> {
     if (element is HCLStringLiteralMixin || element is HCLIdentifier || element is HCLNullLiteral || element is HCLBooleanLiteral) {
       return arrayOf(ConvertToString)
     }
     return emptyArray()
-  }
-
-  object UnquoteStringLiteral : LocalQuickFixBase("Unquote string literal") {
-    override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-      val element = descriptor.psiElement
-      if (element !is HCLStringLiteral) return
-      element.replace(HCLElementGenerator(project).createIdentifier(element.value))
-    }
   }
 
   object ConvertToString : LocalQuickFixBase("Convert to double quoted string") {
