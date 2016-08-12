@@ -413,16 +413,20 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       val block = PsiTreeUtil.getParentOfType(property, HCLBlock::class.java) ?: return
 
       val type = block.getNameElementUnquoted(0)
+      // TODO: Replace with 'ReferenceHint'
       if (property.name == "provider" && (type == "resource" || type == "data")) {
         val providers = property.getTerraformModule().getDefinedProviders()
         result.addAllElements(providers.map { create(it.second) })
+        return
       }
-      // TODO: Support hints
-      //      val props = ModelHelper.getBlockProperties(block).map { it.property }.filterNotNull()
-      //      val hints = props.filter { it.name == property.name && it.hint != null }.map { it.hint }.filterIsInstance<String>()
-      //      val hint = hints.firstOrNull() ?: return
-      //      if (hint.matches("Reference\(.*\)"))
-      //
+      val props = ModelHelper.getBlockProperties(block).map { it.property }.filterNotNull()
+      val hints = props.filter { it.name == property.name && it.hint != null }.map { it.hint }
+      val hint = hints.firstOrNull() ?: return
+      if (hint is SimpleValueHint) {
+        result.addAllElements(hint.hint.map { create(it) })
+        return
+      }
+      // TODO: Support other hint types
     }
 
   }

@@ -201,4 +201,10 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
   }
   //</editor-fold>
 
+
+  public void testVariableTypeCompletion() throws Exception {
+    myCompleteInvocationCount = 1; // Ensure there would not be 'null', 'true' and 'false' variants
+    doBasicCompletionTest("variable v { type = \"<caret>\" }", 3, "string", "map", "list");
+    doBasicCompletionTest("variable v { type = <caret> }", 3, "string", "map", "list");
+  }
 }
