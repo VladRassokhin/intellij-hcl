@@ -37,7 +37,6 @@ class TFVARSIncorrectElementInspection : LocalInspectionTool() {
     return MyEV(holder)
   }
 
-  private val SimpleValueTypes = setOf(Types.String, Types.Number, Types.Boolean)
 
   inner class MyEV(val holder: ProblemsHolder) : HCLElementVisitor() {
     override fun visitBlock(block: HCLBlock) {
@@ -62,7 +61,7 @@ class TFVARSIncorrectElementInspection : LocalInspectionTool() {
         } else if (!property.name.contains('.')) {
           val expected = variable.second.`object`?.findProperty(TypeModel.Variable_Type.name)?.value?.name ?: "string"
           val actual = ModelUtil.getValueType(value)
-          if ((expected == "string" && actual !in SimpleValueTypes)
+          if ((expected == "string" && actual !in Types.SimpleValueTypes)
               || (expected == "list" && actual != Types.Array)
               || (expected == "map" && actual != Types.Object)) {
             val e = if (expected == "string") "simple value (string or number)" else "'$expected'"
