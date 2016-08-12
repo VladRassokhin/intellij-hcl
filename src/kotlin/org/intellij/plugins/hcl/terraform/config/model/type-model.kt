@@ -43,6 +43,8 @@ open class ReferenceHint(vararg val hint: String) : Hint
 // TODO: Use Interpolation result type
 open class InterpolationHint(hint: String) : SimpleHint(hint)
 
+open class SimpleValueHint(vararg hint: String) : SimpleHint(*hint)
+
 // TODO: Support 'default' values for certain types
 open class PropertyType(val name: String, val type: Type, val hint: Hint? = null, val injectionAllowed: Boolean = true, description: String? = null, required: Boolean = false, deprecated: String? = null) : BaseModelType(description = description, required = required, deprecated = deprecated)
 
@@ -403,7 +405,7 @@ class TypeModel(
     val Module: BlockType = BlockType("module", 1, properties = PropertyType("source", Types.String, hint = SimpleHint("Url"), required = true).toPOBT())
     val Output: BlockType = BlockType("output", 1, properties = PropertyType("value", Types.String, hint = InterpolationHint("Any"), required = true).toPOBT())
 
-    val Variable_Type = PropertyType("type", Types.String, SimpleHint("string", "list", "map"), false)
+    val Variable_Type = PropertyType("type", Types.String, SimpleValueHint("string", "list", "map"), false)
     val Variable_Default = PropertyType("default", Type("String|Array|Object"))
     val Variable_Description = PropertyType("description", Types.String)
     val Variable: BlockType = BlockType("variable", 1, properties = *arrayOf(
