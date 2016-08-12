@@ -37,6 +37,8 @@ class TFVARSIncorrectElementInspection : LocalInspectionTool() {
     return MyEV(holder)
   }
 
+  private val SimpleValueTypes = setOf(Types.String, Types.Number, Types.Boolean)
+
   inner class MyEV(val holder: ProblemsHolder) : HCLElementVisitor() {
     override fun visitBlock(block: HCLBlock) {
       ProgressIndicatorProvider.checkCanceled()
@@ -60,10 +62,11 @@ class TFVARSIncorrectElementInspection : LocalInspectionTool() {
         } else if (!property.name.contains('.')) {
           val expected = variable.second.`object`?.findProperty(TypeModel.Variable_Type.name)?.value?.name ?: "string"
           val actual = ModelUtil.getValueType(value)
-          if ((expected == "string" && actual != Types.String)
+          if ((expected == "string" && actual !in SimpleValueTypes)
               || (expected == "list" && actual != Types.Array)
               || (expected == "map" && actual != Types.Object)) {
-            holder.registerProblem(value, "Incorrect variable value type, expected '$expected'")
+            val e = if (expected == "string") "simple value (string or number)" else "'$expected'"
+            holder.registerProblem(value, "Incorrect variable value type, expected $e")
           }
         }
       }

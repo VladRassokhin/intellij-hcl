@@ -12,10 +12,12 @@ amis.us-east-1 = "foo"
 amis.us-west-2 = "baz"
 blocks are not expected here {
 }
-"string" = 42
+"string" = []
 "true" = false
 list = [1,2,3]
 list = "string"
 list = {
   map = true
 }
+"string" = 42
+"string" = false
