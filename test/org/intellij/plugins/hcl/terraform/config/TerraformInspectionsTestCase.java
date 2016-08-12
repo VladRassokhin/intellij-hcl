@@ -17,6 +17,7 @@ package org.intellij.plugins.hcl.terraform.config;
 
 import com.intellij.testFramework.InspectionFixtureTestCase;
 import org.intellij.plugins.hcl.terraform.config.inspection.HCLUnknownBlockTypeInspection;
+import org.intellij.plugins.hcl.terraform.config.inspection.TFIncorrectVariableTypeInspection;
 import org.intellij.plugins.hcl.terraform.config.inspection.TFVARSIncorrectElementInspection;
 import org.intellij.plugins.hil.inspection.HILUnresolvedReferenceInspection;
 
@@ -47,6 +48,10 @@ public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
 
   public void testIncorrectTFVARS() throws Exception {
     doTest("incorrect_tfvars", new TFVARSIncorrectElementInspection());
+  }
+
+  public void testIncorrectVariableType() throws Exception {
+    doTest("incorrect_variable_type", new TFIncorrectVariableTypeInspection());
   }
 
 }
