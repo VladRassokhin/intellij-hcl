@@ -31,10 +31,17 @@ import java.util.List;
 
 public abstract class CompletionTestCase extends LightCodeInsightFixtureTestCase {
   private static final Logger LOG = Logger.getInstance(CompletionTestCase.class);
+  protected int myCompleteInvocationCount = 1;
 
   protected abstract String getFileName();
 
   protected abstract Language getExpectedLanguage();
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    myCompleteInvocationCount = 1;
+  }
 
   protected void doBasicCompletionTest(String text, Collection<String> expected) {
     doBasicCompletionTest(text, expected.size(), expected.toArray(new String[expected.size()]));
@@ -51,7 +58,7 @@ public abstract class CompletionTestCase extends LightCodeInsightFixtureTestCase
     final PsiFile psiFile = myFixture.configureByText(getFileName(), text);
     System.out.println("PsiFile = " + DebugUtil.psiToString(psiFile, true));
     assertEquals(getExpectedLanguage(), psiFile.getLanguage());
-    final LookupElement[] elements = myFixture.complete(CompletionType.BASIC, 2);
+    final LookupElement[] elements = myFixture.complete(CompletionType.BASIC, myCompleteInvocationCount);
     System.out.println("LookupElements = " + Arrays.toString(elements));
     final List<String> strings = myFixture.getLookupElementStrings();
     assertNotNull(strings);
