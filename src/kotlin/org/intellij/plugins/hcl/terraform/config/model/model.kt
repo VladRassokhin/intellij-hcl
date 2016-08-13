@@ -214,16 +214,9 @@ class Module private constructor(val item: PsiFileSystemItem) {
     process(PsiElementProcessor { file ->
       file.acceptChildren(object : HCLElementVisitor() {
         override fun visitBlock(o: HCLBlock) {
-          if ("provider" != o.getNameElementUnquoted(0)) return;
-          val tp = o.getNameElementUnquoted(1) ?: return;
-          val value = o.`object`?.findProperty("alias")?.value
-          val als = when (value) {
-            is HCLStringLiteral -> value.value
-            is HCLIdentifier -> value.id
-            else -> null
-          }
-          if (als != null) found.add(Pair(o, "$tp.$als"))
-          else found.add(Pair(o, tp))
+          if ("provider" != o.getNameElementUnquoted(0)) return
+          val fqn = getProviderFQName(o) ?: return
+          found.add(Pair(o, fqn))
         }
       }); true
     })
@@ -292,4 +285,19 @@ class CollectVariablesVisitor : HCLElementVisitor() {
 
 fun HCLProperty.toProperty(type: PropertyType): Property {
   return Property(type, this.value)
+}
+
+fun getProviderFQName(o: HCLBlock): String? {
+  val tp = o.getNameElementUnquoted(1) ?: return null
+  val value = o.`object`?.findProperty("alias")?.value
+  val als = when (value) {
+    is HCLStringLiteral -> value.value
+    is HCLIdentifier -> value.id
+    else -> null
+  }
+  if (als != null) {
+    return "$tp.$als"
+  } else {
+    return tp
+  }
 }
