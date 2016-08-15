@@ -17,9 +17,11 @@ package org.intellij.plugins.hcl.terraform.config.inspection
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.project.Project
+import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.PsiElementPattern
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.model.ModelUtil
@@ -39,18 +41,19 @@ class TFIncorrectVariableTypeInspection : LocalInspectionTool() {
   }
 
   companion object {
-    val RootBlockSelector: PsiElementPattern.Capture<HCLBlock> =
+    val VariableRootBlockSelector: PsiElementPattern.Capture<HCLBlock> =
         psiElement(HCLBlock::class.java)
             .withParent(TerraformReferenceContributor.TerraformConfigFile)
+            .with(object : PatternCondition<HCLBlock?>("HCLBlock(variable)") {
+              override fun accepts(t: HCLBlock, context: ProcessingContext?): Boolean {
+                return t.getNameElementUnquoted(0) == "variable" && t.nameElements.size <= 2
+              }
+            })
   }
 
   inner class MyEV(val holder: ProblemsHolder) : HCLElementVisitor() {
     override fun visitBlock(block: HCLBlock) {
-      if (!RootBlockSelector.accepts(block)) return
-
-      val nameElements = block.nameElements
-      if (nameElements.size < 1 || nameElements.size > 2) return
-      if (nameElements.first().name != "variable") return
+      if (!VariableRootBlockSelector.accepts(block)) return
 
       val obj = block.`object` ?: return
 
