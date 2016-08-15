@@ -17,9 +17,11 @@ package org.intellij.plugins.hcl.terraform.config.inspection
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.project.Project
+import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.PsiElementPattern
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElementVisitor
 import org.intellij.plugins.hcl.psi.getNameElementUnquoted
@@ -39,16 +41,19 @@ class TFDuplicatedProviderInspection : LocalInspectionTool() {
   }
 
   companion object {
-    val RootBlockSelector: PsiElementPattern.Capture<HCLBlock> =
+    val ProviderRootBlockSelector: PsiElementPattern.Capture<HCLBlock> =
         psiElement(HCLBlock::class.java)
             .withParent(TerraformReferenceContributor.TerraformConfigFile)
+            .with(object : PatternCondition<HCLBlock?>("HCLBlock(provider)") {
+              override fun accepts(t: HCLBlock, context: ProcessingContext?): Boolean {
+                return t.getNameElementUnquoted(0) == "provider"
+              }
+            })
   }
 
   inner class MyEV(val holder: ProblemsHolder) : HCLElementVisitor() {
     override fun visitBlock(block: HCLBlock) {
-      if (!RootBlockSelector.accepts(block)) return
-
-      if (block.getNameElementUnquoted(0) != "provider") return
+      if (!ProviderRootBlockSelector.accepts(block)) return
 
       val module = block.getTerraformModule()
 
