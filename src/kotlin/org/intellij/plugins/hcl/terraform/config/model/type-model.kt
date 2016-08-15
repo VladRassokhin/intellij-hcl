@@ -405,7 +405,10 @@ class TypeModel(
   companion object {
     val Atlas: BlockType = BlockType("atlas", 0, properties = PropertyType("name", Types.String, injectionAllowed = false, required = true).toPOBT())
     val Module: BlockType = BlockType("module", 1, properties = PropertyType("source", Types.String, hint = SimpleHint("Url"), required = true).toPOBT())
-    val Output: BlockType = BlockType("output", 1, properties = PropertyType("value", Types.String, hint = InterpolationHint("Any"), required = true).toPOBT())
+    val Output: BlockType = BlockType("output", 1, properties = *arrayOf(
+        PropertyType("value", Types.String, hint = InterpolationHint("Any"), required = true).toPOBT(),
+        PropertyType("sensitive", Types.Boolean).toPOBT()
+    ))
 
     val Variable_Type = PropertyType("type", Types.String, SimpleValueHint("string", "list", "map"), false)
     val Variable_Default = PropertyType("default", Type("String|Array|Object"))
