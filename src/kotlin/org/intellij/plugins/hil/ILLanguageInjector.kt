@@ -31,47 +31,51 @@ import java.util.*
 
 class ILLanguageInjector : LanguageInjector {
   override fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
-    if (host !is HCLStringLiteral && host !is HCLHeredocContent) return;
-    // Only .tf (Terraform config) files
-    val file = host.containingFile
-    if (file !is HCLFile || !file.isInterpolationsAllowed()) return;
-    // Restrict interpolations in .tfvars files // TODO: This file shouldn't know about .tfvars here
-    if (file.fileType == TerraformFileType && file.name.endsWith("." + TerraformFileType.TFVARS_EXTENSION)) return
-    if (host is HCLStringLiteral) return getStringLiteralInjections(host, places);
-    if (host is HCLHeredocContent) return getHCLHeredocContentInjections(host, places);
-    return;
-  }
-
-  private fun getStringLiteralInjections(host: HCLStringLiteral, places: InjectedLanguagePlaces) {
-    if (!host.text.contains("\${")) return
-    for (pair in host.textFragments) {
-      val fragment = pair.second
-      if (!fragment.startsWith("\${")) continue
-      val ranges = getILRangesInText(fragment)
-      for (range in ranges) {
-        val rng = range.shiftRight(pair.first.startOffset)
-        places.addPlace(HILLanguage, rng, null, null)
-      }
-    }
-  }
-
-  private fun getHCLHeredocContentInjections(host: HCLHeredocContent, places: InjectedLanguagePlaces) {
-    if (host.linesCount == 0) return
-    val lines = HCLPsiImplUtils.getLinesInternal(host)
-    if (lines.isEmpty()) return
-    if (!host.text.contains("\${")) return
-    for (pair in host.textFragments) {
-      val fragment = pair.second
-      if (!fragment.startsWith("\${")) continue
-      val ranges = getILRangesInText(fragment)
-      for (range in ranges) {
-        val rng = range.shiftRight(pair.first.startOffset)
-        places.addPlace(HILLanguage, rng, null, null)
-      }
-    }
+    return Companion.getLanguagesToInject(host, places)
   }
 
   companion object {
+    fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
+      if (host !is HCLStringLiteral && host !is HCLHeredocContent) return;
+      // Only .tf (Terraform config) files
+      val file = host.containingFile
+      if (file !is HCLFile || !file.isInterpolationsAllowed()) return;
+      // Restrict interpolations in .tfvars files // TODO: This file shouldn't know about .tfvars here
+      if (file.fileType == TerraformFileType && file.name.endsWith("." + TerraformFileType.TFVARS_EXTENSION)) return
+      if (host is HCLStringLiteral) return getStringLiteralInjections(host, places);
+      if (host is HCLHeredocContent) return getHCLHeredocContentInjections(host, places);
+      return;
+    }
+
+    fun getStringLiteralInjections(host: HCLStringLiteral, places: InjectedLanguagePlaces) {
+      if (!host.text.contains("\${")) return
+      for (pair in host.textFragments) {
+        val fragment = pair.second
+        if (!fragment.startsWith("\${")) continue
+        val ranges = getILRangesInText(fragment)
+        for (range in ranges) {
+          val rng = range.shiftRight(pair.first.startOffset)
+          places.addPlace(HILLanguage, rng, null, null)
+        }
+      }
+    }
+
+    fun getHCLHeredocContentInjections(host: HCLHeredocContent, places: InjectedLanguagePlaces) {
+      if (host.linesCount == 0) return
+      val lines = HCLPsiImplUtils.getLinesInternal(host)
+      if (lines.isEmpty()) return
+      if (!host.text.contains("\${")) return
+      for (pair in host.textFragments) {
+        val fragment = pair.second
+        if (!fragment.startsWith("\${")) continue
+        val ranges = getILRangesInText(fragment)
+        for (range in ranges) {
+          val rng = range.shiftRight(pair.first.startOffset)
+          places.addPlace(HILLanguage, rng, null, null)
+        }
+      }
+    }
+
     fun getILRangesInText(text: String): ArrayList<TextRange> {
       if (!text.contains("\${")) return arrayListOf();
 
