@@ -48,13 +48,31 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
                 return "provider" == t.name
               }
             }))
-            .withSuperParent(3, psiElement(HCLBlock::class.java).with(object : PatternCondition<HCLBlock?>("HCLBlock(resource)") {
+            .withSuperParent(3, psiElement(HCLBlock::class.java).with(object : PatternCondition<HCLBlock?>("HCLBlock(resource|data)") {
               override fun accepts(t: HCLBlock, context: ProcessingContext?): Boolean {
                 val type = t.getNameElementUnquoted(0)
                 return type == "resource" || type == "data"
               }
             }))
         , ResourceProviderReferenceProvider)
+
+    // 'depends_on' in resources and data sources
+    registrar.registerReferenceProvider(
+        psiElement(HCLStringLiteral::class.java)
+            .inFile(TerraformConfigFile)
+            .withSuperParent(1, psiElement(HCLArray::class.java))
+            .withSuperParent(2, psiElement(HCLProperty::class.java).with(object : PatternCondition<HCLProperty?>("HCLProperty(depends_on)") {
+              override fun accepts(t: HCLProperty, context: ProcessingContext?): Boolean {
+                return "depends_on" == t.name
+              }
+            }))
+            .withSuperParent(4, psiElement(HCLBlock::class.java).with(object : PatternCondition<HCLBlock?>("HCLBlock(resource|data)") {
+              override fun accepts(t: HCLBlock, context: ProcessingContext?): Boolean {
+                val type = t.getNameElementUnquoted(0)
+                return type == "resource" || type == "data"
+              }
+            }))
+        , DependsOnReferenceProvider)
 
     // Resolve variables usage in .tfvars
     registrar.registerReferenceProvider(
@@ -72,6 +90,7 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
   }
 }
 
+// TODO: Fix renaming: add range to reference
 object ResourceProviderReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
     if (element !is HCLStringLiteral) return PsiReference.EMPTY_ARRAY
@@ -83,6 +102,44 @@ object ResourceProviderReferenceProvider : PsiReferenceProvider() {
         element.getTerraformModule().getDefinedProviders().map { it.first.nameIdentifier as HCLElement }
       } else {
         element.getTerraformModule().findProviders(element.value).map { it.nameIdentifier as HCLElement }
+      }
+    })
+  }
+}
+
+// TODO: Fix renaming: add range to reference
+object DependsOnReferenceProvider : PsiReferenceProvider() {
+  override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
+    if (element !is HCLStringLiteral) return PsiReference.EMPTY_ARRAY
+    if (element.parent !is HCLArray) return PsiReference.EMPTY_ARRAY
+    if (!HCLPsiUtil.isPropertyValue(element.parent)) return PsiReference.EMPTY_ARRAY
+    return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
+      @Suppress("NAME_SHADOWING")
+      val element = this.element
+      val block = element.parent?.parent?.parent?.parent
+      if (block !is HCLBlock) return@HCLElementLazyReference emptyList()
+
+
+      var value = element.value
+      val isDataSource = (value.startsWith("data."))
+      if (isDataSource) value = value.removePrefix("data.")
+
+      val module = element.getTerraformModule()
+      if (incomplete) {
+        val current = (if (block.getNameElementUnquoted(0) == "data") "data" else "") + "${block.getNameElementUnquoted(1)}.${block.name}"
+        module.getDeclaredResources().filter { "${it.getNameElementUnquoted(1)}.${it.name}" != current }
+            .plus(module.getDeclaredDataSources().filter { "data.${it.getNameElementUnquoted(1)}.${it.name}" != current })
+            .map { it.nameIdentifier as HCLElement }
+      } else {
+        val split = value.split('.')
+
+        if (split.size != 2) {
+          emptyList()
+        } else if (isDataSource) {
+          module.findDataSource(split[0], split[1]).map { it.nameIdentifier as HCLElement }
+        } else {
+          module.findResources(split[0], split[1]).map { it.nameIdentifier as HCLElement }
+        }
       }
     })
   }

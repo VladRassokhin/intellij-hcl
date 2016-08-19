@@ -134,6 +134,17 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("resource \"x\" {\nid='a'\n<caret>\nlifecycle {}\n}", set);
     doBasicCompletionTest("resource abc {\n<caret> = true\nlifecycle {}\n}", Collections.<String>emptySet());
   }
+
+  public void testResourceDependsOnCompletion() throws Exception {
+    doBasicCompletionTest("resource x y {}\nresource a b {depends_on=['<caret>']}", 1, "x.y");
+    doBasicCompletionTest("resource x y {}\nresource a b {depends_on=[\"<caret>\"]}", 1, "x.y");
+    doBasicCompletionTest("data x y {}\nresource a b {depends_on=['<caret>']}", 1, "data.x.y");
+    doBasicCompletionTest("data x y {}\nresource a b {depends_on=[\"<caret>\"]}", 1, "data.x.y");
+
+    // Only stings allowed in arrays, prevent other elements
+    doBasicCompletionTest("resource x y {}\nresource a b {depends_on=[<caret>]}", 0);
+    doBasicCompletionTest("data x y {}\nresource a b {depends_on=[<caret>]}", 0);
+  }
   //</editor-fold>
 
   //<editor-fold desc="Data Sources completion tests">
@@ -198,6 +209,17 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("provider Z {alias='Y'}\ndata a b {provider=<caret>}", "Z.Y");
     doBasicCompletionTest("provider Z {alias='Y'}\ndata a b {provider='<caret>'}", "Z.Y");
     doBasicCompletionTest("provider Z {alias='Y'}\ndata a b {provider=\"<caret>\"}", "Z.Y");
+  }
+
+  public void testDataSourceDependsOnCompletion() throws Exception {
+    doBasicCompletionTest("resource x y {}\ndata a b {depends_on=['<caret>']}", "x.y");
+    doBasicCompletionTest("resource x y {}\ndata a b {depends_on=[\"<caret>\"]}", "x.y");
+    doBasicCompletionTest("data x y {}\ndata a b {depends_on=['<caret>']}", "data.x.y");
+    doBasicCompletionTest("data x y {}\ndata a b {depends_on=[\"<caret>\"]}", "data.x.y");
+
+    // Only stings allowed in arrays, prevent other elements
+    doBasicCompletionTest("resource x y {}\ndata a b {depends_on=[<caret>]}", 0);
+    doBasicCompletionTest("data x y {}\ndata a b {depends_on=[<caret>]}", 0);
   }
   //</editor-fold>
 

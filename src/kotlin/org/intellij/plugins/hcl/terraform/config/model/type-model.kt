@@ -463,7 +463,7 @@ class TypeModel(
     @JvmField val AbstractResource: BlockType = BlockType("resource", 2, properties = *arrayOf(
         PropertyType("id", Types.String, injectionAllowed = false, description = "A unique ID for this resource", required = false).toPOBT(),
         PropertyType("count", Types.Number).toPOBT(),
-        PropertyType("depends_on", Types.Array, hint = TypeHint(Types.String)).toPOBT(),
+        PropertyType("depends_on", Types.Array, hint = ReferenceHint("resource.name", "data_source.name")).toPOBT(),
         PropertyType("provider", Types.String, hint = ReferenceHint("provider.type", "provider.alias")).toPOBT(),
         ResourceLifecycle.toPOBT(),
         // Also may have connection? and provisioner+ blocks

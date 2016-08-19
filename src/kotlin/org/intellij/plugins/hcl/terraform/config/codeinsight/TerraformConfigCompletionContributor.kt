@@ -53,6 +53,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     val Block = psiElement(HCLBlock::class.java)
     val Property = psiElement(HCLProperty::class.java)
     val Object = psiElement(HCLObject::class.java)
+    val Array = psiElement(HCLArray::class.java)
 
     val TerraformConfigFile = TerraformReferenceContributor.TerraformConfigFile
 
@@ -148,6 +149,15 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         .withSuperParent(2, Property)
         .withSuperParent(3, Object)
         .withSuperParent(4, Block)
+        , PropertyValueCompletionProvider)
+    // depends_on completion
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
+        .inFile(TerraformConfigFile)
+        .withParent(Literal)
+        .withSuperParent(2, Array)
+        .withSuperParent(3, Property)
+        .withSuperParent(4, Object)
+        .withSuperParent(5, Block)
         , PropertyValueCompletionProvider)
 
 
@@ -408,6 +418,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val position = parameters.position
       val parent = position.parent
+      val inArray = (parent.parent is HCLArray)
       LOG.debug("TF.PropertyValueCompletionProvider{position=$position, parent=$parent}")
       val property = PsiTreeUtil.getParentOfType(position, HCLProperty::class.java) ?: return
       val block = PsiTreeUtil.getParentOfType(property, HCLBlock::class.java) ?: return
@@ -417,6 +428,17 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       if (property.name == "provider" && (type == "resource" || type == "data")) {
         val providers = property.getTerraformModule().getDefinedProviders()
         result.addAllElements(providers.map { create(it.second) })
+        return
+      }
+      if (property.name == "depends_on" && (type == "resource" || type == "data") && inArray) {
+        val resources = property.getTerraformModule().getDeclaredResources()
+            .map { "${it.getNameElementUnquoted(1)}.${it.name}" }
+        val datas = property.getTerraformModule().getDeclaredDataSources()
+            .map { "data.${it.getNameElementUnquoted(1)}.${it.name}" }
+
+        val current = (if (type == "data") "data" else "") + "${block.getNameElementUnquoted(1)}.${block.name}"
+
+        result.addAllElements(resources.plus(datas).minus(current).map { create(it) })
         return
       }
       val props = ModelHelper.getBlockProperties(block).map { it.property }.filterNotNull()
