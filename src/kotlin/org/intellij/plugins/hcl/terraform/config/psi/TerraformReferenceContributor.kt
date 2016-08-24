@@ -136,7 +136,7 @@ object DependsOnReferenceProvider : PsiReferenceProvider() {
         if (split.size != 2) {
           emptyList()
         } else if (isDataSource) {
-          module.findDataSource(split[0], split[1]).map { it.nameIdentifier as HCLElement }
+          module.findDataSource(split[1], split[2]).map { it.nameIdentifier as HCLElement }
         } else {
           module.findResources(split[0], split[1]).map { it.nameIdentifier as HCLElement }
         }
