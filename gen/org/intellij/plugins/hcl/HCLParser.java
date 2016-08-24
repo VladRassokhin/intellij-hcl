@@ -319,7 +319,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(']'|value)
+  // !(']'|(literal | array | object))
   static boolean not_bracket_or_next_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "not_bracket_or_next_value")) return false;
     boolean r;
@@ -329,13 +329,25 @@ public class HCLParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ']'|value
+  // ']'|(literal | array | object)
   private static boolean not_bracket_or_next_value_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "not_bracket_or_next_value_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, R_BRACKET);
-    if (!r) r = value(b, l + 1);
+    if (!r) r = not_bracket_or_next_value_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // literal | array | object
+  private static boolean not_bracket_or_next_value_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "not_bracket_or_next_value_0_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = literal(b, l + 1);
+    if (!r) r = array(b, l + 1);
+    if (!r) r = object(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }

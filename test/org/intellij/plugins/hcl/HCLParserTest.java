@@ -155,4 +155,8 @@ public class HCLParserTest extends ParsingTestCase {
   public void testMultiline_Literal() throws Exception {
     doTest();
   }
+
+  public void testList_With_Identifier() throws Exception {
+    doTest();
+  }
 }
