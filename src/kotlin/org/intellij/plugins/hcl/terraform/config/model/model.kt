@@ -23,6 +23,7 @@ import com.intellij.psi.search.GlobalSearchScopes
 import com.intellij.psi.search.PsiElementProcessor
 import com.intellij.testFramework.LightVirtualFile
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hil.psi.ILExpression
 import java.util.*
 
@@ -132,11 +133,14 @@ class Module private constructor(val item: PsiFileSystemItem) {
   private fun process(processor: PsiElementProcessor<HCLFile>): Boolean {
     // TODO: Support json files (?)
     if (item is HCLFile) {
-      return processor.execute(item)
+      if (item.language == TerraformLanguage) {
+        return processor.execute(item)
+      }
+      return false
     }
     assert(item is PsiDirectory)
     return item.processChildren(PsiElementProcessor { element ->
-      if (element !is HCLFile) return@PsiElementProcessor true
+      if (element !is HCLFile || element.language != TerraformLanguage) return@PsiElementProcessor true
       processor.execute(element)
     })
   }
