@@ -22,9 +22,11 @@ import com.intellij.psi.ResolveResult
 import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hil.inspection.PsiFakeAwarePolyVariantReference
 
-open class HCLElementLazyReference<T : PsiElement>(from: T, soft: Boolean, val doResolve: HCLElementLazyReference<T>.(incompleteCode: Boolean, includeFake: Boolean) -> List<HCLElement>) : PsiReferenceBase.Poly<T>(from, soft), PsiFakeAwarePolyVariantReference {
+abstract class HCLElementLazyReferenceBase<T : PsiElement>(from: T, soft: Boolean) : PsiReferenceBase.Poly<T>(from, soft), PsiFakeAwarePolyVariantReference {
+  abstract fun resolve(incompleteCode: Boolean, includeFake: Boolean): List<HCLElement>
+
   override fun multiResolve(incompleteCode: Boolean, includeFake: Boolean): Array<out ResolveResult> {
-    return PsiElementResolveResult.createResults(doResolve(incompleteCode, includeFake))
+    return PsiElementResolveResult.createResults(resolve(incompleteCode, includeFake))
   }
 
   override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
@@ -34,4 +36,8 @@ open class HCLElementLazyReference<T : PsiElement>(from: T, soft: Boolean, val d
   override fun getVariants(): Array<out Any> {
     return EMPTY_ARRAY
   }
+}
+
+open class HCLElementLazyReference<T : PsiElement>(from: T, soft: Boolean, val doResolve: HCLElementLazyReference<T>.(incompleteCode: Boolean, includeFake: Boolean) -> List<HCLElement>) : HCLElementLazyReferenceBase<T>(from, soft) {
+  override fun resolve(incompleteCode: Boolean, includeFake: Boolean): List<HCLElement> = doResolve(incompleteCode, includeFake)
 }
