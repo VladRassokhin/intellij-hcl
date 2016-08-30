@@ -28,6 +28,7 @@ import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.psi.HCLElementLazyReference
+import org.intellij.plugins.hil.psi.HCLElementLazyReferenceBase
 
 class TerraformReferenceContributor : PsiReferenceContributor() {
   companion object {
@@ -113,35 +114,49 @@ object DependsOnReferenceProvider : PsiReferenceProvider() {
     if (element !is HCLStringLiteral) return PsiReference.EMPTY_ARRAY
     if (element.parent !is HCLArray) return PsiReference.EMPTY_ARRAY
     if (!HCLPsiUtil.isPropertyValue(element.parent)) return PsiReference.EMPTY_ARRAY
-    return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
-      @Suppress("NAME_SHADOWING")
-      val element = this.element
-      val block = element.parent?.parent?.parent?.parent
-      if (block !is HCLBlock) return@HCLElementLazyReference emptyList()
+    return arrayOf(DependsOnLazyReference(element))
+  }
+}
 
+class DependsOnLazyReference(element: HCLStringLiteral) : HCLElementLazyReferenceBase<HCLStringLiteral>(element, false) {
+  override fun resolve(incompleteCode: Boolean, includeFake: Boolean): List<HCLElement> {
+    val block = element.parent?.parent?.parent?.parent
+    if (block !is HCLBlock) return emptyList()
 
-      var value = element.value
-      val isDataSource = (value.startsWith("data."))
-      if (isDataSource) value = value.removePrefix("data.")
+    var value = element.value
+    val isDataSource = (value.startsWith("data."))
+    if (isDataSource) value = value.removePrefix("data.")
 
-      val module = element.getTerraformModule()
-      if (incomplete) {
-        val current = (if (block.getNameElementUnquoted(0) == "data") "data" else "") + "${block.getNameElementUnquoted(1)}.${block.name}"
-        module.getDeclaredResources().filter { "${it.getNameElementUnquoted(1)}.${it.name}" != current }
-            .plus(module.getDeclaredDataSources().filter { "data.${it.getNameElementUnquoted(1)}.${it.name}" != current })
-            .map { it.nameIdentifier as HCLElement }
+    val module = element.getTerraformModule()
+    if (incompleteCode) {
+      val current = (if (block.getNameElementUnquoted(0) == "data") "data" else "") + "${block.getNameElementUnquoted(1)}.${block.name}"
+      return module.getDeclaredResources().filter { "${it.getNameElementUnquoted(1)}.${it.name}" != current }
+          .plus(module.getDeclaredDataSources().filter { "data.${it.getNameElementUnquoted(1)}.${it.name}" != current })
+          .map { it.nameIdentifier as HCLElement }
+    } else {
+      val split = value.split('.')
+
+      return if (split.size != 2) {
+        emptyList()
+      } else if (isDataSource) {
+        module.findDataSource(split[0], split[1]).map { it.nameIdentifier as HCLElement }
       } else {
-        val split = value.split('.')
-
-        if (split.size != 2) {
-          emptyList()
-        } else if (isDataSource) {
-          module.findDataSource(split[1], split[2]).map { it.nameIdentifier as HCLElement }
-        } else {
-          module.findResources(split[0], split[1]).map { it.nameIdentifier as HCLElement }
-        }
+        module.findResources(split[0], split[1]).map { it.nameIdentifier as HCLElement }
       }
-    })
+    }
+  }
+
+  override fun getRangeInElement(): TextRange {
+    val block = element.parent?.parent?.parent?.parent
+    if (block !is HCLBlock) super.getRangeInElement()
+    val value = element.value
+    val split = value.split('.')
+    if ((split.size == 3 && split[0] == "data") || split.size == 2) {
+      val ll = split.last().length
+      val tl = element.textLength
+      return TextRange.create(tl - 1 - ll, tl - 1)
+    }
+    return super.getRangeInElement()
   }
 }
 
