@@ -24,7 +24,7 @@ object Icons {
   object FileTypes {
     // TODO: Create icons
     val HCL: Icon by lazy { AllIcons.FileTypes.Text }
-    val Terraform: Icon by lazy { HCL }
+    val Terraform: Icon by lazy { IconLoader.getIcon("/hcl/terraform.png") }
     val HIL: Icon by lazy { AllIcons.FileTypes.Custom }
   }
 
