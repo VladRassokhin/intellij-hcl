@@ -82,11 +82,6 @@ class HCLStringLiteralTextEscaper(host: HCLStringLiteralMixin,
         if (braces > 0) {
           if (c == '{') braces++
           else if (c == '}') braces--
-          else if (c == '\\') {
-            if (index < chars.length && chars[index] == '\\') {
-              index++
-            }
-          }
           outChars.append(c)
           continue
         }

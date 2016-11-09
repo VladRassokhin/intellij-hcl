@@ -31,15 +31,17 @@ class TerraformStringLiteralTextEscaperTestImpl : HCLStringLiteralTextEscaperTes
   fun testDecodeSuccessfullyTF() {
     doTestDecode("\"\${}\"", TextRange.from(1, 3), "\${}", 0, 1, 2, 3)
     doTestDecode("\"\${\"\"}\"", TextRange.from(1, 5), "\${\"\"}", 0, 1, 2, 3, 4, 5)
-    doTestDecode("\"\${\\\\}\"", TextRange.from(1, 5), "\${\\}", 0, 1, 2, 4, 5, 0) // "${\\}" -> ${\}
-    doTestDecode("\"\${\\\\\"}\"", TextRange.from(1, 6), "\${\\\"}", 0, 1, 2, 4, 5, 6, 0) // "${\\"}" -> ${\"}
-    doTestDecode("\"\${\"\\\\\",\\\\\"\"}\"", TextRange.from(1, 12), "\${\"\\\",\\\"\"}", 0, 1, 2, 3, 5, 6, 7, 9, 10, 11, 12, 0, 0) // "${"\\",\\""}"  -> ${"\",\""}
+    doTestDecode("\"\${\\\"}\"", TextRange.from(1, 5), "\${\\\"}", 0, 1, 2, 3, 4, 5) // "${\"}" -> ${\"}
+    doTestDecode("\"\${\\\\}\"", TextRange.from(1, 5), "\${\\\\}", 0, 1, 2, 3, 4, 5) // "${\\}" -> ${\\}
+    doTestDecode("\"\${\\\\\"}\"", TextRange.from(1, 6), "\${\\\\\"}", 0, 1, 2, 3, 4, 5, 6) // "${\\"}" -> ${\\"}
+    doTestDecode("\"\${\"\\\\\",\\\\\"\"}\"", TextRange.from(1, 12), "\${\"\\\\\",\\\\\"\"}", 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12) // "${"\\",\\""}"  -> ${"\\",\\""}
   }
 
   fun testOffsetInHostTF() {
     doTestOffsetInHost("\"\${}\"", 1, 2, 3, 4)
     doTestOffsetInHost("\"\${\"\"}\"", 1, 2, 3, 4, 5, 6) // "${""}" -> ${""}
-    doTestOffsetInHost("\"\${\\\\}\"", 1, 2, 3, 5, 6) // "${\\}" -> ${\}
-    doTestOffsetInHost("\"\${\"\\\\\",\\\\\"\"}\"", 1, 2, 3, 4, 6, 7, 8, 10, 11, 12, 13) // "${"\\",\\""}" -> ${"\",\""}
+    doTestOffsetInHost("\"\${\\\"}\"", 1, 2, 3, 4, 5, 6) // "${\"}" -> ${\"}
+    doTestOffsetInHost("\"\${\\\\}\"", 1, 2, 3, 4, 5, 6) // "${\\}" -> ${\\}
+    doTestOffsetInHost("\"\${\"\\\\\",\\\\\"\"}\"", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13) // "${"\\",\\""}" -> ${"\\",\\""}
   }
 }
