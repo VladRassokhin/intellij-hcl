@@ -121,7 +121,7 @@ class HILUnresolvedReferenceInspection : LocalInspectionTool() {
       message = "Unresolved reference {0}"
     }
 
-    val description: String
+    var description: String
     try {
       description = BundleBase.format(message, reference.canonicalText) // avoid double formatting
     } catch (ex: IllegalArgumentException) {
