@@ -47,4 +47,9 @@ public class TerraformConfigParserTest extends HCLParserTest {
     setTerraformExtension();
     doTest();
   }
+
+  public void testMultiline_Interpolation() throws Exception {
+    setTerraformExtension();
+    doTest();
+  }
 }

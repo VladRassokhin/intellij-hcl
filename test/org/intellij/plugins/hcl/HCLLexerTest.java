@@ -134,7 +134,8 @@ public class HCLLexerTest extends LexerTestCase {
     doTest("a=\"x\"\"\n", "ID ('a')\n" +
         "= ('=')\n" +
         "DOUBLE_QUOTED_STRING ('\"x\"')\n" +
-        "DOUBLE_QUOTED_STRING ('\"\\n')");
+        "DOUBLE_QUOTED_STRING ('\"')\n" +
+        "WHITE_SPACE ('\\n')");
   }
 
   public void testUnfinishedString2() throws Exception {
@@ -143,7 +144,9 @@ public class HCLLexerTest extends LexerTestCase {
         "WHITE_SPACE ('\n" +
         "\\n')\n" +
         "DOUBLE_QUOTED_STRING ('\"x\"')\n" +
-        "DOUBLE_QUOTED_STRING ('\"\n\\n')");
+        "DOUBLE_QUOTED_STRING ('\"')\n" +
+        "WHITE_SPACE ('\n" +
+        "\\n')");
   }
 
   public void testUnfinishedStringInObjectSingleLine() throws Exception {
@@ -168,7 +171,9 @@ public class HCLLexerTest extends LexerTestCase {
         "= ('=')\n" +
         "WHITE_SPACE (' ')\n" +
         "DOUBLE_QUOTED_STRING ('\"x\"')\n" +
-        "DOUBLE_QUOTED_STRING ('\"\\n}')");
+        "DOUBLE_QUOTED_STRING ('\"')\n" +
+        "WHITE_SPACE ('\\n')\n" +
+        "} ('}')");
   }
 
   public void testUnfinishedInterpolation() throws Exception {
@@ -198,7 +203,10 @@ public class HCLLexerTest extends LexerTestCase {
   public void testMultilineString() throws Exception {
     doTest("ml=\"hello\n  world\"", "ID ('ml')\n" +
         "= ('=')\n" +
-        "DOUBLE_QUOTED_STRING ('\"hello\\n  world\"')\n");
+        "DOUBLE_QUOTED_STRING ('\"hello')\n" +
+        "WHITE_SPACE ('\\n  ')\n" +
+        "ID ('world')\n" +
+        "DOUBLE_QUOTED_STRING ('\"')\n");
   }
 
   public void testHereDoc() throws Exception {

@@ -39,7 +39,8 @@ HIL_STOP=(\})
 
 HEREDOC_START="<<"
 
-STRING_ELEMENT=([^\"\'\$\{\}]|\\[^\r\n])+
+IL_STRING_ELEMENT=([^\"\'\$\{\}]|\\[^\r\n])+
+STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
 
 %state D_STRING, S_STRING, HIL_EXPRESSION, IN_NUMBER
 %state S_HEREDOC_MARKER, S_HEREDOC_LINE, S_HEREDOC_LINE_END
@@ -153,7 +154,7 @@ STRING_ELEMENT=([^\"\'\$\{\}]|\\[^\r\n])+
 <HIL_EXPRESSION> {
   {HIL_START} {hil_inc();}
   {HIL_STOP} {if (hil_dec() <= 0) yybegin(stringType == StringType.SingleQ ? S_STRING: D_STRING); }
-  {STRING_ELEMENT} {}
+  {IL_STRING_ELEMENT} {}
   \' {}
   \" {}
   \$ {}

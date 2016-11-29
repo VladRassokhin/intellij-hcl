@@ -174,4 +174,10 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
       doSimpleTokenTest(HCLElementTypes.NUMBER, input);
     }
   }
+
+  public void testMultilineString_WithInterpolation() throws Exception {
+    doTest("mli=\"${hello\n  world}\"", "ID ('mli')\n" +
+        "= ('=')\n" +
+        "DOUBLE_QUOTED_STRING ('\"${hello\\n  world}\"')\n");
+  }
 }
