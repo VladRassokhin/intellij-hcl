@@ -1,0 +1,296 @@
+{
+  "name": "vault",
+  "type": "provider",
+  "schema": {
+    "address": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeString"
+      },
+      {
+        "name": "Required",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "URL of the root of the target Vault server."
+      }
+    ],
+    "ca_cert_dir": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeString"
+      },
+      {
+        "name": "Optional",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "Path to directory containing CA certificate files to validate the server's certificate."
+      }
+    ],
+    "ca_cert_file": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeString"
+      },
+      {
+        "name": "Optional",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "Path to a CA certificate file to validate the server's certificate."
+      }
+    ],
+    "client_auth": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeList"
+      },
+      {
+        "name": "Optional",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "Client authentication credentials."
+      },
+      {
+        "name": "Elem",
+        "type": "ResourceSchemaInfo",
+        "value": {
+          "cert_file": [
+            {
+              "name": "Type",
+              "type": "schema.ValueType",
+              "value": "TypeString"
+            },
+            {
+              "name": "Required",
+              "type": "bool",
+              "value": "true"
+            },
+            {
+              "name": "Description",
+              "type": "string",
+              "value": "Path to a file containing the client certificate."
+            }
+          ],
+          "key_file": [
+            {
+              "name": "Type",
+              "type": "schema.ValueType",
+              "value": "TypeString"
+            },
+            {
+              "name": "Required",
+              "type": "bool",
+              "value": "true"
+            },
+            {
+              "name": "Description",
+              "type": "string",
+              "value": "Path to a file containing the private key that the certificate was issued for."
+            }
+          ]
+        }
+      }
+    ],
+    "max_lease_ttl_seconds": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeInt"
+      },
+      {
+        "name": "Optional",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "Maximum TTL for secret leases requested by this provider"
+      }
+    ],
+    "skip_tls_verify": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeBool"
+      },
+      {
+        "name": "Optional",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "Set this to true only if the target Vault server is an insecure development instance."
+      }
+    ],
+    "token": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeString"
+      },
+      {
+        "name": "Required",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "Token to use to authenticate to Vault."
+      }
+    ]
+  },
+  "resources": {
+    "vault_generic_secret": {
+      "data_json": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "JSON-encoded secret data to write."
+        }
+      ],
+      "path": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Full path where the generic secret will be written."
+        }
+      ]
+    }
+  },
+  "data-sources": {
+    "vault_generic_secret": {
+      "data": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeMap"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Map of strings read from Vault."
+        }
+      ],
+      "data_json": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "JSON-encoded secret data read from Vault."
+        }
+      ],
+      "lease_duration": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Lease duration in seconds relative to the time in lease_start_time."
+        }
+      ],
+      "lease_id": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Lease identifier assigned by vault."
+        }
+      ],
+      "lease_renewable": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "True if the duration of this lease can be extended through renewal."
+        }
+      ],
+      "lease_start_time": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Time at which the lease was read, using the clock of the system where Terraform was running"
+        }
+      ],
+      "path": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Full path from which a secret will be read."
+        }
+      ]
+    }
+  }
+}
