@@ -1,0 +1,4 @@
+provider "docker" {
+}
+provider "aws" {
+}

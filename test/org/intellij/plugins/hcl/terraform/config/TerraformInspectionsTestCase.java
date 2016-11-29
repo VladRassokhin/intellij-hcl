@@ -60,4 +60,8 @@ public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
     doTest("interpolations_in_wrong_places", new TFNoInterpolationsAllowedInspection());
   }
 
+  public void testMissingBlockProperty() throws Exception {
+    doTest("missing_properties", new HCLBlockMissingPropertyInspection());
+  }
+
 }

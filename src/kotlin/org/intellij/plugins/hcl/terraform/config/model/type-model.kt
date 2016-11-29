@@ -46,7 +46,7 @@ open class InterpolationHint(hint: String) : SimpleHint(hint)
 open class SimpleValueHint(vararg hint: String) : SimpleHint(*hint)
 
 // TODO: Support 'default' values for certain types
-open class PropertyType(val name: String, val type: Type, val hint: Hint? = null, val injectionAllowed: Boolean = true, description: String? = null, required: Boolean = false, deprecated: String? = null) : BaseModelType(description = description, required = required, deprecated = deprecated)
+open class PropertyType(val name: String, val type: Type, val hint: Hint? = null, val injectionAllowed: Boolean = true, description: String? = null, required: Boolean = false, deprecated: String? = null, val has_default: Boolean = false) : BaseModelType(description = description, required = required, deprecated = deprecated)
 
 open class BlockType(val literal: String, val args: Int = 0, description: String? = null, required: Boolean = false, deprecated: String? = null, vararg val properties: PropertyOrBlockType = arrayOf()) : BaseModelType(description = description, required = required, deprecated = deprecated)
 
@@ -344,6 +344,10 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
     }
     val required = (m["Required"]?.string("value")?.toLowerCase() ?: "false").toBoolean()
     val deprecated = m["Deprecated"]?.string("value") ?: null
+    val has_default: Boolean =
+        m["Default"]?.string("value") != null
+        || m["DefaultValue_Computed"]?.string("value") != null
+       // || m["InputDefault"]?.string("value") != null // Not sure about this property TODO: Investigate how it works in terraform
 
     val additional = external[fqn] ?: TypeModelProvider.Additional(name);
 
@@ -365,7 +369,8 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
     return PropertyType(name, type, hint = additional.hint?.let { SimpleHint(it) } ?: hint,
         description = additional.description ?: m["Description"]?.string("value") ?: null,
         required = required,
-        deprecated = deprecated).toPOBT()
+        deprecated = deprecated,
+        has_default = has_default).toPOBT()
   }
 
   private fun parseType(attribute: JsonObject?): Type {
