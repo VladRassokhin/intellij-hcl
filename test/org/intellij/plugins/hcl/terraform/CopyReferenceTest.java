@@ -18,6 +18,7 @@ package org.intellij.plugins.hcl.terraform;
 import com.intellij.ide.actions.CopyReferenceAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.testFramework.LightPlatformTestCase;
 import org.intellij.plugins.hcl.psi.*;
@@ -42,8 +43,7 @@ public class CopyReferenceTest extends LightPlatformTestCase {
     checkFQN("A.B", block);
   }
 
-  // TODO: Un-ignore
-  public void _testResourceUsageInDependsOn() throws Exception {
+  public void testResourceUsageInDependsOn() throws Exception {
     PsiFile file = myElementGenerator.createDummyFile("resource x y {}\nresource a b {depends_on=['x.y']}");
     HCLBlock[] blocks = PsiTreeUtil.getChildrenOfType(file, HCLBlock.class);
     assertNotNull(blocks);
@@ -58,9 +58,8 @@ public class CopyReferenceTest extends LightPlatformTestCase {
     checkFQN("x.y", value);
   }
 
-  // TODO: Un-ignore
-  public void _testDataSourceUsageInDependsOn() throws Exception {
-    PsiFile file = myElementGenerator.createDummyFile("data x y {}\nresource a b {depends_on=['x.y']}");
+  public void testDataSourceUsageInDependsOn() throws Exception {
+    PsiFile file = myElementGenerator.createDummyFile("data x y {}\nresource a b {depends_on=['data.x.y']}");
     HCLBlock[] blocks = PsiTreeUtil.getChildrenOfType(file, HCLBlock.class);
     assertNotNull(blocks);
     HCLObject object = blocks[1].getObject();
@@ -76,6 +75,17 @@ public class CopyReferenceTest extends LightPlatformTestCase {
 
   private void checkFQN(String expected, PsiElement element) {
     String fqn = CopyReferenceAction.elementToFqn(element);
+    // Emulate logic from CopyReferenceAction which uses Editor internally
+    if (fqn == null) {
+      PsiReference[] references = element.getReferences();
+      for (PsiReference reference : references) {
+        PsiElement resolve = reference.resolve();
+        if (resolve != null) {
+          fqn = CopyReferenceAction.elementToFqn(resolve);
+          if (fqn != null) break;
+        }
+      }
+    }
     assertEquals(expected, fqn);
   }
 }
