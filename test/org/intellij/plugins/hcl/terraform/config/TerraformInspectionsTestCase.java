@@ -17,6 +17,7 @@ package org.intellij.plugins.hcl.terraform.config;
 
 import com.intellij.testFramework.InspectionFixtureTestCase;
 import org.intellij.plugins.hcl.terraform.config.inspection.*;
+import org.intellij.plugins.hil.inspection.HILMissingSelfInContextInspection;
 import org.intellij.plugins.hil.inspection.HILUnresolvedReferenceInspection;
 
 public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
@@ -62,6 +63,10 @@ public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
 
   public void testMissingBlockProperty() throws Exception {
     doTest("missing_properties", new HCLBlockMissingPropertyInspection());
+  }
+
+  public void testMissingSelfInContext() throws Exception {
+    doTest("reference_to_self", new HILMissingSelfInContextInspection());
   }
 
 }

@@ -23,10 +23,7 @@ import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.psi.PsiElementVisitor
 import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
-import org.intellij.plugins.hil.psi.getProvisionerResource
-import org.intellij.plugins.hil.psi.ILElementVisitor
-import org.intellij.plugins.hil.psi.ILSelectExpression
-import org.intellij.plugins.hil.psi.ILVariable
+import org.intellij.plugins.hil.psi.*
 
 class HILMissingSelfInContextInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -52,8 +49,9 @@ class HILMissingSelfInContextInspection : LocalInspectionTool() {
       if (parent.from !== element) return
 
       if (getProvisionerResource(host) != null) return
+      if (getConnectionResource(host) != null) return
 
-      holder.registerProblem(element, "Referencing 'self' allowed only in 'provisioner' block inside resource definition", ProblemHighlightType.GENERIC_ERROR)
+      holder.registerProblem(element, "Referencing 'self' allowed only in 'provisioner' and 'connection' blocks inside resource definition", ProblemHighlightType.GENERIC_ERROR)
     }
   }
 

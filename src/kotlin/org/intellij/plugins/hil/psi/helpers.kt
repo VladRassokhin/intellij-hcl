@@ -51,6 +51,14 @@ fun getProvisionerResource(host: HCLElement): HCLBlock? {
   return resource
 }
 
+fun getConnectionResource(host: HCLElement): HCLBlock? {
+  val provisioner = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java) ?: return null
+  if (provisioner.getNameElementUnquoted(0) != "connection") return null
+  val resource = PsiTreeUtil.getParentOfType(provisioner, HCLBlock::class.java, true) ?: return null
+  if (resource.getNameElementUnquoted(0) != "resource") return null
+  return resource
+}
+
 fun getResource(position: ILExpression): HCLBlock? {
   val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
 
