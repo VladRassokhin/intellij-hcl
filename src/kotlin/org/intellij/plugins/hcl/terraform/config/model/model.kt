@@ -98,11 +98,12 @@ fun PsiElement.getTerraformSearchScope(): GlobalSearchScope {
   }
   if (directory == null) {
     // File only in-memory, assume as only file in module
-    var vf: VirtualFile = file.virtualFile
+    var vf: VirtualFile? = file.virtualFile
     if (vf is LightVirtualFile) {
       vf = vf.originalFile?:vf
     }
-    return GlobalSearchScopes.directoryScope(file.project, vf.parent, false)
+    val parent = vf?.parent ?: return GlobalSearchScope.fileScope(file)
+    return GlobalSearchScopes.directoryScope(file.project, parent, false)
   } else {
     return GlobalSearchScopes.directoryScope(directory, false)
   }
