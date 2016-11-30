@@ -38,7 +38,5 @@ class HCLFileTypeFactory : FileTypeFactory() {
     consumer.consume(HCLFileType, HCLFileType.DEFAULT_EXTENSION)
     // Nomad
     consumer.consume(HCLFileType, "nomad")
-    // Otto
-    consumer.consume(HCLFileType, ExactFileNameMatcher("Appfile", false))
   }
 }
