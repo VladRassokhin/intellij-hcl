@@ -146,7 +146,7 @@ class DependsOnLazyReference(element: HCLStringLiteral) : HCLElementLazyReferenc
     }
   }
 
-  override fun getRangeInElement(): TextRange {
+  fun getRangeInElement2(): TextRange {
     val block = element.parent?.parent?.parent?.parent
     if (block !is HCLBlock) super.getRangeInElement()
     val value = element.value
@@ -156,7 +156,11 @@ class DependsOnLazyReference(element: HCLStringLiteral) : HCLElementLazyReferenc
       val tl = element.textLength
       return TextRange.create(tl - 1 - ll, tl - 1)
     }
-    return super.getRangeInElement()
+    return getRangeInElement()
+  }
+
+  override fun handleElementRename(newElementName: String?): PsiElement {
+    return ElementManipulators.getManipulator(element).handleContentChange(element, getRangeInElement2(), newElementName)
   }
 }
 
