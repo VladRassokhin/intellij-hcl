@@ -3,6 +3,7 @@
 package org.intellij.plugins.hcl;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.openapi.util.text.StringUtil;
 import java.util.EnumSet;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
@@ -489,7 +490,7 @@ public class _HCLLexer implements FlexLexer {
       return myHereDocMarkerLength != 0 && myHereDocMarkerWeakHash != 0;
     }
     private boolean isHereDocMarker(CharSequence input) {
-      if (myHereDocIndented) input = LexerUtil.trimLeading(input);
+      if (myHereDocIndented) input = StringUtil.trimLeading(input);
       if ((input.length() & 0xFF) != myHereDocMarkerLength) return false;
       int hash = input.toString().hashCode();
       return myHereDocMarkerWeakHash == (hash & 0xFFFF);
