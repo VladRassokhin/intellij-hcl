@@ -18,14 +18,17 @@
 package org.intellij.plugins.hil.psi
 
 import com.intellij.lang.injection.InjectedLanguageManager
+import com.intellij.openapi.components.ServiceManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
 import com.intellij.util.SmartList
+import org.intellij.plugins.hcl.navigation.HCLQualifiedNameProvider
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
+import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
 import org.intellij.plugins.hcl.terraform.config.model.getModule
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
@@ -36,13 +39,14 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
     if (element !is ILExpression) return PsiReference.EMPTY_ARRAY
     val name = getSelectFieldText(element) ?: return PsiReference.EMPTY_ARRAY
-    if (name in HILCompletionContributor.SCOPES) return PsiReference.EMPTY_ARRAY
 
     val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return PsiReference.EMPTY_ARRAY
     if (host !is HCLElement) return PsiReference.EMPTY_ARRAY
 
     val parent = element.parent
     if (parent !is ILSelectExpression) return PsiReference.EMPTY_ARRAY
+
+    if (parent.from === element && name in HILCompletionContributor.SCOPES) return PsiReference.EMPTY_ARRAY
 
     val expression = getGoodLeftElement(parent, element)
     @Suppress("IfNullToElvis")
@@ -55,8 +59,11 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
 
     val references = expression.references
     if (references.isNotEmpty()) {
+      // If we select variable from resource or data provider
+      // or some other element which references another property/block
       val refs = SmartList<PsiReference>()
 
+      // Bypass references to the right of index/star
       if (isStarOrNumber(name)) return references
 
       for (reference in references) {
@@ -76,6 +83,8 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
       }
       return refs.toTypedArray()
     }
+
+    // Rest logic would try to find resource or data provider by element text
 
     val ev = getSelectFieldText(expression) ?: return PsiReference.EMPTY_ARRAY
 
@@ -120,7 +129,11 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
         val blocks = r.`object`?.blockList?.filter { it.nameElements.any { it.name == name } }.orEmpty()
         // TODO: Move this special support somewhere else
         val blockType = r.getNameElementUnquoted(0)
-        if ("module" == blockType) {
+
+        val fqn = HCLQualifiedNameProvider.getQualifiedModelName(r)
+        if (ServiceManager.getService(TypeModelProvider::class.java).ignored_references.contains(fqn)) {
+          if (fake) found.add(FakeHCLProperty(name, r))
+        } else if ("module" == blockType) {
           val module = getModule(r)
           if (module == null) {
             // Resolve everything
@@ -155,6 +168,11 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
             if (r._name == "output" && r._parent is HCLBlock) {
               if (r._parent.getNameElementUnquoted(0) == "resource"
                   && r._parent.getNameElementUnquoted(1) == "terraform_remote_state") {
+                found.add(FakeHCLProperty(name, r))
+              }
+            } else {
+              val fqn = HCLQualifiedNameProvider.getQualifiedModelName(r)
+              if (ServiceManager.getService(TypeModelProvider::class.java).ignored_references.contains(fqn)) {
                 found.add(FakeHCLProperty(name, r))
               }
             }

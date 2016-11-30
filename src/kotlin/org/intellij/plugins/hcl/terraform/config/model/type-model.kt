@@ -112,6 +112,7 @@ class Function(val name: String, val ret: Type, vararg val arguments: Argument =
 class TypeModelProvider {
   val model: TypeModel by lazy { loadModel() }
   val external: Map<String, Additional> by lazy { loadExternalInformation() }
+  val ignored_references: Set<String> by lazy { loadIgnoredReferences() }
 
   fun get(): TypeModel = model
 
@@ -124,6 +125,21 @@ class TypeModelProvider {
     val json = TypeModelLoader.getModelExternalInformation("external-data.json") as JsonObject?
     // TODO: Populate map from json
     return map
+  }
+
+  private fun loadIgnoredReferences(): Set<String> {
+    try {
+      val stream = TypeModelLoader.getResource("/terraform/model-external/ignored-references.list")
+      if (stream == null) {
+        TypeModelLoader.LOG.warn("Cannot read 'ignored-references.list': resource '/terraform/model-external/ignored-references.list' not found")
+        return emptySet()
+      }
+      val lines = stream.bufferedReader(Charsets.UTF_8).readLines().map { it.trim() }.filter { !it.isEmpty() }
+      return LinkedHashSet<String>(lines)
+    } catch(e: Exception) {
+      TypeModelLoader.LOG.warn("Cannot read 'ignored-references.list': ${e.message}")
+      return emptySet()
+    }
   }
 
 
@@ -192,7 +208,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
   }
 
   companion object {
-    private final val LOG = Logger.getInstance(TypeModelLoader::class.java);
+    internal final val LOG = Logger.getInstance(TypeModelLoader::class.java);
 
     fun getResource(path: String): InputStream? {
       return TypeModelProvider::class.java.getResourceAsStream(path)
@@ -350,6 +366,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
        // || m["InputDefault"]?.string("value") != null // Not sure about this property TODO: Investigate how it works in terraform
 
     val additional = external[fqn] ?: TypeModelProvider.Additional(name);
+    // TODO: Consider move 'has_default' to Additional
 
     if (type == Types.Object) {
       isBlock = true
