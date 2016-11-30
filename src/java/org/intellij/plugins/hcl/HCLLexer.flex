@@ -40,7 +40,7 @@ HIL_STOP=(\})
 HEREDOC_START="<<"
 
 IL_STRING_ELEMENT=([^\"\'\$\{\}]|\\[^\r\n])+
-STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
+STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
 
 %state D_STRING, S_STRING, HIL_EXPRESSION, IN_NUMBER
 %state S_HEREDOC_MARKER, S_HEREDOC_LINE, S_HEREDOC_LINE_END
@@ -129,6 +129,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
 <D_STRING> {
   {HIL_START} { if (withInterpolationLanguage) {hil_inc(); yybegin(HIL_EXPRESSION);} }
   \"          { return eods(); }
+  \\\\ {}
   {STRING_ELEMENT} {}
   \$ {}
   \{ {}
@@ -141,6 +142,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}]|\\[^\r\n])+
 <S_STRING> {
   {HIL_START} { if (withInterpolationLanguage) {hil_inc(); yybegin(HIL_EXPRESSION);} }
   \'          { return eoss(); }
+  \\\\ {}
   {STRING_ELEMENT} {}
   \$ {}
   \{ {}

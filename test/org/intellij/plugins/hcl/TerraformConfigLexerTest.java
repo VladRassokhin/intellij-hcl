@@ -180,4 +180,22 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "= ('=')\n" +
         "DOUBLE_QUOTED_STRING ('\"${hello\\n  world}\"')\n");
   }
+
+  public void testNonEscapedQuoteInInterpolation() throws Exception {
+    doTest("x=[\n" +
+        " \"${\"a\"}\",\n" +
+        " \"${\"b\\\\\"}\\\\\",\n" +
+        "]", "ID ('x')\n" +
+        "= ('=')\n" +
+        "[ ('[')\n" +
+        "WHITE_SPACE ('\\n ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"${\"a\"}\"')\n" +
+        ", (',')\n" +
+        "WHITE_SPACE ('\\n ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"${\"b\\\\\"}\\\\\"')\n" +
+        ", (',')\n" +
+        "WHITE_SPACE ('\\n')\n" +
+        "] (']')" +
+        "");
+  }
 }

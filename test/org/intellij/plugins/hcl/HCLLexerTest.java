@@ -614,4 +614,22 @@ public class HCLLexerTest extends LexerTestCase {
       doSimpleTokenTest(HCLElementTypes.NUMBER, input);
     }
   }
+
+  public void testNonEscapedQuote() throws Exception {
+    doTest("x=[\n" +
+        " \"a\",\n" +
+        " \"b\\\\\",\n" +
+        "]", "ID ('x')\n" +
+        "= ('=')\n" +
+        "[ ('[')\n" +
+        "WHITE_SPACE ('\\n ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"a\"')\n" +
+        ", (',')\n" +
+        "WHITE_SPACE ('\\n ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"b\\\\\"')\n" +
+        ", (',')\n" +
+        "WHITE_SPACE ('\\n')\n" +
+        "] (']')" +
+        "");
+  }
 }

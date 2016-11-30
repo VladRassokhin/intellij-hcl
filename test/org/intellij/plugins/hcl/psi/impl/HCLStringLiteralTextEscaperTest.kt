@@ -41,6 +41,7 @@ open class HCLStringLiteralTextEscaperTest : LightPlatformTestCase() {
     doTestRelevantRange("\"x\"", TextRange.from(1, 1))
     doTestRelevantRange("\"aba\"", TextRange.from(1, 3))
     doTestRelevantRange("\"a\\\"b\"", TextRange.from(1, 4))
+    doTestRelevantRange("\"a\\\\\"", TextRange.from(1, 3))
   }
 
   @Test
@@ -48,6 +49,7 @@ open class HCLStringLiteralTextEscaperTest : LightPlatformTestCase() {
     doTestDecode("\"\"", TextRange.from(1, 0), "", 0)
     doTestDecode("\"ab\"", TextRange.from(1, 2), "ab", 0, 1, 2)
     doTestDecode("\"\\\"\"", TextRange.from(1, 2), "\"", 0, 2, 0)
+    doTestDecode("\"\\\\\"", TextRange.from(1, 2), "\\", 0, 2, 0)
   }
 
   @Test
@@ -56,6 +58,8 @@ open class HCLStringLiteralTextEscaperTest : LightPlatformTestCase() {
     doTestOffsetInHost("\"\\\"\"", 1, 3)
     doTestOffsetInHost("\"\\t\"", 1, 3)
     doTestOffsetInHost("\"\"", 1)
+    doTestOffsetInHost("\"\\\\b\"", 1, 3, 4)
+    doTestOffsetInHost("\"\\\\\"", 1, 3)
   }
 
   protected fun doTestDecode(text: String, range: TextRange, expected: String, vararg offsets: Int) {
