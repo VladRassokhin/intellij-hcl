@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hil.HILElementTypes.*;
 import org.intellij.plugins.hil.psi.*;
 
-public class ILBinaryEqualityExpressionImpl extends ILBinaryExpressionMixin implements ILBinaryEqualityExpression {
+public class ILBinaryEqualityExpressionImpl extends ILBinaryExpressionImpl implements ILBinaryEqualityExpression {
 
   public ILBinaryEqualityExpressionImpl(ASTNode node) {
     super(node);

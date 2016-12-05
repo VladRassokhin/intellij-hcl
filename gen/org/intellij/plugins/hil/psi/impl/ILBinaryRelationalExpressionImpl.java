@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hil.HILElementTypes.*;
 import org.intellij.plugins.hil.psi.*;
 
-public class ILBinaryRelationalExpressionImpl extends ILBinaryExpressionMixin implements ILBinaryRelationalExpression {
+public class ILBinaryRelationalExpressionImpl extends ILBinaryExpressionImpl implements ILBinaryRelationalExpression {
 
   public ILBinaryRelationalExpressionImpl(ASTNode node) {
     super(node);

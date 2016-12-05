@@ -17,13 +17,20 @@ package org.intellij.plugins.hil.psi.impl
 
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
+import org.intellij.plugins.hcl.terraform.config.model.Type
+import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hil.HILTokenTypes
 import org.intellij.plugins.hil.psi.*
 
 object HILPsiImplUtils {
-  fun getTypeClass(expression: ILLiteralExpression): Class<*> {
-    // TODO use type classes from HIL model
-    return String::class.java;
+  fun getType(e: ILLiteralExpression): Type? {
+    return when {
+      e.doubleQuotedString != null -> Types.String
+      e.number != null -> Types.Number
+      "true".equals(e.text, true) -> Types.Boolean
+      "false".equals(e.text, true) -> Types.Boolean
+      else -> null
+    }
   }
 
   fun getQualifier(expression: ILMethodCallExpression): ILExpression? {

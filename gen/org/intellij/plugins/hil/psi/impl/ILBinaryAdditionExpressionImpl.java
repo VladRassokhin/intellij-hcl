@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hil.HILElementTypes.*;
 import org.intellij.plugins.hil.psi.*;
 
-public class ILBinaryAdditionExpressionImpl extends ILBinaryExpressionMixin implements ILBinaryAdditionExpression {
+public class ILBinaryAdditionExpressionImpl extends ILBinaryExpressionImpl implements ILBinaryAdditionExpression {
 
   public ILBinaryAdditionExpressionImpl(ASTNode node) {
     super(node);

@@ -16,13 +16,15 @@
 package org.intellij.plugins.hil.psi.impl;
 
 import com.intellij.psi.tree.IElementType;
+import org.intellij.plugins.hcl.terraform.config.model.Type;
 import org.intellij.plugins.hil.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class HILPsiImplUtilJ {
-  public static Class getTypeClass(ILLiteralExpression expression) {
-    return HILPsiImplUtils.INSTANCE.getTypeClass(expression);
+  @Nullable
+  public static Type getType(ILLiteralExpression expression) {
+    return HILPsiImplUtils.INSTANCE.getType(expression);
   }
 
   public static ILExpression getQualifier(ILMethodCallExpression expression) {
@@ -46,7 +48,6 @@ public class HILPsiImplUtilJ {
 
   @NotNull
   public static IElementType getOperationSign(ILBinaryExpression expression) {
-    assert expression instanceof ILBinaryExpressionMixin;
-    return null;
+    return expression.getNode().getFirstChildNode().getTreeNext().getElementType();
   }
 }

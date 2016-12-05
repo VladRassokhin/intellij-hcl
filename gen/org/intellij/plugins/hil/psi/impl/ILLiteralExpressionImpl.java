@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hil.HILElementTypes.*;
 import org.intellij.plugins.hil.psi.*;
+import org.intellij.plugins.hcl.terraform.config.model.Type;
 
 public class ILLiteralExpressionImpl extends ILExpressionWithReference implements ILLiteralExpression {
 
@@ -37,8 +38,9 @@ public class ILLiteralExpressionImpl extends ILExpressionWithReference implement
     return findChildByType(NUMBER);
   }
 
-  public Class getTypeClass() {
-    return HILPsiImplUtilJ.getTypeClass(this);
+  @Nullable
+  public Type getType() {
+    return HILPsiImplUtilJ.getType(this);
   }
 
   @Nullable
