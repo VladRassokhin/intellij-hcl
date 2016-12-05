@@ -17,6 +17,7 @@ package org.intellij.plugins.hcl.terraform.config;
 
 import com.intellij.testFramework.InspectionFixtureTestCase;
 import org.intellij.plugins.hcl.terraform.config.inspection.*;
+import org.intellij.plugins.hil.inspection.HILOperationTypesMismatchInspection;
 import org.intellij.plugins.hil.inspection.HILMissingSelfInContextInspection;
 import org.intellij.plugins.hil.inspection.HILUnresolvedReferenceInspection;
 
@@ -67,6 +68,10 @@ public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
 
   public void testMissingSelfInContext() throws Exception {
     doTest("reference_to_self", new HILMissingSelfInContextInspection());
+  }
+
+  public void testInterpolationBinaryExpressionsTypesCheck() throws Exception {
+    doTest("interpolation_operations_types", new HILOperationTypesMismatchInspection());
   }
 
 }

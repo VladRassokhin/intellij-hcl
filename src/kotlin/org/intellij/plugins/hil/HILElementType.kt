@@ -43,3 +43,14 @@ open class HILElementType(debugName: String) : IElementType(debugName, HILLangua
   }
 }
 
+object HILTypes {
+  val ILBinaryNumericOnlyOperations = TokenSet.create(
+      IL_BINARY_RELATIONAL_EXPRESSION,
+      IL_BINARY_ADDITION_EXPRESSION,
+      IL_BINARY_MULTIPLY_EXPRESSION
+  )
+  val ILBinaryBooleanOnlyOperations = TokenSet.create(
+      IL_BINARY_AND_EXPRESSION,
+      IL_BINARY_OR_EXPRESSION
+  )
+}
