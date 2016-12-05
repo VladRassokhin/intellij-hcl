@@ -30,26 +30,29 @@ class HCLColorsPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPri
 
   companion object {
     private val descriptors: Array<out AttributesDescriptor> = arrayOf(
-        AttributesDescriptor("Brackets", HCLSyntaxHighlighterFactory.HCL_BRACKETS),
-        AttributesDescriptor("Braces", HCLSyntaxHighlighterFactory.HCL_BRACES),
-        AttributesDescriptor("Comma", HCLSyntaxHighlighterFactory.HCL_COMMA),
-        //        AttributesDescriptor("Colon", HCLSyntaxHighlighterFactory.HCL_COLON),
+        AttributesDescriptor("Braces and Operators//Brackets", HCLSyntaxHighlighterFactory.HCL_BRACKETS),
+        AttributesDescriptor("Braces and Operators//Braces", HCLSyntaxHighlighterFactory.HCL_BRACES),
+        AttributesDescriptor("Braces and Operators//Comma", HCLSyntaxHighlighterFactory.HCL_COMMA),
+        AttributesDescriptor("Braces and Operators//Operation sign", HCLSyntaxHighlighterFactory.HCL_OPERATION_SIGN),
+
         AttributesDescriptor("Number", HCLSyntaxHighlighterFactory.HCL_NUMBER),
-        AttributesDescriptor("String", HCLSyntaxHighlighterFactory.HCL_STRING),
         AttributesDescriptor("Keyword", HCLSyntaxHighlighterFactory.HCL_KEYWORD),
-        AttributesDescriptor("Line comment", HCLSyntaxHighlighterFactory.HCL_LINE_COMMENT),
-        AttributesDescriptor("Block comment", HCLSyntaxHighlighterFactory.HCL_BLOCK_COMMENT),
         AttributesDescriptor("Identifier", HCLSyntaxHighlighterFactory.HCL_IDENTIFIER),
 
-        AttributesDescriptor("Property key", HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY),
-        AttributesDescriptor("Block only name/type", HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY),
-        AttributesDescriptor("Block first type", HCLSyntaxHighlighterFactory.HCL_BLOCK_FIRST_TYPE_KEY),
-        AttributesDescriptor("Block second type", HCLSyntaxHighlighterFactory.HCL_BLOCK_SECOND_TYPE_KEY),
-        AttributesDescriptor("Block other types", HCLSyntaxHighlighterFactory.HCL_BLOCK_OTHER_TYPES_KEY),
-        AttributesDescriptor("Block name", HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY),
+        AttributesDescriptor("Comments//Line comment", HCLSyntaxHighlighterFactory.HCL_LINE_COMMENT),
+        AttributesDescriptor("Comments//Block comment", HCLSyntaxHighlighterFactory.HCL_BLOCK_COMMENT),
 
-        AttributesDescriptor("Valid escape sequence", HCLSyntaxHighlighterFactory.HCL_VALID_ESCAPE),
-        AttributesDescriptor("Invalid escape sequence", HCLSyntaxHighlighterFactory.HCL_INVALID_ESCAPE)
+        AttributesDescriptor("Property name", HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY),
+
+        AttributesDescriptor("Block//Block only name/type", HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY),
+        AttributesDescriptor("Block//Block first type", HCLSyntaxHighlighterFactory.HCL_BLOCK_FIRST_TYPE_KEY),
+        AttributesDescriptor("Block//Block second type", HCLSyntaxHighlighterFactory.HCL_BLOCK_SECOND_TYPE_KEY),
+        AttributesDescriptor("Block//Block other types", HCLSyntaxHighlighterFactory.HCL_BLOCK_OTHER_TYPES_KEY),
+        AttributesDescriptor("Block//Block name", HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY),
+
+        AttributesDescriptor("String//String text", HCLSyntaxHighlighterFactory.HCL_STRING),
+        AttributesDescriptor("String//Valid escape sequence", HCLSyntaxHighlighterFactory.HCL_VALID_ESCAPE),
+        AttributesDescriptor("String//Invalid escape sequence", HCLSyntaxHighlighterFactory.HCL_INVALID_ESCAPE)
     )
     private val additional: Map<String, TextAttributesKey> = mapOf(
         "pk" to HCLSyntaxHighlighterFactory.HCL_PROPERTY_KEY,
@@ -93,11 +96,11 @@ class HCLColorsPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPri
   }
 
   override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey>? {
-    return additional;
+    return additional
   }
 
   override fun getAttributeDescriptors(): Array<out AttributesDescriptor> {
-    return descriptors;
+    return descriptors
   }
 
   override fun getColorDescriptors(): Array<out ColorDescriptor> {
