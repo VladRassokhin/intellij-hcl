@@ -16,6 +16,7 @@
 package org.intellij.plugins.hil.psi
 
 import com.intellij.lang.injection.InjectedLanguageManager
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElement
@@ -75,4 +76,19 @@ fun getDataSource(position: ILExpression): HCLBlock? {
   val dataSource = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java, true) ?: return null
   if (dataSource.getNameElementUnquoted(0) != "data") return null
   return dataSource
+}
+
+
+fun <T : PsiElement> PsiElement.getNthChild(n: Int, clazz: Class<ILExpression>): T? {
+  var child: PsiElement? = this.firstChild
+  var i: Int = 0
+  while (child != null) {
+    if (clazz.isInstance(child)) {
+      i++
+      @Suppress("UNCHECKED_CAST")
+      if (i == n) return child as T?
+    }
+    child = child.nextSibling
+  }
+  return null
 }

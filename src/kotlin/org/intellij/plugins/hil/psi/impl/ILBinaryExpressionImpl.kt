@@ -18,21 +18,20 @@ package org.intellij.plugins.hil.psi.impl
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.tree.IElementType
-import org.intellij.plugins.hil.HILElementType
 import org.intellij.plugins.hil.HILTokenTypes
 import org.intellij.plugins.hil.ILBinaryExpression
 import org.intellij.plugins.hil.psi.ILElementVisitor
 import org.intellij.plugins.hil.psi.ILExpression
+import org.intellij.plugins.hil.psi.getNthChild
 
 open class ILBinaryExpressionImpl(node: ASTNode) : ILExpressionImpl(node), ILBinaryExpression {
   override fun getLOperand(): ILExpression? {
-    val nodes = node.getChildren(HILElementType.IL_EXPRESSIONS)
-    return (if (nodes.size > 0) nodes[0].psi else null) as ILExpression
+    return getNthChild(0, ILExpression::class.java)
   }
 
+
   override fun getROperand(): ILExpression? {
-    val nodes = node.getChildren(HILElementType.IL_EXPRESSIONS)
-    return (if (nodes.size > 2) nodes[2].psi else null) as ILExpression
+    return getNthChild(2, ILExpression::class.java)
   }
 
   override fun getOperationSign(): IElementType? {
