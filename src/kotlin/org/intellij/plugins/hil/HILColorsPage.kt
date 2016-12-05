@@ -65,9 +65,9 @@ class HILColorPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPrio
   }
 
   override fun getDemoText(): String {
-    // TODO: Add logical and ternary operator
     return "\${\"interpolati\\o\\n\".example.call(10, \"a\", \n" +
-        "<s>var</s>.foo, <s>path</s>.module, 1-0+(11*4)/2%1, true, false, null,\n" +
+        "<s>var</s>.foo, <s>path</s>.module, 1 - 0 + (11 * 4) / 2 % 1, \n" +
+        "\ttrue || !false, false && !true, true ? 1 : 2, null,\n" +
         "<rt>aws_instance</rt>.<ri>inst</ri>.<pr>availability_zone</pr>[0])}"
   }
 

@@ -70,7 +70,7 @@ class HILSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
       SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.TIL_PARENS, TIL_PARENS)
       SyntaxHighlighterBase.fillMap(ourAttributes, TIL_COMMA, COMMA)
       SyntaxHighlighterBase.fillMap(ourAttributes, TIL_DOT, OP_DOT)
-      SyntaxHighlighterBase.fillMap(ourAttributes, HILTokenType.IL_ALL_OPERATORS, TIL_OPERATOR)
+      SyntaxHighlighterBase.fillMap(ourAttributes, HILTokenTypes.IL_ALL_OPERATORS, TIL_OPERATOR)
       SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.STRING_LITERALS, TIL_STRING)
       SyntaxHighlighterBase.fillMap(ourAttributes, TIL_NUMBER, NUMBER)
       SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.TIL_KEYWORDS, TIL_KEYWORD)

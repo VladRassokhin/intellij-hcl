@@ -20,23 +20,26 @@ import com.intellij.psi.tree.TokenSet
 import org.intellij.plugins.hil.HILElementTypes.*
 
 
-open class HILTokenType(debugName: String) : IElementType(debugName, HILLanguage) {
-  companion object {
-    val IL_BINARY_OPERATORS: TokenSet = TokenSet.create(
-        OP_PLUS, OP_MINUS, OP_MUL, OP_DIV, OP_MOD,
-        OP_EQUAL, OP_NOT_EQUAL,
-        OP_LESS, OP_GREATER, OP_LESS_OR_EQUAL, OP_GREATER_OR_EQUAL,
-        OP_AND_AND, OP_OR_OR
-    )
+open class HILTokenType(debugName: String) : IElementType(debugName, HILLanguage)
 
-    val IL_UNARY_OPERATORS: TokenSet = TokenSet.create(
-        OP_PLUS, OP_MINUS, OP_NOT
-    )
-
-    val IL_TERNARY_OPERATOR_TOKENS = TokenSet.create(
-        OP_QUEST, OP_COLON
-    )
-
-    val IL_ALL_OPERATORS = TokenSet.orSet(IL_UNARY_OPERATORS, IL_BINARY_OPERATORS, IL_TERNARY_OPERATOR_TOKENS)
+object HILTokenTypes {
+  init {
+    assert(OP_PLUS != null)
   }
+  val IL_BINARY_OPERATORS: TokenSet = TokenSet.create(
+      OP_PLUS, OP_MINUS, OP_MUL, OP_DIV, OP_MOD,
+      OP_EQUAL, OP_NOT_EQUAL,
+      OP_LESS, OP_GREATER, OP_LESS_OR_EQUAL, OP_GREATER_OR_EQUAL,
+      OP_AND_AND, OP_OR_OR
+  )
+
+  val IL_UNARY_OPERATORS: TokenSet = TokenSet.create(
+      OP_PLUS, OP_MINUS, OP_NOT
+  )
+
+  val IL_TERNARY_OPERATOR_TOKENS = TokenSet.create(
+      OP_QUEST, OP_COLON
+  )
+
+  val IL_ALL_OPERATORS = TokenSet.orSet(IL_UNARY_OPERATORS, IL_BINARY_OPERATORS, IL_TERNARY_OPERATOR_TOKENS)
 }

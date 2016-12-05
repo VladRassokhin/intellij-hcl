@@ -19,7 +19,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.tree.IElementType
 import org.intellij.plugins.hil.HILElementType
-import org.intellij.plugins.hil.HILTokenType
+import org.intellij.plugins.hil.HILTokenTypes
 import org.intellij.plugins.hil.ILBinaryExpression
 import org.intellij.plugins.hil.psi.ILElementVisitor
 import org.intellij.plugins.hil.psi.ILExpression
@@ -36,7 +36,7 @@ open class ILBinaryExpressionImpl(node: ASTNode) : ILExpressionImpl(node), ILBin
   }
 
   override fun getOperationSign(): IElementType? {
-    val nodes = node.getChildren(HILTokenType.IL_BINARY_OPERATORS)
+    val nodes = node.getChildren(HILTokenTypes.IL_BINARY_OPERATORS)
     return if (nodes.size == 1) nodes[0].elementType else null
   }
 
