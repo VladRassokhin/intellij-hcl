@@ -15,10 +15,6 @@
  */
 package org.intellij.plugins.hil.psi
 
-import org.intellij.plugins.hil.ILBinaryExpression
 
 open class ILElementVisitor : ILGeneratedVisitor() {
-  fun visitILBinaryExpression(o: ILBinaryExpression) {
-    visitElement(o)
-  }
 }

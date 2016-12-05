@@ -13,9 +13,10 @@
   psiPackage = 'org.intellij.plugins.hil.psi'
   psiImplPackage = 'org.intellij.plugins.hil.psi.impl'
 
+  extends("ILBinary.+Expression")=ILBinaryExpression
+  mixin("ILBinary.+Expression")="org.intellij.plugins.hil.psi.impl.ILBinaryExpressionMixin"
+
   extends(".*Expression|.*Variable|ILExpressionHolder")=ILExpression
-  implements("ILBinary.*Expression")="org.intellij.plugins.hil.ILBinaryExpression"
-  mixin("ILBinary.*Expression")="org.intellij.plugins.hil.psi.impl.ILBinaryExpressionImpl"
 
   tokens = [
 //    space = "regexp:\s+"
@@ -122,6 +123,15 @@ ILConditionalExpression ::= ILExpression OP_QUEST <<push 1>> ILExpression OP_COL
   ]
 }
 
+fake ILBinaryExpression ::= ILExpression+ {
+  mixin="org.intellij.plugins.hil.psi.impl.ILBinaryExpressionMixin"
+  methods = [
+    ILExpression="" // Magic hack
+    LOperand="ILExpression[0]"
+    ROperand="ILExpression[1]"
+    getOperationSign
+  ]
+}
 ILBinaryRelationalExpression ::= ILExpression relationalOp ILExpression
 ILBinaryEqualityExpression ::= ILExpression equalityOp ILExpression
 

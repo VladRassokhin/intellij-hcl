@@ -43,4 +43,10 @@ public class HILPsiImplUtilJ {
   public static IElementType getOperationSign(ILUnaryExpression expression) {
     return HILPsiImplUtils.INSTANCE.getOperationSign(expression);
   }
+
+  @NotNull
+  public static IElementType getOperationSign(ILBinaryExpression expression) {
+    assert expression instanceof ILBinaryExpressionMixin;
+    return null;
+  }
 }

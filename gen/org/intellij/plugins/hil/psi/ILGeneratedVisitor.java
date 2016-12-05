@@ -3,40 +3,37 @@ package org.intellij.plugins.hil.psi;
 
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
-import org.intellij.plugins.hil.ILBinaryExpression;
 import com.intellij.psi.templateLanguages.OuterLanguageElement;
 import com.intellij.psi.PsiNamedElement;
 
 public class ILGeneratedVisitor extends PsiElementVisitor {
 
   public void visitILBinaryAdditionExpression(@NotNull ILBinaryAdditionExpression o) {
-    visitILExpression(o);
-    // visitILBinaryExpression(o);
+    visitILBinaryExpression(o);
   }
 
   public void visitILBinaryAndExpression(@NotNull ILBinaryAndExpression o) {
-    visitILExpression(o);
-    // visitILBinaryExpression(o);
+    visitILBinaryExpression(o);
   }
 
   public void visitILBinaryEqualityExpression(@NotNull ILBinaryEqualityExpression o) {
+    visitILBinaryExpression(o);
+  }
+
+  public void visitILBinaryExpression(@NotNull ILBinaryExpression o) {
     visitILExpression(o);
-    // visitILBinaryExpression(o);
   }
 
   public void visitILBinaryMultiplyExpression(@NotNull ILBinaryMultiplyExpression o) {
-    visitILExpression(o);
-    // visitILBinaryExpression(o);
+    visitILBinaryExpression(o);
   }
 
   public void visitILBinaryOrExpression(@NotNull ILBinaryOrExpression o) {
-    visitILExpression(o);
-    // visitILBinaryExpression(o);
+    visitILBinaryExpression(o);
   }
 
   public void visitILBinaryRelationalExpression(@NotNull ILBinaryRelationalExpression o) {
-    visitILExpression(o);
-    // visitILBinaryExpression(o);
+    visitILBinaryExpression(o);
   }
 
   public void visitILConditionalExpression(@NotNull ILConditionalExpression o) {

@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hil.HILElementTypes.*;
 import org.intellij.plugins.hil.psi.*;
 
-public class ILBinaryRelationalExpressionImpl extends ILBinaryExpressionImpl implements ILBinaryRelationalExpression {
+public class ILBinaryRelationalExpressionImpl extends ILBinaryExpressionMixin implements ILBinaryRelationalExpression {
 
   public ILBinaryRelationalExpressionImpl(ASTNode node) {
     super(node);
@@ -23,12 +23,6 @@ public class ILBinaryRelationalExpressionImpl extends ILBinaryExpressionImpl imp
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ILGeneratedVisitor) accept((ILGeneratedVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<ILExpression> getILExpressionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ILExpression.class);
   }
 
 }

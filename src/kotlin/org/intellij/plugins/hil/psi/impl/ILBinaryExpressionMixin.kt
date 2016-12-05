@@ -18,15 +18,14 @@ package org.intellij.plugins.hil.psi.impl
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.tree.IElementType
-import org.intellij.plugins.hil.HILTokenTypes
-import org.intellij.plugins.hil.ILBinaryExpression
+import org.intellij.plugins.hil.psi.ILBinaryExpression
 import org.intellij.plugins.hil.psi.ILElementVisitor
 import org.intellij.plugins.hil.psi.ILExpression
 import org.intellij.plugins.hil.psi.getNthChild
 
-open class ILBinaryExpressionImpl(node: ASTNode) : ILExpressionImpl(node), ILBinaryExpression {
-  override fun getLOperand(): ILExpression? {
-    return getNthChild(0, ILExpression::class.java)
+abstract class ILBinaryExpressionMixin(node: ASTNode) : ILExpressionImpl(node), ILBinaryExpression {
+  override fun getLOperand(): ILExpression {
+    return getNthChild(0, ILExpression::class.java)!!
   }
 
 
@@ -34,9 +33,8 @@ open class ILBinaryExpressionImpl(node: ASTNode) : ILExpressionImpl(node), ILBin
     return getNthChild(2, ILExpression::class.java)
   }
 
-  override fun getOperationSign(): IElementType? {
-    val nodes = node.getChildren(HILTokenTypes.IL_BINARY_OPERATORS)
-    return if (nodes.size == 1) nodes[0].elementType else null
+  override fun getOperationSign(): IElementType {
+    return node.firstChildNode.treeNext.elementType
   }
 
   override fun toString(): String {
