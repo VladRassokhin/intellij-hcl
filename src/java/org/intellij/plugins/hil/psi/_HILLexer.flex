@@ -37,13 +37,23 @@ ID=[a-zA-Z_][0-9a-zA-Z\-_*]*
   "["                         { return L_BRACKET; }
   "]"                         { return R_BRACKET; }
   ","                         { return COMMA; }
-  "="                         { return EQUALS; }
-  "."                         { return POINT; }
+  "."                         { return OP_DOT; }
   "+"                         { return OP_PLUS; }
   "-"                         { return OP_MINUS; }
   "*"                         { return OP_MUL; }
   "/"                         { return OP_DIV; }
   "%"                         { return OP_MOD; }
+  "!"                         { return OP_NOT; }
+  "=="                        { return OP_EQUAL; }
+  "!="                        { return OP_NOT_EQUAL; }
+  "<"                         { return OP_LESS; }
+  ">"                         { return OP_GREATER; }
+  "<="                        { return OP_LESS_OR_EQUAL; }
+  ">="                        { return OP_GREATER_OR_EQUAL; }
+  "&&"                        { return OP_AND_AND; }
+  "||"                        { return OP_OR_OR; }
+  ":"                         { return OP_COLON; }
+  "?"                         { return OP_QUEST; }
   "true"                      { return TRUE; }
   "false"                     { return FALSE; }
   "null"                      { return NULL; }

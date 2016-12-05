@@ -9,9 +9,38 @@ import com.intellij.psi.PsiNamedElement;
 
 public class ILGeneratedVisitor extends PsiElementVisitor {
 
-  public void visitILBinaryAddMulExpression(@NotNull ILBinaryAddMulExpression o) {
+  public void visitILBinaryAdditionExpression(@NotNull ILBinaryAdditionExpression o) {
     visitILExpression(o);
     // visitILBinaryExpression(o);
+  }
+
+  public void visitILBinaryAndExpression(@NotNull ILBinaryAndExpression o) {
+    visitILExpression(o);
+    // visitILBinaryExpression(o);
+  }
+
+  public void visitILBinaryEqualityExpression(@NotNull ILBinaryEqualityExpression o) {
+    visitILExpression(o);
+    // visitILBinaryExpression(o);
+  }
+
+  public void visitILBinaryMultiplyExpression(@NotNull ILBinaryMultiplyExpression o) {
+    visitILExpression(o);
+    // visitILBinaryExpression(o);
+  }
+
+  public void visitILBinaryOrExpression(@NotNull ILBinaryOrExpression o) {
+    visitILExpression(o);
+    // visitILBinaryExpression(o);
+  }
+
+  public void visitILBinaryRelationalExpression(@NotNull ILBinaryRelationalExpression o) {
+    visitILExpression(o);
+    // visitILBinaryExpression(o);
+  }
+
+  public void visitILConditionalExpression(@NotNull ILConditionalExpression o) {
+    visitILExpression(o);
   }
 
   public void visitILExpression(@NotNull ILExpression o) {

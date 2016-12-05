@@ -31,11 +31,12 @@ class HILColorPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPrio
 
   companion object {
     private val descriptors: Array<out AttributesDescriptor> = arrayOf(
-        AttributesDescriptor("Parentheses", HILSyntaxHighlighterFactory.TIL_PARENS),
-        AttributesDescriptor("Braces", HILSyntaxHighlighterFactory.TIL_BRACES),
-        AttributesDescriptor("Brackets", HILSyntaxHighlighterFactory.TIL_BRACKETS),
-        AttributesDescriptor("Comma", HILSyntaxHighlighterFactory.TIL_COMMA),
-        AttributesDescriptor("Operator", HILSyntaxHighlighterFactory.TIL_OPERATOR),
+        AttributesDescriptor("Braces and Operators//Parentheses", HILSyntaxHighlighterFactory.TIL_PARENS),
+        AttributesDescriptor("Braces and Operators//Braces", HILSyntaxHighlighterFactory.TIL_BRACES),
+        AttributesDescriptor("Braces and Operators//Brackets", HILSyntaxHighlighterFactory.TIL_BRACKETS),
+        AttributesDescriptor("Braces and Operators//Comma", HILSyntaxHighlighterFactory.TIL_COMMA),
+        AttributesDescriptor("Braces and Operators//Operation sign", HILSyntaxHighlighterFactory.TIL_OPERATOR),
+        AttributesDescriptor("Braces and Operators//Dot", HILSyntaxHighlighterFactory.TIL_DOT),
         AttributesDescriptor("Number", HILSyntaxHighlighterFactory.TIL_NUMBER),
         AttributesDescriptor("String", HILSyntaxHighlighterFactory.TIL_STRING),
         AttributesDescriptor("Keyword", HILSyntaxHighlighterFactory.TIL_KEYWORD),
@@ -64,6 +65,7 @@ class HILColorPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPrio
   }
 
   override fun getDemoText(): String {
+    // TODO: Add logical and ternary operator
     return "\${\"interpolati\\o\\n\".example.call(10, \"a\", \n" +
         "<s>var</s>.foo, <s>path</s>.module, 1-0+(11*4)/2%1, true, false, null,\n" +
         "<rt>aws_instance</rt>.<ri>inst</ri>.<pr>availability_zone</pr>[0])}"

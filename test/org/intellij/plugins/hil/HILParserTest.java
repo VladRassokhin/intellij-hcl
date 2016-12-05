@@ -91,7 +91,7 @@ public class HILParserTest extends ParsingTestCase {
     doCodeTest("${format(\"\", 2+2, 2-2, 2*2, 2/2, 2%2)}");
   }
 
-  public void testWeirdMath() throws Exception {
+  public void testOrderOfMathOperations() throws Exception {
     doCodeTest("${format(\"\", 2 + 2 * 2, 2 + (2 * 2))}");
   }
 
@@ -118,4 +118,25 @@ public class HILParserTest extends ParsingTestCase {
   public void testSlashesEscaping() throws Exception {
     doCodeTest("${join(\"\\\",\\\"\", values(var.developers))}");
   }
+
+  public void testTernaryOp() throws Exception {
+    doCodeTest("${true ? 1 : 2}");
+  }
+
+  public void testTernaryComplexOp() throws Exception {
+    doCodeTest("${a < 5 ? a + 5 : !false && true}");
+  }
+
+  public void testLogicalOps() throws Exception {
+    doCodeTest("${true || !false && true}");
+  }
+
+  public void testCompareOps() throws Exception {
+    doCodeTest("${format(\"\", 1 < 2, 1 > 2, 1 <= 2, 1 >= 2, 1 == 2, 1 != 2)}");
+  }
+
+  public void testOrderOfBinaryOperations() throws Exception {
+    doCodeTest("${format(\"\", a<5||b>2, a<5&&b>2, a<5 != b>2, a+1 != b+2)}");
+  }
+
 }

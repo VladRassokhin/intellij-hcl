@@ -10,19 +10,25 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hil.HILElementTypes.*;
 import org.intellij.plugins.hil.psi.*;
 
-public abstract class ILExpressionImpl extends ILExpressionBase implements ILExpression {
+public class ILBinaryMultiplyExpressionImpl extends ILBinaryExpressionImpl implements ILBinaryMultiplyExpression {
 
-  public ILExpressionImpl(ASTNode node) {
+  public ILBinaryMultiplyExpressionImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ILGeneratedVisitor visitor) {
-    visitor.visitILExpression(this);
+    visitor.visitILBinaryMultiplyExpression(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ILGeneratedVisitor) accept((ILGeneratedVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<ILExpression> getILExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ILExpression.class);
   }
 
 }

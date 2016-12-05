@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hil.HILElementTypes.*;
 import org.intellij.plugins.hil.psi.*;
 
-public class ILBinaryAddMulExpressionImpl extends ILBinaryExpressionImpl implements ILBinaryAddMulExpression {
+public class ILBinaryAdditionExpressionImpl extends ILBinaryExpressionImpl implements ILBinaryAdditionExpression {
 
-  public ILBinaryAddMulExpressionImpl(ASTNode node) {
+  public ILBinaryAdditionExpressionImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ILGeneratedVisitor visitor) {
-    visitor.visitILBinaryAddMulExpression(this);
+    visitor.visitILBinaryAdditionExpression(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {

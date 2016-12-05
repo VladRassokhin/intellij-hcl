@@ -36,7 +36,7 @@ open class ILBinaryExpressionImpl(node: ASTNode) : ILExpressionImpl(node), ILBin
   }
 
   override fun getOperationSign(): IElementType? {
-    val nodes = node.getChildren(HILTokenType.IL_BINARY_OPERATIONS)
+    val nodes = node.getChildren(HILTokenType.IL_BINARY_OPERATORS)
     return if (nodes.size == 1) nodes[0].elementType else null
   }
 

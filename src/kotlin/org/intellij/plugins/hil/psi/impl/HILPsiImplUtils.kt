@@ -53,7 +53,7 @@ object HILPsiImplUtils {
   }
 
   fun getOperationSign(expression: ILUnaryExpression): IElementType {
-    val nodes = expression.node.getChildren(HILTokenType.IL_UNARY_OPERATIONS)
+    val nodes = expression.node.getChildren(HILTokenType.IL_UNARY_OPERATORS)
     return nodes.first().elementType
   }
 }

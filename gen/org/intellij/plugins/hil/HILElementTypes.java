@@ -8,7 +8,13 @@ import org.intellij.plugins.hil.psi.impl.*;
 
 public interface HILElementTypes {
 
-  IElementType IL_BINARY_ADD_MUL_EXPRESSION = new HILElementType("IL_BINARY_ADD_MUL_EXPRESSION");
+  IElementType IL_BINARY_ADDITION_EXPRESSION = new HILElementType("IL_BINARY_ADDITION_EXPRESSION");
+  IElementType IL_BINARY_AND_EXPRESSION = new HILElementType("IL_BINARY_AND_EXPRESSION");
+  IElementType IL_BINARY_EQUALITY_EXPRESSION = new HILElementType("IL_BINARY_EQUALITY_EXPRESSION");
+  IElementType IL_BINARY_MULTIPLY_EXPRESSION = new HILElementType("IL_BINARY_MULTIPLY_EXPRESSION");
+  IElementType IL_BINARY_OR_EXPRESSION = new HILElementType("IL_BINARY_OR_EXPRESSION");
+  IElementType IL_BINARY_RELATIONAL_EXPRESSION = new HILElementType("IL_BINARY_RELATIONAL_EXPRESSION");
+  IElementType IL_CONDITIONAL_EXPRESSION = new HILElementType("IL_CONDITIONAL_EXPRESSION");
   IElementType IL_EXPRESSION = new HILElementType("IL_EXPRESSION");
   IElementType IL_EXPRESSION_HOLDER = new HILElementType("IL_EXPRESSION_HOLDER");
   IElementType IL_INDEX_SELECT_EXPRESSION = new HILElementType("IL_INDEX_SELECT_EXPRESSION");
@@ -22,7 +28,6 @@ public interface HILElementTypes {
 
   IElementType COMMA = new HILTokenType(",");
   IElementType DOUBLE_QUOTED_STRING = new HILTokenType("DOUBLE_QUOTED_STRING");
-  IElementType EQUALS = new HILTokenType("=");
   IElementType FALSE = new HILTokenType("false");
   IElementType ID = new HILTokenType("ID");
   IElementType INTERPOLATION_END = new HILTokenType("}");
@@ -31,12 +36,23 @@ public interface HILElementTypes {
   IElementType L_PAREN = new HILTokenType("(");
   IElementType NULL = new HILTokenType("null");
   IElementType NUMBER = new HILTokenType("NUMBER");
+  IElementType OP_AND_AND = new HILTokenType("&&");
+  IElementType OP_COLON = new HILTokenType(":");
   IElementType OP_DIV = new HILTokenType("/");
+  IElementType OP_DOT = new HILTokenType(".");
+  IElementType OP_EQUAL = new HILTokenType("==");
+  IElementType OP_GREATER = new HILTokenType(">");
+  IElementType OP_GREATER_OR_EQUAL = new HILTokenType(">=");
+  IElementType OP_LESS = new HILTokenType("<");
+  IElementType OP_LESS_OR_EQUAL = new HILTokenType("<=");
   IElementType OP_MINUS = new HILTokenType("-");
   IElementType OP_MOD = new HILTokenType("%");
   IElementType OP_MUL = new HILTokenType("*");
+  IElementType OP_NOT = new HILTokenType("!");
+  IElementType OP_NOT_EQUAL = new HILTokenType("!=");
+  IElementType OP_OR_OR = new HILTokenType("||");
   IElementType OP_PLUS = new HILTokenType("+");
-  IElementType POINT = new HILTokenType(".");
+  IElementType OP_QUEST = new HILTokenType("?");
   IElementType R_BRACKET = new HILTokenType("]");
   IElementType R_PAREN = new HILTokenType(")");
   IElementType TRUE = new HILTokenType("true");
@@ -44,11 +60,26 @@ public interface HILElementTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == IL_BINARY_ADD_MUL_EXPRESSION) {
-        return new ILBinaryAddMulExpressionImpl(node);
+       if (type == IL_BINARY_ADDITION_EXPRESSION) {
+        return new ILBinaryAdditionExpressionImpl(node);
       }
-      else if (type == IL_EXPRESSION) {
-        return new ILExpressionImpl(node);
+      else if (type == IL_BINARY_AND_EXPRESSION) {
+        return new ILBinaryAndExpressionImpl(node);
+      }
+      else if (type == IL_BINARY_EQUALITY_EXPRESSION) {
+        return new ILBinaryEqualityExpressionImpl(node);
+      }
+      else if (type == IL_BINARY_MULTIPLY_EXPRESSION) {
+        return new ILBinaryMultiplyExpressionImpl(node);
+      }
+      else if (type == IL_BINARY_OR_EXPRESSION) {
+        return new ILBinaryOrExpressionImpl(node);
+      }
+      else if (type == IL_BINARY_RELATIONAL_EXPRESSION) {
+        return new ILBinaryRelationalExpressionImpl(node);
+      }
+      else if (type == IL_CONDITIONAL_EXPRESSION) {
+        return new ILConditionalExpressionImpl(node);
       }
       else if (type == IL_EXPRESSION_HOLDER) {
         return new ILExpressionHolderImpl(node);
