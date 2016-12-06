@@ -15,7 +15,13 @@
  */
 package org.intellij.plugins.hil;
 
+import com.intellij.lang.Language;
+import com.intellij.psi.FileViewProvider;
 import com.intellij.testFramework.ParsingTestCase;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+import java.util.Set;
 
 public class HILParserTest extends ParsingTestCase {
   public HILParserTest() {
@@ -139,4 +145,40 @@ public class HILParserTest extends ParsingTestCase {
     doCodeTest("${format(\"\", a<5||b>2, a<5&&b>2, a<5 != b>2, a+1 != b+2)}");
   }
 
+  public void testUnfinishedConditional1() throws Exception {
+    doCodeTest("${true?}");
+  }
+
+  public void testUnfinishedConditional2() throws Exception {
+    doCodeTest("${true?:}");
+  }
+
+  public void testUnfinishedConditional3() throws Exception {
+    doCodeTest("${true?true}");
+  }
+
+  public void testUnfinishedConditional4() throws Exception {
+    doCodeTest("${true?true:}");
+  }
+
+  public void testUnfinishedConditional5() throws Exception {
+    doCodeTest("${true?:true}");
+  }
+
+  protected void doCodeTest(@NotNull final String code, @NotNull final String expected) throws IOException {
+    myFile = createPsiFile("a", code);
+    ensureParsed(myFile);
+    assertEquals(code, myFile.getText());
+    boolean skipSpaces = this.skipSpaces();
+    boolean printRanges = this.includeRanges();
+    FileViewProvider provider = myFile.getViewProvider();
+    Set<Language> languages = provider.getLanguages();
+
+    if (!this.checkAllPsiRoots() || languages.size() == 1) {
+      String actual = toParseTreeText(myFile, skipSpaces, printRanges).trim();
+      assertSameLines(expected, actual);
+    } else {
+      fail("Use test files since there're many languages in parsed file: " + languages);
+    }
+  }
 }

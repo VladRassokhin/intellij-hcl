@@ -238,7 +238,7 @@ public class HILParser implements PsiParser, LightPsiParser {
   // Operator priority table:
   // 0: PREFIX(ILParenthesizedExpression)
   // 1: PREFIX(ILExpressionHolder)
-  // 2: BINARY(ILConditionalExpression)
+  // 2: POSTFIX(ILConditionalExpression)
   // 3: BINARY(ILBinaryAndExpression)
   // 4: BINARY(ILBinaryOrExpression)
   // 5: BINARY(ILBinaryEqualityExpression)
@@ -273,8 +273,7 @@ public class HILParser implements PsiParser, LightPsiParser {
     while (true) {
       Marker m = enter_section_(b, l, _LEFT_, null);
       if (g < 2 && ILConditionalExpression_0(b, l + 1)) {
-        r = report_error_(b, ILExpression(b, l, 2));
-        r = ILConditionalExpression_1(b, l + 1) && r;
+        r = true;
         exit_section_(b, l, m, IL_CONDITIONAL_EXPRESSION, r, true, null);
       }
       else if (g < 3 && andOp(b, l + 1)) {
@@ -369,27 +368,31 @@ public class HILParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // OP_QUEST <<push 1>>
+  // '?' <<push 1>> ILExpression (':' ILExpression) <<pop>>
   private static boolean ILConditionalExpression_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ILConditionalExpression_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
     r = consumeTokenSmart(b, OP_QUEST);
-    r = r && push(b, l + 1, 1);
-    exit_section_(b, m, null, r);
-    return r;
+    p = r; // pin = '\?'|'\:'
+    r = r && report_error_(b, push(b, l + 1, 1));
+    r = p && report_error_(b, ILExpression(b, l + 1, -1)) && r;
+    r = p && report_error_(b, ILConditionalExpression_0_3(b, l + 1)) && r;
+    r = p && pop(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
-  // OP_COLON ILExpression <<pop>>
-  private static boolean ILConditionalExpression_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ILConditionalExpression_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, OP_COLON);
+  // ':' ILExpression
+  private static boolean ILConditionalExpression_0_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ILConditionalExpression_0_3")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeTokenSmart(b, OP_COLON);
+    p = r; // pin = '\?'|'\:'
     r = r && ILExpression(b, l + 1, -1);
-    r = r && pop(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // '[' ILExpression ']'

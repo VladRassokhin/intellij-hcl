@@ -113,8 +113,9 @@ ILUnaryExpression ::= UnaryOp ILExpression
   ]
 }
 
-ILConditionalExpression ::= ILExpression OP_QUEST <<push 1>> ILExpression OP_COLON ILExpression <<pop>>
+ILConditionalExpression ::= ILExpression ('?' <<push 1>> ILExpression (':' ILExpression) <<pop>>)
 {
+  pin(".*")="'\?'|'\:'"
   methods=[
     condition="ILExpression[0]"
     then="ILExpression[1]"
