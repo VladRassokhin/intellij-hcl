@@ -169,6 +169,14 @@ public class HILParserTest extends ParsingTestCase {
     doCodeTest("${true?:true}");
   }
 
+  public void testUnfinishedConditional6() throws Exception {
+    doCodeTest("?:", "HILFile: a.hil\n" +
+        "  ILExpressionHolder\n" +
+        "    PsiErrorElement:<expression> expected, got '?'\n" +
+        "      PsiElement(?)('?')\n" +
+        "    PsiElement(:)(':')");
+  }
+
   protected void doCodeTest(@NotNull final String code, @NotNull final String expected) throws IOException {
     myFile = createPsiFile("a", code);
     ensureParsed(myFile);

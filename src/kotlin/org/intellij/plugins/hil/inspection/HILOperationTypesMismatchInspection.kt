@@ -30,6 +30,7 @@ import org.intellij.plugins.hil.HILElementTypes.IL_BINARY_EQUALITY_EXPRESSION
 import org.intellij.plugins.hil.HILTypes.ILBinaryBooleanOnlyOperations
 import org.intellij.plugins.hil.HILTypes.ILBinaryNumericOnlyOperations
 import org.intellij.plugins.hil.psi.*
+import java.util.regex.Pattern
 
 class HILOperationTypesMismatchInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -98,6 +99,57 @@ class HILOperationTypesMismatchInspection : LocalInspectionTool() {
       } else {
         return
       }
+    }
+
+    private val Boolean_Pattern = "(true)|(false)".toPattern(Pattern.CASE_INSENSITIVE)
+
+    override fun visitILConditionalExpression(operation: ILConditionalExpression) {
+      ProgressIndicatorProvider.checkCanceled()
+      val host = InjectedLanguageManager.getInstance(operation.project).getInjectionHost(operation) ?: return
+      if (host !is HCLElement) return
+
+      // First check condition
+      val condition = operation.condition
+      val type = getType(condition)
+      if (type == Types.Boolean) {
+        // Ok
+      } else if (type == Types.String) {
+        // Semi ok
+        if (condition is ILLiteralExpression && condition.doubleQuotedString != null) {
+          if (!Boolean_Pattern.matcher(condition.unquotedText!!).matches()) {
+            holder.registerProblem(condition, "Condition should be boolean or string with value 'true' or 'false'", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+          }
+        }
+      } else {
+        holder.registerProblem(condition, "Condition should be boolean or string with value 'true' or 'false'", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+      }
+
+      ProgressIndicatorProvider.checkCanceled()
+
+      // Then branches
+      val left = operation.then ?: return
+      val right = operation.`else` ?: return
+
+      // See TypeCachedValueProvider.doGetType(ILConditionalExpression) for details
+      val l = getType(left)
+      val r = getType(right)
+
+      ProgressIndicatorProvider.checkCanceled()
+
+      // There's some weird logic in HIL eval_test.go:
+      // > // false expression is type-converted to match true expression
+      // > // true expression is type-converted to match false expression if the true expression is string
+      if (l == r) // Ok
+      else if (l == null) // Ok
+      else if (r == null) // Ok
+      else if (l == Types.Any || r == Types.Any) // Ok
+      else if (l == Types.String) // Ok // Would be casted //TODO Check actual value
+      else if (r == Types.String) // Ok // Would be casted //TODO Check actual value
+      else if (l != r) {
+        holder.registerProblem(operation, "Both branches expected to have same type. 'then' is ${l.name}, 'else' is ${r.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+      }
+
+      // TODO: Report if some branch has type Array or Map, they're forbidden for now
     }
   }
 
