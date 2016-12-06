@@ -25,12 +25,12 @@ import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.model.Type
 import org.intellij.plugins.hcl.terraform.config.model.Types
+import org.intellij.plugins.hil.GoUtil
 import org.intellij.plugins.hil.HILElementTypes
 import org.intellij.plugins.hil.HILElementTypes.IL_BINARY_EQUALITY_EXPRESSION
 import org.intellij.plugins.hil.HILTypes.ILBinaryBooleanOnlyOperations
 import org.intellij.plugins.hil.HILTypes.ILBinaryNumericOnlyOperations
 import org.intellij.plugins.hil.psi.*
-import java.util.regex.Pattern
 
 class HILOperationTypesMismatchInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -58,15 +58,21 @@ class HILOperationTypesMismatchInspection : LocalInspectionTool() {
 
       val elementType = operation.node.elementType
       if (elementType in ILBinaryNumericOnlyOperations) {
-        if (leftType != Types.Number || rightType != Types.Number) {
-          holder.registerProblem(operation, "Both arguments expected to be numbers. left is ${leftType.name}, right is ${rightType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+        if (leftType != Types.Number) {
+          holder.registerProblem(left, "Expected to be number, actual type is ${leftType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+        }
+        if (rightType != Types.Number) {
+          holder.registerProblem(right, "Expected to be number, actual type is ${rightType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         }
         return
       } else if (elementType == IL_BINARY_EQUALITY_EXPRESSION) {
         return // could compare anything with implicit 'toString' conversion. TODO: Add warning?
       } else if (elementType in ILBinaryBooleanOnlyOperations) {
-        if (leftType != Types.Boolean || rightType != Types.Boolean) {
-          holder.registerProblem(operation, "Both arguments expected to be booleans. left is ${leftType.name}, right is ${rightType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+        if (leftType != Types.Boolean) {
+          holder.registerProblem(left, "Expected to be boolean, actual type is ${leftType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+        }
+        if (rightType != Types.Boolean) {
+          holder.registerProblem(right, "Expected to be boolean, actual type is ${rightType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         }
         return
       } else {
@@ -101,8 +107,6 @@ class HILOperationTypesMismatchInspection : LocalInspectionTool() {
       }
     }
 
-    private val Boolean_Pattern = "(true)|(false)".toPattern(Pattern.CASE_INSENSITIVE)
-
     override fun visitILConditionalExpression(operation: ILConditionalExpression) {
       ProgressIndicatorProvider.checkCanceled()
       val host = InjectedLanguageManager.getInstance(operation.project).getInjectionHost(operation) ?: return
@@ -116,12 +120,12 @@ class HILOperationTypesMismatchInspection : LocalInspectionTool() {
       } else if (type == Types.String) {
         // Semi ok
         if (condition is ILLiteralExpression && condition.doubleQuotedString != null) {
-          if (!Boolean_Pattern.matcher(condition.unquotedText!!).matches()) {
-            holder.registerProblem(condition, "Condition should be boolean or string with value 'true' or 'false'", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+          if (!GoUtil.isBoolean(condition.unquotedText!!)) {
+            holder.registerProblem(condition, "Condition should be boolean or string with boolean value", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
           }
         }
       } else {
-        holder.registerProblem(condition, "Condition should be boolean or string with value 'true' or 'false'", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+        holder.registerProblem(condition, "Condition should be boolean or string with boolean value", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
       }
 
       ProgressIndicatorProvider.checkCanceled()
