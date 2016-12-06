@@ -23,14 +23,8 @@ import org.intellij.plugins.hil.HILTokenTypes
 import org.intellij.plugins.hil.psi.*
 
 object HILPsiImplUtils {
-  fun getType(e: ILLiteralExpression): Type? {
-    return when {
-      e.doubleQuotedString != null -> Types.String
-      e.number != null -> Types.Number
-      "true".equals(e.text, true) -> Types.Boolean
-      "false".equals(e.text, true) -> Types.Boolean
-      else -> null
-    }
+  fun getType(e: ILExpression): Type? {
+    return TypeCachedValueProvider.getType(e)
   }
 
   fun getQualifier(expression: ILMethodCallExpression): ILExpression? {

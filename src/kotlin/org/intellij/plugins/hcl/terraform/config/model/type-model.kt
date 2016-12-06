@@ -28,7 +28,11 @@ import java.util.regex.Pattern
 
 // Model for element types
 
-open class Type(val name: String)
+open class Type(val name: String) {
+  override fun toString(): String {
+    return "Type{$name}"
+  }
+}
 
 open class BaseModelType(val description: String? = null, val required: Boolean = false, val deprecated: String? = null)
 

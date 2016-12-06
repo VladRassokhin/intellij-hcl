@@ -137,6 +137,10 @@ public class HILParserTest extends ParsingTestCase {
     doCodeTest("${true || !false && true}");
   }
 
+  public void testLogicalOps2() throws Exception {
+    doCodeTest("${!!(true || !false) && true}");
+  }
+
   public void testCompareOps() throws Exception {
     doCodeTest("${format(\"\", 1 < 2, 1 > 2, 1 <= 2, 1 >= 2, 1 == 2, 1 != 2)}");
   }

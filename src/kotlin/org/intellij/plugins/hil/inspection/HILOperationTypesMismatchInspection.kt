@@ -101,21 +101,9 @@ class HILOperationTypesMismatchInspection : LocalInspectionTool() {
     }
   }
 
-  private fun getType(e: ILExpression): Type? {
-    return when (e) {
-      is ILLiteralExpression -> e.type
-
-    // TODO: Implement via resolving/model :
-      is ILVariable -> null
-      is ILExpressionHolder -> null
-      is ILBinaryExpression -> null
-      is ILSelectExpression -> null
-      is ILMethodCallExpression -> null
-      is ILConditionalExpression -> null
-      is ILUnaryExpression -> null
-      is ILParenthesizedExpression -> null
-    //is ILParameterList -> null
-      else -> null
+  companion object {
+    private fun getType(e: ILExpression): Type? {
+      return TypeCachedValueProvider.getType(e)
     }
   }
 
