@@ -84,6 +84,10 @@ public class HILCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("data 'y' 'x' {count = 2 source='${count.<caret> + 1}'", 1, "index");
   }
 
+  public void testModuleScopeCompletion() throws Exception {
+    doBasicCompletionTest("module 'ref' {source = './child'} foo='${<caret>}'", "module");
+  }
+
   public void testModuleCompletion() throws Exception {
     doBasicCompletionTest("module 'ref' {source = './child'} foo='${module.<caret>}'", 1, "ref");
   }

@@ -61,7 +61,7 @@ class HILCompletionContributor : CompletionContributor() {
 
 
   companion object {
-    @JvmField val GLOBAL_SCOPES: SortedSet<String> = sortedSetOf("var", "path", "data")
+    @JvmField val GLOBAL_SCOPES: SortedSet<String> = sortedSetOf("var", "path", "data", "module")
     @JvmField val FUNCTIONS = ServiceManager.getService(TypeModelProvider::class.java).get().functions
 
     // For tests purposes
@@ -92,11 +92,11 @@ class HILCompletionContributor : CompletionContributor() {
         .andNot(PlatformPatterns.psiElement().withSuperParent(2, ILSelectExpression::class.java))
 
     val ILSE_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
-        .with(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
+        .with(getScopeSelectPatternCondition(SCOPES))
     val ILSE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
-        .without(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
+        .without(getScopeSelectPatternCondition(SCOPES))
     val ILISE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILIndexSelectExpression::class.java)
-        .without(getScopeSelectPatternCondition(SCOPE_PROVIDERS.keys))
+        .without(getScopeSelectPatternCondition(SCOPES))
     val ILSE_FROM_DATA_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
         .with(getScopeSelectPatternCondition(setOf("data")))
     val ILSE_DATA_SOURCE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
