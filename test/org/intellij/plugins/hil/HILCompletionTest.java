@@ -88,8 +88,12 @@ public class HILCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("module 'ref' {source = './child'} foo='${<caret>}'", "module");
   }
 
-  public void testModuleCompletion() throws Exception {
+  public void testModuleNameCompletion() throws Exception {
     doBasicCompletionTest("module 'ref' {source = './child'} foo='${module.<caret>}'", 1, "ref");
+  }
+
+  public void testModuleInputNotCompleted() throws Exception {
+    doBasicCompletionTest("module 'ref' {source = './child' x=true} foo='${module.ref.<caret>}'", 0);
   }
 
   //<editor-fold desc="Resource completion">
