@@ -522,6 +522,8 @@ object ModelHelper {
       "provisioner" -> getProvisionerProperties(block)
     // Can be inner for both 'resource' and 'provisioner'
       "connection" -> getConnectionProperties(block)
+
+      "module" -> getModuleProperties(block)
       else -> return TypeModel.RootBlocksMap[type]?.properties?:getModelBlockProperties(block, type)
     }
     return props
@@ -601,6 +603,23 @@ object ModelHelper {
     properties.addAll(TypeModel.AbstractDataSource.properties)
     if (dataSourceType?.properties != null) {
       properties.addAll(dataSourceType?.properties)
+    }
+    return (properties.toTypedArray())
+  }
+
+  fun getModuleProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+    val properties = ArrayList<PropertyOrBlockType>()
+    properties.addAll(TypeModel.Module.properties)
+
+    val module = getModule(block)
+    if (module != null) {
+      val variables = module.getAllVariables()
+      for (v in variables) {
+        val name = v.first.name
+        val hasDefault = v.second.`object`?.findProperty(TypeModel.Variable_Default.name) != null
+        // TODO: Add 'string' hint, AFAIK only strings coud be passed to module parameters
+        properties.add(PropertyType(name, Types.String, required = !hasDefault).toPOBT())
+      }
     }
     return (properties.toTypedArray())
   }

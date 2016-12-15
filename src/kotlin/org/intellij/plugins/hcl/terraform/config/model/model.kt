@@ -80,7 +80,7 @@ fun getModule(moduleBlock: HCLBlock): Module? {
   if (sourceVal !is HCLStringLiteral) return null
   val source = sourceVal.value
 
-  val file = moduleBlock.containingFile
+  val file = moduleBlock.containingFile.originalFile
   val directory = file.containingDirectory ?: return null
 
   // Prefer local file paths over loaded modules.
