@@ -2,6 +2,50 @@
   "name": "postgresql",
   "type": "provider",
   "schema": {
+    "connect_timeout": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeInt"
+      },
+      {
+        "name": "Optional",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "Maximum wait for connection, in seconds. Zero or not specified means wait indefinitely."
+      },
+      {
+        "name": "DefaultValue_Computed",
+        "type": "int",
+        "value": "180"
+      }
+    ],
+    "database": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeString"
+      },
+      {
+        "name": "Optional",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "The name of the database to connect to in order to conenct to (defaults to `postgres`)."
+      },
+      {
+        "name": "DefaultValue_Computed",
+        "type": "string",
+        "value": "postgres"
+      }
+    ],
     "host": [
       {
         "name": "Type",
@@ -9,14 +53,14 @@
         "value": "TypeString"
       },
       {
-        "name": "Required",
+        "name": "Optional",
         "type": "bool",
         "value": "true"
       },
       {
         "name": "Description",
         "type": "string",
-        "value": "The PostgreSQL server address"
+        "value": "Name of PostgreSQL server address to connect to"
       }
     ],
     "password": [
@@ -33,7 +77,7 @@
       {
         "name": "Description",
         "type": "string",
-        "value": "Password for PostgreSQL server connection"
+        "value": "Password to be used if the PostgreSQL server demands password authentication"
       }
     ],
     "port": [
@@ -48,14 +92,14 @@
         "value": "true"
       },
       {
-        "name": "Default",
-        "type": "interface {}",
-        "value": "5432"
-      },
-      {
         "name": "Description",
         "type": "string",
-        "value": "The PostgreSQL server port"
+        "value": "The PostgreSQL port number to connect to at the server host, or socket file name extension for Unix-domain connections"
+      },
+      {
+        "name": "DefaultValue_Computed",
+        "type": "int",
+        "value": "5432"
       }
     ],
     "ssl_mode": [
@@ -70,14 +114,26 @@
         "value": "true"
       },
       {
-        "name": "Description",
+        "name": "Deprecated",
         "type": "string",
-        "value": "Connection mode for PostgreSQL server"
+        "value": "Rename PostgreSQL provider `ssl_mode` attribute to `sslmode`"
+      }
+    ],
+    "sslmode": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeString"
       },
       {
-        "name": "DefaultValue_Computed",
+        "name": "Optional",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
         "type": "string",
-        "value": "require"
+        "value": "This option determines whether or with what priority a secure SSL TCP/IP connection will be negotiated with the PostgreSQL server"
       }
     ],
     "username": [
@@ -87,19 +143,131 @@
         "value": "TypeString"
       },
       {
-        "name": "Required",
+        "name": "Optional",
         "type": "bool",
         "value": "true"
       },
       {
         "name": "Description",
         "type": "string",
-        "value": "Username for PostgreSQL server connection"
+        "value": "PostgreSQL user name to connect as"
+      },
+      {
+        "name": "DefaultValue_Computed",
+        "type": "string",
+        "value": "postgres"
       }
     ]
   },
   "resources": {
     "postgresql_database": {
+      "allow_connections": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "If false then no one can connect to this database"
+        }
+      ],
+      "connection_limit": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "How many concurrent connections can be made to this database"
+        }
+      ],
+      "encoding": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Character set encoding to use in the new database"
+        }
+      ],
+      "is_template": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "If true, then this database can be cloned by any user with CREATEDB privileges"
+        }
+      ],
+      "lc_collate": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Collation order (LC_COLLATE) to use in the new database"
+        }
+      ],
+      "lc_ctype": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Character classification (LC_CTYPE) to use in the new database"
+        }
+      ],
       "name": [
         {
           "name": "Type",
@@ -110,6 +278,11 @@
           "name": "Required",
           "type": "bool",
           "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "The PostgreSQL database name to connect to"
         }
       ],
       "owner": [
@@ -122,6 +295,45 @@
           "name": "Optional",
           "type": "bool",
           "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "The role name of the user who will own the new database"
+        }
+      ],
+      "tablespace_name": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "The name of the tablespace that will be associated with the new database"
+        }
+      ],
+      "template": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "The name of the template from which to create the new database"
         }
       ]
     },
@@ -137,10 +349,44 @@
           "type": "bool",
           "value": "true"
         }
+      ],
+      "schema": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Sets the schema of an extension"
+        }
+      ],
+      "version": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Sets the version number of the extension"
+        }
       ]
     },
     "postgresql_role": {
-      "encrypted": [
+      "bypass_row_level_security": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -155,6 +401,133 @@
           "name": "Default",
           "type": "interface {}",
           "value": "false"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Determine whether a role bypasses every row-level security (RLS) policy"
+        }
+      ],
+      "connection_limit": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "How many concurrent connections can be made with this role"
+        }
+      ],
+      "create_database": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "false"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Define a role's ability to create databases"
+        }
+      ],
+      "create_role": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "false"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Determine whether this role will be permitted to create new roles"
+        }
+      ],
+      "encrypted": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Deprecated",
+          "type": "string",
+          "value": "Rename PostgreSQL role resource attribute \"encrypted\" to \"encrypted_password\""
+        }
+      ],
+      "encrypted_password": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Control whether the password is stored encrypted in the system catalogs"
+        }
+      ],
+      "inherit": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Determine whether a role \"inherits\" the privileges of roles it is a member of"
         }
       ],
       "login": [
@@ -172,6 +545,11 @@
           "name": "Default",
           "type": "interface {}",
           "value": "false"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Determine whether a role is allowed to log in"
         }
       ],
       "name": [
@@ -184,6 +562,11 @@
           "name": "Required",
           "type": "bool",
           "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "The name of the role"
         }
       ],
       "password": [
@@ -196,6 +579,96 @@
           "name": "Optional",
           "type": "bool",
           "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Sets the role's password"
+        }
+      ],
+      "replication": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "false"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Determine whether a role is allowed to initiate streaming replication or put the system in and out of backup mode"
+        }
+      ],
+      "superuser": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "false"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Determine whether the new role is a \"superuser\""
+        }
+      ],
+      "valid_until": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "infinity"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "Sets a date and time after which the role's password is no longer valid"
+        }
+      ]
+    },
+    "postgresql_schema": {
+      "name": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Description",
+          "type": "string",
+          "value": "The name of the schema"
         }
       ]
     }
