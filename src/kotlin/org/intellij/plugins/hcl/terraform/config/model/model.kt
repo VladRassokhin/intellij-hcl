@@ -16,12 +16,14 @@
 package org.intellij.plugins.hcl.terraform.config.model
 
 import com.intellij.lang.injection.InjectedLanguageManager
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.GlobalSearchScopes
 import com.intellij.psi.search.PsiElementProcessor
 import com.intellij.testFramework.LightVirtualFile
+import org.apache.commons.codec.digest.DigestUtils
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hil.psi.ILExpression
@@ -71,21 +73,49 @@ fun getModule(file: PsiFile): Module {
   }
 }
 
+private val LOG = Logger.getInstance(Module::class.java.name)
 fun getModule(moduleBlock: HCLBlock): Module? {
+  val name = moduleBlock.getNameElementUnquoted(1) ?: return null
   val sourceVal = moduleBlock.`object`?.findProperty("source")?.value ?: return null
   if (sourceVal !is HCLStringLiteral) return null
   val source = sourceVal.value
 
-  // !!! Only local file paths supported
-
   val file = moduleBlock.containingFile
   val directory = file.containingDirectory ?: return null
 
+  // Prefer local file paths over loaded modules.
+  // TODO: Consider removing that
+  var dir: PsiDirectory? = findRelativeModule(directory, moduleBlock, source)
+  if (dir != null) {
+    return Module(dir)
+  }
+
+  // Hopefully user already executed `terraform get`
+  dir = doFindModule(name, source, directory)
+  if (dir == null) {
+    LOG.warn("Terraform Module '$name' with source '$source' directory not found locally, use `terraform get` to fetch modules.")
+    return null
+  }
+  return Module(dir)
+}
+
+private fun findRelativeModule(directory: PsiDirectory, moduleBlock: HCLBlock, source: String): PsiDirectory? {
   val relative = directory.virtualFile.findFileByRelativePath(source) ?: return null
   if (!relative.exists() || !relative.isDirectory) return null
-  val dir = PsiManager.getInstance(moduleBlock.project).findDirectory(relative) ?: return null
-  return Module(dir)
+  return PsiManager.getInstance(moduleBlock.project).findDirectory(relative)
+}
 
+private fun doFindModule(nameElementUnquoted: String, source: String, directory: PsiDirectory): PsiDirectory? {
+  val md5 = computeModuleStorageName(nameElementUnquoted, source)
+  val dir = directory.findSubdirectory(".terraform")?.findSubdirectory("modules")?.findSubdirectory(md5)
+  return dir
+}
+
+fun computeModuleStorageName(name: String, source: String): String {
+  // TODO: Improve path calculation
+  val path = listOf(name).joinToString(".") { it }
+  val md5 = DigestUtils.md5Hex("root.$path-$source")!!
+  return md5
 }
 
 fun PsiElement.getTerraformSearchScope(): GlobalSearchScope {
