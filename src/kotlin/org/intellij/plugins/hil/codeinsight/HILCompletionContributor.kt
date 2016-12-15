@@ -111,7 +111,7 @@ class HILCompletionContributor : CompletionContributor() {
 
     private val LOG = Logger.getInstance(HILCompletionContributor::class.java)
     fun create(value: String): LookupElementBuilder {
-      var builder = LookupElementBuilder.create(value)
+      val builder = LookupElementBuilder.create(value)
       return builder
     }
 
@@ -195,7 +195,7 @@ class HILCompletionContributor : CompletionContributor() {
 
   private object VariableCompletionProvider : SelectFromScopeCompletionProvider("var") {
     override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
-      val variables: List<Variable> = getLocalDefinedVariables(variable);
+      val variables: List<Variable> = getLocalDefinedVariables(variable)
       for (v in variables) {
         result.addElement(create(v.name))
       }
@@ -235,7 +235,7 @@ class HILCompletionContributor : CompletionContributor() {
   private object ModuleCompletionProvider : SelectFromScopeCompletionProvider("module") {
     override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val module = getTerraformModule(variable) ?: return
-      val modules = module.getDefinedModules();
+      val modules = module.getDefinedModules()
       for (m in modules) {
         val name = m.getNameElementUnquoted(1)
         if (name != null) result.addElement(create(name))
