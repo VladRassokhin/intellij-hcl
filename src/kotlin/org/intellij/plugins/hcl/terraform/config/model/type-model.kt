@@ -126,8 +126,17 @@ class TypeModelProvider {
 
   private fun loadExternalInformation(): Map<String, Additional> {
     val map = HashMap<String, Additional>()
-    val json = TypeModelLoader.getModelExternalInformation("external-data.json") as JsonObject?
-    // TODO: Populate map from json
+    val json = TypeModelLoader.getModelExternalInformation("external-data.json")
+    if (json is JsonObject) {
+      for ((fqn, obj) in json) {
+        if (obj !is JsonObject) {
+          TypeModelLoader.LOG.warn("In external-data.json value for '$fqn' root key is not an object")
+          continue
+        }
+        val additional = Additional(fqn, obj.string("description"), obj.string("hint"), obj.boolean("required"))
+        map.put(fqn, additional)
+      }
+    }
     return map
   }
 
@@ -147,7 +156,7 @@ class TypeModelProvider {
   }
 
 
-  data class Additional(val name: String, val description: String? = null, val hint: String? = null)
+  data class Additional(val name: String, val description: String? = null, val hint: String? = null, val required: Boolean? = null)
 }
 
 private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
@@ -165,7 +174,8 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
           .setUrls(ClasspathHelper.forPackage("terraform.model", TypeModelLoader::class.java.classLoader))
           .setScanners(ResourcesScanner())
       );
-      val resources = reflections.getResources(Pattern.compile(".*\\.json")).filter { it.contains("terraform/model/") };
+      val resources = reflections.getResources(Pattern.compile(".*\\.json"))
+          .filter { it.contains("terraform/model/") }
       resources.forEach {
         val file = it.ensureHavePrefix("/")
         val json: JsonObject?
@@ -362,7 +372,6 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       }
       // ?? return BlockType(name).toPOBT()
     }
-    val required = (m["Required"]?.string("value")?.toLowerCase() ?: "false").toBoolean()
     val deprecated = m["Deprecated"]?.string("value") ?: null
     val has_default: Boolean =
         m["Default"]?.string("value") != null
@@ -371,6 +380,8 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
     val additional = external[fqn] ?: TypeModelProvider.Additional(name);
     // TODO: Consider move 'has_default' to Additional
+
+    val required = additional.required ?: m["Required"]?.string("value")?.toLowerCase()?.toBoolean() ?: false
 
     if (type == Types.Object) {
       isBlock = true
