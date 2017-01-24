@@ -1,128 +1,52 @@
 {
-  "name": "docker",
+  "name": "ignition",
   "type": "provider",
-  "schema": {
-    "ca_material": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "PEM-encoded content of Docker host CA certificate"
-      },
-      {
-        "name": "DefaultValue_Computed",
-        "type": "string",
-        "value": ""
-      }
-    ],
-    "cert_material": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "PEM-encoded content of Docker client certificate"
-      },
-      {
-        "name": "DefaultValue_Computed",
-        "type": "string",
-        "value": ""
-      }
-    ],
-    "cert_path": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "Path to directory with Docker TLS config"
-      },
-      {
-        "name": "DefaultValue_Computed",
-        "type": "string",
-        "value": ""
-      }
-    ],
-    "host": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Required",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "The Docker daemon address"
-      },
-      {
-        "name": "DefaultValue_Computed",
-        "type": "string",
-        "value": "unix:///var/run/docker.sock"
-      }
-    ],
-    "key_material": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "PEM-encoded content of Docker client private key"
-      },
-      {
-        "name": "DefaultValue_Computed",
-        "type": "string",
-        "value": ""
-      }
-    ]
-  },
+  "schema": {},
   "resources": {
-    "docker_container": {
-      "bridge": [
+    "ignition_config": {
+      "append": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeString"
+          "value": "TypeList"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaInfo",
+          "value": {
+            "source": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              },
+              {
+                "name": "Required",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
+            "verification": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              }
+            ]
+          }
         }
       ],
-      "command": [
+      "arrays": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -145,112 +69,7 @@
           ]
         }
       ],
-      "cpu_shares": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "destroy_grace_seconds": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "dns": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "dns_opts": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "dns_search": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "domainname": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "entrypoint": [
+      "disks": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -273,11 +92,11 @@
           ]
         }
       ],
-      "env": [
+      "files": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeSet"
+          "value": "TypeList"
         },
         {
           "name": "Optional",
@@ -296,18 +115,87 @@
           ]
         }
       ],
-      "gateway": [
+      "filesystems": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeList"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaElements",
+          "value": [
+            {
+              "name": "Type",
+              "type": "schema.ValueType",
+              "value": "TypeString"
+            }
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeList"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaElements",
+          "value": [
+            {
+              "name": "Type",
+              "type": "schema.ValueType",
+              "value": "TypeString"
+            }
+          ]
+        }
+      ],
+      "networkd": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeList"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaElements",
+          "value": [
+            {
+              "name": "Type",
+              "type": "schema.ValueType",
+              "value": "TypeString"
+            }
+          ]
+        }
+      ],
+      "rendered": [
         {
           "name": "Type",
           "type": "schema.ValueType",
           "value": "TypeString"
         }
       ],
-      "host": [
+      "replace": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeSet"
+          "value": "TypeList"
         },
         {
           "name": "Optional",
@@ -318,7 +206,7 @@
           "name": "Elem",
           "type": "ResourceSchemaInfo",
           "value": {
-            "host": [
+            "source": [
               {
                 "name": "Type",
                 "type": "schema.ValueType",
@@ -330,14 +218,14 @@
                 "value": "true"
               }
             ],
-            "ip": [
+            "verification": [
               {
                 "name": "Type",
                 "type": "schema.ValueType",
                 "value": "TypeString"
               },
               {
-                "name": "Required",
+                "name": "Optional",
                 "type": "bool",
                 "value": "true"
               }
@@ -345,19 +233,55 @@
           }
         }
       ],
-      "hostname": [
+      "systemd": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeString"
+          "value": "TypeList"
         },
         {
           "name": "Optional",
           "type": "bool",
           "value": "true"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaElements",
+          "value": [
+            {
+              "name": "Type",
+              "type": "schema.ValueType",
+              "value": "TypeString"
+            }
+          ]
         }
       ],
-      "image": [
+      "users": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeList"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaElements",
+          "value": [
+            {
+              "name": "Type",
+              "type": "schema.ValueType",
+              "value": "TypeString"
+            }
+          ]
+        }
+      ]
+    },
+    "ignition_disk": {
+      "device": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -369,189 +293,11 @@
           "value": "true"
         }
       ],
-      "ip_address": [
+      "partition": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeString"
-        }
-      ],
-      "ip_prefix_length": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        }
-      ],
-      "labels": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeMap"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "links": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "log_driver": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "json-file"
-        }
-      ],
-      "log_opts": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeMap"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "max_retry_count": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "memory": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "memory_swap": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "must_run": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "network_mode": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "networks": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "ports": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
+          "value": "TypeList"
         },
         {
           "name": "Optional",
@@ -562,31 +308,7 @@
           "name": "Elem",
           "type": "ResourceSchemaInfo",
           "value": {
-            "external": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "internal": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "ip": [
+            "label": [
               {
                 "name": "Type",
                 "type": "schema.ValueType",
@@ -598,7 +320,43 @@
                 "value": "true"
               }
             ],
-            "protocol": [
+            "number": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeInt"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
+            "size": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeInt"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
+            "start": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeInt"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
+            "type_guid": [
               {
                 "name": "Type",
                 "type": "schema.ValueType",
@@ -608,17 +366,12 @@
                 "name": "Optional",
                 "type": "bool",
                 "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "tcp"
               }
             ]
           }
         }
       ],
-      "privileged": [
+      "wipe_table": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -629,41 +382,14 @@
           "type": "bool",
           "value": "true"
         }
-      ],
-      "publish_all_ports": [
+      ]
+    },
+    "ignition_file": {
+      "content": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "restart": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "no"
-        }
-      ],
-      "upload": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
+          "value": "TypeList"
         },
         {
           "name": "Optional",
@@ -686,7 +412,410 @@
                 "value": "true"
               }
             ],
-            "file": [
+            "mime": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              },
+              {
+                "name": "Default",
+                "type": "interface {}",
+                "value": "text/plain"
+              }
+            ]
+          }
+        }
+      ],
+      "filesystem": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "gid": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "mode": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "path": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "source": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeList"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaInfo",
+          "value": {
+            "compression": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
+            "source": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
+            "verification": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              }
+            ]
+          }
+        }
+      ],
+      "uid": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ]
+    },
+    "ignition_filesystem": {
+      "mount": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeList"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaInfo",
+          "value": {
+            "device": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              },
+              {
+                "name": "Required",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
+            "force": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeBool"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
+            "format": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              },
+              {
+                "name": "Required",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
+            "options": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeList"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              },
+              {
+                "name": "Elem",
+                "type": "ResourceSchemaElements",
+                "value": [
+                  {
+                    "name": "Type",
+                    "type": "schema.ValueType",
+                    "value": "TypeString"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "name": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "path": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ]
+    },
+    "ignition_group": {
+      "gid": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "name": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "password_hash": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ]
+    },
+    "ignition_networkd_unit": {
+      "content": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "name": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ]
+    },
+    "ignition_raid": {
+      "devices": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeList"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaElements",
+          "value": [
+            {
+              "name": "Type",
+              "type": "schema.ValueType",
+              "value": "TypeString"
+            }
+          ]
+        }
+      ],
+      "level": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "name": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "spares": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ]
+    },
+    "ignition_systemd_unit": {
+      "content": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "dropin": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeList"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaInfo",
+          "value": {
+            "content": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
+            "name": [
               {
                 "name": "Type",
                 "type": "schema.ValueType",
@@ -701,110 +830,7 @@
           }
         }
       ],
-      "user": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "volumes": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "container_path": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "from_container": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "host_path": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "read_only": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "volume_name": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "docker_image": {
-      "keep_locally": [
+      "enable": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -814,13 +840,23 @@
           "name": "Optional",
           "type": "bool",
           "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "true"
         }
       ],
-      "latest": [
+      "mask": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeString"
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
         }
       ],
       "name": [
@@ -834,8 +870,10 @@
           "type": "bool",
           "value": "true"
         }
-      ],
-      "pull_trigger": [
+      ]
+    },
+    "ignition_user": {
+      "gecos": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -845,18 +883,13 @@
           "name": "Optional",
           "type": "bool",
           "value": "true"
-        },
-        {
-          "name": "Deprecated",
-          "type": "string",
-          "value": "Use field pull_triggers instead"
         }
       ],
-      "pull_triggers": [
+      "groups": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeSet"
+          "value": "TypeList"
         },
         {
           "name": "Optional",
@@ -874,119 +907,8 @@
             }
           ]
         }
-      ]
-    },
-    "docker_network": {
-      "check_duplicate": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
       ],
-      "driver": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "id": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        }
-      ],
-      "internal": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "ipam_config": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "aux_address": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeMap"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "gateway": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "ip_range": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "subnet": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ],
-      "ipam_driver": [
+      "home_dir": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -1010,11 +932,11 @@
           "value": "true"
         }
       ],
-      "options": [
+      "no_create_home": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeMap"
+          "value": "TypeBool"
         },
         {
           "name": "Optional",
@@ -1022,16 +944,31 @@
           "value": "true"
         }
       ],
-      "scope": [
+      "no_log_init": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeString"
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
         }
-      ]
-    },
-    "docker_volume": {
-      "driver": [
+      ],
+      "no_user_group": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "password_hash": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -1043,11 +980,11 @@
           "value": "true"
         }
       ],
-      "driver_opts": [
+      "primary_group": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeMap"
+          "value": "TypeString"
         },
         {
           "name": "Optional",
@@ -1055,18 +992,46 @@
           "value": "true"
         }
       ],
-      "mountpoint": [
+      "shell": [
         {
           "name": "Type",
           "type": "schema.ValueType",
           "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
         }
       ],
-      "name": [
+      "ssh_authorized_keys": [
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeString"
+          "value": "TypeList"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaElements",
+          "value": [
+            {
+              "name": "Type",
+              "type": "schema.ValueType",
+              "value": "TypeString"
+            }
+          ]
+        }
+      ],
+      "uid": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeInt"
         },
         {
           "name": "Optional",
@@ -1076,27 +1041,5 @@
       ]
     }
   },
-  "data-sources": {
-    "docker_registry_image": {
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "sha256_digest": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        }
-      ]
-    }
-  }
+  "data-sources": {}
 }
