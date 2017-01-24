@@ -17,3 +17,6 @@ module "a" {
 resource "a" "b" {
   depends_on = ["${var.y}"]
 }
+terraform {
+  required_version = "> ${version}"
+}

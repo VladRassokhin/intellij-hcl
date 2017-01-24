@@ -8,3 +8,7 @@ resource "google_compute_instance" "mesos-slave" {
     }
   }
 }
+
+terraform {
+  required_version = "> 0.8.0"
+}

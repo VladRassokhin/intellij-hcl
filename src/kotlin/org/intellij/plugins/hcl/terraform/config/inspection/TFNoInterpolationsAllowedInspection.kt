@@ -61,6 +61,10 @@ class TFNoInterpolationsAllowedInspection : LocalInspectionTool() {
         psiElement(HCLBlock::class.java)
             .and(RootBlockSelector)
             .with(createBlockPattern("data"))
+    val TerraformRootBlockSelector: PsiElementPattern.Capture<HCLBlock> =
+        psiElement(HCLBlock::class.java)
+            .and(RootBlockSelector)
+            .with(createBlockPattern("terraform"))
 
     fun createBlockPattern(type: String): PatternCondition<HCLBlock?> {
       return object : PatternCondition<HCLBlock?>("HCLBlock($type)") {
@@ -92,6 +96,8 @@ class TFNoInterpolationsAllowedInspection : LocalInspectionTool() {
     override fun visitBlock(block: HCLBlock) {
       if (ModuleRootBlockSelector.accepts(block)) {
         checkModule(block)
+      } else if (TerraformRootBlockSelector.accepts(block)) {
+        checkTerraform(block)
       }
     }
 
@@ -123,6 +129,14 @@ class TFNoInterpolationsAllowedInspection : LocalInspectionTool() {
           holder.registerProblem(source, "Module source should be a double quoted string")
         }
       }
+    }
+
+    private fun checkTerraform(block: HCLBlock) {
+      // Ensure there's no interpolation in all string properties
+      (block.`object`?.propertyList ?: return)
+          .map { it.value }
+          .filterIsInstance<HCLStringLiteral>()
+          .forEach { reportRanges(it, "properties inside 'terraform' block") }
     }
 
     private fun checkForVariableInterpolations(o: HCLStringLiteral) {
