@@ -138,6 +138,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
   \' {}
   {EOL} { push_eol(); return eods(); }
   <<EOF>> { return eods(); }
+  [^] { return eods(); }
 }
 
 <S_STRING> {
@@ -151,6 +152,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
   \" {}
   {EOL} { push_eol(); return eoss(); }
   <<EOF>> { return eoss(); }
+  [^] { return eoss(); }
 }
 
 
@@ -181,9 +183,13 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
     return WHITE_SPACE;
   }
   <<EOF>> { yybegin(YYINITIAL); return BAD_CHARACTER; }
-  .+ {
+  [^] {
+    if (!isHereDocMarkerDefined()) {
       yybegin(YYINITIAL);
       return BAD_CHARACTER;
+    }
+    yybegin(S_HEREDOC_LINE);
+    return BAD_CHARACTER;
   }
 }
 
