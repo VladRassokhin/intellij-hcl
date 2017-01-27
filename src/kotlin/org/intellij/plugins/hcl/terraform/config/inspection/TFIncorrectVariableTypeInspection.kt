@@ -81,7 +81,10 @@ class TFIncorrectVariableTypeInspection : LocalInspectionTool() {
           in Types.SimpleValueTypes -> "string"
           Types.Array -> "list"
           Types.Object -> "map"
-          else -> throw IllegalStateException()
+          else -> {
+            holder.registerProblem(value, "Variable value type '${actual.name}' doesn't match default value type '$expected'")
+            return
+          }
         }
         holder.registerProblem(value, "Variable value type doesn't match default value type '$expected'", ChangeVariableType(to))
       }
