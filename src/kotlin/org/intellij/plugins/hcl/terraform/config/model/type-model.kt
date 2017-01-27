@@ -18,13 +18,8 @@ package org.intellij.plugins.hcl.terraform.config.model
 import com.beust.klaxon.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
-import org.reflections.Reflections
-import org.reflections.scanners.ResourcesScanner
-import org.reflections.util.ClasspathHelper
-import org.reflections.util.ConfigurationBuilder
 import java.io.InputStream
 import java.util.*
-import java.util.regex.Pattern
 
 // Model for element types
 
@@ -170,12 +165,10 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
   fun load(): TypeModel? {
     val application = ApplicationManager.getApplication()
     try {
-      val reflections = Reflections(ConfigurationBuilder()
-          .setUrls(ClasspathHelper.forPackage("terraform.model", TypeModelLoader::class.java.classLoader))
-          .setScanners(ResourcesScanner())
-      );
-      val resources = reflections.getResources(Pattern.compile(".*\\.json"))
-          .filter { it.contains("terraform/model/") }
+      val providers = loadList("/terraform/model/providers.list")?.map { "providers/$it.json" } ?: emptyList()
+      val provisioners = loadList("/terraform/model/provisioners.list")?.map { "provisioners/$it.json" } ?: emptyList()
+      val resources: Collection<String> = (providers + provisioners + "functions.json").map { "/terraform/model/" + it }
+
       resources.forEach {
         val file = it.ensureHavePrefix("/")
         val json: JsonObject?
@@ -236,6 +229,26 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       val stream = getResource(path) ?: return null
       val parser = Parser()
       return parser.parse(stream)
+    }
+  }
+
+  private fun loadList(name: String): Set<String>? {
+    try {
+      val stream = TypeModelLoader.getResource(name)
+      if (stream == null) {
+        val message = "Cannot read list '$name': resource not found"
+        TypeModelLoader.LOG.warn(message)
+        val application = ApplicationManager.getApplication()
+        if (application.isUnitTestMode || application.isInternal) {
+          assert(false) { message }
+        }
+        return emptySet()
+      }
+      val lines = stream.bufferedReader(Charsets.UTF_8).readLines().map { it.trim() }.filter { !it.isEmpty() }
+      return LinkedHashSet<String>(lines)
+    } catch(e: Exception) {
+      TypeModelLoader.LOG.warn("Cannot read 'ignored-references.list': ${e.message}")
+      return emptySet()
     }
   }
 
