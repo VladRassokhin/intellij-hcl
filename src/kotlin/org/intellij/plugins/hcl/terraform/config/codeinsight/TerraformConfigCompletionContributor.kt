@@ -351,7 +351,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         val pob = _parent.parent // Property or Block
         if (pob is HCLProperty) {
           val value = pob.value
-          right = ModelUtil.getValueType(value)
+          right = value.getValueType()
           if (right == Types.String && value is PsiLanguageInjectionHost) {
             // Check for Injection
             InjectedLanguageManager.getInstance(pob.project).enumerate(value, object : PsiLanguageInjectionHost.InjectedPsiVisitor {
@@ -611,7 +611,7 @@ object ModelHelper {
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.Module.properties)
 
-    val module = getModule(block)
+    val module = Module.getAsModuleBlock(block)
     if (module != null) {
       val variables = module.getAllVariables()
       for (v in variables) {

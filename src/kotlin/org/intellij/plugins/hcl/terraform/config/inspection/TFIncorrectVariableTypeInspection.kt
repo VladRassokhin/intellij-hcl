@@ -24,10 +24,10 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
-import org.intellij.plugins.hcl.terraform.config.model.ModelUtil
 import org.intellij.plugins.hcl.terraform.config.model.SimpleValueHint
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 import org.intellij.plugins.hcl.terraform.config.model.Types
+import org.intellij.plugins.hcl.terraform.config.model.getValueType
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformReferenceContributor
 
 class TFIncorrectVariableTypeInspection : LocalInspectionTool() {
@@ -72,7 +72,7 @@ class TFIncorrectVariableTypeInspection : LocalInspectionTool() {
       }
 
       val value = defaultProperty?.value ?: return
-      val actual = ModelUtil.getValueType(value) ?: return
+      val actual = value.getValueType() ?: return
 
       if ((expected == "string" && actual !in Types.SimpleValueTypes)
           || (expected == "list" && actual != Types.Array)

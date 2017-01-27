@@ -28,8 +28,8 @@ import com.intellij.util.SmartList
 import org.intellij.plugins.hcl.navigation.HCLQualifiedNameProvider
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
+import org.intellij.plugins.hcl.terraform.config.model.Module
 import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
-import org.intellij.plugins.hcl.terraform.config.model.getModule
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
 import org.intellij.plugins.hil.inspection.PsiFakeAwarePolyVariantReference
@@ -134,7 +134,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
         if (ServiceManager.getService(TypeModelProvider::class.java).ignored_references.contains(fqn)) {
           if (fake) found.add(FakeHCLProperty(name, r))
         } else if ("module" == blockType) {
-          val module = getModule(r)
+          val module = Module.getAsModuleBlock(r)
           if (module == null) {
             // Resolve everything
             if (fake) {

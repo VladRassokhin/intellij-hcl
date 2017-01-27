@@ -17,8 +17,6 @@ package org.intellij.plugins.hcl.terraform.config.model;
 
 import com.intellij.testFramework.UsefulTestCase;
 
-import static org.intellij.plugins.hcl.terraform.config.model.ModelKt.computeModuleStorageName;
-
 public class UtilTest extends UsefulTestCase {
   public void testModuleStorageLocationCalculatedCorrectly() throws Exception {
     // From Terraform 0.8.1
@@ -27,6 +25,6 @@ public class UtilTest extends UsefulTestCase {
   }
 
   private static void doTestModuleStorage(String expected, String name, String source) {
-    assertEquals(expected, computeModuleStorageName(name, source));
+    assertEquals(expected, UtilKt.computeModuleStorageName(name, source));
   }
 }

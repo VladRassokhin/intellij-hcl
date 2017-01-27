@@ -22,10 +22,10 @@ import com.intellij.psi.PsiElementVisitor
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralMixin
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
-import org.intellij.plugins.hcl.terraform.config.model.ModelUtil
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
+import org.intellij.plugins.hcl.terraform.config.model.getValueType
 
 class TFVARSIncorrectElementInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -60,7 +60,7 @@ class TFVARSIncorrectElementInspection : LocalInspectionTool() {
           holder.registerProblem(property.nameElement, "Undefined variable '$vName'", ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
         } else if (!property.name.contains('.')) {
           val expected = variable.second.`object`?.findProperty(TypeModel.Variable_Type.name)?.value?.name ?: "string"
-          val actual = ModelUtil.getValueType(value)
+          val actual = value.getValueType()
           if ((expected == "string" && actual !in Types.SimpleValueTypes)
               || (expected == "list" && actual != Types.Array)
               || (expected == "map" && actual != Types.Object)) {

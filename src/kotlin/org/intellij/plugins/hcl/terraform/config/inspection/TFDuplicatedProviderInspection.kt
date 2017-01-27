@@ -57,7 +57,7 @@ class TFDuplicatedProviderInspection : LocalInspectionTool() {
 
       val module = block.getTerraformModule()
 
-      val fqn = getProviderFQName(block) ?: return
+      val fqn = block.getProviderFQName() ?: return
 
       val same = module.getDefinedProviders().filter { it.second == fqn }
       if (same.size == 0) return

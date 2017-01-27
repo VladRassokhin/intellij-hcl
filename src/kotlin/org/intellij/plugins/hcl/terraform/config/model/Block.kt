@@ -15,12 +15,8 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
-import org.apache.commons.codec.digest.DigestUtils
-
-
-internal fun computeModuleStorageName(name: String, source: String): String {
-  // TODO: Improve path calculation
-  val path = listOf(name).joinToString(".") { it }
-  val md5 = DigestUtils.md5Hex("root.$path-$source")!!
-  return md5
+open class Block(val type: BlockType, vararg val properties: PropertyOrBlock = arrayOf()) {
+  fun toPOB(): PropertyOrBlock {
+    return PropertyOrBlock(block = this)
+  }
 }

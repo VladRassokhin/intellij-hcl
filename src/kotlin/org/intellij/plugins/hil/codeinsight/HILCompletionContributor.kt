@@ -341,7 +341,7 @@ class HILCompletionContributor : CompletionContributor() {
         }
         return
       } else if (type == "module") {
-        val module = getModule(r)
+        val module = Module.getAsModuleBlock(r)
         if (module != null) {
           // TODO: Add special LookupElementRenderer
           module.getDefinedOutputs().map { create(it.name) }.toCollection(found)
