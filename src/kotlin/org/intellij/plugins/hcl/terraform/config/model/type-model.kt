@@ -55,7 +55,7 @@ class PropertyOrBlockType private constructor(val property: PropertyType? = null
   val deprecated: String? = if (property != null) property.deprecated else block!!.deprecated
 
   init {
-    assert(property != null || block != null, { "Either property or block expected" });
+    assert(property != null || block != null, { "Either property or block expected" })
   }
 
   constructor(property: PropertyType) : this(property, null)
@@ -206,7 +206,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       return TypeModel(this.resources, this.dataSources, this.providers, this.provisioners, this.functions)
     } catch(e: Exception) {
       if (application.isUnitTestMode || application.isInternal) {
-        LOG.error(e);
+        LOG.error(e)
         assert(false) { "In unit test mode exceptions are not tolerated. Exception: ${e.message}" }
       }
       LOG.warn(e)
@@ -215,7 +215,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
   }
 
   companion object {
-    internal final val LOG = Logger.getInstance(TypeModelLoader::class.java);
+    internal val LOG = Logger.getInstance(TypeModelLoader::class.java)
 
     fun getResource(path: String): InputStream? {
       return TypeModelProvider::class.java.getResourceAsStream(path)
@@ -253,7 +253,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
   }
 
   private fun parseFile(json: JsonObject, file: String) {
-    val type = json.string("type");
+    val type = json.string("type")
     when (type) {
       "provisioner" -> return parseProvisionerFile(json, file)
       "provider" -> return parseProviderFile(json, file)
@@ -263,15 +263,15 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
   }
 
   private fun parseProviderFile(json: JsonObject, file: String) {
-    val name = json.string("name")!!;
-    val provider = json.obj("schema");
+    val name = json.string("name")!!
+    val provider = json.obj("schema")
     if (provider == null) {
       LOG.warn("No provider schema in file '$file'")
       return
     }
     val info = parseProviderInfo(name, provider)
     this.providers.add(info)
-    val resources = json.obj("resources");
+    val resources = json.obj("resources")
     if (resources == null) {
       LOG.warn("No resources for provider '$name' in file '$file'")
       return
@@ -287,24 +287,24 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
   }
 
   private fun parseProvisionerFile(json: JsonObject, file: String) {
-    val name = json.string("name")!!;
-    val provisioner = json.obj("schema");
+    val name = json.string("name")!!
+    val provisioner = json.obj("schema")
     if (provisioner == null) {
       LOG.warn("No provisioner schema in file '$file'")
       return
     }
-    val info = parseProvisionerInfo(name, provisioner);
+    val info = parseProvisionerInfo(name, provisioner)
     this.provisioners.add(info)
   }
 
   private fun parseInterpolationFunctions(json: JsonObject, file: String) {
-    val functions = json.obj("schema");
+    val functions = json.obj("schema")
     if (functions == null) {
       LOG.warn("No functions schema in file '$file'")
       return
     }
     for ((k, v) in functions) {
-      if (v !is JsonObject) continue;
+      if (v !is JsonObject) continue
       assert(v.string("Name").equals(k)) { "Name mismatch: $k != ${v.string("Name")}" }
       val returnType = parseType(v.string("ReturnType")!!)
       val args = v.array<String>("ArgTypes")!!.map { parseType(it) }.map { Argument(it) }.toMutableList()
@@ -318,25 +318,25 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
   }
 
   private fun parseProviderInfo(name: String, obj: JsonObject): ProviderType {
-    return ProviderType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray());
+    return ProviderType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray())
   }
 
   private fun parseProvisionerInfo(name: String, obj: JsonObject): ProvisionerType {
-    return ProvisionerType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray());
+    return ProvisionerType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray())
   }
 
   private fun parseResourceInfo(entry: Map.Entry<String, Any?>): ResourceType {
     val name = entry.key
     assert(entry.value is JsonObject, { "Right part of resource should be object" })
     val obj = entry.value as JsonObject
-    return ResourceType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray());
+    return ResourceType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray())
   }
 
   private fun parseDataSourceInfo(entry: Map.Entry<String, Any?>): DataSourceType {
     val name = entry.key
     assert(entry.value is JsonObject, { "Right part of data-source should be object" })
     val obj = entry.value as JsonObject
-    return DataSourceType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray());
+    return DataSourceType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray())
   }
 
   private fun parseSchemaElement(entry: Map.Entry<String, Any?>, providerName: String): PropertyOrBlockType {
@@ -346,11 +346,11 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
   private fun parseSchemaElement(name: String, value: Any?, providerName: String): PropertyOrBlockType {
     assert(value is JsonArray<*>, { "Right part of schema element (field parameters) should be array" })
     val obj = (value as JsonArray<*>).filterIsInstance(JsonObject::class.java)
-    val m = HashMap<String, JsonObject>();
+    val m = HashMap<String, JsonObject>()
     for (it in obj) {
       val n = it.string("name")
       if (n != null) {
-        m.put(n, it);
+        m.put(n, it)
       }
     }
 
@@ -369,14 +369,14 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       if (et == "ResourceSchemaElements") {
         val a = elem.array<Any>("value")
         if (a != null) {
-          val parsed = parseSchemaElement("__inner__", a, "$fqn")
+          val parsed = parseSchemaElement("__inner__", a, fqn)
           hint = parsed.property?.type?.let { TypeHint(it) } ?: parsed.block?.properties?.let { ListHint(it.asList()) }
         }
       }
       if (et == "ResourceSchemaInfo") {
         val o = elem.obj("value")
         if (o != null) {
-          val innerTypeProperties = o.map { parseSchemaElement(it, "$fqn") }
+          val innerTypeProperties = o.map { parseSchemaElement(it, fqn) }
           hint = ListHint(innerTypeProperties)
           if (type == Types.Array) {
             isBlock = true
@@ -385,13 +385,13 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       }
       // ?? return BlockType(name).toPOBT()
     }
-    val deprecated = m["Deprecated"]?.string("value") ?: null
+    val deprecated = m["Deprecated"]?.string("value")
     val has_default: Boolean =
         m["Default"]?.string("value") != null
         || m["DefaultValue_Computed"]?.string("value") != null
        // || m["InputDefault"]?.string("value") != null // Not sure about this property TODO: Investigate how it works in terraform
 
-    val additional = external[fqn] ?: TypeModelProvider.Additional(name);
+    val additional = external[fqn] ?: TypeModelProvider.Additional(name)
     // TODO: Consider move 'has_default' to Additional
 
     val required = additional.required ?: m["Required"]?.string("value")?.toLowerCase()?.toBoolean() ?: false
@@ -409,10 +409,10 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
       }
       return BlockType(name, required = required,
           deprecated = deprecated,
-          description = additional.description ?: m["Description"]?.string("value") ?: null, properties = *bh).toPOBT()
+          description = additional.description ?: m["Description"]?.string("value"), properties = *bh).toPOBT()
     }
     return PropertyType(name, type, hint = additional.hint?.let { SimpleHint(it) } ?: hint,
-        description = additional.description ?: m["Description"]?.string("value") ?: null,
+        description = additional.description ?: m["Description"]?.string("value"),
         required = required,
         deprecated = deprecated,
         has_default = has_default).toPOBT()
@@ -420,7 +420,7 @@ private class TypeModelLoader(val external: Map<String, TypeModelProvider.Additi
 
   private fun parseType(attribute: JsonObject?): Type {
     // Fallback
-    if (attribute == null) return Types.String;
+    if (attribute == null) return Types.String
 
     /*
     From  terraform/helper/schema/valuetype.go
@@ -501,13 +501,13 @@ class TypeModel(
         PropertyType("bastion_password", Types.String).toPOBT(),
         PropertyType("bastion_private_key", Types.String).toPOBT(),
         PropertyType("bastion_key_file", Types.String, deprecated = "Use 'bastion_private_key'").toPOBT()
-    );
+    )
     val ConnectionPropertiesWinRM: Array<out PropertyOrBlockType> = arrayOf(
         // winrm
         PropertyType("https", Types.Boolean).toPOBT(),
         PropertyType("insecure", Types.Boolean).toPOBT(),
         PropertyType("cacert", Types.String).toPOBT()
-    );
+    )
 
     val ResourceLifecycle: BlockType = BlockType("lifecycle", 0,
         description = "Describe to Terraform how to connect to the resource for provisioning", // TODO: Improve description
