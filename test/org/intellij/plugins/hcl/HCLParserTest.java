@@ -148,6 +148,10 @@ public class HCLParserTest extends ParsingTestCase {
     doTest();
   }
 
+  public void testList_Of_Lists() throws Exception {
+    doTest();
+  }
+
   public void testObject_List_Comma() throws Exception {
     doTest();
   }
