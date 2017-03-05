@@ -77,6 +77,7 @@ class UpdateComponent() : ApplicationComponent.Adapter(), Disposable {
   }
 
   companion object {
+    private val lock: Any = Any()
     private val PLUGIN_ID: String = "org.intellij.plugins.hcl"
     private val LAST_UPDATE: String = "$PLUGIN_ID.LAST_UPDATE"
     private val LAST_VERSION: String = "$PLUGIN_ID.LAST_VERSION"
@@ -89,7 +90,7 @@ class UpdateComponent() : ApplicationComponent.Adapter(), Disposable {
 
     fun update() {
       val properties = PropertiesComponent.getInstance()
-      synchronized(PLUGIN_ID) {
+      synchronized(lock) {
         val lastPluginVersion = properties.getValue(LAST_VERSION)
         val lastUpdate = properties.getOrInitLong(LAST_UPDATE, 0L)
         val shouldUpdate = lastUpdate == 0L
