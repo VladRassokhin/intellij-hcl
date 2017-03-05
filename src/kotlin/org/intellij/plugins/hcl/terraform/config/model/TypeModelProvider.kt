@@ -18,16 +18,21 @@ package org.intellij.plugins.hcl.terraform.config.model
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.boolean
 import com.beust.klaxon.string
+import com.intellij.openapi.components.ServiceManager
 import java.util.*
 
 class TypeModelProvider {
-  val model: TypeModel by lazy {
+  private val _model: TypeModel by lazy {
     TypeModelLoader(external).load() ?: TypeModel()
   }
   val external: Map<String, Additional> by lazy { loadExternalInformation() }
   val ignored_references: Set<String> by lazy { loadIgnoredReferences() }
 
-  fun get(): TypeModel = model
+  fun getModel(): TypeModel = _model
+
+  companion object {
+    fun getInstance(): TypeModelProvider = ServiceManager.getService(TypeModelProvider::class.java)
+  }
 
   private fun loadExternalInformation(): Map<String, Additional> {
     val map = HashMap<String, Additional>()

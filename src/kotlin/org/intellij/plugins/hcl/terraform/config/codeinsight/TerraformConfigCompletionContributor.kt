@@ -265,8 +265,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
 
   public abstract class OurCompletionProvider : CompletionProvider<CompletionParameters>() {
     protected fun getTypeModel(): TypeModel {
-      val provider = ServiceManager.getService(TypeModelProvider::class.java)
-      return provider.get()
+      return TypeModelProvider.getInstance().getModel()
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -626,7 +625,6 @@ object ModelHelper {
 
 
   fun getTypeModel(): TypeModel {
-    val provider = ServiceManager.getService(TypeModelProvider::class.java)
-    return provider.get()
+    return TypeModelProvider.getInstance().getModel()
   }
 }

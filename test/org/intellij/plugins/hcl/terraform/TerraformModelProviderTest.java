@@ -23,13 +23,13 @@ public class TerraformModelProviderTest extends LightPlatformTestCase {
   public void testModelIsLoaded() throws Exception {
     final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
     //noinspection unused
-    final TypeModel model = provider.get();
+    final TypeModel model = provider.getModel();
   }
 
   public void testProperlyParsedNetworkInterface() throws Exception {
     final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
     assertNotNull(provider);
-    final TypeModel model = provider.get();
+    final TypeModel model = provider.getModel();
     assertNotNull(model);
     final ResourceType google_compute_instance = model.getResourceType("google_compute_instance");
     assertNotNull(google_compute_instance);
@@ -50,7 +50,7 @@ public class TerraformModelProviderTest extends LightPlatformTestCase {
   public void test_aws_cloudfront_distribution_forwarded_values() throws Exception {
     final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
     assertNotNull(provider);
-    final TypeModel model = provider.get();
+    final TypeModel model = provider.getModel();
     assertNotNull(model);
 
     final ResourceType aws_cloudfront_distribution = model.getResourceType("aws_cloudfront_distribution");

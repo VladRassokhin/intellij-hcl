@@ -62,7 +62,7 @@ class HILCompletionContributor : CompletionContributor() {
 
   companion object {
     @JvmField val GLOBAL_SCOPES: SortedSet<String> = sortedSetOf("var", "path", "data", "module")
-    @JvmField val FUNCTIONS = ServiceManager.getService(TypeModelProvider::class.java).get().functions
+    @JvmField val FUNCTIONS = TypeModelProvider.getInstance().getModel().functions
 
     // For tests purposes
     @JvmField val GLOBAL_AVAILABLE: SortedSet<String> = FUNCTIONS.map { it.name }.toMutableList().plus(GLOBAL_SCOPES).toSortedSet()
