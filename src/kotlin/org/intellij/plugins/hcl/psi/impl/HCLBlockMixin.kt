@@ -25,6 +25,8 @@ import org.intellij.plugins.hcl.terraform.config.model.getTerraformSearchScope
 
 abstract class HCLBlockMixin(node: ASTNode) : HCLElementImpl(node), HCLBlock {
 
+  abstract override fun getName(): String
+
   override fun getNameIdentifier(): PsiElement {
     return nameElements.last()!! // Block always have at least one nameElement
   }

@@ -26,6 +26,8 @@ import org.jetbrains.annotations.NonNls
 
 abstract class HCLPropertyMixin(node: ASTNode) : HCLElementImpl(node), HCLProperty {
 
+  abstract override fun getName(): String
+
   @Throws(IncorrectOperationException::class)
   override fun setName(@NonNls name: String): PsiElement {
     ElementChangeUtil.doNameReplacement(this, nameIdentifier, name, HCLElementTypes.IDENTIFIER)
