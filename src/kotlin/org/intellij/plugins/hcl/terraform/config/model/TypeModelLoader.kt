@@ -16,6 +16,7 @@
 package org.intellij.plugins.hcl.terraform.config.model
 
 import com.beust.klaxon.*
+import com.intellij.openapi.application.Application
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import java.io.InputStream
@@ -36,49 +37,54 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       val provisioners = loadList("/terraform/model/provisioners.list")?.map { "provisioners/$it.json" } ?: emptyList()
       val resources: Collection<String> = (providers + provisioners + "functions.json").map { "/terraform/model/" + it }
 
-      resources.forEach {
+      for (it in resources) {
         val file = it.ensureHavePrefix("/")
+        val stream = getResource(file)
+        if (stream == null) {
+          LOG.warn("Resource '$file' was not found")
+          continue
+        }
+
         val json: JsonObject?
         try {
-          json = getResourceJson(file) as JsonObject?
+          json = stream.use {
+            val parser = Parser()
+            parser.parse(stream) as JsonObject?
+          }
+          if (json == null) {
+            logErrorAndFailInInternalMode(application, "In file '$file' no JSON found")
+            continue
+          }
         } catch(e: Exception) {
-          val msg = "Failed to load json data from file '$file'"
-          LOG.error(msg, e)
-          if (application.isUnitTestMode || application.isInternal) {
-            assert(false) { msg }
-          }
-          return@forEach
+          logErrorAndFailInInternalMode(application, "Failed to load json data from file '$file'", e)
+          continue
         }
-        if (json != null) {
-          try {
-            parseFile(json, file)
-          } catch(e: Throwable) {
-            val msg = "Failed to parse file '$file'"
-            LOG.error(msg, e)
-            if (application.isUnitTestMode || application.isInternal) {
-              assert(false) { msg }
-            }
-          }
-        } else {
-          val msg = "Failed to load anything from file '$file'"
-          LOG.error(msg)
-          if (application.isUnitTestMode || application.isInternal) {
-            assert(false) { msg }
-          }
+        try {
+          parseFile(json, file)
+        } catch(e: Throwable) {
+          logErrorAndFailInInternalMode(application, "Failed to parse file '$file'", e)
         }
       }
 
       // TODO: Fetch latest model from github (?)
-
       return TypeModel(this.resources, this.dataSources, this.providers, this.provisioners, this.functions)
     } catch(e: Exception) {
-      if (application.isUnitTestMode || application.isInternal) {
-        LOG.error(e)
-        assert(false) { "In unit test mode exceptions are not tolerated. Exception: ${e.message}" }
-      }
-      LOG.warn(e)
+      logErrorAndFailInInternalMode(application, "Failed to load Terraform Model", e)
       return null
     }
+  }
+
+  private fun logErrorAndFailInInternalMode(application: Application, msg: String, e: Throwable? = null) {
+    val msg2 = if (e == null) msg else "$msg: ${e.message}"
+    if (e == null) LOG.error(msg2) else LOG.error(msg2, e)
+    if (application.isInternal) {
+      throw AssertionError(msg2, e)
+    }
+  }
+
+  private fun isPluginUnpacked(): Boolean {
+    val resource = TypeModelProvider::class.java.getResource("/terraform/model/") ?: return false
+    return resource.protocol == "file"
   }
 
   companion object {
@@ -92,10 +98,13 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       return getResourceJson("/terraform/model-external/$path")
     }
 
+    @Throws(RuntimeException::class, NullPointerException::class)
     fun getResourceJson(path: String): Any? {
       val stream = getResource(path) ?: return null
-      val parser = Parser()
-      return parser.parse(stream)
+      stream.use {
+        val parser = Parser()
+        return parser.parse(stream)
+      }
     }
   }
 
