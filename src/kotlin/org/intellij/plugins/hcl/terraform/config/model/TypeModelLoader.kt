@@ -19,6 +19,10 @@ import com.beust.klaxon.*
 import com.intellij.openapi.application.Application
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.util.SystemInfo
+import com.intellij.util.SystemProperties
+import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
 import java.util.*
 
@@ -45,25 +49,19 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
           continue
         }
 
-        val json: JsonObject?
+        loadOne(application, file, stream)
+      }
+
+      val schemas = getSharedSchemas()
+      for (file in schemas) {
+        val stream: FileInputStream
         try {
-          json = stream.use {
-            val parser = Parser()
-            parser.parse(stream) as JsonObject?
-          }
-          if (json == null) {
-            logErrorAndFailInInternalMode(application, "In file '$file' no JSON found")
-            continue
-          }
+          stream = file.inputStream()
         } catch(e: Exception) {
-          logErrorAndFailInInternalMode(application, "Failed to load json data from file '$file'", e)
+          logErrorAndFailInInternalMode(application, "Cannot open stream for file '${file.absolutePath}'", e)
           continue
         }
-        try {
-          parseFile(json, file)
-        } catch(e: Throwable) {
-          logErrorAndFailInInternalMode(application, "Failed to parse file '$file'", e)
-        }
+        loadOne(application, file.absolutePath, stream)
       }
 
       // TODO: Fetch latest model from github (?)
@@ -72,6 +70,29 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       logErrorAndFailInInternalMode(application, "Failed to load Terraform Model", e)
       return null
     }
+  }
+
+  private fun loadOne(application: Application, file: String, stream: InputStream) {
+    val json: JsonObject?
+    try {
+      json = stream.use {
+        val parser = Parser()
+        parser.parse(stream) as JsonObject?
+      }
+      if (json == null) {
+        logErrorAndFailInInternalMode(application, "In file '$file' no JSON found")
+        return
+      }
+    } catch(e: Exception) {
+      logErrorAndFailInInternalMode(application, "Failed to load json data from file '$file'", e)
+      return
+    }
+    try {
+      parseFile(json, file)
+    } catch(e: Throwable) {
+      logErrorAndFailInInternalMode(application, "Failed to parse file '$file'", e)
+    }
+    return
   }
 
   private fun logErrorAndFailInInternalMode(application: Application, msg: String, e: Throwable? = null) {
@@ -85,6 +106,24 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   private fun isPluginUnpacked(): Boolean {
     val resource = TypeModelProvider::class.java.getResource("/terraform/model/") ?: return false
     return resource.protocol == "file"
+  }
+
+  private fun getSharedSchemas(): List<File> {
+    val terraform_d: File
+    if (SystemInfo.isWindows) {
+      val appdata = System.getenv("APPDATA") ?: return emptyList()
+      terraform_d = File(appdata, "terraform.d")
+    } else {
+      val userHome = SystemProperties.getUserHome() ?: return emptyList()
+      terraform_d = File(userHome, ".terraform.d")
+    }
+    if (!terraform_d.exists() || !terraform_d.isDirectory) return emptyList()
+    val schemas = File(terraform_d, "schemas")
+    if (!schemas.exists() || !schemas.isDirectory) return emptyList()
+    val files = schemas.listFiles { dir, name ->
+      name.endsWith(".json", true)
+    }
+    return files?.toList()?.filter { it.exists() && it.isFile } ?: emptyList()
   }
 
   companion object {
