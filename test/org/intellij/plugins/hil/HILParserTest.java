@@ -133,6 +133,14 @@ public class HILParserTest extends ParsingTestCase {
     doCodeTest("${a < 5 ? a + 5 : !false && true}");
   }
 
+  public void testTernaryNested() throws Exception {
+    doCodeTest("${a == \"1\" ? b == \"2\" ? \"x\" : \"y\" : \"z\"}");
+  }
+
+  public void testTernaryNestedWithStrings() throws Exception {
+    doCodeTest("${a == \"1\" ? \"${b == \"2\" ? \"x\" : \"y\"}\" : \"z\"}");
+  }
+
   public void testLogicalOps() throws Exception {
     doCodeTest("${true || !false && true}");
   }
