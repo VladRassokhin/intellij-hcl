@@ -25,7 +25,7 @@ HIL_START=(\$\{)
 HIL_STOP=(\})
 
 IL_STRING_ELEMENT=([^\"\'\$\{\}]|\\[^\r\n])+
-STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
+STRING_ELEMENT=([^\"\'\$\{\}\\]|\\[^\r\n\\])+
 
 %state STRING, INTERPOLATION
 

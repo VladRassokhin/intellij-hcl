@@ -106,6 +106,24 @@ public class HILLexerTest extends LexerTestCase {
     doTest("\"${\n\"x\n y\"}\"", "DOUBLE_QUOTED_STRING ('\"${\\n\"x\\n y\"}\"')");
   }
 
+  public void testMultilineStringInception3() throws Exception {
+    doTest("\"${\"${1\n+1}\n \"}", "DOUBLE_QUOTED_STRING ('\"${\"${1\\n+1}\\n \"}')");
+  }
+
+  public void testEscapesInString() throws Exception {
+    doTest("\"\\\\\"", "DOUBLE_QUOTED_STRING ('\"\\\\\"')");
+  }
+
+  public void testEscapesInString2() throws Exception {
+    doTest("join(\"\\\",\\\"\", x)", "ID ('join')\n" +
+        "( ('(')\n" +
+        "DOUBLE_QUOTED_STRING ('\"\\\",\\\"\"')\n" +
+        ", (',')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "ID ('x')\n" +
+        ") (')')");
+  }
+
   public void testUnsupportedOps() throws Exception {
     doTest("1|2", "NUMBER ('1')\n" +
         "BAD_CHARACTER ('|')\n" +

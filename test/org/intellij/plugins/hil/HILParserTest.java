@@ -145,6 +145,10 @@ public class HILParserTest extends ParsingTestCase {
     doCodeTest("\"${\"${\"${1+1}\"}\"}\"");
   }
 
+  public void testInterpolationStringInceptionEscaping() throws Exception {
+    doCodeTest("\"${\"${\"${\"\\\",\\\"\"}\"}\"}\"");
+  }
+
   public void testLogicalOps() throws Exception {
     doCodeTest("${true || !false && true}");
   }
