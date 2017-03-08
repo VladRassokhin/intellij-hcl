@@ -30,6 +30,15 @@ open class ILElementGenerator(val project: Project) {
     return firstChild as ILVariable
   }
 
+  fun createVarReference(name: String): ILSelectExpression {
+    val file = createDummyFile("var.$name")
+    val firstChild = file.firstChild
+    if (firstChild is ILExpressionHolder) {
+      return firstChild.ilExpression as ILSelectExpression
+    }
+    return firstChild as ILSelectExpression
+  }
+
   open fun createDummyFile(content: String): PsiFile {
     val psiFileFactory = PsiFileFactory.getInstance(project)
     return psiFileFactory.createFileFromText("dummy." + HILFileType.defaultExtension, HILFileType, content)
