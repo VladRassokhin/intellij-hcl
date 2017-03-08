@@ -141,6 +141,10 @@ public class HILParserTest extends ParsingTestCase {
     doCodeTest("${a == \"1\" ? \"${b == \"2\" ? \"x\" : \"y\"}\" : \"z\"}");
   }
 
+  public void testInterpolationStringInception() throws Exception {
+    doCodeTest("\"${\"${\"${1+1}\"}\"}\"");
+  }
+
   public void testLogicalOps() throws Exception {
     doCodeTest("${true || !false && true}");
   }

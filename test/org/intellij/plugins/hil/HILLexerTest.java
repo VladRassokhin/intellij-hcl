@@ -78,6 +78,18 @@ public class HILLexerTest extends LexerTestCase {
         "NUMBER ('2')");
   }
 
+  public void testTernaryOpWithInterpolationBranch() throws Exception {
+    doTest("true ? 1 : \"${\"x\"}\"\"", "true ('true')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "? ('?')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "NUMBER ('1')\n" +
+        "WHITE_SPACE (' ')\n" +
+        ": (':')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "LITERAL ('\"${\"x\"}\"')");
+  }
+
   public void testUnsupportedOps() throws Exception {
     doTest("1|2", "NUMBER ('1')\n" +
         "BAD_CHARACTER ('|')\n" +
