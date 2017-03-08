@@ -164,7 +164,6 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
   \" {}
   \$ {}
   \{ {}
-  {EOL} { push_eol(); return eoil(); }
   <<EOF>> { return eoil(); }
 }
 
