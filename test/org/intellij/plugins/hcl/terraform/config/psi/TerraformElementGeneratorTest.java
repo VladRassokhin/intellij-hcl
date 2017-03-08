@@ -15,10 +15,8 @@
  */
 package org.intellij.plugins.hcl.terraform.config.psi;
 
-import org.intellij.plugins.hcl.psi.HCLElementGenerator;
-import org.intellij.plugins.hcl.psi.HCLElementGeneratorTest;
-import org.intellij.plugins.hcl.psi.HCLNumberLiteral;
-import org.intellij.plugins.hcl.psi.HCLValue;
+import org.intellij.plugins.hcl.psi.*;
+import org.intellij.plugins.hcl.terraform.config.model.Types;
 import org.jetbrains.annotations.NotNull;
 
 public class TerraformElementGeneratorTest extends HCLElementGeneratorTest {
@@ -36,5 +34,19 @@ public class TerraformElementGeneratorTest extends HCLElementGeneratorTest {
     element = myElementGenerator.createValue("10KB");
     assertTrue(element instanceof HCLNumberLiteral);
     assertEquals(10 * 1024.0 * 1024.0, ((HCLNumberLiteral) element).getValue());
+  }
+
+  public void testCreateVariable() throws Exception {
+    TerraformElementGenerator generator = (TerraformElementGenerator) myElementGenerator;
+    HCLBlock element = generator.createVariable("name", Types.INSTANCE.getString(), "\"42\"");
+    assertEquals("name", element.getName());
+    HCLObject object = element.getObject();
+    assertNotNull(object);
+    HCLProperty property = object.findProperty("default");
+    assertNotNull(property);
+    HCLValue value = property.getValue();
+    assertNotNull(value);
+    assertTrue(value instanceof HCLStringLiteral);
+    assertEquals("42", ((HCLStringLiteral) value).getValue());
   }
 }

@@ -18,12 +18,32 @@ package org.intellij.plugins.hcl.terraform.config.psi
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileFactory
+import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElementGenerator
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
+import org.intellij.plugins.hcl.terraform.config.model.Type
+import org.intellij.plugins.hil.psi.ILExpression
 
 class TerraformElementGenerator(val project: Project) : HCLElementGenerator(project) {
   override fun createDummyFile(content: String): PsiFile {
     val psiFileFactory = PsiFileFactory.getInstance(project)
     return psiFileFactory.createFileFromText("dummy." + TerraformFileType.defaultExtension, TerraformFileType, content)
+  }
+
+  fun createVariable(name: String, type: Type?, initializer: ILExpression): HCLBlock {
+    val value = initializer.text // TODO: Improve
+    return createVariable(name, type, value)
+  }
+
+  fun createVariable(name: String, type: Type?, value: String): HCLBlock {
+    val content = buildString {
+      append("variable \"").append(name).append("\" {")
+      if (type != null) {
+        append("\n  type=\"").append(type).append("\"\n")
+      }
+      append("\n  default=").append(value).append("\n}")
+    }
+    val file = createDummyFile(content)
+    return file.firstChild as HCLBlock
   }
 }
