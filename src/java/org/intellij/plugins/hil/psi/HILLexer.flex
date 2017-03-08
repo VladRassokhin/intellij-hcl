@@ -3,14 +3,11 @@ package org.intellij.plugins.hil.psi;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import static org.intellij.plugins.hil.HILElementTypes.*;
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
 
+@SuppressWarnings({"ALL"})
 %%
-
-%{
-  public _HILLexer() {
-    this((java.io.Reader)null);
-  }
-%}
 
 %public
 %class _HILLexer
@@ -19,19 +16,76 @@ import static org.intellij.plugins.hil.HILElementTypes.*;
 %type IElementType
 %unicode
 
-EOL=\R
 WHITE_SPACE=\s
 
-DOUBLE_QUOTED_STRING=\"([^\\\"\r\n]|\\[^\r\n])*\"?
 NUMBER=(0x)?(0|[1-9])[0-9]*(\.[0-9]+)?([eE][-+]?[0-9]+)?
 ID=[a-zA-Z_][0-9a-zA-Z\-_*]*
 
-%%
-<YYINITIAL> {
-  {WHITE_SPACE}               { return com.intellij.psi.TokenType.WHITE_SPACE; }
+HIL_START=(\$\{)
+HIL_STOP=(\})
 
-  "${"                        { return INTERPOLATION_START; }
-  "}"                         { return INTERPOLATION_END; }
+IL_STRING_ELEMENT=([^\"\'\$\{\}]|\\[^\r\n])+
+STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
+
+%state STRING, INTERPOLATION
+
+%{
+  public _HILLexer() {
+    this((java.io.Reader)null);
+  }
+  int stringStart = -1;
+  int hil = 0;
+  private void hil_inc() {
+    hil++;
+  }
+  private int hil_dec() {
+    assert hil > 0;
+    hil--;
+    return hil;
+  }
+  private IElementType eods() {
+    yybegin(YYINITIAL); zzStartRead = stringStart; return DOUBLE_QUOTED_STRING;
+  }
+  private IElementType eoil() {
+    hil=0; return eods();
+  }
+
+%}
+
+%%
+
+<STRING> {
+  {HIL_START} { hil_inc(); yybegin(INTERPOLATION); }
+  \"          { return eods(); }
+  \\\\ {}
+  {STRING_ELEMENT} {}
+  \$ {}
+  \{ {}
+  \} {}
+  \' {}
+  <<EOF>> { return eods(); }
+  [^] { return eods(); }
+}
+
+<INTERPOLATION> {
+  {HIL_START} {hil_inc();}
+  {HIL_STOP} {if (hil_dec() <= 0) yybegin(STRING); }
+  {IL_STRING_ELEMENT} {}
+  \' {}
+  \" {}
+  \$ {}
+  \{ {}
+  <<EOF>> { return eoil(); }
+}
+
+<YYINITIAL>   \"  { stringStart = zzStartRead; yybegin(STRING); }
+
+<YYINITIAL> {
+  {WHITE_SPACE}               { return WHITE_SPACE; }
+
+  {HIL_START}                 { return INTERPOLATION_START; }
+  {HIL_STOP}                  { return INTERPOLATION_END; }
+
   "("                         { return L_PAREN; }
   ")"                         { return R_PAREN; }
   "["                         { return L_BRACKET; }
@@ -58,10 +112,9 @@ ID=[a-zA-Z_][0-9a-zA-Z\-_*]*
   "false"                     { return FALSE; }
   "null"                      { return NULL; }
 
-  {DOUBLE_QUOTED_STRING}      { return DOUBLE_QUOTED_STRING; }
   {NUMBER}                    { return NUMBER; }
   {ID}                        { return ID; }
 
 }
 
-[^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
+[^] { return BAD_CHARACTER; }

@@ -79,7 +79,7 @@ public class HILLexerTest extends LexerTestCase {
   }
 
   public void testTernaryOpWithInterpolationBranch() throws Exception {
-    doTest("true ? 1 : \"${\"x\"}\"\"", "true ('true')\n" +
+    doTest("true ? 1 : \"${\"x\"}\"", "true ('true')\n" +
         "WHITE_SPACE (' ')\n" +
         "? ('?')\n" +
         "WHITE_SPACE (' ')\n" +
@@ -87,7 +87,23 @@ public class HILLexerTest extends LexerTestCase {
         "WHITE_SPACE (' ')\n" +
         ": (':')\n" +
         "WHITE_SPACE (' ')\n" +
-        "LITERAL ('\"${\"x\"}\"')");
+        "DOUBLE_QUOTED_STRING ('\"${\"x\"}\"')");
+  }
+
+  public void testMultiline() throws Exception {
+    doTest("1 +\n2", "NUMBER ('1')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "+ ('+')\n" +
+        "WHITE_SPACE ('\\n')\n" +
+        "NUMBER ('2')");
+  }
+
+  public void testMultilineStringInception() throws Exception {
+    doTest("\"${\n\"x\"\n}\"", "DOUBLE_QUOTED_STRING ('\"${\\n\"x\"\\n}\"')");
+  }
+
+  public void testMultilineStringInception2() throws Exception {
+    doTest("\"${\n\"x\n y\"}\"", "DOUBLE_QUOTED_STRING ('\"${\\n\"x\\n y\"}\"')");
   }
 
   public void testUnsupportedOps() throws Exception {
