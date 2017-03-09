@@ -2,6 +2,28 @@
   "name": "profitbricks",
   "type": "provider",
   "schema": {
+    "endpoint": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeString"
+      },
+      {
+        "name": "Optional",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "Profitbricks REST API URL."
+      },
+      {
+        "name": "DefaultValue_Computed",
+        "type": "string",
+        "value": "https://api.profitbricks.com/cloudapi/v3"
+      }
+    ],
     "password": [
       {
         "name": "Type",
@@ -421,6 +443,24 @@
           "value": "true"
         }
       ],
+      "ips": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeList"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaElements",
+          "value": [
+            {
+              "name": "Type",
+              "type": "schema.ValueType",
+              "value": "TypeString"
+            }
+          ]
+        }
+      ],
       "lan": [
         {
           "name": "Type",
@@ -438,6 +478,18 @@
           "name": "Type",
           "type": "schema.ValueType",
           "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "nat": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeBool"
         },
         {
           "name": "Optional",
@@ -630,6 +682,29 @@
                       "value": "true"
                     }
                   ],
+                  "ips": [
+                    {
+                      "name": "Type",
+                      "type": "schema.ValueType",
+                      "value": "TypeList"
+                    },
+                    {
+                      "name": "Optional",
+                      "type": "bool",
+                      "value": "true"
+                    },
+                    {
+                      "name": "Elem",
+                      "type": "ResourceSchemaElements",
+                      "value": [
+                        {
+                          "name": "Type",
+                          "type": "schema.ValueType",
+                          "value": "TypeString"
+                        }
+                      ]
+                    }
+                  ],
                   "name": [
                     {
                       "name": "Type",
@@ -741,6 +816,24 @@
                 "value": "true"
               }
             ],
+            "ips": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeList"
+              },
+              {
+                "name": "Elem",
+                "type": "ResourceSchemaElements",
+                "value": [
+                  {
+                    "name": "Type",
+                    "type": "schema.ValueType",
+                    "value": "TypeString"
+                  }
+                ]
+              }
+            ],
             "lan": [
               {
                 "name": "Type",
@@ -764,8 +857,27 @@
                 "type": "bool",
                 "value": "true"
               }
+            ],
+            "nat": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeBool"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              }
             ]
           }
+        }
+      ],
+      "primary_ip": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
         }
       ],
       "primary_nic": [
@@ -802,6 +914,18 @@
           "name": "Elem",
           "type": "ResourceSchemaInfo",
           "value": {
+            "availability_zone": [
+              {
+                "name": "Type",
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              },
+              {
+                "name": "Optional",
+                "type": "bool",
+                "value": "true"
+              }
+            ],
             "bus": [
               {
                 "name": "Type",
@@ -890,12 +1014,23 @@
               {
                 "name": "Type",
                 "type": "schema.ValueType",
-                "value": "TypeString"
+                "value": "TypeList"
               },
               {
                 "name": "Optional",
                 "type": "bool",
                 "value": "true"
+              },
+              {
+                "name": "Elem",
+                "type": "ResourceSchemaElements",
+                "value": [
+                  {
+                    "name": "Type",
+                    "type": "schema.ValueType",
+                    "value": "TypeString"
+                  }
+                ]
               }
             ]
           }
@@ -903,6 +1038,18 @@
       ]
     },
     "profitbricks_volume": {
+      "availability_zone": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
       "bus": [
         {
           "name": "Type",
@@ -1015,12 +1162,23 @@
         {
           "name": "Type",
           "type": "schema.ValueType",
-          "value": "TypeString"
+          "value": "TypeList"
         },
         {
           "name": "Optional",
           "type": "bool",
           "value": "true"
+        },
+        {
+          "name": "Elem",
+          "type": "ResourceSchemaElements",
+          "value": [
+            {
+              "name": "Type",
+              "type": "schema.ValueType",
+              "value": "TypeString"
+            }
+          ]
         }
       ],
       "sshkey": [
@@ -1032,5 +1190,108 @@
       ]
     }
   },
-  "data-sources": {}
+  "data-sources": {
+    "profitbricks_datacenter": {
+      "location": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "name": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Required",
+          "type": "bool",
+          "value": "true"
+        }
+      ]
+    },
+    "profitbricks_image": {
+      "location": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "name": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "type": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "version": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ]
+    },
+    "profitbricks_location": {
+      "feature": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "name": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        }
+      ]
+    }
+  }
 }
