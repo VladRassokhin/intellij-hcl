@@ -24,6 +24,7 @@ import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.model.Type
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hil.psi.ILExpression
+import org.intellij.plugins.hil.psi.ILLiteralExpression
 
 class TerraformElementGenerator(val project: Project) : HCLElementGenerator(project) {
   override fun createDummyFile(content: String): PsiFile {
@@ -32,7 +33,12 @@ class TerraformElementGenerator(val project: Project) : HCLElementGenerator(proj
   }
 
   fun createVariable(name: String, type: Type?, initializer: ILExpression): HCLBlock {
-    val value = initializer.text // TODO: Improve
+    val value: String
+    // TODO: Improve
+    value = when (initializer) {
+      is ILLiteralExpression -> initializer.text
+      else -> "\"\${${initializer.text}}\""
+    }
     return createVariable(name, type, value)
   }
 
