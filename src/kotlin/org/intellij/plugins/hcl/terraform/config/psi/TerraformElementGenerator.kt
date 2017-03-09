@@ -22,6 +22,7 @@ import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElementGenerator
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.model.Type
+import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hil.psi.ILExpression
 
 class TerraformElementGenerator(val project: Project) : HCLElementGenerator(project) {
@@ -38,8 +39,14 @@ class TerraformElementGenerator(val project: Project) : HCLElementGenerator(proj
   fun createVariable(name: String, type: Type?, value: String): HCLBlock {
     val content = buildString {
       append("variable \"").append(name).append("\" {")
-      if (type != null) {
-        append("\n  type=\"").append(type).append("\"\n")
+      val typeName = when(type) {
+        Types.String -> "string"
+        Types.Array -> "list"
+        Types.Object -> "map"
+        else -> null
+      }
+      if (typeName != null) {
+        append("\n  type=\"").append(typeName).append("\"")
       }
       append("\n  default=").append(value).append("\n}")
     }
