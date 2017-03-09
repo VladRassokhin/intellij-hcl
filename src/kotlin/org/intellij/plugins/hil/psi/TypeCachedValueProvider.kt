@@ -22,6 +22,7 @@ import org.intellij.plugins.hcl.terraform.config.model.Type
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hil.HILElementTypes
 import org.intellij.plugins.hil.HILTypes.ILBinaryBooleanOnlyOperations
+import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
 
 class TypeCachedValueProvider private constructor(private val e: ILExpression) : CachedValueProvider<Type?> {
 
@@ -110,7 +111,12 @@ class TypeCachedValueProvider private constructor(private val e: ILExpression) :
     // TODO: Implement via resolving/model :
       is ILVariable -> null
       is ILSelectExpression -> null
-      is ILMethodCallExpression -> null
+      is ILMethodCallExpression -> {
+        val method = e.method?.name
+        if (method != null && e.callee === e.method) {
+          HILCompletionContributor.FUNCTIONS.firstOrNull { it.name == method }?.ret?.let { CachedValueProvider.Result.create(it, e.method) }
+        } else null
+      }
 
     // Errors:
       is ILParameterList -> {
