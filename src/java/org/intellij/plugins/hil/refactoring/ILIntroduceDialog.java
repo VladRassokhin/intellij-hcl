@@ -151,9 +151,12 @@ public class ILIntroduceDialog extends DialogWrapper {
   }
 
   private void updateControls() {
-    final boolean nameValid = myValidator.isNameValid(getName(), getProject());
-    setOKActionEnabled(nameValid);
+    final String name = getName();
+    boolean nameValid = myValidator.isNameValid(name, getProject());
     setErrorText(!nameValid ? HCLBundle.message("refactoring.introduce.name.error") : null);
+    nameValid &= name != null && myValidator.checkPossibleName(name, myExpression);
+    setErrorText(!nameValid ? HCLBundle.message("refactoring.introduce.variable.scope.error") : null);
+    setOKActionEnabled(nameValid);
   }
 
 }
