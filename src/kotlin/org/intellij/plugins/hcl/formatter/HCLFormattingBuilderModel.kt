@@ -54,6 +54,7 @@ open class HCLFormattingBuilderModel(val language: Language = HCLLanguage) : For
         .withinPair(L_CURLY, R_CURLY).spaceIf(commonSettings.SPACE_WITHIN_BRACES) //, true
         .before(COMMA).spacing(spacesBeforeComma, spacesBeforeComma, 0, false, 0)
         .after(COMMA).spaceIf(commonSettings.SPACE_AFTER_COMMA)
+        .after(BLOCK).lineBreakInCode()
   }
 
   override fun getRangeAffectingIndent(file: PsiFile?, offset: Int, elementAtOffset: ASTNode?): TextRange? {
