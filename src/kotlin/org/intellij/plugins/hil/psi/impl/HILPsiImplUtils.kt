@@ -18,7 +18,6 @@ package org.intellij.plugins.hil.psi.impl
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
 import org.intellij.plugins.hcl.terraform.config.model.Type
-import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hil.HILTokenTypes
 import org.intellij.plugins.hil.psi.*
 
@@ -28,7 +27,7 @@ object HILPsiImplUtils {
   }
 
   fun getQualifier(expression: ILMethodCallExpression): ILExpression? {
-    val select = expression.expression
+    val select = expression.callee
     return if (select === expression.method) null else select
   }
 

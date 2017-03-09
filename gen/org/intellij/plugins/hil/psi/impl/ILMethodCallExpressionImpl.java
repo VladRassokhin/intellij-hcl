@@ -27,7 +27,7 @@ public class ILMethodCallExpressionImpl extends ILExpressionImpl implements ILMe
 
   @Override
   @NotNull
-  public ILExpression getExpression() {
+  public ILExpression getCallee() {
     return findNotNullChildByClass(ILExpression.class);
   }
 
