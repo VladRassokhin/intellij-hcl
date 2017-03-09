@@ -15,19 +15,19 @@
  */
 package org.intellij.plugins.hil.refactoring
 
-import com.intellij.codeInsight.CodeInsightUtilCore
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import org.intellij.plugins.hil.HILLanguage
 import org.intellij.plugins.hil.psi.ILExpression
 
-object ILCodeInsightUtil {
-  fun <T : PsiElement> findElementInRange(file: PsiFile, startOffset: Int, endOffset: Int, klass: Class<T>): T {
-    return CodeInsightUtilCore.findElementInRange(file, startOffset, endOffset, klass, HILLanguage)
-  }
-
-  fun findExpressionInRange(file: PsiFile, startOffset: Int, endOffset: Int): ILExpression? {
-    if (!file.viewProvider.languages.contains(HILLanguage)) return null
-    return findElementInRange(file, startOffset, endOffset, ILExpression::class.java)
-  }
+class IntroduceOperation(val project: Project,
+                         val editor: Editor,
+                         val file: PsiFile,
+                         var name: String?) {
+  var isReplaceAll: Boolean = false
+  var element: PsiElement? = null
+  var initializer: ILExpression? = null
+  var occurrences: List<PsiElement> = emptyList()
+  var suggestedNames: Collection<String>? = null
 }
