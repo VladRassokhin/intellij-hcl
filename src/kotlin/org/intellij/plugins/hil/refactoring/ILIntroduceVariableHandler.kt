@@ -35,15 +35,12 @@ import com.intellij.psi.util.PsiUtilCore
 import com.intellij.refactoring.IntroduceTargetChooser
 import com.intellij.refactoring.RefactoringActionHandler
 import com.intellij.refactoring.RefactoringBundle
-import com.intellij.refactoring.introduce.inplace.InplaceVariableIntroducer
 import com.intellij.refactoring.introduce.inplace.OccurrencesChooser
 import com.intellij.refactoring.listeners.RefactoringEventData
 import com.intellij.refactoring.listeners.RefactoringEventListener
 import com.intellij.refactoring.util.CommonRefactoringUtil
 import org.intellij.plugins.hcl.HCLBundle
 import org.intellij.plugins.hcl.psi.HCLBlock
-import org.intellij.plugins.hcl.psi.HCLStringLiteral
-import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralMixin
 import org.intellij.plugins.hcl.terraform.config.model.Type
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
@@ -176,7 +173,7 @@ class ILIntroduceVariableHandler : RefactoringActionHandler {
     }
 
     element1 = ILRefactoringUtil.getSelectedExpression(project, file, element1, element2)
-    if (element1 == null) {
+    if (element1 == null || !isValidIntroduceVariant(element1)) {
       showCannotPerformError(project, editor)
       return
     }
@@ -243,7 +240,8 @@ class ILIntroduceVariableHandler : RefactoringActionHandler {
     if (call != null && call.callee === element) {
       return false
     }
-    return true
+    if (element is ILParameterList) return false
+    return element is ILLiteralExpression
   }
 
   private fun performActionOnElement(operation: IntroduceOperation) {

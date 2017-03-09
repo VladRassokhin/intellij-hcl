@@ -36,8 +36,7 @@ class ILRefactoringSupportProvider : RefactoringSupportProvider() {
   }
 
   override fun getIntroduceVariableHandler(element: PsiElement?): RefactoringActionHandler? {
-    if (element is ILLiteralExpression || element?.parent is ILLiteralExpression) return  ILIntroduceVariableHandler()
-    return null
+    return ILIntroduceVariableHandler()
   }
 }
 
