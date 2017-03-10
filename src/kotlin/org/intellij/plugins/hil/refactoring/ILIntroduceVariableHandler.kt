@@ -17,23 +17,18 @@ package org.intellij.plugins.hil.refactoring
 
 import com.intellij.codeInsight.CodeInsightUtilCore
 import com.intellij.codeInsight.template.impl.TemplateManagerImpl
-import com.intellij.featureStatistics.FeatureUsageTracker
-import com.intellij.featureStatistics.ProductivityFeatureNames
-import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.Result
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Pass
-import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiUtilCore
 import com.intellij.refactoring.IntroduceTargetChooser
-import com.intellij.refactoring.RefactoringActionHandler
 import com.intellij.refactoring.RefactoringBundle
 import com.intellij.refactoring.introduce.inplace.OccurrencesChooser
 import com.intellij.refactoring.listeners.RefactoringEventData
@@ -44,20 +39,17 @@ import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.terraform.config.model.Type
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
+import org.intellij.plugins.hcl.terraform.config.refactoring.BaseIntroduceOperation
+import org.intellij.plugins.hcl.terraform.config.refactoring.BaseIntroduceVariableHandler
 import org.intellij.plugins.hil.psi.*
 import org.intellij.plugins.hil.psi.impl.HILPsiImplUtils
 import org.intellij.plugins.hil.psi.impl.getHCLHost
 import org.jetbrains.annotations.NonNls
 import java.util.*
 
-class ILIntroduceVariableHandler : RefactoringActionHandler {
+class ILIntroduceVariableHandler : BaseIntroduceVariableHandler<ILExpression>() {
   companion object {
     @NonNls val REFACTORING_ID = "hil.refactoring.extractVariable"
-
-    fun showErrorMessage(project: Project, editor: Editor?, message: String) {
-      CommonRefactoringUtil.showErrorHint(project, editor, message, HCLBundle.message("introduce.variable.title"), "refactoring.extractMethod")
-    }
-
     fun findOccurrenceUnderCaret(occurrences: List<PsiElement>, editor: Editor): PsiElement? {
       if (occurrences.isEmpty()) {
         return null
@@ -116,18 +108,10 @@ class ILIntroduceVariableHandler : RefactoringActionHandler {
     }
   }
 
-  override fun invoke(project: Project, elements: Array<out PsiElement>, dataContext: DataContext?) {
-    throw UnsupportedOperationException()
-  }
+  override fun createOperation(editor: Editor, file: PsiFile, project: Project) = IntroduceOperation(project, editor, file, null)
 
-  override fun invoke(project: Project, editor: Editor?, file: PsiFile?, dataContext: DataContext?) {
-    if (editor == null || file == null || dataContext == null) return
-    FeatureUsageTracker.getInstance().triggerFeatureUsed("hil." + ProductivityFeatureNames.REFACTORING_INTRODUCE_VARIABLE)
-    PsiDocumentManager.getInstance(project).commitAllDocuments()
-    performAction(IntroduceOperation(project, editor, file, null))
-  }
-
-  fun performAction(operation: IntroduceOperation) {
+  override fun performAction(operation: BaseIntroduceOperation<ILExpression>) {
+    if (operation !is IntroduceOperation) return
     val file = operation.file
     if (!CommonRefactoringUtil.checkReadOnlyStatus(file)) {
       return
@@ -475,10 +459,6 @@ class ILIntroduceVariableHandler : RefactoringActionHandler {
       e = e.parent as ILParenthesizedExpression
     }
     return e
-  }
-
-  private fun showCannotPerformError(project: Project, editor: Editor) {
-    showErrorMessage(project, editor, HCLBundle.message("refactoring.introduce.selection.error"))
   }
 }
 

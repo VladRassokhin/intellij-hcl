@@ -17,17 +17,10 @@ package org.intellij.plugins.hcl.terraform.config.refactoring
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import org.intellij.plugins.hcl.psi.HCLElement
 
-class IntroduceOperation(val project: Project,
-                         val editor: Editor,
-                         val file: PsiFile,
-                         var name: String?) {
-  var isReplaceAll: Boolean = false
-  var element: PsiElement? = null
-  var initializer: HCLElement? = null
-  var occurrences: List<PsiElement> = emptyList() // Could be HCLElement or ILElement or part of some string
-  var suggestedNames: Collection<String>? = null
-}
+/**
+ *  occurrences could be HCLElement or ILElement or part of some string
+ */
+class IntroduceOperation(project: Project, editor: Editor, file: PsiFile, name: String?) : BaseIntroduceOperation<HCLElement>(project, editor, file, name)

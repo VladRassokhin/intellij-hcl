@@ -15,13 +15,22 @@
  */
 package org.intellij.plugins.hcl.terraform.config.refactoring;
 
-import com.intellij.openapi.editor.EditorSettings;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import org.jetbrains.annotations.NotNull;
 
-public class TerraformIntroduceVariableRefactoringTest extends LightPlatformCodeInsightFixtureTestCase {
+public class TerraformIntroduceVariableRefactoringTest extends BaseIntroduceVariableRefactoringTest {
 
   protected String getTestDataPath() {
     return "test-data/terraform/refactoring/extract/variable";
+  }
+
+  @NotNull
+  protected BaseIntroduceOperation createIntroduceOperation(String name) {
+    return new IntroduceOperation(myFixture.getProject(), myFixture.getEditor(), myFixture.getFile(), name);
+  }
+
+  @NotNull
+  protected BaseIntroduceVariableHandler createHandler() {
+    return new TerraformIntroduceVariableHandler();
   }
 
   public void testStringExpressionSimple() throws Exception {
@@ -36,28 +45,8 @@ public class TerraformIntroduceVariableRefactoringTest extends LightPlatformCode
     doTest(true, null);
   }
 
-  protected void doTest() {
-    doTest(true);
-  }
-
-  protected void doTest(boolean replaceAll) {
-    doTest(replaceAll, "foo");
-  }
-
-  protected void doTest(boolean replaceAll, String name) {
-    myFixture.configureByFile(getTestName(false) + ".tf");
-    final EditorSettings settings = myFixture.getEditor().getSettings();
-    boolean inplaceEnabled = settings.isVariableInplaceRenameEnabled();
-    try {
-      settings.setVariableInplaceRenameEnabled(false);
-      TerraformIntroduceVariableHandler handler = new TerraformIntroduceVariableHandler();
-      final IntroduceOperation operation = new IntroduceOperation(myFixture.getProject(), myFixture.getEditor(), myFixture.getFile(), name);
-      operation.setReplaceAll(replaceAll);
-      handler.performAction(operation);
-      myFixture.checkResultByFile(getTestName(false) + ".after" + ".tf");
-    } finally {
-      settings.setVariableInplaceRenameEnabled(inplaceEnabled);
-    }
+  public void testStringExpressionCaret() throws Exception {
+    doTest();
   }
 
 }

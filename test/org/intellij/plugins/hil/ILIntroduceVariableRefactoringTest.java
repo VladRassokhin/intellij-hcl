@@ -15,15 +15,29 @@
  */
 package org.intellij.plugins.hil;
 
-import com.intellij.openapi.editor.EditorSettings;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import org.intellij.plugins.hcl.terraform.config.refactoring.BaseIntroduceOperation;
+import org.intellij.plugins.hcl.terraform.config.refactoring.BaseIntroduceVariableHandler;
+import org.intellij.plugins.hcl.terraform.config.refactoring.BaseIntroduceVariableRefactoringTest;
 import org.intellij.plugins.hil.refactoring.ILIntroduceVariableHandler;
 import org.intellij.plugins.hil.refactoring.IntroduceOperation;
+import org.jetbrains.annotations.NotNull;
 
-public class ILIntroduceVariableRefactoringTest extends LightPlatformCodeInsightFixtureTestCase {
+public class ILIntroduceVariableRefactoringTest extends BaseIntroduceVariableRefactoringTest {
 
   protected String getTestDataPath() {
     return "test-data/hil/refactoring/extract/variable";
+  }
+
+  @NotNull
+  @Override
+  protected BaseIntroduceOperation createIntroduceOperation(String name) {
+    return new IntroduceOperation(myFixture.getProject(), myFixture.getEditor(), myFixture.getFile(), name);
+  }
+
+  @NotNull
+  @Override
+  protected BaseIntroduceVariableHandler createHandler() {
+    return new ILIntroduceVariableHandler();
   }
 
   public void testStringExpressionSimple() throws Exception {
@@ -33,21 +47,4 @@ public class ILIntroduceVariableRefactoringTest extends LightPlatformCodeInsight
   protected void doTest() {
     doTest(true);
   }
-
-  protected void doTest(boolean replaceAll) {
-    myFixture.configureByFile(getTestName(false) + ".tf");
-    final EditorSettings settings = myFixture.getEditor().getSettings();
-    boolean inplaceEnabled = settings.isVariableInplaceRenameEnabled();
-    try {
-      settings.setVariableInplaceRenameEnabled(false);
-      ILIntroduceVariableHandler handler = new ILIntroduceVariableHandler();
-      final IntroduceOperation operation = new IntroduceOperation(myFixture.getProject(), myFixture.getEditor(), myFixture.getFile(), "foo");
-      operation.setReplaceAll(replaceAll);
-      handler.performAction(operation);
-      myFixture.checkResultByFile(getTestName(false) + ".after" + ".tf");
-    } finally {
-      settings.setVariableInplaceRenameEnabled(inplaceEnabled);
-    }
-  }
-
 }

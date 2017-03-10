@@ -1,3 +1,3 @@
 output "test" {
-  value = "${<selection>"str"</selection>}"
+  value = "${"<caret>str"}"
 }

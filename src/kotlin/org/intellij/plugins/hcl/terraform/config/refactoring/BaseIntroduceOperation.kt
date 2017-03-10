@@ -13,12 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hil.refactoring
+package org.intellij.plugins.hcl.terraform.config.refactoring
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import org.intellij.plugins.hcl.terraform.config.refactoring.BaseIntroduceOperation
-import org.intellij.plugins.hil.psi.ILExpression
 
-class IntroduceOperation(project: Project, editor: Editor, file: PsiFile, name: String?) : BaseIntroduceOperation<ILExpression>(project, editor, file, name)
+open class BaseIntroduceOperation<T : PsiElement>(val project: Project,
+                                                  val editor: Editor,
+                                                  val file: PsiFile,
+                                                  var name: String?) {
+  var isReplaceAll: Boolean = false
+  var element: PsiElement? = null
+  var initializer: T? = null
+  var occurrences: List<PsiElement> = emptyList()
+  var suggestedNames: Collection<String>? = null
+}
