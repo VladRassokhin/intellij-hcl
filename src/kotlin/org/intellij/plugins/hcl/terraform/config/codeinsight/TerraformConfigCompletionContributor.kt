@@ -42,7 +42,7 @@ import org.intellij.plugins.hcl.terraform.config.psi.TerraformReferenceContribut
 import org.intellij.plugins.hil.HILFileType
 import java.util.*
 
-public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
+class TerraformConfigCompletionContributor : HCLCompletionContributor() {
   init {
     val WhiteSpace = psiElement(PsiWhiteSpace::class.java)
     val ID = psiElement(HCLElementTypes.ID)
@@ -65,14 +65,14 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         .inFile(TerraformConfigFile)
         .withParent(File)
         .andNot(psiElement().afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))),
-        BlockKeywordCompletionProvider);
+        BlockKeywordCompletionProvider)
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
         .withParent(Identifier)
         .withSuperParent(2, Block)
         .withSuperParent(3, File)
         .withParent(not(psiElement(HCLIdentifier::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))),
-        BlockKeywordCompletionProvider);
+        BlockKeywordCompletionProvider)
 
     // TODO: Provide data from all resources in folder (?)
 
@@ -82,43 +82,43 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         .withParent(not(Identifier))
         .andOr(psiElement().withSuperParent(1, File), psiElement().withSuperParent(1, Block))
         .afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))
-        , BlockTypeOrNameCompletionProvider);
+        , BlockTypeOrNameCompletionProvider)
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
         .withParent(psiElement(HCLIdentifier::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
         .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
-        , BlockTypeOrNameCompletionProvider);
+        , BlockTypeOrNameCompletionProvider)
     extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
         .inFile(TerraformConfigFile)
         .withParent(psiElement(HCLStringLiteral::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
         .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
-        , BlockTypeOrNameCompletionProvider);
+        , BlockTypeOrNameCompletionProvider)
     extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
         .inFile(TerraformConfigFile)
         .andOr(psiElement().withParent(File), psiElement().withParent(Block))
         .afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))
-        , BlockTypeOrNameCompletionProvider);
+        , BlockTypeOrNameCompletionProvider)
 
     // Block property
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
         .withParent(Object)
         .withSuperParent(2, Block)
-        , BlockPropertiesCompletionProvider);
+        , BlockPropertiesCompletionProvider)
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
         .withParent(Identifier)
         .withSuperParent(2, Property)
         .withSuperParent(3, Object)
         .withSuperParent(4, Block)
-        , BlockPropertiesCompletionProvider);
+        , BlockPropertiesCompletionProvider)
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
         .withParent(Identifier)
         .withSuperParent(2, Block)
         .withSuperParent(3, Object)
         .withSuperParent(4, Block)
-        , BlockPropertiesCompletionProvider);
+        , BlockPropertiesCompletionProvider)
 
     // Leftmost identifier of block could be start of new property in case of eol betwen it ant next identifier
     //```
@@ -133,7 +133,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         .withSuperParent(2, Block)
         .withSuperParent(3, Object)
         .withSuperParent(4, Block)
-        , BlockPropertiesCompletionProvider);
+        , BlockPropertiesCompletionProvider)
 
     // Property value
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
@@ -213,8 +213,8 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
   }
 
   companion object {
-    @JvmField public val ROOT_BLOCK_KEYWORDS: SortedSet<String> = TypeModel.RootBlocks.map { it -> it.literal }.toSortedSet()
-    public val ROOT_BLOCKS_SORTED: List<PropertyOrBlockType> = TypeModel.RootBlocks.map { it.toPOBT() }.sortedBy { it.name }
+    @JvmField val ROOT_BLOCK_KEYWORDS: SortedSet<String> = TypeModel.RootBlocks.map(BlockType::literal).toSortedSet()
+    val ROOT_BLOCKS_SORTED: List<PropertyOrBlockType> = TypeModel.RootBlocks.map { it.toPOBT() }.sortedBy { it.name }
 
     private val LOG = Logger.getInstance(TerraformConfigCompletionContributor::class.java)
     fun DumpPsiFileModel(element: PsiElement): () -> String {
@@ -241,7 +241,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     }
 
     private fun failIfInUnitTestsMode(position: PsiElement, addition: String? = null) {
-      assert(!ApplicationManager.getApplication().isUnitTestMode, {
+      LOG.assertTrue(!ApplicationManager.getApplication().isUnitTestMode, {
         var ret: String = ""
         if (addition != null) {
           ret = "$addition\n"
@@ -256,14 +256,14 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     override fun weigh(element: LookupElement): Comparable<Nothing>? {
       val obj = element.`object`
       if (obj is PropertyOrBlockType) {
-        if (obj.required) return 0;
+        if (obj.required) return 0
         else return 1
       }
-      return 10;
+      return 10
     }
   }
 
-  public abstract class OurCompletionProvider : CompletionProvider<CompletionParameters>() {
+  abstract class OurCompletionProvider : CompletionProvider<CompletionParameters>() {
     protected fun getTypeModel(): TypeModel {
       return TypeModelProvider.getInstance().getModel()
     }
@@ -302,7 +302,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       result.addAllElements(list)
     }
 
-    public fun doCompletion(position: PsiElement, consumer: MutableList<LookupElementBuilder>, invocationCount: Int = 1) {
+    fun doCompletion(position: PsiElement, consumer: MutableList<LookupElementBuilder>, invocationCount: Int = 1) {
       val parent = position.parent
       LOG.debug { "TF.BlockTypeOrNameCompletionProvider{position=$position, parent=$parent}" }
       val obj = when {
@@ -359,9 +359,9 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val position = parameters.position
       var _parent: PsiElement? = position.parent
-      var right: Type? = null;
-      var isProperty = false;
-      var isBlock = false;
+      var right: Type? = null
+      var isProperty = false
+      var isBlock = false
       if (_parent is HCLIdentifier) {
         val pob = _parent.parent // Property or Block
         if (pob is HCLProperty) {
@@ -372,7 +372,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
             InjectedLanguageManager.getInstance(pob.project).enumerate(value, object : PsiLanguageInjectionHost.InjectedPsiVisitor {
               override fun visit(injectedPsi: PsiFile, places: MutableList<PsiLanguageInjectionHost.Shred>) {
                 if (injectedPsi.fileType == HILFileType) {
-                  right = Types.StringWithInjection;
+                  right = Types.StringWithInjection
                 }
               }
             })
@@ -394,17 +394,11 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       } else {
         LOG.debug { "TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, no right part}" }
       }
-      val parent: PsiElement = _parent ?: return failIfInUnitTestsMode(position);
-      if (parent !is HCLObject) {
-        return failIfInUnitTestsMode(position, "Parent should be HCLObject")
-      }
-      assert(parent is HCLObject, DumpPsiFileModel(position))
-      if (parent is HCLObject) {
-        val pp = parent.parent
-        if (pp is HCLBlock) {
-          val props = ModelHelper.getBlockProperties(pp)
-          doAddCompletion(isBlock, isProperty, parent, result, right, parameters, props)
-        }
+      val parent: HCLObject = _parent as? HCLObject ?: return failIfInUnitTestsMode(position, "Parent should be HCLObject")
+      val pp = parent.parent
+      if (pp is HCLBlock) {
+        val props = ModelHelper.getBlockProperties(pp)
+        doAddCompletion(isBlock, isProperty, parent, result, right, parameters, props)
       }
     }
 
@@ -423,7 +417,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       if (right == Types.StringWithInjection) {
         // StringWithInjection may be anything
         // TODO: Check interpolation result
-        return true;
+        return true
       }
       return it.property.type == right
     }
@@ -477,8 +471,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       if (parent is HCLFile) {
         module = parent.getTerraformModule()
       } else if (parent is HCLElement) {
-        val pp = parent.parent
-        if (pp !is HCLProperty) return
+        val pp = parent.parent as? HCLProperty ?: return
         if (parent !== pp.nameIdentifier) return
         module = parent.getTerraformModule()
       } else return
@@ -500,18 +493,15 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         } else return
       } else if (parent is HCLElement) {
         if (!HCLPsiUtil.isPropertyKey(parent)) return
-        val ppp = parent.parent.parent
-        if (ppp !is HCLObject) return
-        val pppp = ppp.parent
-        if (pppp !is HCLProperty) return
+        val ppp = parent.parent.parent as? HCLObject ?: return
+        val pppp = ppp.parent as? HCLProperty ?: return
         varProperty = pppp
       } else return
 
       if (varProperty.parent !is HCLFile) return
 
       val variable = varProperty.getTerraformModule().findVariable(varProperty.name) ?: return
-      val default = variable.second.`object`?.findProperty("default")?.value ?: return
-      if (default !is HCLObject) return
+      val default = variable.second.`object`?.findProperty("default")?.value as? HCLObject ?: return
 
       result.addAllElements(default.propertyList.map { create(it.name).withInsertHandler(ResourcePropertyInsertHandler) })
     }
@@ -521,7 +511,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
 object ModelHelper {
   private val LOG = Logger.getInstance(ModelHelper::class.java)
 
-  public fun getBlockProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+  fun getBlockProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
     val type = block.getNameElementUnquoted(0) ?: return emptyArray()
     val props: Array<out PropertyOrBlockType>
     if (type in TypeModel.RootBlocksMap.keys && block.parent !is PsiFile) {
@@ -558,29 +548,29 @@ object ModelHelper {
     return emptyArray()
   }
 
-  public fun getProviderProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+  fun getProviderProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
     val type = block.getNameElementUnquoted(1)
     val providerType = if (type != null) getTypeModel().getProviderType(type) else null
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractProvider.properties)
     if (providerType?.properties != null) {
-      properties.addAll(providerType?.properties)
+      properties.addAll(providerType.properties)
     }
     return properties.toTypedArray()
   }
 
-  public fun getProvisionerProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+  fun getProvisionerProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
     val type = block.getNameElementUnquoted(1)
     val provisionerType = if (type != null) getTypeModel().getProvisionerType(type) else null
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractResourceProvisioner.properties)
     if (provisionerType?.properties != null) {
-      properties.addAll(provisionerType?.properties)
+      properties.addAll(provisionerType.properties)
     }
     return properties.toTypedArray()
   }
 
-  public fun getConnectionProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+  fun getConnectionProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
     val type = block.`object`?.findProperty("type")?.value
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.Connection.properties)
@@ -600,24 +590,24 @@ object ModelHelper {
     return properties.toTypedArray()
   }
 
-  public fun getResourceProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+  fun getResourceProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
     val type = block.getNameElementUnquoted(1)
     val resourceType = if (type != null) getTypeModel().getResourceType(type) else null
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractResource.properties)
     if (resourceType?.properties != null) {
-      properties.addAll(resourceType?.properties)
+      properties.addAll(resourceType.properties)
     }
     return ( properties.toTypedArray())
   }
 
-  public fun getDataSourceProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+  fun getDataSourceProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
     val type = block.getNameElementUnquoted(1)
     val dataSourceType = if (type != null) getTypeModel().getDataSourceType(type) else null
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractDataSource.properties)
     if (dataSourceType?.properties != null) {
-      properties.addAll(dataSourceType?.properties)
+      properties.addAll(dataSourceType.properties)
     }
     return (properties.toTypedArray())
   }
