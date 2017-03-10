@@ -41,7 +41,6 @@ import com.intellij.refactoring.util.CommonRefactoringUtil
 import org.intellij.plugins.hcl.HCLBundle
 import org.intellij.plugins.hcl.navigation.HCLQualifiedNameProvider
 import org.intellij.plugins.hcl.psi.*
-import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralMixin
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.Type
 import org.intellij.plugins.hcl.terraform.config.model.Types

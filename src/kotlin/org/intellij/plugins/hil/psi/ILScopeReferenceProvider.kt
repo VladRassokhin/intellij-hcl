@@ -21,7 +21,6 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.HCLElement
-import org.intellij.plugins.hil.psi.getProvisionerResource
 import org.intellij.plugins.hil.psi.impl.ILVariableMixin
 
 object ILScopeReferenceProvider : PsiReferenceProvider() {

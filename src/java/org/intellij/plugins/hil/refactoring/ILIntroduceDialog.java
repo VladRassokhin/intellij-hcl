@@ -27,7 +27,6 @@ import com.intellij.ui.EditorTextField;
 import com.intellij.ui.StringComboboxEditor;
 import org.intellij.plugins.hcl.HCLBundle;
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType;
-import org.intellij.plugins.hil.HILFileType;
 import org.intellij.plugins.hil.psi.ILExpression;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

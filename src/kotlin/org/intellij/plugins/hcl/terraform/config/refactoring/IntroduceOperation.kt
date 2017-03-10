@@ -15,18 +15,11 @@
  */
 package org.intellij.plugins.hcl.terraform.config.refactoring
 
-import com.intellij.lang.LanguageNamesValidation
-import com.intellij.lang.refactoring.NamesValidator
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import org.intellij.plugins.hcl.HCLBundle
 import org.intellij.plugins.hcl.psi.HCLElement
-import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
-import org.intellij.plugins.hil.HILLanguage
-import org.intellij.plugins.hil.psi.ILExpression
-import org.intellij.plugins.hil.psi.impl.getHCLHost
 
 class IntroduceOperation(val project: Project,
                          val editor: Editor,

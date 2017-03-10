@@ -21,7 +21,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.GlobalSearchScopes
 import com.intellij.testFramework.LightVirtualFile
-import org.apache.commons.codec.digest.DigestUtils
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hil.psi.ILExpression
 

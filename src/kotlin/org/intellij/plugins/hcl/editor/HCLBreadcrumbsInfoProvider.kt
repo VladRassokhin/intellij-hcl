@@ -21,7 +21,6 @@ import com.intellij.xml.breadcrumbs.BreadcrumbsInfoProvider
 import org.intellij.plugins.hcl.HCLLanguage
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLProperty
-import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 
 open class HCLBreadcrumbsInfoProvider : BreadcrumbsInfoProvider() {
   override fun getLanguages(): Array<Language> {

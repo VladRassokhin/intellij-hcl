@@ -19,10 +19,7 @@ import com.intellij.lang.BracePair
 import com.intellij.lang.PairedBraceMatcher
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IElementType
-import org.intellij.plugins.hcl.HCLElementTypes.L_BRACKET
-import org.intellij.plugins.hcl.HCLElementTypes.L_CURLY
-import org.intellij.plugins.hcl.HCLElementTypes.R_BRACKET
-import org.intellij.plugins.hcl.HCLElementTypes.R_CURLY
+import org.intellij.plugins.hcl.HCLElementTypes.*
 
 class HCLBraceMatcher : PairedBraceMatcher {
   override fun getCodeConstructStart(file: PsiFile?, openingBraceOffset: Int): Int {

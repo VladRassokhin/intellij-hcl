@@ -22,7 +22,6 @@ import com.intellij.codeInsight.lookup.LookupElementPresentation
 import com.intellij.codeInsight.lookup.LookupElementRenderer
 import com.intellij.icons.AllIcons
 import com.intellij.lang.injection.InjectedLanguageManager
-import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
