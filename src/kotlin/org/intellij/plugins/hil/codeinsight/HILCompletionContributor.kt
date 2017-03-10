@@ -33,6 +33,7 @@ import org.intellij.plugins.debug
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor
+import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor.BlockTypeOrNameCompletionProvider.isProviderUsed
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformLookupElementRenderer
 import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.model.Function
@@ -252,7 +253,13 @@ class HILCompletionContributor : CompletionContributor() {
       result.addAllElements(types.map { create(it) })
 
       if (parameters.isExtendedCompletion) {
-        result.addAllElements(ModelHelper.getTypeModel().dataSources.map { it.type }.filter { it !in types }.map { create(it) })
+        @Suppress("NAME_SHADOWING")
+        var dataSources = ModelHelper.getTypeModel().dataSources
+        val cache = HashMap<String, Boolean>()
+        if (parameters.invocationCount == 2) {
+          dataSources = dataSources.filter { isProviderUsed(module, it.provider.type, cache) }
+        }
+        result.addAllElements(dataSources.map { it.type }.filter { it !in types }.map { create(it) })
       }
     }
   }
@@ -376,7 +383,13 @@ class HILCompletionContributor : CompletionContributor() {
       result.addAllElements(types.map { create(it) })
 
       if (parameters.isExtendedCompletion) {
-        result.addAllElements(getTypeModel().resources.map { it.type }.filter { it !in types }.map { create(it) })
+        @Suppress("NAME_SHADOWING")
+        var resources = getTypeModel().resources
+        val cache = HashMap<String, Boolean>()
+        if (parameters.invocationCount == 2) {
+          resources = resources.filter { isProviderUsed(module, it.provider.type, cache) }
+        }
+        result.addAllElements(resources.map { it.type }.filter { it !in types }.map { create(it) })
       }
     }
   }

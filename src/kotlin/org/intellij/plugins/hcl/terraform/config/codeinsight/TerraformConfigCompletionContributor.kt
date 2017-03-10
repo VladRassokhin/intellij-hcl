@@ -298,11 +298,11 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val position = parameters.position
       val list = SmartList<LookupElementBuilder>()
-      doCompletion(position, list)
+      doCompletion(position, list, parameters.invocationCount)
       result.addAllElements(list)
     }
 
-    public fun doCompletion(position: PsiElement, consumer: MutableList<LookupElementBuilder>) {
+    public fun doCompletion(position: PsiElement, consumer: MutableList<LookupElementBuilder>, invocationCount: Int = 1) {
       val parent = position.parent
       LOG.debug { "TF.BlockTypeOrNameCompletionProvider{position=$position, parent=$parent}" }
       val obj = when {
@@ -319,12 +319,13 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         leftNWS?.node?.elementType == HCLElementTypes.ID -> leftNWS!!.text
         else -> return failIfInUnitTestsMode(position)
       }
+      val cache = HashMap<String, Boolean>()
       when (type) {
         "resource" ->
-          consumer.addAll(getTypeModel().resources.map { create(it.type) })
+          consumer.addAll(getTypeModel().resources.filter { invocationCount > 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type) })
 
         "data" ->
-          consumer.addAll(getTypeModel().dataSources.map { create(it.type) })
+          consumer.addAll(getTypeModel().dataSources.filter { invocationCount > 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type) })
 
         "provider" ->
           consumer.addAll(getTypeModel().providers.map { create(it.type) })
@@ -333,6 +334,24 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
           consumer.addAll(getTypeModel().provisioners.map { create(it.type) })
       }
       return
+    }
+
+    fun isProviderUsed(element: PsiElement, providerName: String, cache: MutableMap<String, Boolean>): Boolean {
+      val hclElement = PsiTreeUtil.getParentOfType(element, HCLElement::class.java, false)
+      if (hclElement == null) {
+        failIfInUnitTestsMode(element, "Completion called on element without any HCLElement as parent")
+        return true
+      }
+      return isProviderUsed(hclElement.getTerraformModule(), providerName, cache)
+
+    }
+
+    fun isProviderUsed(module: Module, providerName: String, cache: MutableMap<String, Boolean>): Boolean {
+      if (!cache.containsKey(providerName)) {
+        val providers = module.getDefinedProviders()
+        cache[providerName] = providers.isEmpty() || providers.any { it.first.name == providerName }
+      }
+      return cache[providerName]!!
     }
   }
 

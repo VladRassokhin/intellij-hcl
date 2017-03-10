@@ -88,14 +88,14 @@ public class TerraformModelProviderTest extends LightPlatformTestCase {
     for (ResourceType block : model.getResources()) {
       final String rt = block.getType();
       final String pt = block.getProvider().getType();
-//      if (rt.equals(pt)) continue;
+      if (rt.equals(pt)) continue;
       if (rt.startsWith(pt + '_')) continue;
       failed.add(block);
     }
     for (DataSourceType block : model.getDataSources()) {
       final String rt = block.getType();
       final String pt = block.getProvider().getType();
-//      if (rt.equals(pt)) continue;
+      if (rt.equals(pt)) continue;
       if (rt.startsWith(pt + '_')) continue;
       failed.add(block);
     }

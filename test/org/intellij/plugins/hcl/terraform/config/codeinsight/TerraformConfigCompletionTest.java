@@ -145,6 +145,19 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("resource x y {}\nresource a b {depends_on=[<caret>]}", 0);
     doBasicCompletionTest("data x y {}\nresource a b {depends_on=[<caret>]}", 0);
   }
+
+  public void testResourceTypeCompletionGivenDefinedProviders() throws Exception {
+    final TreeSet<String> set = new TreeSet<String>();
+    final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
+    for (ResourceType resource : provider.getModel().getResources()) {
+      if (!resource.getProvider().getType().equals("aws")) continue;
+      set.add(resource.getType());
+    }
+    doBasicCompletionTest("provider aws {}\nresource <caret>", set);
+    doBasicCompletionTest("provider aws {}\nresource <caret> {}", set);
+    doBasicCompletionTest("provider aws {}\nresource <caret> \"aaa\" {}", set);
+  }
+
   //</editor-fold>
 
   //<editor-fold desc="Data Sources completion tests">
@@ -220,6 +233,18 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     // Only stings allowed in arrays, prevent other elements
     doBasicCompletionTest("resource x y {}\ndata a b {depends_on=[<caret>]}", 0);
     doBasicCompletionTest("data x y {}\ndata a b {depends_on=[<caret>]}", 0);
+  }
+
+  public void testDataSourceTypeCompletionGivenDefinedProviders() throws Exception {
+    final TreeSet<String> set = new TreeSet<String>();
+    final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
+    for (DataSourceType ds : provider.getModel().getDataSources()) {
+      if (!ds.getProvider().getType().equals("aws")) continue;
+      set.add(ds.getType());
+    }
+    doBasicCompletionTest("provider aws {}\ndata <caret>", set);
+    doBasicCompletionTest("provider aws {}\ndata <caret> {}", set);
+    doBasicCompletionTest("provider aws {}\ndata <caret> \"aaa\" {}", set);
   }
   //</editor-fold>
 
