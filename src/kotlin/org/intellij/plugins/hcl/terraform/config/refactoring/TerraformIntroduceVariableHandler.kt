@@ -265,8 +265,11 @@ class TerraformIntroduceVariableHandler : RefactoringActionHandler {
 
   protected fun performIntroduceWithDialog(operation: IntroduceOperation) {
     val project = operation.project
+    if (ApplicationManager.getApplication().isUnitTestMode) {
+      ensureName(operation)
+    }
     if (operation.name == null) {
-      val dialog = VariableIntroduceDialog(project, "Introduce Variable", validator, operation)
+      val dialog = VariableIntroduceDialog(project, HCLBundle.message("introduce.variable.title"), validator, operation)
       if (!dialog.showAndGet()) {
         return
       }

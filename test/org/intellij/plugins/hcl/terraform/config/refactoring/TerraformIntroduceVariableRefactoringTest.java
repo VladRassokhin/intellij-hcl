@@ -32,18 +32,26 @@ public class TerraformIntroduceVariableRefactoringTest extends LightPlatformCode
     doTest(true);
   }
 
+  public void testStringExpressionAllAutodetect() throws Exception {
+    doTest(true, null);
+  }
+
   protected void doTest() {
     doTest(true);
   }
 
   protected void doTest(boolean replaceAll) {
+    doTest(replaceAll, "foo");
+  }
+
+  protected void doTest(boolean replaceAll, String name) {
     myFixture.configureByFile(getTestName(false) + ".tf");
     final EditorSettings settings = myFixture.getEditor().getSettings();
     boolean inplaceEnabled = settings.isVariableInplaceRenameEnabled();
     try {
       settings.setVariableInplaceRenameEnabled(false);
       TerraformIntroduceVariableHandler handler = new TerraformIntroduceVariableHandler();
-      final IntroduceOperation operation = new IntroduceOperation(myFixture.getProject(), myFixture.getEditor(), myFixture.getFile(), "foo");
+      final IntroduceOperation operation = new IntroduceOperation(myFixture.getProject(), myFixture.getEditor(), myFixture.getFile(), name);
       operation.setReplaceAll(replaceAll);
       handler.performAction(operation);
       myFixture.checkResultByFile(getTestName(false) + ".after" + ".tf");
