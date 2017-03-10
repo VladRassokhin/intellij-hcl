@@ -67,9 +67,6 @@ public interface HCLElementTypes {
       else if (type == IDENTIFIER) {
         return new HCLIdentifierImpl(node);
       }
-      else if (type == LITERAL) {
-        return new HCLLiteralImpl(node);
-      }
       else if (type == NULL_LITERAL) {
         return new HCLNullLiteralImpl(node);
       }
@@ -84,9 +81,6 @@ public interface HCLElementTypes {
       }
       else if (type == STRING_LITERAL) {
         return new HCLStringLiteralImpl(node);
-      }
-      else if (type == VALUE) {
-        return new HCLValueImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

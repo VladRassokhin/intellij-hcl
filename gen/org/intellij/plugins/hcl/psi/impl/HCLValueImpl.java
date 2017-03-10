@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
 
-public class HCLValueImpl extends HCLElementImpl implements HCLValue {
+public abstract class HCLValueImpl extends HCLElementImpl implements HCLValue {
 
   public HCLValueImpl(ASTNode node) {
     super(node);

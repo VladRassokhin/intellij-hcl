@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
 
-public class HCLLiteralImpl extends HCLLiteralMixin implements HCLLiteral {
+public abstract class HCLLiteralImpl extends HCLLiteralMixin implements HCLLiteral {
 
   public HCLLiteralImpl(ASTNode node) {
     super(node);
