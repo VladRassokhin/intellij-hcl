@@ -32,6 +32,7 @@ import com.intellij.psi.impl.DebugUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import com.intellij.util.SmartList
+import org.intellij.plugins.debug
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionContributor
@@ -284,7 +285,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       val position = parameters.position
       val parent = position.parent
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
-      LOG.debug("TF.BlockKeywordCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
+      LOG.debug { "TF.BlockKeywordCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}" }
       if (leftNWS is HCLIdentifier || leftNWS?.node?.elementType == HCLElementTypes.ID) {
         return assert(false, DumpPsiFileModel(position))
       }
@@ -303,19 +304,16 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
 
     public fun doCompletion(position: PsiElement, consumer: MutableList<LookupElementBuilder>) {
       val parent = position.parent
-      LOG.debug("TF.BlockTypeOrNameCompletionProvider{position=$position, parent=$parent}")
+      LOG.debug { "TF.BlockTypeOrNameCompletionProvider{position=$position, parent=$parent}" }
       val obj = when {
         parent is HCLIdentifier -> parent
         parent is HCLStringLiteral -> parent
-      // Next two cases in case of two IDs (not Identifiers) nearby (start of block in empty file)
-        position.node.elementType == HCLElementTypes.ID -> position
-        position.node.elementType == HCLElementTypes.STRING_LITERAL -> position
-        position.node.elementType == HCLElementTypes.DOUBLE_QUOTED_STRING -> position
-        position.node.elementType == HCLElementTypes.SINGLE_QUOTED_STRING -> position
+      // Next line for the case of two IDs (not Identifiers) nearby (start of block in empty file) TODO: check that
+        HCLParserDefinition.IDENTIFYING_LITERALS.contains(position.node.elementType) -> position
         else -> return failIfInUnitTestsMode(position)
       }
       val leftNWS = obj.getPrevSiblingNonWhiteSpace()
-      LOG.debug("TF.BlockTypeOrNameCompletionProvider{position=$position, parent=$parent, obj=$obj, lnws=$leftNWS}")
+      LOG.debug { "TF.BlockTypeOrNameCompletionProvider{position=$position, parent=$parent, obj=$obj, lnws=$leftNWS}" }
       val type: String = when {
         leftNWS is HCLIdentifier -> leftNWS.id
         leftNWS?.node?.elementType == HCLElementTypes.ID -> leftNWS!!.text
@@ -373,9 +371,9 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         if (isBlock || isProperty) {
           _parent = pob?.parent // Object
         }
-        LOG.debug("TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, right=$right, isBlock=$isBlock, isProperty=$isProperty}")
+        LOG.debug { "TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, right=$right, isBlock=$isBlock, isProperty=$isProperty}" }
       } else {
-        LOG.debug("TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, no right part}")
+        LOG.debug { "TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, no right part}" }
       }
       val parent: PsiElement = _parent ?: return failIfInUnitTestsMode(position);
       if (parent !is HCLObject) {
@@ -417,7 +415,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       val position = parameters.position
       val parent = position.parent
       val inArray = (parent.parent is HCLArray)
-      LOG.debug("TF.PropertyValueCompletionProvider{position=$position, parent=$parent}")
+      LOG.debug { "TF.PropertyValueCompletionProvider{position=$position, parent=$parent}" }
       val property = PsiTreeUtil.getParentOfType(position, HCLProperty::class.java) ?: return
       val block = PsiTreeUtil.getParentOfType(property, HCLBlock::class.java) ?: return
 
@@ -455,7 +453,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val position = parameters.position
       val parent = position.parent
-      LOG.debug("TF.VariableNameTFVARSCompletionProvider{position=$position, parent=$parent}")
+      LOG.debug { "TF.VariableNameTFVARSCompletionProvider{position=$position, parent=$parent}" }
       val module: Module
       if (parent is HCLFile) {
         module = parent.getTerraformModule()
@@ -474,7 +472,7 @@ public class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val position = parameters.position
       val parent = position.parent
-      LOG.debug("TF.MappedVariableTFVARSCompletionProvider{position=$position, parent=$parent}")
+      LOG.debug { "TF.MappedVariableTFVARSCompletionProvider{position=$position, parent=$parent}" }
       val varProperty: HCLProperty
       if (parent is HCLObject) {
         val pp = parent.parent

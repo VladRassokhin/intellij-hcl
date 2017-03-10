@@ -77,6 +77,8 @@ open class HCLParserDefinition : ParserDefinition {
     val WHITE_SPACES: TokenSet = TokenSet.create(TokenType.WHITE_SPACE)
     val STRING_LITERALS: TokenSet = TokenSet.create(SINGLE_QUOTED_STRING, DOUBLE_QUOTED_STRING)
 
+    val IDENTIFYING_LITERALS: TokenSet = TokenSet.create(SINGLE_QUOTED_STRING, DOUBLE_QUOTED_STRING, ID)
+
     val FILE: IFileElementType = IFileElementType(HCLLanguage)
 
     val HCL_BRACES: TokenSet = TokenSet.create(L_CURLY, R_CURLY)

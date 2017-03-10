@@ -29,6 +29,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.util.ProcessingContext
 import com.intellij.util.SmartList
+import org.intellij.plugins.debug
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor
@@ -152,7 +153,7 @@ class HILCompletionContributor : CompletionContributor() {
       val parent = position.parent
       if (parent !is ILExpression) return
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
-      LOG.debug("HIL.MethodsCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
+      LOG.debug { "HIL.MethodsCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}" }
       result.addAllElements(FUNCTIONS.map { create(it) })
       result.addAllElements(GLOBAL_SCOPES.map { createScope(it) })
       if (getProvisionerResource(parent) != null) result.addElement(createScope("self"))
@@ -170,7 +171,7 @@ class HILCompletionContributor : CompletionContributor() {
       val from = pp.from
       if (from !is ILVariable) return
       if (scope != from.name) return
-      LOG.debug("HIL.SelectFromScopeCompletionProvider($scope){position=$position, parent=$parent, pp=$pp}")
+      LOG.debug { "HIL.SelectFromScopeCompletionProvider($scope){position=$position, parent=$parent, pp=$pp}" }
       doAddCompletions(parent, parameters, context, result)
     }
 
@@ -187,7 +188,7 @@ class HILCompletionContributor : CompletionContributor() {
       val from = pp.from
       if (from !is ILVariable) return
       val provider = SCOPE_PROVIDERS[from.name] ?: return
-      LOG.debug("HIL.SelectFromScopeCompletionProviderAny($from.name){position=$position, parent=$parent, pp=$pp}")
+      LOG.debug { "HIL.SelectFromScopeCompletionProviderAny($from.name){position=$position, parent=$parent, pp=$pp}" }
       provider.doAddCompletions(parent, parameters, context, result)
     }
   }
@@ -364,7 +365,7 @@ class HILCompletionContributor : CompletionContributor() {
       val parent = position.parent
       if (parent !is ILExpression) return
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
-      LOG.debug("HIL.ResourceTypesCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}")
+      LOG.debug { "HIL.ResourceTypesCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}" }
 
       val host = InjectedLanguageManager.getInstance(parent.project).getInjectionHost(parent) ?: return
       if (host !is HCLElement) return
