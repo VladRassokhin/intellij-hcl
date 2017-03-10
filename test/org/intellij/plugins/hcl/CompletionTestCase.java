@@ -25,7 +25,6 @@ import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import com.intellij.util.BooleanFunction;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -59,7 +58,7 @@ public abstract class CompletionTestCase extends LightCodeInsightFixtureTestCase
     System.out.println("PsiFile = " + DebugUtil.psiToString(psiFile, true));
     assertEquals(getExpectedLanguage(), psiFile.getLanguage());
     final LookupElement[] elements = myFixture.complete(CompletionType.BASIC, myCompleteInvocationCount);
-    System.out.println("LookupElements = " + Arrays.toString(elements));
+    assertNotNull(elements);
     final List<String> strings = myFixture.getLookupElementStrings();
     assertNotNull(strings);
     System.out.println("LookupStrings = " + strings);
