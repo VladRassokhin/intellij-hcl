@@ -20,6 +20,7 @@ import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.patterns.PsiFilePattern
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferenceSet
 import com.intellij.psi.tree.TokenSet
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.HCLElementTypes
@@ -88,6 +89,23 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
             .withSuperParent(2, HCLObject::class.java)
             .withSuperParent(3, HCLProperty::class.java)
         , MapVariableIndexReferenceProvider)
+
+    // 'module' source
+    registrar.registerReferenceProvider(
+        psiElement(HCLStringLiteral::class.java)
+            .inFile(TerraformConfigFile)
+            .withParent(psiElement(HCLProperty::class.java).with(object : PatternCondition<HCLProperty?>("HCLProperty(source)") {
+              override fun accepts(t: HCLProperty, context: ProcessingContext?): Boolean {
+                return "source" == t.name
+              }
+            }))
+            .withSuperParent(3, psiElement(HCLBlock::class.java).with(object : PatternCondition<HCLBlock?>("HCLBlock(module)") {
+              override fun accepts(t: HCLBlock, context: ProcessingContext?): Boolean {
+                val type = t.getNameElementUnquoted(0)
+                return type == "module"
+              }
+            }))
+        , ModuleSourceReferenceProvider)
   }
 }
 
@@ -105,6 +123,14 @@ object ResourceProviderReferenceProvider : PsiReferenceProvider() {
         element.getTerraformModule().findProviders(element.value).map { it.nameIdentifier as HCLElement }
       }
     })
+  }
+}
+
+object ModuleSourceReferenceProvider : PsiReferenceProvider() {
+  override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
+    if (element !is HCLStringLiteral) return PsiReference.EMPTY_ARRAY
+    if (!HCLPsiUtil.isPropertyValue(element)) return PsiReference.EMPTY_ARRAY
+    return FileReferenceSet.createSet(element, true, false, false).allReferences
   }
 }
 
