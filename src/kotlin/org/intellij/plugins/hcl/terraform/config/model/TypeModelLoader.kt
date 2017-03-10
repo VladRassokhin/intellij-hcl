@@ -191,14 +191,14 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       LOG.warn("No resources for provider '$name' in file '$file'")
       return
     }
-    val map = resources.map { parseResourceInfo(it) }
+    val map = resources.map { parseResourceInfo(it, info) }
     this.resources.addAll(map)
     val dataSources = json.obj("data-sources")
     if (dataSources == null) {
       LOG.warn("No data-sources for provider '$name' in file '$file'")
       return
     }
-    this.dataSources.addAll(dataSources.map { parseDataSourceInfo(it) })
+    this.dataSources.addAll(dataSources.map { parseDataSourceInfo(it, info) })
   }
 
   private fun parseProvisionerFile(json: JsonObject, file: String) {
@@ -240,18 +240,18 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     return ProvisionerType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray())
   }
 
-  private fun parseResourceInfo(entry: Map.Entry<String, Any?>): ResourceType {
+  private fun parseResourceInfo(entry: Map.Entry<String, Any?>, info: ProviderType): ResourceType {
     val name = entry.key
     assert(entry.value is JsonObject, { "Right part of resource should be object" })
     val obj = entry.value as JsonObject
-    return ResourceType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray())
+    return ResourceType(name, info, *obj.map { parseSchemaElement(it, name) }.toTypedArray())
   }
 
-  private fun parseDataSourceInfo(entry: Map.Entry<String, Any?>): DataSourceType {
+  private fun parseDataSourceInfo(entry: Map.Entry<String, Any?>, info: ProviderType): DataSourceType {
     val name = entry.key
     assert(entry.value is JsonObject, { "Right part of data-source should be object" })
     val obj = entry.value as JsonObject
-    return DataSourceType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray())
+    return DataSourceType(name, info, *obj.map { parseSchemaElement(it, name) }.toTypedArray())
   }
 
   private fun parseSchemaElement(entry: Map.Entry<String, Any?>, providerName: String): PropertyOrBlockType {

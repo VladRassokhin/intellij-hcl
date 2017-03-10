@@ -19,6 +19,11 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.testFramework.LightPlatformTestCase;
 import org.intellij.plugins.hcl.terraform.config.model.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.BDDAssertions.then;
+
 public class TerraformModelProviderTest extends LightPlatformTestCase {
   public void testModelIsLoaded() throws Exception {
     final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
@@ -72,6 +77,29 @@ public class TerraformModelProviderTest extends LightPlatformTestCase {
     PropertyOrBlockType cookies = findProperty(forwarded_values_block.getProperties(), "cookies");
     assertNotNull(cookies);
     assertTrue(cookies.getRequired());
+  }
+
+  public void testAllResourceAndDataSourcesHasProviderNameAsPrefix() throws Exception {
+    final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
+    assertNotNull(provider);
+    final TypeModel model = provider.getModel();
+    assertNotNull(model);
+    final List<BlockType> failed = new ArrayList<BlockType>();
+    for (ResourceType block : model.getResources()) {
+      final String rt = block.getType();
+      final String pt = block.getProvider().getType();
+//      if (rt.equals(pt)) continue;
+      if (rt.startsWith(pt + '_')) continue;
+      failed.add(block);
+    }
+    for (DataSourceType block : model.getDataSources()) {
+      final String rt = block.getType();
+      final String pt = block.getProvider().getType();
+//      if (rt.equals(pt)) continue;
+      if (rt.startsWith(pt + '_')) continue;
+      failed.add(block);
+    }
+    then(failed).isEmpty();
   }
 
   private PropertyOrBlockType findProperty(PropertyOrBlockType[] properties, String name) {

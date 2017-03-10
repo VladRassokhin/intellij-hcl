@@ -15,6 +15,8 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
+import java.util.Arrays
+
 // Model for element types
 
 open class Type(val name: String) {
@@ -41,7 +43,11 @@ open class SimpleValueHint(vararg hint: String) : SimpleHint(*hint)
 // TODO: Support 'default' values for certain types
 open class PropertyType(val name: String, val type: Type, val hint: Hint? = null, val injectionAllowed: Boolean = true, description: String? = null, required: Boolean = false, deprecated: String? = null, val has_default: Boolean = false) : BaseModelType(description = description, required = required, deprecated = deprecated)
 
-open class BlockType(val literal: String, val args: Int = 0, description: String? = null, required: Boolean = false, deprecated: String? = null, vararg val properties: PropertyOrBlockType = arrayOf()) : BaseModelType(description = description, required = required, deprecated = deprecated)
+open class BlockType(val literal: String, val args: Int = 0, description: String? = null, required: Boolean = false, deprecated: String? = null, vararg val properties: PropertyOrBlockType = arrayOf()) : BaseModelType(description = description, required = required, deprecated = deprecated) {
+  override fun toString(): String {
+    return "BlockType(literal='$literal', args=$args, properties=${Arrays.toString(properties)})"
+  }
+}
 
 class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
   val name: String = if (property != null) property.name else block!!.literal
@@ -55,6 +61,13 @@ class PropertyOrBlockType private constructor(val property: PropertyType? = null
   constructor(property: PropertyType) : this(property, null)
 
   constructor(block: BlockType) : this(null, block)
+
+  override fun toString(): String {
+    if (property != null)
+      return "POBT-Property(name='$name', required=$required, deprecated=$deprecated)"
+    else
+      return "POBT-Block(name='$name', required=$required, deprecated=$deprecated)"
+  }
 }
 
 fun PropertyType.toPOBT(): PropertyOrBlockType {
@@ -83,7 +96,26 @@ object Types {
   val SimpleValueTypes = setOf(Types.String, Types.Number, Types.Boolean)
 }
 
-class ResourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, properties = *properties)
-class DataSourceType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("data", 2, properties = *properties)
-class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, properties = *properties)
-class ProvisionerType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provisioner", 1, properties = *properties)
+class ResourceType(val type: String, val provider: ProviderType, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, properties = *properties) {
+  override fun toString(): String {
+    return "ResourceType(type='$type', provider=${provider.type}) ${super.toString()}"
+  }
+}
+
+class DataSourceType(val type: String, val provider: ProviderType, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("data", 2, properties = *properties) {
+  override fun toString(): String {
+    return "DataSourceType(type='$type', provider=${provider.type}) ${super.toString()}"
+  }
+}
+
+class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, properties = *properties) {
+  override fun toString(): String {
+    return "ProviderType(type='$type') ${super.toString()}"
+  }
+}
+
+class ProvisionerType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provisioner", 1, properties = *properties) {
+  override fun toString(): String {
+    return "ProvisionerType(type='$type') ${super.toString()}"
+  }
+}
