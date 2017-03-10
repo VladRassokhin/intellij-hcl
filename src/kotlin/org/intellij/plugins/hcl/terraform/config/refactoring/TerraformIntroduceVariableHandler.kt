@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hil.refactoring
+package org.intellij.plugins.hcl.terraform.config.refactoring
 
 import com.intellij.codeInsight.CodeInsightUtilCore
 import com.intellij.codeInsight.template.impl.TemplateManagerImpl
@@ -30,89 +30,34 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.PsiUtilCore
 import com.intellij.refactoring.IntroduceTargetChooser
 import com.intellij.refactoring.RefactoringActionHandler
 import com.intellij.refactoring.RefactoringBundle
+import com.intellij.refactoring.introduce.inplace.InplaceVariableIntroducer
 import com.intellij.refactoring.introduce.inplace.OccurrencesChooser
 import com.intellij.refactoring.listeners.RefactoringEventData
 import com.intellij.refactoring.listeners.RefactoringEventListener
 import com.intellij.refactoring.util.CommonRefactoringUtil
 import org.intellij.plugins.hcl.HCLBundle
-import org.intellij.plugins.hcl.psi.HCLBlock
+import org.intellij.plugins.hcl.navigation.HCLQualifiedNameProvider
+import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralMixin
+import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.Type
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
-import org.intellij.plugins.hil.psi.*
-import org.intellij.plugins.hil.psi.impl.HILPsiImplUtils
-import org.intellij.plugins.hil.psi.impl.getHCLHost
-import org.jetbrains.annotations.NonNls
+import org.intellij.plugins.hil.refactoring.ILIntroduceVariableHandler
+import org.intellij.plugins.hil.refactoring.ILRefactoringUtil
 import java.util.*
 
-class ILIntroduceVariableHandler : RefactoringActionHandler {
+class TerraformIntroduceVariableHandler : RefactoringActionHandler {
   companion object {
-    @NonNls val REFACTORING_ID = "hil.refactoring.extractVariable"
-
     fun showErrorMessage(project: Project, editor: Editor?, message: String) {
       CommonRefactoringUtil.showErrorHint(project, editor, message, HCLBundle.message("introduce.variable.title"), "refactoring.extractMethod")
     }
 
-    fun findOccurrenceUnderCaret(occurrences: List<PsiElement>, editor: Editor): PsiElement? {
-      if (occurrences.isEmpty()) {
-        return null
-      }
-      val offset = editor.caretModel.offset
-      for (occurrence in occurrences) {
-        if (occurrence.textRange.contains(offset)) {
-          return occurrence
-        }
-      }
-      val line = editor.document.getLineNumber(offset)
-      for (occurrence in occurrences) {
-        PsiUtilCore.ensureValid(occurrence)
-        if (occurrence.isValid && editor.document.getLineNumber(occurrence.textRange.startOffset) == line) {
-          return occurrence
-        }
-      }
-      for (occurrence in occurrences) {
-        PsiUtilCore.ensureValid(occurrence)
-        return occurrence
-      }
-      return null
-    }
-
-    public fun findAnchor(occurrence: PsiElement): PsiElement? {
-      return findAnchor(listOf(occurrence))
-    }
-
-    public fun findAnchor(occurrences: List<PsiElement>): PsiElement? {
-
-      val hosts = occurrences.map {
-        if (it is ILExpression) {
-          it.getHCLHost()
-        } else {
-          it
-        }
-      }.filterNotNull()
-
-
-      val minOffset = hosts
-          .map { it.textRange.startOffset }
-          .min()
-          ?: Integer.MAX_VALUE
-
-      val statements = hosts.firstOrNull()?.containingFile ?: return null
-
-      var child: PsiElement? = null
-      for (aChildren in statements.children) {
-        child = aChildren
-        if (child.textRange.contains(minOffset)) {
-          break
-        }
-      }
-
-      return child
+    private fun showCannotPerformError(project: Project, editor: Editor) {
+      showErrorMessage(project, editor, HCLBundle.message("refactoring.introduce.selection.error"))
     }
   }
 
@@ -185,7 +130,6 @@ class ILIntroduceVariableHandler : RefactoringActionHandler {
     performActionOnElement(operation)
   }
 
-
   private fun smartIntroduce(operation: IntroduceOperation): Boolean {
     val editor = operation.editor
     val file = operation.file
@@ -195,12 +139,12 @@ class ILIntroduceVariableHandler : RefactoringActionHandler {
       elementAtCaret = file.findElementAt(offset - 1)
     }
     if (!checkIntroduceContext(file, editor, elementAtCaret)) return true
-    val expressions = ArrayList<ILExpression>()
+    val expressions = ArrayList<HCLElement>()
     while (elementAtCaret != null) {
-      if (elementAtCaret is ILExpressionHolder || elementAtCaret is ILPsiFile) {
+      if (elementAtCaret is HCLBlock || elementAtCaret is HCLFile) {
         break
       }
-      if (elementAtCaret is ILExpression && isValidIntroduceVariant(elementAtCaret)) {
+      if (elementAtCaret is HCLElement && isValidIntroduceVariant(elementAtCaret)) {
         expressions.add(elementAtCaret)
       }
       elementAtCaret = elementAtCaret.parent
@@ -210,12 +154,12 @@ class ILIntroduceVariableHandler : RefactoringActionHandler {
       performActionOnElement(operation)
       return true
     } else if (expressions.size > 1) {
-      IntroduceTargetChooser.showChooser(editor, expressions, object : Pass<ILExpression>() {
-        override fun pass(expression: ILExpression) {
+      IntroduceTargetChooser.showChooser(editor, expressions, object : Pass<HCLElement>() {
+        override fun pass(expression: HCLElement) {
           operation.element = expression
           performActionOnElement(operation)
         }
-      }, ILExpression::getText)
+      }, HCLElement::getText)
       return true
     }
     return false
@@ -236,17 +180,15 @@ class ILIntroduceVariableHandler : RefactoringActionHandler {
   }
 
   private fun isValidIntroduceVariant(element: PsiElement): Boolean {
-    val call = element.parent as? ILMethodCallExpression
-    if (call != null && call.callee === element) {
-      return false
-    }
-    if (element is ILParameterList) return false
-    return element is ILLiteralExpression
+    // For now only property values could be replaces
+    if (element !is HCLStringLiteral) return false
+    val property = element.parent as? HCLProperty ?: return false
+    return property.value === element
   }
 
   private fun performActionOnElement(operation: IntroduceOperation) {
     val element = operation.element
-    val initializer = element as ILExpression?
+    val initializer = element as HCLElement?
     operation.initializer = initializer
 
     if (initializer != null) {
@@ -285,26 +227,23 @@ class ILIntroduceVariableHandler : RefactoringActionHandler {
     if (statement is HCLBlock) {
       val target = statement.nameIdentifier!!
       val occurrences = operation.occurrences
-      val occurrence = findOccurrenceUnderCaret(occurrences, operation.editor)
-      var elementForCaret = occurrence ?: target
-      if (elementForCaret is ILSelectExpression) {
-        elementForCaret = elementForCaret.field as ILVariable
-      }
+      val occurrence = ILIntroduceVariableHandler.findOccurrenceUnderCaret(occurrences, operation.editor)
+      val elementForCaret =  target
       operation.editor.caretModel.moveToOffset(elementForCaret.textRange.startOffset)
       // TODO: Uncomment once have idea hw to change name of variable from it's usage
-//      val introducer: InplaceVariableIntroducer<PsiElement> = object : InplaceVariableIntroducer<PsiElement>(target as HCLStringLiteralMixin, operation.editor, operation.project, "Introduce Variable", operation.occurrences.toTypedArray(), null) {
-//        override fun checkLocalScope(): PsiElement? {
-//          return target.containingFile
-//        }
-//      }
-//      introducer.performInplaceRefactoring(LinkedHashSet(operation.suggestedNames))
+      val introducer: InplaceVariableIntroducer<PsiElement> = object : InplaceVariableIntroducer<PsiElement>(statement, operation.editor, operation.project, "Introduce Variable", operation.occurrences.toTypedArray(), null) {
+        override fun checkLocalScope(): PsiElement? {
+          return target.containingFile
+        }
+      }
+      introducer.performInplaceRefactoring(LinkedHashSet(operation.suggestedNames))
     }
   }
 
   protected fun performIntroduceWithDialog(operation: IntroduceOperation) {
     val project = operation.project
     if (operation.name == null) {
-      val dialog = ILIntroduceDialog(project, "Introduce Variable", validator, operation)
+      val dialog = VariableIntroduceDialog(project, "Introduce Variable", validator, operation)
       if (!dialog.showAndGet()) {
         return
       }
@@ -345,14 +284,14 @@ class ILIntroduceVariableHandler : RefactoringActionHandler {
                              operation: IntroduceOperation): PsiElement {
     val expression = operation.initializer!!
     val project = operation.project
-    return object : WriteCommandAction<PsiElement>(project, expression.getHCLHost()?.containingFile ?: expression.containingFile) {
+    return object : WriteCommandAction<PsiElement>(project, expression.containingFile) {
       @Throws(Throwable::class)
       override fun run(result: Result<PsiElement>) {
         try {
           val afterData = RefactoringEventData()
           afterData.addElement(declaration)
           project.messageBus.syncPublisher(RefactoringEventListener.REFACTORING_EVENT_TOPIC)
-              .refactoringStarted(REFACTORING_ID, afterData)
+              .refactoringStarted(ILIntroduceVariableHandler.REFACTORING_ID, afterData)
 
           result.setResult(addDeclaration(operation, declaration))
 
@@ -373,22 +312,22 @@ class ILIntroduceVariableHandler : RefactoringActionHandler {
           val afterData = RefactoringEventData()
           afterData.addElement(declaration)
           project.messageBus.syncPublisher(RefactoringEventListener.REFACTORING_EVENT_TOPIC)
-              .refactoringDone(REFACTORING_ID, afterData)
+              .refactoringDone(ILIntroduceVariableHandler.REFACTORING_ID, afterData)
         }
       }
     }.execute().resultObject
   }
 
   private fun createExpression(project: Project, name: String): PsiElement {
-    return ILElementGenerator(project).createVarReference(name)
+    return TerraformElementGenerator(project).createStringLiteral("\${var.$name}")
   }
 
   protected fun replaceExpression(expression: PsiElement, newExpression: PsiElement): PsiElement {
-    return outermostParenthesizedILExpression(expression).replace(newExpression)
+    return expression.replace(newExpression)
   }
 
   fun addDeclaration(operation: IntroduceOperation, declaration: PsiElement): PsiElement? {
-    val anchor = if (operation.isReplaceAll) findAnchor(operation.occurrences) else findAnchor(operation.initializer!!)
+    val anchor = if (operation.isReplaceAll) ILIntroduceVariableHandler.findAnchor(operation.occurrences) else ILIntroduceVariableHandler.findAnchor(operation.initializer!!)
     if (anchor == null) {
       CommonRefactoringUtil.showErrorHint(
           operation.project,
@@ -402,17 +341,19 @@ class ILIntroduceVariableHandler : RefactoringActionHandler {
   }
 
 
-  protected fun getOccurrences(element: PsiElement?, expression: ILExpression): List<PsiElement> {
-    var context: PsiElement? = PsiTreeUtil.getParentOfType(element, ILExpressionHolder::class.java, true) ?: element
+  protected fun getOccurrences(element: PsiElement?, expression: HCLElement): List<PsiElement> {
+    // TODO: ???
+    var context: PsiElement? = null //PsiTreeUtil.getParentOfType(element, ILExpressionHolder::class.java, true) ?: element
     if (context == null) {
       context = expression.containingFile
     }
+    // TODO: Filter our occurrences in places where interpolations cannot be used, e.g. variable 'default' property
     return ILRefactoringUtil.getOccurrences(expression, context)
   }
 
   val validator = IntroduceValidator()
 
-  fun getSuggestedNames(expression: ILExpression): Collection<String> {
+  fun getSuggestedNames(expression: HCLElement): Collection<String> {
     val candidates = generateSuggestedNames(expression)
 
     val res = candidates
@@ -445,43 +386,35 @@ class ILIntroduceVariableHandler : RefactoringActionHandler {
     }
   }
 
-  protected fun generateSuggestedNames(expression: ILExpression): Collection<String> {
+  protected fun generateSuggestedNames(expression: HCLElement): Collection<String> {
     val candidates = LinkedHashSet<String>()
-    var text = expression.text
-    if (expression is ILMethodCallExpression) {
-      text = expression.callee.text
-    } // TODO: Add candidates based on HCLBlock property name
+    val text = expression.text
+    val parent = expression.parent
+    if (parent is HCLProperty) {
+      candidates.add(parent.name)
+    }
+    HCLQualifiedNameProvider.getQualifiedName(parent)?.let { candidates += it }
     if (text != null) {
       candidates.addAll(ILRefactoringUtil.generateNames(text))
     }
-    val type = expression.getType()
+    val type: Type? = expression.getType()
     if (type != null) {
       candidates.addAll(ILRefactoringUtil.generateNamesByType(type.name))
     }
-    val list = PsiTreeUtil.getParentOfType(expression, ILParameterList::class.java)
-    if (list != null) {
-      val call = list.parent as ILMethodCallExpression
-      // TODO: resolve called method name and all known argument names
-      candidates.add("arg")
-    }
     return candidates
-  }
-
-
-  private fun outermostParenthesizedILExpression(expr: PsiElement): PsiElement {
-    if (expr !is ILExpression) return expr
-    var e: ILExpression = expr
-    while (e.parent is ILParenthesizedExpression) {
-      e = e.parent as ILParenthesizedExpression
-    }
-    return e
-  }
-
-  private fun showCannotPerformError(project: Project, editor: Editor) {
-    showErrorMessage(project, editor, HCLBundle.message("refactoring.introduce.selection.error"))
   }
 }
 
-private fun ILExpression.getType(): Type? {
-  return HILPsiImplUtils.getType(this)
+private fun HCLElement.getType(): Type? {
+  if (this is HCLProperty) {
+    val pp = parent?.parent
+    if (pp is HCLBlock) {
+      val properties = ModelHelper.getBlockProperties(pp)
+      return properties.firstOrNull { it.property?.name == name }?.property?.type
+    }
+  } else if (this is HCLLiteral) {
+    val parent = parent as? HCLElement
+    return parent?.getType()
+  }
+  return null
 }

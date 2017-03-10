@@ -16,10 +16,13 @@
 package org.intellij.plugins.hcl.terraform.config.psi
 
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileFactory
 import org.intellij.plugins.hcl.psi.HCLBlock
+import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.psi.HCLElementGenerator
+import org.intellij.plugins.hcl.psi.HCLLiteral
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.model.Type
 import org.intellij.plugins.hcl.terraform.config.model.Types
@@ -58,5 +61,15 @@ class TerraformElementGenerator(val project: Project) : HCLElementGenerator(proj
     }
     val file = createDummyFile(content)
     return file.firstChild as HCLBlock
+  }
+
+  fun createVariable(name: String, type: Type?, initializer: HCLElement): PsiElement? {
+    val value: String
+    // TODO: Improve
+    value = when (initializer) {
+      is HCLLiteral -> initializer.text
+      else -> initializer.text
+    }
+    return createVariable(name, type, value)
   }
 }
