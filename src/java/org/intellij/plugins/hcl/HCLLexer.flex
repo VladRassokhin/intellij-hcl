@@ -136,6 +136,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
   \{ {}
   \} {}
   \' {}
+  ("{" {EOL}) { push_eol(); yypushback(1); return eods(); }
   {EOL} { push_eol(); return eods(); }
   <<EOF>> { return eods(); }
   [^] { return eods(); }
@@ -150,6 +151,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
   \{ {}
   \} {}
   \" {}
+  ("{" {EOL}) { push_eol(); yypushback(1); return eoss(); }
   {EOL} { push_eol(); return eoss(); }
   <<EOF>> { return eoss(); }
   [^] { return eoss(); }

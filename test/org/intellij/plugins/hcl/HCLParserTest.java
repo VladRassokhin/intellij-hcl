@@ -163,4 +163,12 @@ public class HCLParserTest extends ParsingTestCase {
   public void testList_With_Identifier() throws Exception {
     doTest();
   }
+
+  public void testUnfinished_String() throws Exception {
+    doTest();
+  }
+
+  public void testUnfinished_Block_Name() throws Exception {
+    doTest();
+  }
 }
