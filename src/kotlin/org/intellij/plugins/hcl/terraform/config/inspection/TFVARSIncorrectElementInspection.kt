@@ -16,9 +16,12 @@
 package org.intellij.plugins.hcl.terraform.config.inspection
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.psi.impl.HCLStringLiteralMixin
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
@@ -74,14 +77,16 @@ class TFVARSIncorrectElementInspection : LocalInspectionTool() {
 
   private fun getQuoteFix(element: HCLValue): Array<LocalQuickFix> {
     if (element is HCLStringLiteralMixin || element is HCLIdentifier || element is HCLNullLiteral || element is HCLBooleanLiteral) {
-      return arrayOf(ConvertToString)
+      return arrayOf(ConvertToHCLStringQuickFix(element))
     }
     return emptyArray()
   }
 
-  object ConvertToString : LocalQuickFixBase("Convert to double quoted string") {
-    override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-      val element = descriptor.psiElement
+  class ConvertToHCLStringQuickFix(element: PsiElement) : LocalQuickFixAndIntentionActionOnPsiElement(element) {
+    override fun getText() = "Convert to double quoted string"
+    override fun getFamilyName() = text
+    override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
+      val element = startElement
       val text: String
       if (element is HCLIdentifier || element is HCLNullLiteral || element is HCLBooleanLiteral) {
         text = element.text

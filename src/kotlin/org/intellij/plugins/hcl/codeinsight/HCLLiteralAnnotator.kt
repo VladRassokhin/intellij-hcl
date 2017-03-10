@@ -15,6 +15,7 @@
  */
 package org.intellij.plugins.hcl.codeinsight
 
+import com.intellij.lang.annotation.Annotation
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.openapi.application.ApplicationManager
@@ -22,6 +23,7 @@ import com.intellij.psi.PsiElement
 import org.intellij.lang.annotations.Language
 import org.intellij.plugins.hcl.HCLSyntaxHighlighterFactory
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.inspection.TFVARSIncorrectElementInspection
 import java.util.regex.Pattern
 
 /**
@@ -38,6 +40,7 @@ class HCLLiteralAnnotator : Annotator {
     private val VALID_NUMBER_LITERAL = Pattern.compile("-?(0x)?(0|[1-9])\\d*(\\.\\d+)?([eE][+-]?\\d+)?([KMGBkmgb][Bb]?)?")
 
     private val DEBUG = ApplicationManager.getApplication().isUnitTestMode
+    private fun addBlockNameAnnotation(element: PsiElement, holder: AnnotationHolder, name: String) = holder.createInfoAnnotation(element, if (DEBUG) name else null)
   }
 
   override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -52,14 +55,23 @@ class HCLLiteralAnnotator : Annotator {
           holder.createInfoAnnotation(element, if (DEBUG) "block only name identifier" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_ONLY_NAME_KEY
         } else for (i in ne.indices) {
           if (ne[i] === element) {
+            var annotation: Annotation?
             if (i == ne.lastIndex) {
-              holder.createInfoAnnotation(element, if (DEBUG) "block name identifier" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY
+              annotation = addBlockNameAnnotation(element, holder, "block name identifier")
+              annotation.textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_NAME_KEY
             } else if (i == 0) {
-              holder.createInfoAnnotation(element, if (DEBUG) "block type 1 element" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_FIRST_TYPE_KEY
+              annotation = addBlockNameAnnotation(element, holder, "block type 1 element")
+              annotation.textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_FIRST_TYPE_KEY
+              annotation = null
             } else if (i == 1) {
-              holder.createInfoAnnotation(element, if (DEBUG) "block type 2 element" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_SECOND_TYPE_KEY
+              annotation = addBlockNameAnnotation(element, holder, "block type 2 element")
+              annotation.textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_SECOND_TYPE_KEY
             } else {
-              holder.createInfoAnnotation(element, if (DEBUG) "block type 3+ element" else null).textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_OTHER_TYPES_KEY
+              annotation = addBlockNameAnnotation(element, holder, "block type 3+ element")
+              annotation.textAttributes = HCLSyntaxHighlighterFactory.HCL_BLOCK_OTHER_TYPES_KEY
+            }
+            if (annotation != null && element is HCLIdentifier) {
+              annotation.registerUniversalFix(TFVARSIncorrectElementInspection.ConvertToHCLStringQuickFix(element), null, null)
             }
             break
           }
