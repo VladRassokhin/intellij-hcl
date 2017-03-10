@@ -40,28 +40,26 @@ public class _HILLexer implements FlexLexer {
 
   /** 
    * Translates characters to character classes
-   * Chosen bits are [7, 7, 7]
-   * Total runtime size is 1928 bytes
    */
-  public static int ZZ_CMAP(int ch) {
-    return ZZ_CMAP_A[(ZZ_CMAP_Y[ZZ_CMAP_Z[ch>>14]|((ch>>7)&0x7f)]<<7)|(ch&0x7f)];
-  }
+  private static final String ZZ_CMAP_PACKED = 
+    "\11\0\1\1\1\20\2\1\1\20\22\0\1\1\1\31\1\21\1\0"+
+    "\1\13\1\30\1\35\1\16\1\22\1\23\1\11\1\7\1\26\1\12"+
+    "\1\5\1\27\1\2\11\4\1\37\1\0\1\33\1\32\1\34\1\40"+
+    "\1\0\4\10\1\6\25\10\1\24\1\17\1\25\1\0\1\10\1\0"+
+    "\1\46\3\10\1\44\1\45\5\10\1\47\1\10\1\51\3\10\1\42"+
+    "\1\50\1\41\1\43\2\10\1\3\2\10\1\14\1\36\1\15\7\0"+
+    "\1\1\32\0\1\1\u15df\0\1\1\u097f\0\13\1\35\0\2\1\5\0"+
+    "\1\1\57\0\1\1\u0fa0\0\1\1\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\ud00f\0";
 
-  /* The ZZ_CMAP_Z table has 68 entries */
-  static final char ZZ_CMAP_Z[] = zzUnpackCMap(
-    "\1\0\103\200");
-
-  /* The ZZ_CMAP_Y table has 256 entries */
-  static final char ZZ_CMAP_Y[] = zzUnpackCMap(
-    "\1\0\1\1\53\2\1\3\22\2\1\4\37\2\1\3\237\2");
-
-  /* The ZZ_CMAP_A table has 640 entries */
-  static final char ZZ_CMAP_A[] = zzUnpackCMap(
-    "\11\0\1\1\1\20\2\1\1\20\22\0\1\1\1\31\1\21\1\0\1\13\1\30\1\35\1\16\1\22\1"+
-    "\23\1\11\1\7\1\26\1\12\1\5\1\27\1\2\11\4\1\37\1\0\1\33\1\32\1\34\1\40\1\0"+
-    "\4\10\1\6\25\10\1\24\1\17\1\25\1\0\1\10\1\0\1\46\3\10\1\44\1\45\5\10\1\47"+
-    "\1\10\1\51\3\10\1\42\1\50\1\41\1\43\2\10\1\3\2\10\1\14\1\36\1\15\7\0\1\1\32"+
-    "\0\1\1\337\0\1\1\177\0\13\1\35\0\2\1\5\0\1\1\57\0\1\1\40\0");
+  /** 
+   * Translates characters to character classes
+   */
+  private static final int ZZ_SX = 0x0700;
+  private static final int ZZ_MX = 0x10000;
+  private static final int ZZ_LX = 0x110000;
+  private static char [] ZZ_CMAP = zzUnpackCMap(ZZ_CMAP_PACKED, ZZ_SX);
+  private static class M { static final char [] MAP = zzUnpackCMap(ZZ_CMAP_PACKED, ZZ_MX); }
+  private static class L { static final char [] MAP = zzUnpackCMap(ZZ_CMAP_PACKED, ZZ_LX); }
 
   /** 
    * Translates DFA states to action switch labels.
@@ -307,18 +305,14 @@ public class _HILLexer implements FlexLexer {
    * @param packed   the packed character translation table
    * @return         the unpacked character translation table
    */
-  private static char [] zzUnpackCMap(String packed) {
-    int size = 0;
-    for (int i = 0, length = packed.length(); i < length; i += 2) {
-      size += packed.charAt(i);
-    }
-    char[] map = new char[size];
+  private static char [] zzUnpackCMap(String packed, int limit) {
+    char [] map = new char[limit];
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
-    while (i < packed.length()) {
+    while (i < 184 && j < limit) {
       int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
-      do map[j++] = value; while (--count > 0);
+      do map[j++] = value; while (--count > 0 && j < limit);
     }
     return map;
   }
@@ -461,6 +455,7 @@ public class _HILLexer implements FlexLexer {
     int zzMarkedPosL;
     int zzEndReadL = zzEndRead;
     CharSequence zzBufferL = zzBuffer;
+    char [] zzCMapL = ZZ_CMAP;
 
     int [] zzTransL = ZZ_TRANS;
     int [] zzRowMapL = ZZ_ROWMAP;
@@ -512,7 +507,8 @@ public class _HILLexer implements FlexLexer {
               zzCurrentPosL += Character.charCount(zzInput);
             }
           }
-          int zzNext = zzTransL[ zzRowMapL[zzState] + ZZ_CMAP(zzInput) ];
+          if (zzInput >= zzCMapL.length) ZZ_CMAP = zzCMapL = zzInput >= ZZ_MX ? L.MAP : M.MAP;
+          int zzNext = zzTransL[ zzRowMapL[zzState] + zzCMapL[zzInput] ];
           if (zzNext == -1) break zzForAction;
           zzState = zzNext;
 
