@@ -30,6 +30,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.IntroduceTargetChooser
 import com.intellij.refactoring.RefactoringActionHandler
 import com.intellij.refactoring.RefactoringBundle
@@ -39,6 +40,7 @@ import com.intellij.refactoring.listeners.RefactoringEventData
 import com.intellij.refactoring.listeners.RefactoringEventListener
 import com.intellij.refactoring.util.CommonRefactoringUtil
 import org.intellij.plugins.hcl.HCLBundle
+import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.navigation.HCLQualifiedNameProvider
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
@@ -58,6 +60,27 @@ class TerraformIntroduceVariableHandler : RefactoringActionHandler {
     private fun showCannotPerformError(project: Project, editor: Editor) {
       showErrorMessage(project, editor, HCLBundle.message("refactoring.introduce.selection.error"))
     }
+
+    fun getSelectedExpression(project: Project,
+                              file: PsiFile,
+                              element1: PsiElement,
+                              element2: PsiElement): HCLElement? {
+      var parent = PsiTreeUtil.findCommonParent(element1, element2)
+      if (parent != null && parent !is HCLElement) {
+        parent = PsiTreeUtil.getParentOfType(parent, HCLElement::class.java)
+      }
+      if (parent == null) {
+        return null
+      }
+      if (parent !is HCLElement) {
+        return null
+      }
+      if (element1 === PsiTreeUtil.getDeepestFirst(parent) && element2 === PsiTreeUtil.getDeepestLast(parent)) {
+        return parent
+      }
+      return null
+    }
+
   }
 
   override fun invoke(project: Project, elements: Array<out PsiElement>, dataContext: DataContext?) {
@@ -116,7 +139,7 @@ class TerraformIntroduceVariableHandler : RefactoringActionHandler {
       return
     }
 
-    element1 = ILRefactoringUtil.getSelectedExpression(project, file, element1, element2)
+    element1 = getSelectedExpression(project, file, element1, element2)
     if (element1 == null || !isValidIntroduceVariant(element1)) {
       showCannotPerformError(project, editor)
       return
@@ -180,6 +203,7 @@ class TerraformIntroduceVariableHandler : RefactoringActionHandler {
 
   private fun isValidIntroduceVariant(element: PsiElement): Boolean {
     // For now only property values could be replaces
+    if (HCLParserDefinition.STRING_LITERALS.contains(element.node.elementType)) return isValidIntroduceVariant(element.parent)
     if (element !is HCLStringLiteral) return false
     val property = element.parent as? HCLProperty ?: return false
     return property.value === element
