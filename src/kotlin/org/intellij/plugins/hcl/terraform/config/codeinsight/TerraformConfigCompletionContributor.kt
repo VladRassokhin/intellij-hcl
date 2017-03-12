@@ -554,7 +554,7 @@ object ModelHelper {
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractProvider.properties)
     if (providerType?.properties != null) {
-      properties.addAll(providerType.properties)
+      properties.addAll(providerType?.properties)
     }
     return properties.toTypedArray()
   }
@@ -565,7 +565,7 @@ object ModelHelper {
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractResourceProvisioner.properties)
     if (provisionerType?.properties != null) {
-      properties.addAll(provisionerType.properties)
+      properties.addAll(provisionerType?.properties)
     }
     return properties.toTypedArray()
   }
@@ -596,7 +596,7 @@ object ModelHelper {
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractResource.properties)
     if (resourceType?.properties != null) {
-      properties.addAll(resourceType.properties)
+      properties.addAll(resourceType?.properties)
     }
     return ( properties.toTypedArray())
   }
@@ -607,7 +607,7 @@ object ModelHelper {
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractDataSource.properties)
     if (dataSourceType?.properties != null) {
-      properties.addAll(dataSourceType.properties)
+      properties.addAll(dataSourceType?.properties)
     }
     return (properties.toTypedArray())
   }
