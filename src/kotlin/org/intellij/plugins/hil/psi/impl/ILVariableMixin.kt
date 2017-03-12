@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.intellij.plugins.hil.psi.impl
 
 import com.intellij.lang.ASTNode
-import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.impl.source.tree.LeafElement
 import com.intellij.psi.search.GlobalSearchScope
@@ -41,23 +40,23 @@ abstract class ILVariableMixin(node: ASTNode) : ILExpressionWithReference(node),
   }
 
   override fun getUseScope(): SearchScope {
-    val host = InjectedLanguageManager.getInstance(project).getInjectionHost(this)
+    val host = this.getHCLHost()
     if (host != null) {
       return host.getTerraformSearchScope()
     } else {
       // Fallback
-      return getTerraformSearchScope();
-    };
+      return getTerraformSearchScope()
+    }
   }
 
   override fun getResolveScope(): GlobalSearchScope {
-    val host = InjectedLanguageManager.getInstance(project).getInjectionHost(this)
+    val host = this.getHCLHost()
     if (host != null) {
       return host.getTerraformSearchScope()
     } else {
       // Fallback
-      return getTerraformSearchScope();
-    };
+      return getTerraformSearchScope()
+    }
   }
 
 }

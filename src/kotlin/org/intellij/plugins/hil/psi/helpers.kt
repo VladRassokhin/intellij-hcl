@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package org.intellij.plugins.hil.psi
 
-import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import org.intellij.plugins.hcl.psi.HCLBlock
@@ -24,10 +23,10 @@ import org.intellij.plugins.hcl.psi.getNameElementUnquoted
 import org.intellij.plugins.hcl.terraform.config.model.Module
 import org.intellij.plugins.hcl.terraform.config.model.Variable
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
+import org.intellij.plugins.hil.psi.impl.getHCLHost
 
 fun getTerraformModule(element: ILExpression): Module? {
-  val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return null
-  if (host !is HCLElement) return null
+  val host = element.getHCLHost() ?: return null
   val module = host.getTerraformModule()
   return module
 }
@@ -37,7 +36,7 @@ fun getLocalDefinedVariables(element: ILExpression): List<Variable> {
 }
 
 fun getProvisionerResource(position: ILExpression): HCLBlock? {
-  val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
+  val host = position.getHCLHost() ?: return null
 
   // For now 'self' allowed only for provisioners inside resources
   return if (host is HCLElement) getProvisionerResource(host) else null
@@ -61,7 +60,7 @@ fun getConnectionResource(host: HCLElement): HCLBlock? {
 }
 
 fun getResource(position: ILExpression): HCLBlock? {
-  val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
+  val host = position.getHCLHost() ?: return null
 
   // For now 'self' allowed only for provisioners inside resources
 
@@ -71,7 +70,7 @@ fun getResource(position: ILExpression): HCLBlock? {
 }
 
 fun getDataSource(position: ILExpression): HCLBlock? {
-  val host = InjectedLanguageManager.getInstance(position.project).getInjectionHost(position) ?: return null
+  val host = position.getHCLHost() ?: return null
 
   val dataSource = PsiTreeUtil.getParentOfType(host, HCLBlock::class.java, true) ?: return null
   if (dataSource.getNameElementUnquoted(0) != "data") return null

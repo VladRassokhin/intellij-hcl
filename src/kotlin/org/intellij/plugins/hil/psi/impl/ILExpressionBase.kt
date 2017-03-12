@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.intellij.plugins.hil.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
-import com.intellij.lang.Language
 import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElementVisitor
@@ -26,9 +25,6 @@ import org.intellij.plugins.hil.psi.ILElementVisitor
 import org.intellij.plugins.hil.psi.ILExpression
 
 abstract class ILExpressionBase(node: ASTNode) : ASTWrapperPsiElement(node), ILExpression {
-  override fun getLanguage(): Language {
-    return parent.language
-  }
 
   override fun accept(visitor: PsiElementVisitor) {
     if (visitor is ILElementVisitor) {
@@ -44,9 +40,9 @@ abstract class ILExpressionBase(node: ASTNode) : ASTWrapperPsiElement(node), ILE
 
   override fun toString(): String {
     val name = this.javaClass.simpleName
-    val trimmed = StringUtil.trimEnd(name, "Impl");
+    val trimmed = StringUtil.trimEnd(name, "Impl")
     if (trimmed.startsWith("ILBinary")) return "ILBinaryExpression"
-    if ("ILLiteralExpression".equals(trimmed) || "ILParameterListExpression".equals(trimmed)) return StringUtil.trimEnd(trimmed, "Expression")
+    if ("ILLiteralExpression" == trimmed || "ILParameterListExpression" == trimmed) return StringUtil.trimEnd(trimmed, "Expression")
     return trimmed
   }
 

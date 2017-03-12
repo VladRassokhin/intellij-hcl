@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package org.intellij.plugins.hil.psi
 
-import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hil.psi.impl.ILVariableMixin
+import org.intellij.plugins.hil.psi.impl.getHCLHost
 
 object ILScopeReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
@@ -30,24 +30,21 @@ object ILScopeReferenceProvider : PsiReferenceProvider() {
 
   fun getReferencesByElement(element: PsiElement): Array<out PsiReference> {
     if (element !is ILVariableMixin) return PsiReference.EMPTY_ARRAY
-    val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return PsiReference.EMPTY_ARRAY
-    if (host !is HCLElement) return PsiReference.EMPTY_ARRAY
+    element.getHCLHost() ?: return PsiReference.EMPTY_ARRAY
 
-    val parent = element.parent
-    if (parent !is ILSelectExpression) return PsiReference.EMPTY_ARRAY
-    val from = parent.from
-    if (from !is ILVariable) return PsiReference.EMPTY_ARRAY
+    val parent = element.parent as? ILSelectExpression ?: return PsiReference.EMPTY_ARRAY
+    val from = parent.from as? ILVariable ?: return PsiReference.EMPTY_ARRAY
 
     if (from !== element) return PsiReference.EMPTY_ARRAY
 
     when (element.name) {
       "self" -> {
-        return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
+        return arrayOf(HCLElementLazyReference(element, false) { _, _ ->
           val resource = getProvisionerResource(this.element) ?: return@HCLElementLazyReference emptyList()
           listOf(resource.nameIdentifier!! as HCLElement)
         })
       }
     }
-    return PsiReference.EMPTY_ARRAY;
+    return PsiReference.EMPTY_ARRAY
   }
 }

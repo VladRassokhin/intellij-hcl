@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 
 package org.intellij.plugins.hil.psi
 
-import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
@@ -40,11 +39,9 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     if (element !is ILExpression) return PsiReference.EMPTY_ARRAY
     val name = getSelectFieldText(element) ?: return PsiReference.EMPTY_ARRAY
 
-    val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return PsiReference.EMPTY_ARRAY
-    if (host !is HCLElement) return PsiReference.EMPTY_ARRAY
+    element.getHCLHost() ?: return PsiReference.EMPTY_ARRAY
 
-    val parent = element.parent
-    if (parent !is ILSelectExpression) return PsiReference.EMPTY_ARRAY
+    val parent = element.parent as? ILSelectExpression ?: return PsiReference.EMPTY_ARRAY
 
     if (parent.from === element && name in HILCompletionContributor.SCOPES) return PsiReference.EMPTY_ARRAY
 
@@ -89,7 +86,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     val ev = getSelectFieldText(expression) ?: return PsiReference.EMPTY_ARRAY
 
     if (HILCompletionContributor.ILSE_DATA_SOURCE.accepts(parent)) {
-      return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
+      return arrayOf(HCLElementLazyReference(element, false) { _, _ ->
         val module = this.element.getHCLHost()?.getTerraformModule()
         val dataSources = module?.findDataSource(ev, getSelectFieldText(element)!!) ?: emptyList()
         dataSources.map { it.nameIdentifier as HCLElement }
@@ -97,7 +94,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     }
 
     // TODO: get suitable resource/provider/etc
-    return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
+    return arrayOf(HCLElementLazyReference(element, false) { _, _ ->
       val module = this.element.getHCLHost()?.getTerraformModule()
       val resources = module?.findResources(ev, getSelectFieldText(element)!!) ?: emptyList()
       resources.map { it.nameIdentifier as HCLElement }
@@ -227,14 +224,6 @@ fun getGoodLeftElement(select: ILSelectExpression, right: ILExpression, skipStar
   return null
 }
 
-fun isStarOrNumber(text: String) = text == "*" || text.isNumber()
+fun isStarOrNumber(text: String) = text == "*" || text.toIntOrNull() != null
 
-fun String.isNumber(): Boolean {
-  try {
-    this.toInt()
-    return true
-  } catch(e: NumberFormatException) {
-    return false
-  }
-}
 

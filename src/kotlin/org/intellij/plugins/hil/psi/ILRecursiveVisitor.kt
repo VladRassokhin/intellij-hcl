@@ -19,6 +19,6 @@ import com.intellij.psi.PsiElement
 
 open class ILRecursiveVisitor : ILElementVisitor() {
   override fun visitElement(element: PsiElement?) {
-    element?.acceptChildren(this);
+    element?.acceptChildren(this)
   }
 }
