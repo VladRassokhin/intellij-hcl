@@ -65,18 +65,18 @@ class HILColorPage : ColorSettingsPage, InspectionColorSettingsPage, DisplayPrio
   }
 
   override fun getDemoText(): String {
-    return "\${\"interpolati\\o\\n\".example.call(10, \"a\", \n" +
+    return "\${\"interpolation\".example.call(10, \"a\\n\\o\", \n" +
         "<s>var</s>.foo, <s>path</s>.module, 1 - 0 + (11 * 4) / 2 % 1, \n" +
         "\ttrue || !false, false && !true, true ? 1 : 2, null,\n" +
         "<rt>aws_instance</rt>.<ri>inst</ri>.<pr>availability_zone</pr>[0])}"
   }
 
   override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey>? {
-    return additional;
+    return additional
   }
 
   override fun getAttributeDescriptors(): Array<out AttributesDescriptor> {
-    return descriptors;
+    return descriptors
   }
 
   override fun getColorDescriptors(): Array<out ColorDescriptor> {

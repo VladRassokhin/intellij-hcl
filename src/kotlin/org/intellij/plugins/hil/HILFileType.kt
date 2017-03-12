@@ -15,14 +15,12 @@
  */
 package org.intellij.plugins.hil
 
-import com.intellij.openapi.fileTypes.FileTypeConsumer
-import com.intellij.openapi.fileTypes.FileTypeFactory
 import com.intellij.openapi.fileTypes.LanguageFileType
 import org.intellij.plugins.hcl.Icons
 import javax.swing.Icon
 
 object HILFileType : LanguageFileType(HILLanguage) {
-  val DEFAULT_EXTENSION: String = "hil";
+  val DEFAULT_EXTENSION: String = "hil"
 
   override fun getIcon(): Icon? {
     return Icons.FileTypes.HIL
@@ -38,11 +36,5 @@ object HILFileType : LanguageFileType(HILLanguage) {
 
   override fun getName(): String {
     return "HIL"
-  }
-}
-
-class HILFileTypeFactory : FileTypeFactory() {
-  override fun createFileTypes(consumer: FileTypeConsumer) {
-    consumer.consume(HILFileType, HILFileType.DEFAULT_EXTENSION)
   }
 }

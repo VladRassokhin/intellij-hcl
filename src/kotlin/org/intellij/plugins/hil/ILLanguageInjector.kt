@@ -36,15 +36,15 @@ class ILLanguageInjector : LanguageInjector {
 
   companion object {
     fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
-      if (host !is HCLStringLiteral && host !is HCLHeredocContent) return;
+      if (host !is HCLStringLiteral && host !is HCLHeredocContent) return
       // Only .tf (Terraform config) files
       val file = host.containingFile
-      if (file !is HCLFile || !file.isInterpolationsAllowed()) return;
+      if (file !is HCLFile || !file.isInterpolationsAllowed()) return
       // Restrict interpolations in .tfvars files // TODO: This file shouldn't know about .tfvars here
       if (file.fileType == TerraformFileType && file.name.endsWith("." + TerraformFileType.TFVARS_EXTENSION)) return
-      if (host is HCLStringLiteral) return getStringLiteralInjections(host, places);
-      if (host is HCLHeredocContent) return getHCLHeredocContentInjections(host, places);
-      return;
+      if (host is HCLStringLiteral) return getStringLiteralInjections(host, places)
+      if (host is HCLHeredocContent) return getHCLHeredocContentInjections(host, places)
+      return
     }
 
     fun getStringLiteralInjections(host: HCLStringLiteral, places: InjectedLanguagePlaces) {
@@ -77,19 +77,19 @@ class ILLanguageInjector : LanguageInjector {
     }
 
     fun getILRangesInText(text: String): ArrayList<TextRange> {
-      if (!text.contains("\${")) return arrayListOf();
+      if (!text.contains("\${")) return arrayListOf()
 
       var skip = findInterpolationStart(text)
       if (skip == -1) return arrayListOf()
 
       val ranges: ArrayList<TextRange> = ArrayList()
       out@ while (true) {
-        if (skip >= text.length) break;
+        if (skip >= text.length) break
 
         val lexer = HILLexer()
-        lexer.start(text, skip, text.length);
+        lexer.start(text, skip, text.length)
         var level = 0
-        var start = -1;
+        var start = -1
         while (true) {
           val type = lexer.tokenType
           when (type) {
@@ -97,19 +97,19 @@ class ILLanguageInjector : LanguageInjector {
               if (level == 0) {
                 start = lexer.tokenStart
               }
-              level++;
+              level++
             }
             INTERPOLATION_END -> {
               if (level <= 0) {
                 // Incorrect state, probably just '}' in text retry from current position.
-                skip = lexer.tokenStart + 1;
-                continue@out;
+                skip = lexer.tokenStart + 1
+                continue@out
               }
-              level--;
+              level--
               if (level == 0) {
-                ranges.add(TextRange(start, lexer.tokenEnd));
-                skip = lexer.tokenEnd;
-                continue@out;
+                ranges.add(TextRange(start, lexer.tokenEnd))
+                skip = lexer.tokenEnd
+                continue@out
               }
             }
             null -> {
@@ -117,27 +117,27 @@ class ILLanguageInjector : LanguageInjector {
                 // Real end of string
                 if (level > 0) {
                   // Non finished interpolation
-                  ranges.add(TextRange(start, Math.min(lexer.tokenEnd, text.length)));
+                  ranges.add(TextRange(start, Math.min(lexer.tokenEnd, text.length)))
                 }
-                break@out;
+                break@out
               } else {
                 // Non-parsable, probably not IL, retry from current position.
-                skip = lexer.tokenStart + 1;
-                continue@out;
+                skip = lexer.tokenStart + 1
+                continue@out
               }
             }
             else -> {
               if (level == 0) {
                 // Non-parsable, probably not IL, retry from current position.
-                skip = lexer.tokenStart + 1;
-                continue@out;
+                skip = lexer.tokenStart + 1
+                continue@out
               }
             }
           }
-          lexer.advance();
+          lexer.advance()
         }
       }
-      return ranges;
+      return ranges
     }
 
     private fun findInterpolationStart(text: String): Int {
