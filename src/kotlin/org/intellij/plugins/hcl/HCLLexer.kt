@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,18 +40,18 @@ class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(HCLCapa
   override fun start(buffer: CharSequence, startOffset: Int, endOffset: Int, state: Int) {
     val lexer = flex
     if (isLexerInHereDocLineState(state)) {
-      lexer.myHereDocMarkerLength = (state and HEREDOC_MARKER_LENGTH) ushr 0x8;
-      lexer.myHereDocIndented = (state and HEREDOC_MARKER_INDENTED) != 0;
-      lexer.myHereDocMarkerWeakHash = (state and HEREDOC_MARKER_WEAK_HASH) ushr 0x10;
+      lexer.myHereDocMarkerLength = (state and HEREDOC_MARKER_LENGTH) ushr 0x8
+      lexer.myHereDocIndented = (state and HEREDOC_MARKER_INDENTED) != 0
+      lexer.myHereDocMarkerWeakHash = (state and HEREDOC_MARKER_WEAK_HASH) ushr 0x10
     } else if (capabilities.contains(HCLCapability.INTERPOLATION_LANGUAGE)) {
       if (!isLexerInStringOrHILState(state) || state and IN_STRING == 0) {
         lexer.stringType = _HCLLexer.StringType.None
-        lexer.stringStart = -1;
-        lexer.hil = 0;
+        lexer.stringStart = -1
+        lexer.hil = 0
       } else {
         lexer.stringType = if (state and IN_SINGLE_QUOTED_STRING == 0) _HCLLexer.StringType.DoubleQ else _HCLLexer.StringType.SingleQ
-        lexer.stringStart = (state and STRING_START_MASK) ushr 0x10;
-        lexer.hil = (state and HIL_MASK) ushr 8;
+        lexer.stringStart = (state and STRING_START_MASK) ushr 0x10
+        lexer.hil = (state and HIL_MASK) ushr 8
       }
     }
     super.start(buffer, startOffset, endOffset, state and JFLEX_STATE_MASK)
@@ -74,17 +74,17 @@ class HCLLexer(val capabilities: EnumSet<HCLCapability> = EnumSet.noneOf(HCLCapa
     val lexer = flex
     var state = super.getState()
     assert(state and (JFLEX_STATE_MASK.inv()) == 0) { "State outside JFLEX_STATE_MASK ($JFLEX_STATE_MASK) should not be used by JFLex lexer" }
-    state = state and JFLEX_STATE_MASK;
+    state = state and JFLEX_STATE_MASK
     if (isLexerInHereDocLineState(state)) {
-      state = state or (((lexer.myHereDocMarkerLength and 0x7F) shl 0x8 ) and HEREDOC_MARKER_LENGTH);
-      state = state or (((if (lexer.myHereDocIndented) 0x80 else 0x0) shl 0x8 ) and HEREDOC_MARKER_LENGTH);
-      state = state or (((lexer.myHereDocMarkerWeakHash and 0xFFFF) shl 0x10 ) and HEREDOC_MARKER_WEAK_HASH);
+      state = state or (((lexer.myHereDocMarkerLength and 0x7F) shl 0x8 ) and HEREDOC_MARKER_LENGTH)
+      state = state or (((if (lexer.myHereDocIndented) 0x80 else 0x0) shl 0x8 ) and HEREDOC_MARKER_LENGTH)
+      state = state or (((lexer.myHereDocMarkerWeakHash and 0xFFFF) shl 0x10 ) and HEREDOC_MARKER_WEAK_HASH)
     } else if (capabilities.contains(HCLCapability.INTERPOLATION_LANGUAGE)) {
       val type = lexer.stringType!!
       if (type != _HCLLexer.StringType.None) {
-        state = state or IN_STRING;
+        state = state or IN_STRING
         if (type == _HCLLexer.StringType.SingleQ) {
-          state = state or IN_SINGLE_QUOTED_STRING;
+          state = state or IN_SINGLE_QUOTED_STRING
         }
       }
       state = state or (((lexer.hil and 0x3f) shl 8) and HIL_MASK)
