@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,15 +60,11 @@ object ScopeSelectInsertHandler : BasicInsertHandler<LookupElement>() {
     PsiDocumentManager.getInstance(project).commitDocument(editor.document)
   }
 
-
   private fun scheduleBasicCompletion(context: InsertionContext) {
-    context.laterRunnable = object : Runnable {
-      override fun run() {
-        if (context.project.isDisposed || context.editor.isDisposed) return
-        CodeCompletionHandlerBase(CompletionType.BASIC).invokeCompletion(context.project, context.editor)
-      }
+    context.laterRunnable = Runnable {
+      if (context.project.isDisposed || context.editor.isDisposed) return@Runnable
+      CodeCompletionHandlerBase(CompletionType.BASIC).invokeCompletion(context.project, context.editor)
     }
   }
-
 
 }

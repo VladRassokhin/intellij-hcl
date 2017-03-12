@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.codeInsight.lookup.LookupElementPresentation
 import com.intellij.codeInsight.lookup.LookupElementRenderer
 import com.intellij.icons.AllIcons
-import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
@@ -39,6 +38,7 @@ import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.model.Function
 import org.intellij.plugins.hil.HILLanguage
 import org.intellij.plugins.hil.psi.*
+import org.intellij.plugins.hil.psi.impl.getHCLHost
 import java.util.*
 
 class HILCompletionContributor : CompletionContributor() {
@@ -93,21 +93,20 @@ class HILCompletionContributor : CompletionContributor() {
         .andNot(PlatformPatterns.psiElement().withSuperParent(2, ILSelectExpression::class.java))
 
     val ILSE_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
-        .with(getScopeSelectPatternCondition(SCOPES))
+        .with(getScopeSelectPatternCondition(SCOPES))!!
     val ILSE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
-        .without(getScopeSelectPatternCondition(SCOPES))
+        .without(getScopeSelectPatternCondition(SCOPES))!!
     val ILISE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILIndexSelectExpression::class.java)
-        .without(getScopeSelectPatternCondition(SCOPES))
+        .without(getScopeSelectPatternCondition(SCOPES))!!
     val ILSE_FROM_DATA_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
-        .with(getScopeSelectPatternCondition(setOf("data")))
+        .with(getScopeSelectPatternCondition(setOf("data")))!!
     val ILSE_DATA_SOURCE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
         .with(object : PatternCondition<ILSelectExpression?>("ILSE_Data_Source()") {
           override fun accepts(t: ILSelectExpression, context: ProcessingContext?): Boolean {
-            val from = t.from
-            if (from !is ILSelectExpression) return false
+            val from = t.from as? ILSelectExpression ?: return false
             return ILSE_FROM_DATA_SCOPE.accepts(from)
           }
-        })
+        })!!
 
 
     private val LOG = Logger.getInstance(HILCompletionContributor::class.java)
@@ -151,8 +150,7 @@ class HILCompletionContributor : CompletionContributor() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
       val position = parameters.position
-      val parent = position.parent
-      if (parent !is ILExpression) return
+      val parent = position.parent as? ILExpression ?: return
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
       LOG.debug { "HIL.MethodsCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}" }
       result.addAllElements(FUNCTIONS.map { create(it) })
@@ -165,12 +163,9 @@ class HILCompletionContributor : CompletionContributor() {
   private abstract class SelectFromScopeCompletionProvider(val scope: String) : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val position = parameters.position
-      val parent = position.parent
-      if (parent !is ILVariable) return
-      val pp = parent.parent
-      if (pp !is ILSelectExpression) return
-      val from = pp.from
-      if (from !is ILVariable) return
+      val parent = position.parent as? ILVariable ?: return
+      val pp = parent.parent as? ILSelectExpression ?: return
+      val from = pp.from as? ILVariable ?: return
       if (scope != from.name) return
       LOG.debug { "HIL.SelectFromScopeCompletionProvider($scope){position=$position, parent=$parent, pp=$pp}" }
       doAddCompletions(parent, parameters, context, result)
@@ -182,12 +177,9 @@ class HILCompletionContributor : CompletionContributor() {
   object KnownScopeCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val position = parameters.position
-      val parent = position.parent
-      if (parent !is ILVariable) return
-      val pp = parent.parent
-      if (pp !is ILSelectExpression) return
-      val from = pp.from
-      if (from !is ILVariable) return
+      val parent = position.parent as? ILVariable ?: return
+      val pp = parent.parent as? ILSelectExpression ?: return
+      val from = pp.from as? ILVariable ?: return
       val provider = SCOPE_PROVIDERS[from.name] ?: return
       LOG.debug { "HIL.SelectFromScopeCompletionProviderAny($from.name){position=$position, parent=$parent, pp=$pp}" }
       provider.doAddCompletions(parent, parameters, context, result)
@@ -268,14 +260,11 @@ class HILCompletionContributor : CompletionContributor() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val position = parameters.position
 
-      val element = position.parent
-      if (element !is ILExpression) return
+      val element = position.parent as? ILExpression ?: return
       if (element !is ILVariable && element !is ILLiteralExpression) return
-      val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return
-      if (host !is HCLElement) return
+      val host = element.getHCLHost() ?: return
 
-      val parent = element.parent
-      if (parent !is ILSelectExpression) return
+      val parent = element.parent as? ILSelectExpression ?: return
 
       val expression = getGoodLeftElement(parent, element) ?: return
       val references = expression.references
@@ -369,13 +358,11 @@ class HILCompletionContributor : CompletionContributor() {
   private object ResourceTypesCompletionProvider : TerraformConfigCompletionContributor.OurCompletionProvider() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       val position = parameters.position
-      val parent = position.parent
-      if (parent !is ILExpression) return
+      val parent = position.parent as? ILExpression ?: return
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
       LOG.debug { "HIL.ResourceTypesCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}" }
 
-      val host = InjectedLanguageManager.getInstance(parent.project).getInjectionHost(parent) ?: return
-      if (host !is HCLElement) return
+      val host = parent.getHCLHost() ?: return
 
       val module = host.getTerraformModule()
       val resources = module.getDeclaredResources()
