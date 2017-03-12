@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,34 +15,15 @@
  */
 package org.intellij.plugins.hcl.psi
 
-import com.intellij.lang.ASTNode
 import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.psi.PsiElement
-import com.intellij.psi.TokenType
-import com.intellij.psi.tree.IElementType
-import com.intellij.psi.tree.TokenSet
-import org.intellij.plugins.hcl.HCLElementTypes
-import org.intellij.plugins.hcl.HCLParserDefinition
 
 /**
  * Various helper methods for working with PSI of JSON language.
 
  * @author Mikhail Golubev
  */
-@SuppressWarnings("UnusedDeclaration") object HCLPsiUtil {
-
-
-  /**
-   * Checks that PSI element represents item of JSON array.
-
-   * @param element PSI element to check
-   * *
-   * @return whether this PSI element is array element
-   */
-  fun isArrayElement(element: PsiElement): Boolean {
-    return element is HCLValue && element.parent is HCLArray
-  }
-
+object HCLPsiUtil {
   /**
    * Checks that PSI element represents key of JSON property (key-value pair of JSON object)
 
@@ -65,73 +46,6 @@ import org.intellij.plugins.hcl.HCLParserDefinition
   fun isPropertyValue(element: PsiElement): Boolean {
     val parent = element.parent
     return parent is HCLProperty && element === parent.value
-  }
-
-  /**
-   * Find the furthest sibling element with the same type as given anchor.
-   *
-   *
-   * Ignore white spaces for any type of element except [org.intellij.plugins.hcl.HCLElementTypes.LINE_COMMENT]
-   * where non indentation white space (that has new line in the middle) will stop the search.
-
-   * @param anchor element to start from
-   * *
-   * @param after  whether to scan through sibling elements forward or backward
-   * *
-   * @return described element or anchor if search stops immediately
-   */
-  fun findFurthestSiblingOfSameType(anchor: PsiElement, after: Boolean): PsiElement {
-    var node: ASTNode? = anchor.node
-    // Compare by node type to distinguish between different types of comments
-    val expectedType = node!!.elementType
-    var lastSeen: ASTNode = node
-    while (node != null) {
-      val elementType = node.elementType
-      if (elementType == expectedType) {
-        lastSeen = node
-      } else if (elementType == TokenType.WHITE_SPACE) {
-        if (expectedType == HCLElementTypes.LINE_COMMENT && node.text.indexOf('\n', 1) != -1) {
-          break
-        }
-      } else if (!HCLParserDefinition.HCL_COMMENTARIES.contains(elementType)
-          || HCLParserDefinition.HCL_COMMENTARIES.contains(expectedType)) {
-        break
-      }
-      node = if (after) node.treeNext else node.treePrev
-    }
-    return lastSeen.psi
-  }
-
-  /**
-   * Check that element type of the given AST node belongs to the token set.
-   *
-   *
-   * It slightly less verbose than `set.contains(node.getElementType())` and overloaded methods with the same name
-   * allow check ASTNode/PsiElement against both concrete element types and token sets in uniform way.
-   */
-  fun hasElementType(node: ASTNode, set: TokenSet): Boolean {
-    return set.contains(node.elementType)
-  }
-
-  /**
-   * @see .hasElementType
-   */
-  fun hasElementType(node: ASTNode, vararg types: IElementType): Boolean {
-    return hasElementType(node, TokenSet.create(*types))
-  }
-
-  /**
-   * @see .hasElementType
-   */
-  fun hasElementType(element: PsiElement, set: TokenSet): Boolean {
-    return element.node != null && hasElementType(element.node, set)
-  }
-
-  /**
-   * @see .hasElementType
-   */
-  fun hasElementType(element: PsiElement, vararg types: IElementType): Boolean {
-    return element.node != null && hasElementType(element.node, *types)
   }
 
   /**
@@ -165,7 +79,7 @@ import org.intellij.plugins.hcl.HCLParserDefinition
    * @return
    */
   fun stripQuotes(text: String): String {
-    if (text.length > 0) {
+    if (text.isNotEmpty()) {
       val firstChar = text[0]
       val lastChar = text[text.length - 1]
       if (firstChar == '\'' || firstChar == '"') {
@@ -195,20 +109,6 @@ import org.intellij.plugins.hcl.HCLParserDefinition
       i--
     }
     return count % 2 != 0
-  }
-
-  fun isBlockNonLastNameElement(element: PsiElement): Boolean {
-    val parent = element.parent
-    if (parent !is HCLBlock) {
-      return false
-    }
-    val index = parent.nameElements.indexOf(element)
-    return index > -1 && index < parent.nameElements.lastIndex
-  }
-
-  fun isBlockNameIdentifierElement(element: PsiElement): Boolean {
-    val parent = element.parent
-    return parent is HCLBlock && parent.nameIdentifier === element
   }
 
 }// empty

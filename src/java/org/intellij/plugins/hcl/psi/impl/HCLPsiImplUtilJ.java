@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,7 +108,6 @@ public class HCLPsiImplUtilJ {
     return HCLPsiImplUtils.INSTANCE.getValue(literal);
   }
 
-  @NotNull
   public static boolean isIndented(@NotNull HCLHeredocLiteral literal) {
     return HCLPsiImplUtils.INSTANCE.isIndented(literal);
   }
@@ -155,7 +154,8 @@ public class HCLPsiImplUtilJ {
     return HCLPsiImplUtils.INSTANCE.getValue(literal);
   }
 
-  public static double getValue(@NotNull HCLNumberLiteral literal) {
+  @NotNull
+  public static Number getValue(@NotNull HCLNumberLiteral literal) {
     return HCLPsiImplUtils.INSTANCE.getValue(literal);
   }
 

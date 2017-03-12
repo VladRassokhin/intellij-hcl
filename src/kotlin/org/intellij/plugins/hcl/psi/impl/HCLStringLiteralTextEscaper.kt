@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,12 +110,12 @@ class HCLStringLiteralTextEscaper(host: HCLStringLiteralMixin,
             var v = c - '0'
             if (index < chars.length) {
               c = chars[index++]
-              if ('0' <= c && c <= '7') {
+              if (c in '0'..'7') {
                 v = v shl 3
                 v += c - '0'
                 if (startC <= '3' && index < chars.length) {
                   c = chars[index++]
-                  if ('0' <= c && c <= '7') {
+                  if (c in '0'..'7') {
                     v = v shl 3
                     v += c - '0'
                   } else {

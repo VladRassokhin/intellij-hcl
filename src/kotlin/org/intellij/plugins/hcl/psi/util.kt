@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import com.intellij.util.ProcessingContext
 fun HCLBlock.getNameElementUnquoted(i: Int): String? {
   val elements = this.nameElements
   if (elements.size < i + 1) return null
-  val element = elements.get(i)
+  val element = elements[i]
   @Suppress("USELESS_CAST")
   return when (element) {
     is PsiNamedElement -> (element as PsiNamedElement).name
@@ -42,7 +42,7 @@ fun PsiElement.getPrevSiblingNonWhiteSpace(): PsiElement? {
   while (prev != null && prev is PsiWhiteSpace) {
     prev = prev.prevSibling
   }
-  return prev;
+  return prev
 }
 
 fun PsiElement.getNextSiblingNonWhiteSpace(): PsiElement? {
@@ -50,7 +50,7 @@ fun PsiElement.getNextSiblingNonWhiteSpace(): PsiElement? {
   while (prev != null && prev is PsiWhiteSpace) {
     prev = prev.nextSibling
   }
-  return prev;
+  return prev
 }
 
 fun <T : PsiElement, Self : PsiElementPattern<T, Self>> PsiElementPattern<T, Self>.afterSiblingSkipping2(skip: ElementPattern<out Any>, pattern: ElementPattern<out PsiElement>): Self {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,7 +92,14 @@ public class HCLElementGeneratorTest extends LightPlatformTestCase {
   public void testCreateNumericalValue() throws Exception {
     HCLValue element = myElementGenerator.createValue("42");
     assertTrue(element instanceof HCLNumberLiteral);
-    assertEquals(42.0, ((HCLNumberLiteral) element).getValue());
+    Number value = ((HCLNumberLiteral) element).getValue();
+    assertInstanceOf(value, Integer.class);
+    assertEquals(42, value);
+    element = myElementGenerator.createValue("42.0");
+    assertTrue(element instanceof HCLNumberLiteral);
+    value = ((HCLNumberLiteral) element).getValue();
+    assertInstanceOf(value, Double.class);
+    assertEquals(42.0, value);
   }
 
   public void testCreateObject() throws Exception {

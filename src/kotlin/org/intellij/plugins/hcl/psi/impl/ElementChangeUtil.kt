@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,10 @@ object ElementChangeUtil {
       throw IncorrectOperationException("Cannot rename ${elementDecl.javaClass.name}: element not in project content")
     } else {
       if (identifier is HCLStringLiteralMixin) {
-        identifier.setName(name);
+        identifier.setName(name)
         return
       } else if (identifier is HCLIdentifierMixin) {
-        identifier.setName(name);
+        identifier.setName(name)
         return
       }
       val replacement = SourceTreeToPsiMap.treeElementToPsi(Factory.createSingleLeafElement(elementType, name, null, elementDecl.manager))

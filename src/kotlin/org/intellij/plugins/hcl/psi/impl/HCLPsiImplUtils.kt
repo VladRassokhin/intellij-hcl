@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import javax.swing.Icon
 
 val CharSequence.indentation: Int
   get() {
-    var x = 0;
+    var x = 0
     forEach {
       if (it.isWhitespace()) x++
       else return x
@@ -71,13 +71,6 @@ object HCLPsiImplUtils {
     return marker.firstChild.text
   }
 
-  /**
-   * Actually only JSON string literal should be accepted as valid name of property according to standard,
-   * but for compatibility with JavaScript integration any JSON literals as well as identifiers (unquoted words)
-   * are possible and highlighted as error later.
-
-   * @see HCLStandardComplianceInspection
-   */
   fun getNameElement(property: HCLProperty): HCLValue {
     val firstChild = property.firstChild
     assert(firstChild is HCLLiteral || firstChild is HCLIdentifier) { "Excepted literal or identifier, got ${firstChild.javaClass.name}" }
@@ -120,7 +113,8 @@ object HCLPsiImplUtils {
     }
 
     override fun getLocationString(): String? {
-      if (true) return null;
+      // TODO: Implement
+      if (true) return null
       if (element.parent is HCLFile) {
         return element.containingFile.containingDirectory.name
       } else if (element.parent is HCLObject) {
@@ -134,7 +128,7 @@ object HCLPsiImplUtils {
       return null
     }
 
-    override fun getIcon(p0: Boolean): Icon? {
+    override fun getIcon(unused: Boolean): Icon? {
       return null
     }
   }
@@ -237,7 +231,7 @@ object HCLPsiImplUtils {
   fun getIndentation(literal: HCLHeredocLiteral): Int? {
     if (!isIndented(literal)) return null
     val markerEnd = literal.markerEnd ?: return null
-    var indentation = markerEnd.text.indentation
+    val indentation = markerEnd.text.indentation
     val contentMinIndentation = literal.content.minimalIndentation ?: return indentation
     if (contentMinIndentation < indentation) return 0
     return indentation
@@ -333,47 +327,69 @@ object HCLPsiImplUtils {
     return literal.textMatches("true")
   }
 
-  fun getValue(literal: HCLNumberLiteral): Double {
+  fun getValue(literal: HCLNumberLiteral): Number {
     val text = literal.text
-    val index = text.indexOfAny("KMGB".toCharArray(), 0, true)
-    if (index != -1) {
-      val base = java.lang.Double.parseDouble(text.substring(0, index));
-      val suffixValue = getSuffixValue(text.substring(index));
-      return base * suffixValue;
+    return getNumericValue(text)
+  }
+
+  /**
+   * Returns either Double, Integer or Long
+   */
+  // TODO: Check support of hex values and other formats
+  private fun getNumericValue(text: String): Number {
+    val base: String
+    val suffix: Long
+    if (text.last().toUpperCase() in "KMGB") {
+      val index: Int
+      if (text[text.lastIndex - 1].toUpperCase() in "KMGB") {
+        index = text.lastIndex - 1
+      } else {
+        index = text.lastIndex
+      }
+      base = text.substring(0, index)
+      suffix = getSuffixValue(text.substring(index))
     } else {
-      return java.lang.Double.parseDouble(text)
+      base = text
+      suffix = 1
     }
+    base.toIntOrNull()?.let {
+      val l = it * suffix
+      if (l > Int.MAX_VALUE) return l
+      return l.toInt()
+    }
+    base.toDoubleOrNull()?.let {
+      return it * suffix
+    }
+    throw NumberFormatException("Non-number value '$base'")
   }
 
   private fun getSuffixValue(suffix: String): Long {
     val base: Int
     when(suffix.length) {
-      0 -> return 1;
       1 -> {
-        base = 1000;
+        base = 1000
       }
       2 -> {
-        assert(suffix.get(1).toLowerCase().equals('b'))
-        base = 1024;
+        LOG.assertTrue(suffix[1].toLowerCase() == 'b', "Second suffix char must be 'b' or 'B': $suffix")
+        base = 1024
       }
-      else -> throw IllegalArgumentException("Unsupported suffix '${suffix}'")
+      else -> throw IllegalArgumentException("Unsupported suffix '$suffix'")
     }
-    when (suffix.get(0).toLowerCase()) {
-      'b' -> return 1;
-      'k' -> return pow(base, 1);
-      'm' -> return pow(base, 2);
-      'g' -> return pow(base, 3);
-      else -> throw IllegalArgumentException("Unsupported suffix '${suffix}'")
+    when (suffix[0].toLowerCase()) {
+      'k' -> return pow(base, 1)
+      'm' -> return pow(base, 2)
+      'g' -> return pow(base, 3)
+      else -> throw IllegalArgumentException("Unsupported suffix '$suffix'")
     }
   }
 
   private fun pow(a: Int, b: Int): Long {
-    if (b == 0) return 1;
+    if (b == 0) return 1
     var result = a.toLong()
-    for (i in 1.rangeTo(b)) {
-      result *= result
+    for (i in 1.rangeTo(b - 1)) {
+      result *= a
     }
-    return result;
+    return result
   }
 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,6 @@ class HCLStringLiteralManipulator : AbstractElementManipulator<HCLStringLiteralM
   override fun getRangeInElement(element: HCLStringLiteralMixin): TextRange {
     if (element.textLength == 0) return TextRange.EMPTY_RANGE
     else if (element.textLength == 1) return TextRange(0, element.textLength)
-    return TextRange(1, element.textLength - 1);
+    return TextRange(1, element.textLength - 1)
   }
 }

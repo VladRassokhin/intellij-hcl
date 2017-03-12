@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,14 @@ import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 abstract class HCLValueWithReferencesMixin(node: ASTNode) : HCLElementImpl(node) {
   private val myRefLock: Any = Any()
   private var myModCount: Long = -1
-  private var myRefs: Array<PsiReference> = emptyArray();
+  private var myRefs: Array<PsiReference> = emptyArray()
 
 
   override fun getReferences(): Array<out PsiReference> {
     val count = manager.modificationTracker.modificationCount
     if (count != myModCount) {
       synchronized(myRefLock) {
-        myRefs = ReferenceProvidersRegistry.getReferencesFromProviders(this);
+        myRefs = ReferenceProvidersRegistry.getReferencesFromProviders(this)
         myModCount = count
       }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,13 +77,13 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
     //////////
     // Replace nodes
 
-    if (newLines.isNotEmpty() && newLines.last().second == false && !(element.textLength == range.endOffset && !newText.endsWith("\n"))) {
+    if (newLines.isNotEmpty() && !newLines.last().second && !(element.textLength == range.endOffset && !newText.endsWith("\n"))) {
       throw IllegalStateException("Last line should have line separator. New text: '$newText'\nNew lines:$newLines")
     }
 
     val stopNode: ASTNode? = lookupLine(node, endString)?.let { nextLine(it) }
     var iter: ASTNode? = lookupLine(node, startString)
-    for ((line, eol) in newLines) {
+    for ((line, _) in newLines) {
       if (iter != null && iter != stopNode) {
         // Replace existing lines
         val next = nextLine(iter)
@@ -197,7 +197,7 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
     if (element is HCLHeredocContentMixin) {
       return handleContentChange(element, TextRange.from(0, element.textLength), newContent)
     }
-    return replaceStupidly(element, newContent);
+    return replaceStupidly(element, newContent)
   }
 
   fun replaceStupidly(element: HCLHeredocContent, newContent: String): HCLHeredocContent {
@@ -208,7 +208,7 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
     if (node.firstChildNode != null) {
       node.removeRange(node.firstChildNode, null)
     }
-    for ((line, eol) in newLines) {
+    for ((line, _) in newLines) {
       if (line.isNotEmpty()) node.addLeaf(HCLElementTypes.HD_LINE, line, null)
       node.addLeaf(HCLElementTypes.HD_EOL, "\n", null)
     }

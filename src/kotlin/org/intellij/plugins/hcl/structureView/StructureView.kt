@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,17 +80,15 @@ class HCLStructureViewElement(val element: HCLElement) : StructureViewTreeElemen
   }
 
   override fun getPresentation(): ItemPresentation {
-    return element.presentation!!;
+    return element.presentation!!
   }
 
   override fun getChildren(): Array<out TreeElement> {
-    var value: HCLElement
+    val value: HCLElement
     if (element is HCLProperty) {
-      val v = element.value ?: return emptyArray()
-      value = v
+      value = element.value ?: return emptyArray()
     } else if (element is HCLBlock) {
-      val v = element.`object` ?: return emptyArray()
-      value = v
+      value = element.`object` ?: return emptyArray()
     } else {
       value = element
     }

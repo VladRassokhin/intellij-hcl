@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,13 @@ import java.util.regex.Pattern
 
 abstract class HCLIdentifierMixin(node: ASTNode) : HCLValueWithReferencesMixin(node), HCLIdentifier, PsiNamedElement {
   companion object {
-    val IDENTIFIER_PATTERN = Pattern.compile("[a-zA-Z\\.\\-_][0-9a-zA-Z\\.\\-_]*")
+    val IDENTIFIER_PATTERN = Pattern.compile("[a-zA-Z\\.\\-_][0-9a-zA-Z\\.\\-_]*")!!
   }
 
   override fun setName(s: String): PsiElement? {
     if (IDENTIFIER_PATTERN.matcher(s).matches()) {
       // Safe to replace ast node
-      (node.firstChildNode as LeafElement).replaceWithText(s);
+      (node.firstChildNode as LeafElement).replaceWithText(s)
       return this
     } else {
       // Replace identifier with string literal

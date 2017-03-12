@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,19 @@ public class TerraformElementGeneratorTest extends HCLElementGeneratorTest {
 
   @Override
   public void testCreateNumericalValue() throws Exception {
-    HCLValue element = myElementGenerator.createValue("42");
+    super.testCreateNumericalValue();
+
+    HCLValue element = myElementGenerator.createValue("1GB");
     assertTrue(element instanceof HCLNumberLiteral);
-    assertEquals(42.0, ((HCLNumberLiteral) element).getValue());
-    element = myElementGenerator.createValue("10KB");
+    Number value = ((HCLNumberLiteral) element).getValue();
+    assertInstanceOf(value, Integer.class);
+    assertEquals(1024 * 1024 * 1024, value);
+
+    element = myElementGenerator.createValue("10GB");
     assertTrue(element instanceof HCLNumberLiteral);
-    assertEquals(10 * 1024.0 * 1024.0, ((HCLNumberLiteral) element).getValue());
+    value = ((HCLNumberLiteral) element).getValue();
+    assertInstanceOf(value, Long.class);
+    assertEquals(10 * 1024L * 1024L * 1024L, value);
   }
 
   public void testCreateVariable() throws Exception {
