@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.psi.PsiElementVisitor
-import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hil.psi.*
+import org.intellij.plugins.hil.psi.impl.getHCLHost
 
 class HILMissingSelfInContextInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -42,10 +42,8 @@ class HILMissingSelfInContextInspection : LocalInspectionTool() {
       val name = element.name
       if ("self" != name) return
 
-      val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return
-      if (host !is HCLElement) return
-      val parent = element.parent
-      if (parent !is ILSelectExpression) return
+      val host = element.getHCLHost() ?: return
+      val parent = element.parent as? ILSelectExpression ?: return
       if (parent.from !== element) return
 
       if (getProvisionerResource(host) != null) return

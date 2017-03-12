@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.psi.PsiElementVisitor
-import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.model.Type
 import org.intellij.plugins.hcl.terraform.config.model.Types
@@ -31,6 +30,7 @@ import org.intellij.plugins.hil.HILElementTypes.IL_BINARY_EQUALITY_EXPRESSION
 import org.intellij.plugins.hil.HILTypes.ILBinaryBooleanOnlyOperations
 import org.intellij.plugins.hil.HILTypes.ILBinaryNumericOnlyOperations
 import org.intellij.plugins.hil.psi.*
+import org.intellij.plugins.hil.psi.impl.getHCLHost
 
 class HILOperationTypesMismatchInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -45,33 +45,30 @@ class HILOperationTypesMismatchInspection : LocalInspectionTool() {
   inner class MyEV(val holder: ProblemsHolder) : ILElementVisitor() {
     override fun visitILBinaryExpression(operation: ILBinaryExpression) {
       ProgressIndicatorProvider.checkCanceled()
-      val host = InjectedLanguageManager.getInstance(operation.project).getInjectionHost(operation) ?: return
-      if (host !is HCLElement) return
+      operation.getHCLHost() ?: return
 
       val left = operation.lOperand
       val right = operation.rOperand ?: return
-      val os = operation.operationSign
 
-      // Return if we cannot determine operands type
-      val leftType = getType(left) ?: return
-      val rightType = getType(right) ?: return
+      val leftType = getType(left)
+      val rightType = getType(right)
 
       val elementType = operation.node.elementType
       if (elementType in ILBinaryNumericOnlyOperations) {
-        if (leftType != Types.Number) {
+        if (leftType != null && leftType != Types.Number) {
           holder.registerProblem(left, "Expected to be number, actual type is ${leftType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         }
-        if (rightType != Types.Number) {
+        if (rightType != null && rightType != Types.Number) {
           holder.registerProblem(right, "Expected to be number, actual type is ${rightType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         }
         return
       } else if (elementType == IL_BINARY_EQUALITY_EXPRESSION) {
         return // could compare anything with implicit 'toString' conversion. TODO: Add warning?
       } else if (elementType in ILBinaryBooleanOnlyOperations) {
-        if (leftType != Types.Boolean) {
+        if (leftType != null && leftType != Types.Boolean) {
           holder.registerProblem(left, "Expected to be boolean, actual type is ${leftType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         }
-        if (rightType != Types.Boolean) {
+        if (rightType != null && rightType != Types.Boolean) {
           holder.registerProblem(right, "Expected to be boolean, actual type is ${rightType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         }
         return
@@ -82,8 +79,7 @@ class HILOperationTypesMismatchInspection : LocalInspectionTool() {
 
     override fun visitILUnaryExpression(operation: ILUnaryExpression) {
       ProgressIndicatorProvider.checkCanceled()
-      val host = InjectedLanguageManager.getInstance(operation.project).getInjectionHost(operation) ?: return
-      if (host !is HCLElement) return
+      operation.getHCLHost() ?: return
 
       val operand = operation.operand ?: return
       val sign = operation.operationSign
@@ -109,8 +105,7 @@ class HILOperationTypesMismatchInspection : LocalInspectionTool() {
 
     override fun visitILConditionalExpression(operation: ILConditionalExpression) {
       ProgressIndicatorProvider.checkCanceled()
-      val host = InjectedLanguageManager.getInstance(operation.project).getInjectionHost(operation) ?: return
-      if (host !is HCLElement) return
+      operation.getHCLHost() ?: return
 
       // First check condition
       val condition = operation.condition

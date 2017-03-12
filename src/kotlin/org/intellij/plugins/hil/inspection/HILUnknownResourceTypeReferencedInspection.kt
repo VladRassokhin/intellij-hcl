@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,13 @@ import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.psi.PsiElementVisitor
 import org.intellij.plugins.hcl.psi.HCLElement
-import org.intellij.plugins.hcl.psi.getNameElementUnquoted
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
 import org.intellij.plugins.hil.psi.ILElementVisitor
 import org.intellij.plugins.hil.psi.ILSelectExpression
 import org.intellij.plugins.hil.psi.ILVariable
+import org.intellij.plugins.hil.psi.impl.getHCLHost
 
 class HILUnknownResourceTypeReferencedInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -44,10 +44,8 @@ class HILUnknownResourceTypeReferencedInspection : LocalInspectionTool() {
   inner class MyEV(val holder: ProblemsHolder) : ILElementVisitor() {
     override fun visitILVariable(element: ILVariable) {
       ProgressIndicatorProvider.checkCanceled()
-      val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return
-      if (host !is HCLElement) return
-      val parent = element.parent
-      if (parent !is ILSelectExpression) return
+      val host = element.getHCLHost() ?: return
+      val parent = element.parent as? ILSelectExpression ?: return
       if (parent.from !== element) return
 
       val name = element.name
@@ -65,6 +63,5 @@ class HILUnknownResourceTypeReferencedInspection : LocalInspectionTool() {
 fun isExistingResourceType(element: ILVariable, host: HCLElement): Boolean {
   val name = element.name
   val module = host.getTerraformModule()
-  val resources = module.getDeclaredResources()
-  return resources.any { name == it.getNameElementUnquoted(1) }
+  return module.findResources(name, null).isNotEmpty()
 }

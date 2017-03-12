@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ class HILFoldingBuilder : FoldingBuilder {
 
   override fun buildFoldRegions(node: ASTNode, document: Document): Array<out FoldingDescriptor> {
     val descriptors = ArrayList<FoldingDescriptor>()
-    collect(node, document, descriptors);
+    collect(node, document, descriptors)
     return descriptors.toTypedArray()
   }
 

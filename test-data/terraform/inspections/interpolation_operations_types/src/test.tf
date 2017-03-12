@@ -8,3 +8,5 @@ a = "${!1}" // BAD
 a = "${11 || 22}" // BAD
 a = "${"x" && true}" // BAD
 a = "${!!true}" // OK
+a = "${false < var.int}" // BAD (first)
+a = "${var.bool || 11}" // BAD (second)

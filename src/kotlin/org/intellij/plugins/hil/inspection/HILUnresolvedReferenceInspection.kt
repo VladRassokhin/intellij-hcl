@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferenceOwner
 import com.intellij.xml.util.AnchorReference
-import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hil.codeinsight.isResourceInstanceReference
 import org.intellij.plugins.hil.codeinsight.isResourcePropertyReference
@@ -36,6 +35,7 @@ import org.intellij.plugins.hil.codeinsight.isScopeElementReference
 import org.intellij.plugins.hil.psi.ILElementVisitor
 import org.intellij.plugins.hil.psi.ILSelectExpression
 import org.intellij.plugins.hil.psi.ILVariable
+import org.intellij.plugins.hil.psi.impl.getHCLHost
 
 class HILUnresolvedReferenceInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -56,12 +56,9 @@ class HILUnresolvedReferenceInspection : LocalInspectionTool() {
   inner class MyEV(val holder: ProblemsHolder) : ILElementVisitor() {
     override fun visitILVariable(element: ILVariable) {
       ProgressIndicatorProvider.checkCanceled()
-      val host = InjectedLanguageManager.getInstance(element.project).getInjectionHost(element) ?: return
-      if (host !is HCLElement) return
+      element.getHCLHost() ?: return
 
-      if (element !is ILVariable) return
-      val parent = element.parent
-      if (parent !is ILSelectExpression) return
+      val parent = element.parent as? ILSelectExpression ?: return
       if (parent.from === element) return
 
       if (isScopeElementReference(element, parent)) {
@@ -76,15 +73,12 @@ class HILUnresolvedReferenceInspection : LocalInspectionTool() {
       }
     }
 
-    private fun checkReferences(value: PsiElement?) {
-      if (value == null) return
-
-      doCheckRefs(value, value.references, 0)
+    private fun checkReferences(value: PsiElement) {
+      doCheckRefs(value, value.references)
     }
 
-    private fun doCheckRefs(value: PsiElement, references: Array<PsiReference>, start: Int) {
-      for (i in start..references.size - 1) {
-        val reference = references[i]
+    private fun doCheckRefs(value: PsiElement, references: Array<PsiReference>) {
+      for (reference in references) {
         ProgressManager.checkCanceled()
         if (isUrlReference(reference)) continue
         if (!hasBadResolve(reference, false)) {
@@ -107,7 +101,6 @@ class HILUnresolvedReferenceInspection : LocalInspectionTool() {
         }
         holder.registerProblem(value, description, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, referenceRange/*.shiftRight(startOffset)*/, *fixes)
       }
-
     }
   }
 
@@ -138,10 +131,10 @@ class HILUnresolvedReferenceInspection : LocalInspectionTool() {
   fun hasBadResolve(reference: PsiReference, checkSoft: Boolean): Boolean {
     if (!checkSoft && reference.isSoft) return false
     if (reference is PsiFakeAwarePolyVariantReference) {
-      return reference.multiResolve(false, true).size == 0
+      return reference.multiResolve(false, true).isEmpty()
     }
     if (reference is PsiPolyVariantReference) {
-      return reference.multiResolve(false).size == 0
+      return reference.multiResolve(false).isEmpty()
     }
     return reference.resolve() == null
   }
