@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,10 +48,10 @@ open class HCLCodeStyleSettingsProvider(val _language: Language = HCLLanguage) :
   }
 
   override fun getLanguage(): Language? {
-    return _language;
+    return _language
   }
 
   override fun createCustomSettings(settings: CodeStyleSettings?): CustomCodeStyleSettings? {
-    return HCLCodeStyleSettings(settings!!, _language);
+    return HCLCodeStyleSettings(settings!!, _language)
   }
 }

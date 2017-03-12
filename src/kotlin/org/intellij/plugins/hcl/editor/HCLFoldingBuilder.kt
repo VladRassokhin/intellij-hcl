@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ class HCLFoldingBuilder : FoldingBuilder {
 
   override fun buildFoldRegions(node: ASTNode, document: Document): Array<out FoldingDescriptor> {
     val descriptors = ArrayList<FoldingDescriptor>()
-    collect(node, document, descriptors);
+    collect(node, document, descriptors)
     return descriptors.toTypedArray()
   }
 
@@ -78,14 +78,14 @@ class HCLFoldingBuilder : FoldingBuilder {
     val prop = element.propertyList.firstOrNull()
     if (prop != null) {
       if (prop.textLength > limit) return "{...}"
-      return "{" + prop.text + "}";
+      return "{" + prop.text + "}"
     }
     val bl = element.blockList.firstOrNull()
     if (bl != null) {
       if (bl.name.length > limit) return "{...}"
       val obj = bl.`object` ?: return "{...}"
       val inner = getCollapsedObjectPlaceholder(obj, limit - (bl.name.length + 3))
-      return "{${bl.name} $inner}";
+      return "{${bl.name} $inner}"
     }
     return "{}"
   }

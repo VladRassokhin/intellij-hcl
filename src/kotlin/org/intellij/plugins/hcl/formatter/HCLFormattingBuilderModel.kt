@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,18 +27,13 @@ import org.intellij.plugins.hcl.HCLLanguage
 
 
 open class HCLFormattingBuilderModel(val language: Language = HCLLanguage) : FormattingModelBuilder {
-  override fun createModel(element: PsiElement?, settings: CodeStyleSettings?): FormattingModel {
-    assert(element != null)
-    assert(settings != null)
-    element!!;
-    settings!!;
+  override fun createModel(element: PsiElement, settings: CodeStyleSettings): FormattingModel {
     val builder = createSpacingBuilder(settings)
-    val block = HCLBlock(null, element.node, null, null, builder, Indent.getNoneIndent(), settings);
+    val block = HCLBlock(null, element.node, null, null, builder, Indent.getNoneIndent(), settings.getCustomSettings(HCLCodeStyleSettings::class.java))
     return FormattingModelProvider.createFormattingModelForPsiFile(element.containingFile, block, settings)
   }
 
   private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
-    //      val hclSettings = settings.getCustomSettings(javaClass<HCLCodeStyleSettings>())
     val commonSettings = settings.getCommonSettings(language)
 
     val spacesBeforeComma = if (commonSettings.SPACE_BEFORE_COMMA) 1 else 0

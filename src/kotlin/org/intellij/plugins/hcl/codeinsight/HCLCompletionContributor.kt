@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.intellij.plugins.hcl.codeinsight
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.HCLArray
@@ -27,7 +26,6 @@ import org.intellij.plugins.hcl.psi.HCLProperty
  * Based on com.intellij.json.codeinsight.JsonCompletionContributor
  */
 open class HCLCompletionContributor : CompletionContributor() {
-  private val LOG = Logger.getInstance(HCLCompletionContributor::class.java)
 
   private val AFTER_EQUALS_IN_PROPERTY = psiElement().afterLeaf("=").withSuperParent(2, HCLProperty::class.java)
   private val AFTER_COMMA_OR_BRACKET_IN_ARRAY = psiElement().afterLeaf(",", "[").withSuperParent(2, HCLArray::class.java)
