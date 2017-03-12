@@ -47,7 +47,7 @@ import org.intellij.plugins.hil.psi.impl.getHCLHost
 import org.jetbrains.annotations.NonNls
 import java.util.*
 
-class ILIntroduceVariableHandler : BaseIntroduceVariableHandler<ILExpression>() {
+open class ILIntroduceVariableHandler : BaseIntroduceVariableHandler<ILExpression>() {
   companion object {
     @NonNls val REFACTORING_ID = "hil.refactoring.extractVariable"
     fun findOccurrenceUnderCaret(occurrences: List<PsiElement>, editor: Editor): PsiElement? {
@@ -55,11 +55,7 @@ class ILIntroduceVariableHandler : BaseIntroduceVariableHandler<ILExpression>() 
         return null
       }
       val offset = editor.caretModel.offset
-      for (occurrence in occurrences) {
-        if (occurrence.textRange.contains(offset)) {
-          return occurrence
-        }
-      }
+      occurrences.firstOrNull { it.textRange.contains(offset) }?.let { return it }
       val line = editor.document.getLineNumber(offset)
       for (occurrence in occurrences) {
         PsiUtilCore.ensureValid(occurrence)
@@ -74,11 +70,11 @@ class ILIntroduceVariableHandler : BaseIntroduceVariableHandler<ILExpression>() 
       return null
     }
 
-    public fun findAnchor(occurrence: PsiElement): PsiElement? {
+    fun findAnchor(occurrence: PsiElement): PsiElement? {
       return findAnchor(listOf(occurrence))
     }
 
-    public fun findAnchor(occurrences: List<PsiElement>): PsiElement? {
+    fun findAnchor(occurrences: List<PsiElement>): PsiElement? {
 
       val hosts = occurrences.map {
         if (it is ILExpression) {
@@ -156,7 +152,7 @@ class ILIntroduceVariableHandler : BaseIntroduceVariableHandler<ILExpression>() 
       return
     }
 
-    element1 = ILRefactoringUtil.getSelectedExpression(project, file, element1, element2)
+    element1 = ILRefactoringUtil.getSelectedExpression(element1, element2)
     if (element1 == null || !isValidIntroduceVariant(element1)) {
       showCannotPerformError(project, editor)
       return
@@ -343,12 +339,7 @@ class ILIntroduceVariableHandler : BaseIntroduceVariableHandler<ILExpression>() 
           val newExpression = createExpression(project, operation.name!!)
 
           if (operation.isReplaceAll) {
-            val newOccurrences = ArrayList<PsiElement>()
-            for (occurrence in operation.occurrences) {
-              val replaced = replaceExpression(occurrence, newExpression)
-              newOccurrences.add(replaced)
-            }
-            operation.occurrences = newOccurrences
+            operation.occurrences = operation.occurrences.map { replaceExpression(it, newExpression) }
           } else {
             val replaced = replaceExpression(expression, newExpression)
             operation.occurrences = listOf(replaced)

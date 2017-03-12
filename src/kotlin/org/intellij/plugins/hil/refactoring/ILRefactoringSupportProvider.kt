@@ -21,21 +21,16 @@ import com.intellij.refactoring.RefactoringActionHandler
 import org.intellij.plugins.hil.psi.ILLiteralExpression
 import org.intellij.plugins.hil.psi.ILVariable
 
-// TODO: Remove 'false &&' from methods once VariableInplaceIntroducer would be feature complete
 class ILRefactoringSupportProvider : RefactoringSupportProvider() {
   override fun isInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean {
-    return element is ILVariable || (element is ILLiteralExpression)
+    return element is ILVariable || element is ILLiteralExpression
   }
 
   override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean {
-    return element is ILVariable || (element is ILLiteralExpression)
+    return element is ILVariable || element is ILLiteralExpression
   }
 
   override fun getIntroduceVariableHandler(): RefactoringActionHandler? {
-    return ILIntroduceVariableHandler()
-  }
-
-  override fun getIntroduceVariableHandler(element: PsiElement?): RefactoringActionHandler? {
     return ILIntroduceVariableHandler()
   }
 }

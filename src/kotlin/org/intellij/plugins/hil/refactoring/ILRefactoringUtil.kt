@@ -15,34 +15,19 @@
  */
 package org.intellij.plugins.hil.refactoring
 
-import com.intellij.codeInsight.CodeInsightUtilCore
 import com.intellij.codeInsight.PsiEquivalenceUtil
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.containers.ContainerUtil
-import org.intellij.plugins.hil.HILLanguage
 import org.intellij.plugins.hil.psi.ILExpression
 import org.intellij.plugins.hil.psi.ILRecursiveVisitor
 import java.util.*
 import java.util.regex.Pattern
 
 object ILRefactoringUtil {
-  fun <T : PsiElement> findElementInRange(file: PsiFile, startOffset: Int, endOffset: Int, klass: Class<T>): T {
-    return CodeInsightUtilCore.findElementInRange(file, startOffset, endOffset, klass, HILLanguage)
-  }
 
-  fun findExpressionInRange(file: PsiFile, startOffset: Int, endOffset: Int): ILExpression? {
-    if (!file.viewProvider.languages.contains(HILLanguage)) return null
-    return findElementInRange(file, startOffset, endOffset, ILExpression::class.java)
-  }
-
-  fun getSelectedExpression(project: Project,
-                            file: PsiFile,
-                            element1: PsiElement,
-                            element2: PsiElement): ILExpression? {
+  fun getSelectedExpression(element1: PsiElement, element2: PsiElement): ILExpression? {
     var parent = PsiTreeUtil.findCommonParent(element1, element2)
     if (parent != null && parent !is ILExpression) {
       parent = PsiTreeUtil.getParentOfType(parent, ILExpression::class.java)
@@ -88,33 +73,19 @@ object ILRefactoringUtil {
     @Suppress("NAME_SHADOWING")
     var name = name
     name = StringUtil.decapitalize(deleteNonLetterFromString(StringUtil.unquoteString(name.replace('.', '_'))))
-    if (name.startsWith("get")) {
-      name = name.substring(3)
-    } else if (name.startsWith("is")) {
-      name = name.substring(2)
-    }
-    while (name.startsWith("_")) {
-      name = name.substring(1)
-    }
-    while (name.endsWith("_")) {
-      name = name.substring(0, name.length - 1)
-    }
+    name = name.removePrefix("get").removePrefix("is")
+    name = name.trim('_')
     val length = name.length
     val possibleNames = LinkedHashSet<String>()
-    for (i in 0..length - 1) {
-      if (Character.isLetter(name[i]) && (i == 0 || name[i - 1] == '_' || Character.isLowerCase(name[i - 1]) && Character.isUpperCase(name[i]))) {
-        val candidate = StringUtil.decapitalize(name.substring(i))
-        if (candidate.length < 25) {
-          possibleNames.add(candidate)
-        }
+    for (i in Math.max(0, length - 25)..length - 1) {
+      if (name[i].isLetter() && (i == 0 || name[i - 1] == '_' || name[i - 1].isLowerCase() && name[i].isUpperCase())) {
+        possibleNames.add(StringUtil.decapitalize(name.substring(i)))
       }
     }
     // prefer shorter names
-    val reversed = ArrayList(possibleNames)
-    Collections.reverse(reversed)
-    return ContainerUtil.map(reversed) { name1 ->
-      @Suppress("NAME_SHADOWING")
-      var name1 = name1
+    val reversed = possibleNames.reversed()
+    return ContainerUtil.map(reversed) { it ->
+      var name1 = it
       if (name1.indexOf('_') == -1) {
         return@map name1
       }
@@ -124,13 +95,11 @@ object ILRefactoringUtil {
   }
 
   fun generateNamesByType(name: String): Collection<String> {
+    @Suppress("NAME_SHADOWING")
     var name = name
-    val possibleNames = LinkedHashSet<String>()
     name = StringUtil.decapitalize(deleteNonLetterFromString(name.replace('.', '_')))
     name = toUnderscoreCase(name)
-    possibleNames.add(name.substring(0, 1))
-    possibleNames.add(name)
-    return possibleNames
+    return listOf(name.substring(0, 1), name)
   }
 
   fun toUnderscoreCase(name: String): String {
