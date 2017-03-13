@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import com.intellij.util.BooleanFunction;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -63,6 +64,17 @@ public abstract class CompletionTestCase extends LightCodeInsightFixtureTestCase
     assertNotNull(strings);
     System.out.println("LookupStrings = " + strings);
     assertTrue("Matcher expected to return true", matcher.fun(strings));
+  }
+
+  @NotNull
+  protected BooleanFunction<Collection<String>> getExactMatcher(final String... expectedPart) {
+    return new BooleanFunction<Collection<String>>() {
+      @Override
+      public boolean fun(Collection<String> strings) {
+        assertEquals(strings, Arrays.asList(expectedPart));
+        return true;
+      }
+    };
   }
 
   @NotNull

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {
       parent = element.parent ?: return
     } else if (element.node?.elementType == HCLElementTypes.ID) {
       val p = element.parent
-      parent = if (p is HCLObject) p else p?.parent ?: return
+      parent = p as? HCLObject ?: p?.parent ?: return
     } else {
       return
     }
@@ -121,10 +121,8 @@ object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {
   }
 
   private fun scheduleBasicCompletion(context: InsertionContext) {
-    context.laterRunnable = object : Runnable {
-      override fun run() {
-        CodeCompletionHandlerBase(CompletionType.BASIC).invokeCompletion(context.project, context.editor)
-      }
+    context.laterRunnable = Runnable {
+      CodeCompletionHandlerBase(CompletionType.BASIC).invokeCompletion(context.project, context.editor)
     }
   }
 
@@ -133,7 +131,7 @@ object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {
   }
 
   private fun addArguments(count: Int, editor: Editor) {
-    EditorModificationUtil.insertStringAtCaret(editor, "${StringUtil.repeat(" \"\"", count)}")
+    EditorModificationUtil.insertStringAtCaret(editor, StringUtil.repeat(" \"\"", count))
   }
 
   private fun addBraces(editor: Editor) {

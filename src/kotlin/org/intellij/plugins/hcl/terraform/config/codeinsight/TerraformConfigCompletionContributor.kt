@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -445,7 +445,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         val datas = property.getTerraformModule().getDeclaredDataSources()
             .map { "data.${it.getNameElementUnquoted(1)}.${it.name}" }
 
-        val current = (if (type == "data") "data" else "") + "${block.getNameElementUnquoted(1)}.${block.name}"
+        val current = (if (type == "data") "data." else "") + "${block.getNameElementUnquoted(1)}.${block.name}"
 
         result.addAllElements(resources.plus(datas).minus(current).map { create(it) })
         return
@@ -554,7 +554,7 @@ object ModelHelper {
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractProvider.properties)
     if (providerType?.properties != null) {
-      properties.addAll(providerType?.properties)
+      properties.addAll(providerType.properties)
     }
     return properties.toTypedArray()
   }
@@ -565,7 +565,7 @@ object ModelHelper {
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractResourceProvisioner.properties)
     if (provisionerType?.properties != null) {
-      properties.addAll(provisionerType?.properties)
+      properties.addAll(provisionerType.properties)
     }
     return properties.toTypedArray()
   }
@@ -596,7 +596,7 @@ object ModelHelper {
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractResource.properties)
     if (resourceType?.properties != null) {
-      properties.addAll(resourceType?.properties)
+      properties.addAll(resourceType.properties)
     }
     return ( properties.toTypedArray())
   }
@@ -607,7 +607,7 @@ object ModelHelper {
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractDataSource.properties)
     if (dataSourceType?.properties != null) {
-      properties.addAll(dataSourceType?.properties)
+      properties.addAll(dataSourceType.properties)
     }
     return (properties.toTypedArray())
   }

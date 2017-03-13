@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,8 +152,7 @@ class TFNoInterpolationsAllowedInspection : LocalInspectionTool() {
     }
 
     private fun checkDependsOnOfResource(o: HCLProperty) {
-      val value = o.value
-      if (value !is HCLArray) return
+      val value = o.value as? HCLArray ?: return
       val list = value.valueList
       for (e in list) {
         if (e is HCLStringLiteral) {
@@ -171,7 +170,7 @@ class TFNoInterpolationsAllowedInspection : LocalInspectionTool() {
     }
 
     private fun getInjectedLanguagePlacesCollector(ranges: ArrayList<TextRange>) =
-        InjectedLanguagePlaces { language, rangeInsideHost, prefix, suffix -> ranges.add(rangeInsideHost) }
+        InjectedLanguagePlaces { _, rangeInsideHost, _, _ -> ranges.add(rangeInsideHost) }
   }
 }
 

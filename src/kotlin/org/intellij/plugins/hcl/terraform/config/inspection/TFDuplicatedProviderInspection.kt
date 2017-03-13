@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ class TFDuplicatedProviderInspection : LocalInspectionTool() {
       val fqn = block.getProviderFQName() ?: return
 
       val same = module.getDefinedProviders().filter { it.second == fqn }
-      if (same.size == 0) return
+      if (same.isEmpty()) return
       if (same.size == 1) {
         assert(same.first().first == block)
         return
@@ -70,7 +70,7 @@ class TFDuplicatedProviderInspection : LocalInspectionTool() {
   }
 
   private fun getFixes(aliased: Boolean): Array<LocalQuickFix> {
-    return emptyArray()
+    if (true) return emptyArray()
     return arrayOf(
         if (aliased) ChangeAliasFix
         else AddAliasFix

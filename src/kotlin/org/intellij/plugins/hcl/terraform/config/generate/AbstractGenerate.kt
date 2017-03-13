@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import org.intellij.plugins.hcl.terraform.config.inspection.HCLBlockMissingPrope
 import java.util.*
 
 
-abstract class AbstractGenerate() : SimpleCodeInsightAction() {
+abstract class AbstractGenerate : SimpleCodeInsightAction() {
   override fun invoke(project: Project, editor: Editor, file: PsiFile) {
     if (!CodeInsightUtilBase.prepareEditorForWrite(editor)) return
     val offset = editor.caretModel.currentCaret.offset
@@ -57,7 +57,7 @@ abstract class AbstractGenerate() : SimpleCodeInsightAction() {
               val holder = ProblemsHolder(InspectionManager.getInstance(project), file, true)
               val visitor = inspection.buildVisitor(holder, true)
               if (visitor is HCLElementVisitor) {
-                visitor.visitBlock(block);
+                visitor.visitBlock(block)
               }
               for (result in holder.results) {
                 result.fixes?.forEach { it.applyFix(project, result) }
@@ -83,7 +83,7 @@ abstract class AbstractGenerate() : SimpleCodeInsightAction() {
 
       override fun calculateResult(context: ExpressionContext?): Result? {
         val lookupItems = calculateLookupItems(context)
-        if (lookupItems == null || lookupItems.size == 0) return TextResult("")
+        if (lookupItems == null || lookupItems.isEmpty()) return TextResult("")
 
         return TextResult(lookupItems[0].lookupString)
       }

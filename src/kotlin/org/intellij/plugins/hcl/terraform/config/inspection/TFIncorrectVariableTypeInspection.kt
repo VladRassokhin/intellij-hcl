@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,13 @@ package org.intellij.plugins.hcl.terraform.config.inspection
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.project.Project
-import com.intellij.patterns.PatternCondition
-import com.intellij.patterns.PlatformPatterns.psiElement
-import com.intellij.patterns.PsiElementPattern
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.model.SimpleValueHint
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hcl.terraform.config.model.getValueType
-import org.intellij.plugins.hcl.terraform.config.psi.TerraformReferenceContributor
 
 class TFIncorrectVariableTypeInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -40,20 +35,9 @@ class TFIncorrectVariableTypeInspection : LocalInspectionTool() {
     return MyEV(holder)
   }
 
-  companion object {
-    val VariableRootBlockSelector: PsiElementPattern.Capture<HCLBlock> =
-        psiElement(HCLBlock::class.java)
-            .withParent(TerraformReferenceContributor.TerraformConfigFile)
-            .with(object : PatternCondition<HCLBlock?>("HCLBlock(variable)") {
-              override fun accepts(t: HCLBlock, context: ProcessingContext?): Boolean {
-                return t.getNameElementUnquoted(0) == "variable" && t.nameElements.size <= 2
-              }
-            })
-  }
-
   inner class MyEV(val holder: ProblemsHolder) : HCLElementVisitor() {
     override fun visitBlock(block: HCLBlock) {
-      if (!VariableRootBlockSelector.accepts(block)) return
+      if (!TFNoInterpolationsAllowedInspection.VariableRootBlockSelector.accepts(block)) return
 
       val obj = block.`object` ?: return
 
@@ -93,12 +77,9 @@ class TFIncorrectVariableTypeInspection : LocalInspectionTool() {
 
   private class ChangeVariableType(val toType: String) : LocalQuickFixBase("Change variable type to $toType") {
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-      val element = descriptor.psiElement
-      if (element !is HCLValue) return
-      val property = element.parent
-      if (property !is HCLProperty) return
-      val obj = property.parent
-      if (obj !is HCLObject) return
+      val element = descriptor.psiElement as? HCLValue ?: return
+      val property = element.parent as? HCLProperty ?: return
+      val obj = property.parent as? HCLObject ?: return
       val typeProperty = obj.findProperty(TypeModel.Variable_Type.name)
 
       if (typeProperty == null) {

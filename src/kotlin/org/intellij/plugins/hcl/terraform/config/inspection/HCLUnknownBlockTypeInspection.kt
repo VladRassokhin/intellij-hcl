@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ class HCLUnknownBlockTypeInspection : LocalInspectionTool() {
         } else if (parent is HCLBlock) {
             parent.getNameElementUnquoted(0) ?: return
             parent.`object` ?: return
-            val properties = ModelHelper.getBlockProperties(parent);
+            val properties = ModelHelper.getBlockProperties(parent)
             // TODO: (?) For some reason single name block could be represented as 'property' in model
             if (properties.any { it.block != null && it.name == type }) return
             holder.registerProblem(block.nameElements.first(), "Unknown block type $type", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)

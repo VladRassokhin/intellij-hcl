@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
       ProgressIndicatorProvider.checkCanceled()
       block.getNameElementUnquoted(0) ?: return
       block.`object` ?: return
-      val properties = ModelHelper.getBlockProperties(block);
+      val properties = ModelHelper.getBlockProperties(block)
       doCheck(block, holder, properties)
     }
   }
@@ -80,9 +80,8 @@ class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
 
 class AddResourcePropertiesFix(val add: Collection<PropertyOrBlockType>) : LocalQuickFixBase("Add properties: ${add.map { it.name }.joinToString(", ")}", "Add missing properties") {
   override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-    val element = descriptor.psiElement
-    if (element !is HCLBlock) return
-    val block = element;
+    val element = descriptor.psiElement as? HCLBlock ?: return
+    val block = element
     val obj = block.`object` ?: return
     object : WriteCommandAction<Any?>(project) {
       override fun run(result: Result<Any?>) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,11 +31,11 @@ class TerraformDocumentationProvider : AbstractDocumentationProvider() {
   }
 
   override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
-    if (element is HCLProperty) {
-      if (!element.isInHCLFileWithInterpolations()) return null
+    if (element == null) return null
+    if (!element.isInHCLFileWithInterpolations()) return null
 
-      val pp = element.parent?.parent
-      if (pp !is HCLBlock) return null
+    if (element is HCLProperty) {
+      val pp = element.parent?.parent as? HCLBlock ?: return null
       val properties = ModelHelper.getBlockProperties(pp)
       val property = properties.firstOrNull { it.property?.name == element.name }?.property ?: return "Unknown property ${element.name}"
       return buildString {
@@ -50,8 +50,6 @@ class TerraformDocumentationProvider : AbstractDocumentationProvider() {
         }
       }
     } else if (element is HCLBlock) {
-      if (!element.isInHCLFileWithInterpolations()) return null
-
       val pp = element.parent?.parent
       if (pp !is HCLBlock) {
         val block = TypeModel.RootBlocks.firstOrNull { it.literal == element.getNameElementUnquoted(0) } ?: return null
@@ -75,10 +73,9 @@ class TerraformDocumentationProvider : AbstractDocumentationProvider() {
         }
       }
     } else if (element is HCLStringLiteral || element is HCLIdentifier) {
-      if (!element.isInHCLFileWithInterpolations()) return null
       val parent = element.parent
       if (parent is PsiNameIdentifierOwner && parent.nameIdentifier === element) {
-        return generateDoc(parent, originalElement);
+        return generateDoc(parent, originalElement)
       }
     }
     return null

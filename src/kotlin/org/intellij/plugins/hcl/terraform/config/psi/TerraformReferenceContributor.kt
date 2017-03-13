@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,7 +114,7 @@ object ResourceProviderReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
     if (element !is HCLStringLiteral) return PsiReference.EMPTY_ARRAY
     if (!HCLPsiUtil.isPropertyValue(element)) return PsiReference.EMPTY_ARRAY
-    return arrayOf(HCLElementLazyReference(element, false) { incomplete, fake ->
+    return arrayOf(HCLElementLazyReference(element, false) { incomplete, _ ->
       @Suppress("NAME_SHADOWING")
       val element = this.element
       if (incomplete) {
@@ -146,8 +146,7 @@ object DependsOnReferenceProvider : PsiReferenceProvider() {
 
 class DependsOnLazyReference(element: HCLStringLiteral) : HCLElementLazyReferenceBase<HCLStringLiteral>(element, false) {
   override fun resolve(incompleteCode: Boolean, includeFake: Boolean): List<HCLElement> {
-    val block = element.parent?.parent?.parent?.parent
-    if (block !is HCLBlock) return emptyList()
+    val block = element.parent?.parent?.parent?.parent as? HCLBlock ?: return emptyList()
 
     var value = element.value
     val isDataSource = (value.startsWith("data."))
@@ -155,7 +154,7 @@ class DependsOnLazyReference(element: HCLStringLiteral) : HCLElementLazyReferenc
 
     val module = element.getTerraformModule()
     if (incompleteCode) {
-      val current = (if (block.getNameElementUnquoted(0) == "data") "data" else "") + "${block.getNameElementUnquoted(1)}.${block.name}"
+      val current = (if (block.getNameElementUnquoted(0) == "data") "data." else "") + "${block.getNameElementUnquoted(1)}.${block.name}"
       return module.getDeclaredResources().filter { "${it.getNameElementUnquoted(1)}.${it.name}" != current }
           .plus(module.getDeclaredDataSources().filter { "data.${it.getNameElementUnquoted(1)}.${it.name}" != current })
           .map { it.nameIdentifier as HCLElement }
@@ -172,9 +171,8 @@ class DependsOnLazyReference(element: HCLStringLiteral) : HCLElementLazyReferenc
     }
   }
 
-  fun getRangeInElement2(): TextRange {
-    val block = element.parent?.parent?.parent?.parent
-    if (block !is HCLBlock) super.getRangeInElement()
+  fun getRangeInElementForRename(): TextRange {
+    element.parent?.parent?.parent?.parent as? HCLBlock ?: return rangeInElement
     val value = element.value
     val split = value.split('.')
     if ((split.size == 3 && split[0] == "data") || split.size == 2) {
@@ -182,11 +180,11 @@ class DependsOnLazyReference(element: HCLStringLiteral) : HCLElementLazyReferenc
       val tl = element.textLength
       return TextRange.create(tl - 1 - ll, tl - 1)
     }
-    return getRangeInElement()
+    return rangeInElement
   }
 
   override fun handleElementRename(newElementName: String?): PsiElement {
-    return ElementManipulators.getManipulator(element).handleContentChange(element, getRangeInElement2(), newElementName)
+    return ElementManipulators.getManipulator(element).handleContentChange(element, getRangeInElementForRename(), newElementName)
   }
 }
 
@@ -195,7 +193,7 @@ object VariableReferenceProvider : PsiReferenceProvider() {
     if (element !is HCLIdentifier) return PsiReference.EMPTY_ARRAY
     if (!HCLPsiUtil.isPropertyKey(element)) return PsiReference.EMPTY_ARRAY
 
-    val varReference = HCLElementLazyReference(element, false) { incomplete, fake ->
+    val varReference = HCLElementLazyReference(element, false) { incomplete, _ ->
       @Suppress("NAME_SHADOWING")
       val element = this.element
       if (incomplete) {
@@ -212,14 +210,13 @@ object VariableReferenceProvider : PsiReferenceProvider() {
     if (dotIndex != -1) {
       // Mapped variable
       // Two references: variable name (hard) and variable subvalue (soft)
-      val subReference = HCLElementLazyReference(element, true) { incomplete, fake ->
+      val subReference = HCLElementLazyReference(element, true) { incomplete, _ ->
         @Suppress("NAME_SHADOWING")
         val element = this.element
         @Suppress("NAME_SHADOWING")
         val value = element.id
         val variable = element.getTerraformModule().findVariable(value.substringBefore('.')) ?: return@HCLElementLazyReference emptyList()
-        val default = variable.second.`object`?.findProperty("default")?.value
-        if (default !is HCLObject) return@HCLElementLazyReference emptyList()
+        val default = variable.second.`object`?.findProperty("default")?.value as? HCLObject ?: return@HCLElementLazyReference emptyList()
         if (incomplete) {
           default.propertyList.map { it.nameElement }
         } else {
@@ -243,13 +240,11 @@ object MapVariableIndexReferenceProvider : PsiReferenceProvider() {
 
     if (!HCLPsiUtil.isPropertyKey(element)) return PsiReference.EMPTY_ARRAY
 
-    val pObj = element.parent.parent
-    if (pObj !is HCLObject) return PsiReference.EMPTY_ARRAY
+    val pObj = element.parent.parent as? HCLObject ?: return PsiReference.EMPTY_ARRAY
 
-    val property = pObj.parent
-    if (property !is HCLProperty) return PsiReference.EMPTY_ARRAY
+    if (pObj.parent !is HCLProperty) return PsiReference.EMPTY_ARRAY
 
-    val subReference = HCLElementLazyReference(element, true) { incomplete, fake ->
+    val subReference = HCLElementLazyReference(element, true) { incomplete, _ ->
       @Suppress("NAME_SHADOWING")
       val element = this.element
       if (element.parent?.parent?.parent !is HCLProperty) {
@@ -257,8 +252,7 @@ object MapVariableIndexReferenceProvider : PsiReferenceProvider() {
       }
       val value = (element.parent?.parent?.parent as HCLProperty).name
       val variable = element.getTerraformModule().findVariable(value)?.second ?: return@HCLElementLazyReference emptyList()
-      val default = variable.`object`?.findProperty("default")?.value
-      if (default !is HCLObject) return@HCLElementLazyReference emptyList()
+      val default = variable.`object`?.findProperty("default")?.value as? HCLObject ?: return@HCLElementLazyReference emptyList()
       if (incomplete) {
         default.propertyList.map { it.nameElement }
       } else {

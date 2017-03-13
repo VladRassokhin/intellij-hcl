@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -225,10 +225,10 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
   }
 
   public void testDataSourceDependsOnCompletion() throws Exception {
-    doBasicCompletionTest("resource x y {}\ndata a b {depends_on=['<caret>']}", "x.y");
-    doBasicCompletionTest("resource x y {}\ndata a b {depends_on=[\"<caret>\"]}", "x.y");
-    doBasicCompletionTest("data x y {}\ndata a b {depends_on=['<caret>']}", "data.x.y");
-    doBasicCompletionTest("data x y {}\ndata a b {depends_on=[\"<caret>\"]}", "data.x.y");
+    doBasicCompletionTest("resource x y {}\ndata a b {depends_on=['<caret>']}", 1, "x.y");
+    doBasicCompletionTest("resource x y {}\ndata a b {depends_on=[\"<caret>\"]}", 1, "x.y");
+    doBasicCompletionTest("data x y {}\ndata a b {depends_on=['<caret>']}", 1, "data.x.y");
+    doBasicCompletionTest("data x y {}\ndata a b {depends_on=[\"<caret>\"]}", 1, "data.x.y");
 
     // Only stings allowed in arrays, prevent other elements
     doBasicCompletionTest("resource x y {}\ndata a b {depends_on=[<caret>]}", 0);
