@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +50,8 @@ open class BlockType(val literal: String, val args: Int = 0, description: String
 }
 
 class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
-  val name: String = if (property != null) property.name else block!!.literal
-  val required: Boolean = if (property != null) property.required else block!!.required
+  val name: String = property?.name ?: block!!.literal
+  val required: Boolean = property?.required ?: block!!.required
   val deprecated: String? = if (property != null) property.deprecated else block!!.deprecated
 
   init {

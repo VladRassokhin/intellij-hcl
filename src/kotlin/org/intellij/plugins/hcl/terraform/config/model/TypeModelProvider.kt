@@ -36,6 +36,7 @@ class TypeModelProvider {
      *   TypeModelProvider should become either per-project service
      *   OR properly handle project in getModel method.
      */
+    @Suppress("UNUSED_PARAMETER")
     @JvmStatic fun getModel(project: Project) = ServiceManager.getService(TypeModelProvider::class.java)._model
   }
 
@@ -62,7 +63,7 @@ class TypeModelProvider {
         TypeModelLoader.LOG.warn("Cannot read 'ignored-references.list': resource '/terraform/model-external/ignored-references.list' not found")
         return emptySet()
       }
-      val lines = stream.bufferedReader(Charsets.UTF_8).readLines().map { it.trim() }.filter { !it.isEmpty() }
+      val lines = stream.bufferedReader(Charsets.UTF_8).readLines().map(String::trim).filter { !it.isEmpty() }
       return LinkedHashSet<String>(lines)
     } catch(e: Exception) {
       TypeModelLoader.LOG.warn("Cannot read 'ignored-references.list': ${e.message}")

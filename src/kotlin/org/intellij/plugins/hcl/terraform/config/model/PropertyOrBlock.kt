@@ -17,6 +17,6 @@ package org.intellij.plugins.hcl.terraform.config.model
 
 class PropertyOrBlock(val property: Property? = null, val block: Block? = null) {
   init {
-    assert(property != null || block != null);
+    assert(property != null || block != null)
   }
 }
