@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package org.intellij.plugins.hcl.terraform;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.testFramework.LightPlatformTestCase;
 import org.intellij.plugins.hcl.terraform.config.model.*;
 
@@ -26,15 +25,12 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 public class TerraformModelProviderTest extends LightPlatformTestCase {
   public void testModelIsLoaded() throws Exception {
-    final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
     //noinspection unused
-    final TypeModel model = provider.getModel();
+    final TypeModel model = TypeModelProvider.Companion.getModel(getProject());
   }
 
   public void testProperlyParsedNetworkInterface() throws Exception {
-    final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
-    assertNotNull(provider);
-    final TypeModel model = provider.getModel();
+    final TypeModel model = TypeModelProvider.Companion.getModel(getProject());
     assertNotNull(model);
     final ResourceType google_compute_instance = model.getResourceType("google_compute_instance");
     assertNotNull(google_compute_instance);
@@ -53,9 +49,7 @@ public class TerraformModelProviderTest extends LightPlatformTestCase {
 
   // Test for #67
   public void test_aws_cloudfront_distribution_forwarded_values() throws Exception {
-    final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
-    assertNotNull(provider);
-    final TypeModel model = provider.getModel();
+    final TypeModel model = TypeModelProvider.Companion.getModel(getProject());
     assertNotNull(model);
 
     final ResourceType aws_cloudfront_distribution = model.getResourceType("aws_cloudfront_distribution");
@@ -80,9 +74,7 @@ public class TerraformModelProviderTest extends LightPlatformTestCase {
   }
 
   public void testAllResourceAndDataSourcesHasProviderNameAsPrefix() throws Exception {
-    final TypeModelProvider provider = ServiceManager.getService(TypeModelProvider.class);
-    assertNotNull(provider);
-    final TypeModel model = provider.getModel();
+    final TypeModel model = TypeModelProvider.Companion.getModel(getProject());
     assertNotNull(model);
     final List<BlockType> failed = new ArrayList<BlockType>();
     for (ResourceType block : model.getResources()) {

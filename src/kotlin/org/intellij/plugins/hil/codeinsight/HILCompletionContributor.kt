@@ -63,10 +63,6 @@ class HILCompletionContributor : CompletionContributor() {
 
   companion object {
     @JvmField val GLOBAL_SCOPES: SortedSet<String> = sortedSetOf("var", "path", "data", "module")
-    @JvmField val FUNCTIONS = TypeModelProvider.getInstance().getModel().functions
-
-    // For tests purposes
-    @JvmField val GLOBAL_AVAILABLE: SortedSet<String> = FUNCTIONS.map { it.name }.toMutableList().plus(GLOBAL_SCOPES).toSortedSet()
 
     private fun getScopeSelectPatternCondition(scopes: Set<String>): PatternCondition<ILSelectExpression?> {
       return object : PatternCondition<ILSelectExpression?>("ScopeSelect($scopes)") {
@@ -153,7 +149,7 @@ class HILCompletionContributor : CompletionContributor() {
       val parent = position.parent as? ILExpression ?: return
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
       LOG.debug { "HIL.MethodsCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}" }
-      result.addAllElements(FUNCTIONS.map { create(it) })
+      result.addAllElements(TypeModelProvider.getModel(position.project).functions.map { create(it) })
       result.addAllElements(GLOBAL_SCOPES.map { createScope(it) })
       if (getProvisionerResource(parent) != null) result.addElement(createScope("self"))
       if (getResource(parent) != null || getDataSource(parent) != null) result.addElement(createScope("count"))
@@ -246,7 +242,7 @@ class HILCompletionContributor : CompletionContributor() {
 
       if (parameters.isExtendedCompletion) {
         @Suppress("NAME_SHADOWING")
-        var dataSources = ModelHelper.getTypeModel().dataSources
+        var dataSources = ModelHelper.getTypeModel(parameters.position.project).dataSources
         val cache = HashMap<String, Boolean>()
         if (parameters.invocationCount == 2) {
           dataSources = dataSources.filter { isProviderUsed(module, it.provider.type, cache) }
@@ -371,7 +367,7 @@ class HILCompletionContributor : CompletionContributor() {
 
       if (parameters.isExtendedCompletion) {
         @Suppress("NAME_SHADOWING")
-        var resources = getTypeModel().resources
+        var resources = getTypeModel(position.project).resources
         val cache = HashMap<String, Boolean>()
         if (parameters.invocationCount == 2) {
           resources = resources.filter { isProviderUsed(module, it.provider.type, cache) }

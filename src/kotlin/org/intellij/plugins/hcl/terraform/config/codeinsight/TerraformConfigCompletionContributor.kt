@@ -22,6 +22,7 @@ import com.intellij.codeInsight.lookup.LookupElementWeigher
 import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.project.Project
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.patterns.StandardPatterns
 import com.intellij.psi.PsiElement
@@ -264,8 +265,8 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
   }
 
   abstract class OurCompletionProvider : CompletionProvider<CompletionParameters>() {
-    protected fun getTypeModel(): TypeModel {
-      return TypeModelProvider.getInstance().getModel()
+    protected fun getTypeModel(project: Project): TypeModel {
+      return TypeModelProvider.getModel(project)
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -320,18 +321,19 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         else -> return failIfInUnitTestsMode(position)
       }
       val cache = HashMap<String, Boolean>()
+      val project = position.project
       when (type) {
         "resource" ->
-          consumer.addAll(getTypeModel().resources.filter { invocationCount > 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type) })
+          consumer.addAll(getTypeModel(project).resources.filter { invocationCount > 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type) })
 
         "data" ->
-          consumer.addAll(getTypeModel().dataSources.filter { invocationCount > 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type) })
+          consumer.addAll(getTypeModel(project).dataSources.filter { invocationCount > 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type) })
 
         "provider" ->
-          consumer.addAll(getTypeModel().providers.map { create(it.type) })
+          consumer.addAll(getTypeModel(project).providers.map { create(it.type) })
 
         "provisioner" ->
-          consumer.addAll(getTypeModel().provisioners.map { create(it.type) })
+          consumer.addAll(getTypeModel(project).provisioners.map { create(it.type) })
       }
       return
     }
@@ -550,7 +552,7 @@ object ModelHelper {
 
   fun getProviderProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
     val type = block.getNameElementUnquoted(1)
-    val providerType = if (type != null) getTypeModel().getProviderType(type) else null
+    val providerType = if (type != null) getTypeModel(block.project).getProviderType(type) else null
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractProvider.properties)
     if (providerType?.properties != null) {
@@ -561,7 +563,7 @@ object ModelHelper {
 
   fun getProvisionerProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
     val type = block.getNameElementUnquoted(1)
-    val provisionerType = if (type != null) getTypeModel().getProvisionerType(type) else null
+    val provisionerType = if (type != null) getTypeModel(block.project).getProvisionerType(type) else null
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractResourceProvisioner.properties)
     if (provisionerType?.properties != null) {
@@ -592,7 +594,7 @@ object ModelHelper {
 
   fun getResourceProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
     val type = block.getNameElementUnquoted(1)
-    val resourceType = if (type != null) getTypeModel().getResourceType(type) else null
+    val resourceType = if (type != null) getTypeModel(block.project).getResourceType(type) else null
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractResource.properties)
     if (resourceType?.properties != null) {
@@ -603,7 +605,7 @@ object ModelHelper {
 
   fun getDataSourceProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
     val type = block.getNameElementUnquoted(1)
-    val dataSourceType = if (type != null) getTypeModel().getDataSourceType(type) else null
+    val dataSourceType = if (type != null) getTypeModel(block.project).getDataSourceType(type) else null
     val properties = ArrayList<PropertyOrBlockType>()
     properties.addAll(TypeModel.AbstractDataSource.properties)
     if (dataSourceType?.properties != null) {
@@ -630,7 +632,7 @@ object ModelHelper {
   }
 
 
-  fun getTypeModel(): TypeModel {
-    return TypeModelProvider.getInstance().getModel()
+  fun getTypeModel(project: Project): TypeModel {
+    return TypeModelProvider.getModel(project)
   }
 }

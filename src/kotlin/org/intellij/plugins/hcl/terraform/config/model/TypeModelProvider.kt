@@ -19,6 +19,7 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.boolean
 import com.beust.klaxon.string
 import com.intellij.openapi.components.ServiceManager
+import com.intellij.openapi.project.Project
 import java.util.*
 
 class TypeModelProvider {
@@ -28,10 +29,14 @@ class TypeModelProvider {
   val external: Map<String, Additional> by lazy { loadExternalInformation() }
   val ignored_references: Set<String> by lazy { loadIgnoredReferences() }
 
-  fun getModel(): TypeModel = _model
-
   companion object {
-    fun getInstance(): TypeModelProvider = ServiceManager.getService(TypeModelProvider::class.java)
+    /**
+     * Parameter 'project' is ignored for now since we have only one model.
+     * When multiple different models would be supported,
+     *   TypeModelProvider should become either per-project service
+     *   OR properly handle project in getModel method.
+     */
+    @JvmStatic fun getModel(project: Project) = ServiceManager.getService(TypeModelProvider::class.java)._model
   }
 
   private fun loadExternalInformation(): Map<String, Additional> {

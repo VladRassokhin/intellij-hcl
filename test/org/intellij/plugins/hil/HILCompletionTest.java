@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,15 @@ package org.intellij.plugins.hil;
 import com.intellij.lang.Language;
 import com.intellij.util.BooleanFunction;
 import org.intellij.plugins.hcl.CompletionTestCase;
+import org.intellij.plugins.hcl.terraform.config.model.Function;
+import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider;
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
@@ -41,12 +47,25 @@ public class HILCompletionTest extends CompletionTestCase {
   }
 
   public void testMethodCompletion_BeginOnInterpolation() throws Exception {
-    doBasicCompletionTest("a='${<caret>}'", getPartialMatcher(HILCompletionContributor.GLOBAL_AVAILABLE));
+    doBasicCompletionTest("a='${<caret>}'", getPartialMatcher(getGlobalAvailable()));
   }
 
   public void testMethodCompletion_AsParameter() throws Exception {
-    doBasicCompletionTest("a='${foo(<caret>)}'", getPartialMatcher(HILCompletionContributor.GLOBAL_AVAILABLE));
-    doBasicCompletionTest("a='${foo(true,<caret>)}'", getPartialMatcher(HILCompletionContributor.GLOBAL_AVAILABLE));
+    doBasicCompletionTest("a='${foo(<caret>)}'", getPartialMatcher(getGlobalAvailable()));
+    doBasicCompletionTest("a='${foo(true,<caret>)}'", getPartialMatcher(getGlobalAvailable()));
+  }
+
+  @NotNull
+  private SortedSet<String> getGlobalAvailable() {
+    final TreeSet<String> result = new TreeSet<String>();
+    final List<Function> functions = TypeModelProvider.getModel(getProject()).getFunctions();
+    for (Function function : functions) {
+      result.add(function.getName());
+    }
+    for (String scope : HILCompletionContributor.GLOBAL_SCOPES) {
+      result.add(scope);
+    }
+    return result;
   }
 
   public void testNoMethodCompletion_InSelect() throws Exception {

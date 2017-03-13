@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import org.intellij.plugins.hcl.terraform.config.model.Type
+import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hil.HILElementTypes
 import org.intellij.plugins.hil.HILTypes.ILBinaryBooleanOnlyOperations
-import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
 
 class TypeCachedValueProvider private constructor(private val e: ILExpression) : CachedValueProvider<Type?> {
 
@@ -114,7 +114,7 @@ class TypeCachedValueProvider private constructor(private val e: ILExpression) :
       is ILMethodCallExpression -> {
         val method = e.method?.name
         if (method != null && e.callee === e.method) {
-          HILCompletionContributor.FUNCTIONS.firstOrNull { it.name == method }?.ret?.let { CachedValueProvider.Result.create(it, e.method) }
+          TypeModelProvider.getModel(e.project).functions.firstOrNull { it.name == method }?.ret?.let { CachedValueProvider.Result.create(it, e.method) }
         } else null
       }
 

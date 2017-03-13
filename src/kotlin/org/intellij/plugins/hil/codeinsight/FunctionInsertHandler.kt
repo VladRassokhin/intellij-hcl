@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
+import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
 import org.intellij.plugins.hil.HILElementTypes
 import org.intellij.plugins.hil.psi.ILMethodCallExpression
 import org.intellij.plugins.hil.psi.ILSelectExpression
@@ -49,7 +50,7 @@ object FunctionInsertHandler : BasicInsertHandler<LookupElement>() {
     }
     if (element !is ILVariable) return
 
-    val function = HILCompletionContributor.FUNCTIONS.firstOrNull { it.name == item.lookupString } ?: return
+    val function = TypeModelProvider.getModel(project).functions.firstOrNull { it.name == item.lookupString } ?: return
 
 
     var offset: Int? = null
