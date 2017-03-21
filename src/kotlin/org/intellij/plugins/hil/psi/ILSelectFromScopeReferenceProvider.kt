@@ -15,6 +15,7 @@
  */
 package org.intellij.plugins.hil.psi
 
+import com.intellij.codeInspection.LocalQuickFixProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
@@ -23,6 +24,7 @@ import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
+import org.intellij.plugins.hil.codeinsight.AddVariableFix
 import org.intellij.plugins.hil.psi.impl.ILVariableMixin
 import org.intellij.plugins.hil.psi.impl.getHCLHost
 
@@ -42,9 +44,7 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
 
     when (from.name) {
       "var" -> {
-        return arrayOf(HCLElementLazyReference(element, false) { _, _ ->
-          listOf(this.element.getHCLHost()?.getTerraformModule()?.findVariable(this.element.name)?.second?.nameIdentifier as HCLElement?).filterNotNull()
-        })
+        return arrayOf(VariableReference(element))
       }
       "count" -> {
         return arrayOf(HCLElementLazyReference(from, true) { _, _ ->
@@ -90,5 +90,11 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
       }
     }
     return PsiReference.EMPTY_ARRAY
+  }
+
+  class VariableReference(element: ILVariableMixin) : HCLElementLazyReference<ILVariableMixin>(element, false, { _, _ ->
+    listOf(this.element.getHCLHost()?.getTerraformModule()?.findVariable(this.element.name)?.second?.nameIdentifier as HCLElement?).filterNotNull()
+  }), LocalQuickFixProvider {
+    override fun getQuickFixes() = arrayOf(AddVariableFix(this.element))
   }
 }
