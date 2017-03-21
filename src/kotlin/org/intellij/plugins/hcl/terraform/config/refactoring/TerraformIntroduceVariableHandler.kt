@@ -337,8 +337,8 @@ class TerraformIntroduceVariableHandler : BaseIntroduceVariableHandler<HCLElemen
       CommonRefactoringUtil.showErrorHint(
           operation.project,
           operation.editor,
-          RefactoringBundle.getCannotRefactorMessage(HCLBundle.message("dart.refactoring.introduce.anchor.error")),
-          HCLBundle.message("dart.refactoring.introduce.error"), null
+          RefactoringBundle.getCannotRefactorMessage(HCLBundle.message("refactoring.introduce.anchor.error")),
+          HCLBundle.message("refactoring.introduce.error"), null
       )
       return null
     }
