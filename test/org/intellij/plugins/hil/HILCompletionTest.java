@@ -204,4 +204,14 @@ public class HILCompletionTest extends CompletionTestCase {
   }
   //</editor-fold>
 
+  public void testSpecial_HasDynamicAttributes_Property_Not_Advised() throws Exception {
+    doBasicCompletionTest("resource \"terraform_remote_state\" \"x\" {}\n" +
+        "output \"a\" {\n  value = \"${terraform_remote_state.x.<caret>}\"\n}", new BooleanFunction<Collection<String>>() {
+      @Override
+      public boolean fun(Collection<String> strings) {
+        then(strings).contains("backend").doesNotContain("__has_dynamic_attributes");
+        return true;
+      }
+    });
+  }
 }

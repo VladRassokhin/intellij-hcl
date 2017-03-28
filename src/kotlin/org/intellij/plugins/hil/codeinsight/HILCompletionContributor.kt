@@ -196,7 +196,7 @@ class HILCompletionContributor : CompletionContributor() {
       // For now 'self' allowed only for provisioners inside resources
 
       val resource = getProvisionerResource(variable) ?: return
-      val properties = ModelHelper.getBlockProperties(resource)
+      val properties = ModelHelper.getBlockProperties(resource).filter { it.name != "__has_dynamic_attributes" }
       // TODO: Filter already defined or computed properties (?)
       // TODO: Add type filtration
       val set = properties.map { it.name }.toHashSet()
@@ -340,7 +340,7 @@ class HILCompletionContributor : CompletionContributor() {
         }
         return
       }
-      val properties = ModelHelper.getBlockProperties(r)
+      val properties = ModelHelper.getBlockProperties(r).filter { it.name != "__has_dynamic_attributes" }
       val done = properties.map { it.name }.toSet()
       found.addAll(properties.map { create(it) })
       val pl = r.`object`?.propertyList

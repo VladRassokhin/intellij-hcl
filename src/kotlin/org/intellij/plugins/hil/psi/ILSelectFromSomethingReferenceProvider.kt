@@ -155,23 +155,21 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
         } else if (!blocks.isEmpty()) {
           found.addAll(blocks.map { it.nameIdentifier as HCLElement })
         } else if (fake) {
-          ModelHelper.getBlockProperties(r).filter { it.name == name }.map { FakeHCLProperty(it.name, r) }.toCollection(found)
+          val properties = ModelHelper.getBlockProperties(r)
+          val list = properties.filter { it.name == name }.map { FakeHCLProperty(it.name, r) }
+          if (list.isEmpty() && properties.any { it.name == "__has_dynamic_attributes" }) {
+            found.add(FakeHCLProperty(name, r))
+          } else {
+            found.addAll(list)
+          }
         }
       }
       is HCLProperty -> {
         if (r is FakeHCLProperty) {
           if (fake) {
-            // TODO: Ugly fix until 'terraform_remote_state' properly resolved
-            if (r._name == "output" && r._parent is HCLBlock) {
-              if (r._parent.getNameElementUnquoted(0) == "resource"
-                  && r._parent.getNameElementUnquoted(1) == "terraform_remote_state") {
-                found.add(FakeHCLProperty(name, r))
-              }
-            } else {
-              val fqn = HCLQualifiedNameProvider.getQualifiedModelName(r)
-              if (ServiceManager.getService(TypeModelProvider::class.java).ignored_references.contains(fqn)) {
-                found.add(FakeHCLProperty(name, r))
-              }
+            val fqn = HCLQualifiedNameProvider.getQualifiedModelName(r)
+            if (ServiceManager.getService(TypeModelProvider::class.java).ignored_references.contains(fqn)) {
+              found.add(FakeHCLProperty(name, r))
             }
           }
         } else {

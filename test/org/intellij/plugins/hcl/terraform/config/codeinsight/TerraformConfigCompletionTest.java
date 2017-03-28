@@ -18,12 +18,15 @@ package org.intellij.plugins.hcl.terraform.config.codeinsight;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.intellij.lang.Language;
+import com.intellij.util.BooleanFunction;
 import org.intellij.plugins.hcl.CompletionTestCase;
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage;
 import org.intellij.plugins.hcl.terraform.config.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+
+import static org.assertj.core.api.BDDAssertions.then;
 
 public class TerraformConfigCompletionTest extends CompletionTestCase {
 
@@ -244,5 +247,15 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     myCompleteInvocationCount = 1; // Ensure there would not be 'null', 'true' and 'false' variants
     doBasicCompletionTest("variable v { type = \"<caret>\" }", 3, "string", "map", "list");
     doBasicCompletionTest("variable v { type = <caret> }", 3, "string", "map", "list");
+  }
+
+  public void testSpecial_HasDynamicAttributes_Property_Not_Advised() throws Exception {
+    doBasicCompletionTest("resource \"terraform_remote_state\" \"x\" { <caret> }", new BooleanFunction<Collection<String>>() {
+      @Override
+      public boolean fun(Collection<String> strings) {
+        then(strings).contains("backend").doesNotContain("__has_dynamic_attributes");
+        return true;
+      }
+    });
   }
 }

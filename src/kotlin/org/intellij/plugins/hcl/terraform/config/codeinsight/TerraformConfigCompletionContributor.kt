@@ -407,6 +407,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     private fun doAddCompletion(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?, parameters: CompletionParameters, properties: Array<out PropertyOrBlockType>) {
       if (properties.isEmpty()) return
       addResultsWithCustomSorter(result, parameters, properties
+          .filter { it.name != "__has_dynamic_attributes" }
           .filter { isRightOfPropertyWithCompatibleType(isProperty, it, right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
           // TODO: Filter should be based on 'max-count' model property (?)
           .filter { (it.property != null && parent.findProperty(it.name) == null) || (it.block != null) }
