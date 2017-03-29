@@ -76,13 +76,15 @@ public class HCLFormatterTest extends LightCodeInsightFixtureTestCase {
   public void testFormatBlock_Brace() throws Exception {
     doSimpleTest("a b c {\n  a = true}", "a b c {\n  a = true\n}");
     doSimpleTest("block x {a=true}", "block x {\n  a = true\n}");
-    doSimpleTest("block x {}", "block x {\n}");
+    doSimpleTest("block x {}", "block x {}");
+    doSimpleTest("block x {\n}", "block x {\n}");
   }
 
   @Test
   public void testFormatBlock_Space() throws Exception {
-    doSimpleTest("block x{}", "block x {\n}");
-    doSimpleTest("block 'x'{}", "block 'x' {\n}");
+    doSimpleTest("block x{}", "block x {}");
+    doSimpleTest("block 'x'{}", "block 'x' {}");
+    doSimpleTest("block 'x'{\n}", "block 'x' {\n}");
     doSimpleTest("block x{a=true}", "block x {\n  a = true\n}");
   }
 
