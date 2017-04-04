@@ -98,7 +98,7 @@ public class HILParserTest extends ParsingTestCase {
   }
 
   public void testOrderOfMathOperations() throws Exception {
-    doCodeTest("${format(\"\", 2 + 2 * 2, 2 + (2 * 2))}");
+    doCodeTest("${format(\"\", 2 + 2 * 2, 2 * (2 + 2), 1 - 2 + 3)}");
   }
 
   public void testSimpleIndexes() throws Exception {
