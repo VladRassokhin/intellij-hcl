@@ -21,7 +21,7 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.DebugUtil;
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import com.intellij.util.BooleanFunction;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class CompletionTestCase extends LightCodeInsightFixtureTestCase {
+public abstract class CompletionTestCase extends LightPlatformCodeInsightFixtureTestCase {
   private static final Logger LOG = Logger.getInstance(CompletionTestCase.class);
   protected int myCompleteInvocationCount = 1;
 
