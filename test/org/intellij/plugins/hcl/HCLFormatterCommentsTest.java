@@ -42,7 +42,7 @@ public class HCLFormatterCommentsTest extends HCLFormatterBaseTestCase {
             "  # c1\n" +
             "  \"foo\",\n" +
             "  # c2\n" +
-            "  \"barz\"\n" +
+            "  \"barz\",\n" +
             "  # c3\n" +
             "]");
   }

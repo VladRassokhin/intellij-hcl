@@ -51,6 +51,9 @@ public class HCLCodeStyleSettings extends CustomCodeStyleSettings {
   // CHOP_DOWN_IF_LONG seems more appropriate however for short arrays.
   public int ARRAY_WRAPPING = CommonCodeStyleSettings.DO_NOT_WRAP;
 
+  // Whether last there should be comma after last element in array
+  public boolean PROPER_LAST_COMMA_IN_MULTILINE_ARRAYS = true;
+
   public HCLCodeStyleSettings(CodeStyleSettings container, Language language) {
     super(language.getID(), container);
   }

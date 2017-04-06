@@ -15,7 +15,7 @@
  */
 package org.intellij.plugins.hcl;
 
-public class HCLFormatterComplexImpl extends HCLFormatterBaseTestCase {
+public class HCLFormatterComplexTest extends HCLFormatterBaseTestCase {
   // Next 3 tests are based on test data from https://github.com/hashicorp/hcl/blob/master/hcl/fmtcmd/fmtcmd_test.go
   public void testNoop() throws Exception {
     doSimpleTest("resource \"aws_security_group\" \"firewall\" {\n" +
