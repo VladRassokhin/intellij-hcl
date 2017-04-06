@@ -50,32 +50,76 @@ public class HCLFormatterComplexTest extends HCLFormatterBaseTestCase {
 
   // Next tests based on https://github.com/hashicorp/hcl/blob/master/hcl/printer/printer_test.go
 
-  public void testComment() throws Exception {
+  public void test_comment() throws Exception {
     doTest("comment");
   }
 
-  public void testComment_Aligned() throws Exception {
+  public void test_comment_aligned() throws Exception {
     doTest("comment_aligned");
   }
 
-  public void testComment_Standalone() throws Exception {
+  public void test_comment_array() throws Exception {
+    doTest("comment_array");
+  }
+
+  public void test_comment_end_file() throws Exception {
+    doTest("comment_end_file");
+  }
+
+  public void test_comment_multiline_indent() throws Exception {
+    doTest("comment_multiline_indent");
+  }
+
+  public void test_comment_multiline_no_stanza() throws Exception {
+    doTest("comment_multiline_no_stanza");
+  }
+
+  public void test_comment_multiline_stanza() throws Exception {
+    doTest("comment_multiline_stanza");
+  }
+
+  public void test_comment_newline() throws Exception {
+    doTest("comment_newline");
+  }
+
+  public void test_comment_object_multi() throws Exception {
+    doTest("comment_object_multi");
+  }
+
+  public void test_comment_standalone() throws Exception {
     doTest("comment_standalone");
   }
 
-  public void testComplexHCL() throws Exception {
+  public void test_complexhcl() throws Exception {
     doTest("complexhcl");
   }
 
-  public void testEmptyBlock() throws Exception {
+  public void test_empty_block() throws Exception {
     doTest("empty_block");
   }
 
-  public void testList() throws Exception {
+  public void test_list() throws Exception {
     doTest("list");
   }
 
-  public void testListOfObjects() throws Exception {
+  public void test_list_comment() throws Exception {
+    doTest("list_comment");
+  }
+
+  public void test_list_of_objects() throws Exception {
     doTest("list_of_objects");
+  }
+
+  public void test_multiline_string() throws Exception {
+    doTest("multiline_string");
+  }
+
+  public void test_object_singleline() throws Exception {
+    doTest("object_singleline");
+  }
+
+  public void test_object_with_heredoc() throws Exception {
+    doTest("object_with_heredoc");
   }
 
 }
