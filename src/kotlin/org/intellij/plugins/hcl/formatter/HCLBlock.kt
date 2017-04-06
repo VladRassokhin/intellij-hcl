@@ -81,6 +81,8 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
           } else {
             alignment = myCommentValueAlignment
           }
+        } else {
+          indent = Indent.getNormalIndent()
         }
       } else if (!isElementType(childNode, ALL_BRACES)) {
         wrap = myChildWrap!!
