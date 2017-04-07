@@ -255,6 +255,17 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
   }
 
   override fun getSpacing(child1: Block?, child2: Block): Spacing? {
+    if (child1 !is ASTBlock || child2 !is ASTBlock) return null
+    val first = isElementType(child1.node, PROPERTY) && child1.node.textContains('\n')
+        || isElementType(child1.node, HCLParserDefinition.HCL_COMMENTARIES) && !isStandaloneComment(child1.node)
+    val child2IsMultiLineProperty = isElementType(child2.node, PROPERTY) && child2.node.textContains('\n')
+    val child2IsMultiLineBlock = isElementType(child2.node, BLOCK) && child2.node.textContains('\n')
+    val second = child2IsMultiLineProperty || child2IsMultiLineBlock
+        || isElementType(child2.node, HCLParserDefinition.HCL_COMMENTARIES) && isStandaloneComment(child2.node)
+    val third = child2IsMultiLineProperty && !isElementType(child1.node, L_CURLY)
+    if (!isFile(myNode) && first && second || third) {
+      return Spacing.createSpacing(0, 0, 2, true, 2)
+    }
     return spacingBuilder.getSpacing(this, child1, child2)
   }
 }
