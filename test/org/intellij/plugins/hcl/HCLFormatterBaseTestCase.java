@@ -22,14 +22,14 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import org.jetbrains.annotations.Nullable;
 import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.util.Collections;
 
-public abstract class HCLFormatterBaseTestCase extends LightCodeInsightFixtureTestCase {
+public abstract class HCLFormatterBaseTestCase extends LightPlatformCodeInsightFixtureTestCase {
   @Parameterized.Parameter
   public LanguageFileType myFileType = HCLFileType.INSTANCE;
 
