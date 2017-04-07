@@ -41,6 +41,21 @@ public class HCLFormatterComplexTest extends HCLFormatterBaseTestCase {
             "}");
   }
 
+  public void testAlignEqualsByDefaultSeparateGroups() throws Exception {
+    doSimpleTest("resource \"aws_instance\" \"db\" {\n" +
+            "        security_groups = \"${aws_security_group.firewall.*.id}\"\n" +
+            "    VPC = \"foo\"\n" +
+            "\n" +
+            "    depends_on = [\"aws_instance.web\"]\n" +
+            "}",
+        "resource \"aws_instance\" \"db\" {\n" +
+            "  security_groups = \"${aws_security_group.firewall.*.id}\"\n" +
+            "  VPC             = \"foo\"\n" +
+            "\n" +
+            "  depends_on = [\"aws_instance.web\"]\n" +
+            "}");
+  }
+
   public void testIndentation() throws Exception {
     doSimpleTest("provider \"aws\" {\n" +
             "    access_key = \"foo\"\n" +

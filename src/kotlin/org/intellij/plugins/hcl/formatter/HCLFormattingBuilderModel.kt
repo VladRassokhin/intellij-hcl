@@ -24,6 +24,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import org.intellij.plugins.hcl.HCLElementTypes.*
 import org.intellij.plugins.hcl.HCLLanguage
+import org.intellij.plugins.hcl.HCLParserDefinition
 
 
 open class HCLFormattingBuilderModel(val language: Language = HCLLanguage) : FormattingModelBuilder {
@@ -52,6 +53,7 @@ open class HCLFormattingBuilderModel(val language: Language = HCLLanguage) : For
         .before(COMMA).spacing(spacesBeforeComma, spacesBeforeComma, 0, false, 0)
         .after(COMMA).spaceIf(commonSettings.SPACE_AFTER_COMMA)
         .after(BLOCK).lineBreakInCode()
+        .between(BLOCK, HCLParserDefinition.HCL_COMMENTARIES).lineBreakInCode()
   }
 
   override fun getRangeAffectingIndent(file: PsiFile?, offset: Int, elementAtOffset: ASTNode?): TextRange? {
