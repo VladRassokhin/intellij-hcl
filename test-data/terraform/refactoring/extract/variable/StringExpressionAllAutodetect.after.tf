@@ -1,5 +1,5 @@
 variable "value" {
-  type = "string"
+  type    = "string"
   default = "str"
 }
 output "test" {
