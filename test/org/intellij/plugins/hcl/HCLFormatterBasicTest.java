@@ -15,15 +15,9 @@
  */
 package org.intellij.plugins.hcl;
 
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
 import org.intellij.plugins.hcl.formatter.HCLCodeStyleSettings;
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType;
-import org.jetbrains.annotations.Nullable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,21 +26,16 @@ import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 @RunWith(Parameterized.class)
 public class HCLFormatterBasicTest extends HCLFormatterBaseTestCase {
 
-  @Parameterized.Parameters
+  @Parameterized.Parameters(name = "{0}")
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
         {HCLFileType.INSTANCE}, {TerraformFileType.INSTANCE}
     });
   }
-
-  @SuppressWarnings("WeakerAccess")
-  @Parameterized.Parameter
-  public LanguageFileType myFileType = TerraformFileType.INSTANCE;
 
   @Override
   @Before
@@ -149,23 +138,5 @@ public class HCLFormatterBasicTest extends HCLFormatterBaseTestCase {
   public void testAlignPropertiesOnValueAndSplitByBlocks() throws Exception {
     CodeStyleSettingsManager.getSettings(getProject()).getCustomSettings(HCLCodeStyleSettings.class).PROPERTY_ALIGNMENT = HCLCodeStyleSettings.ALIGN_PROPERTY_ON_VALUE;
     doSimpleTest("a=true\n\n\nbaz=42", "a = true\n\n\nbaz = 42");
-  }
-
-  public void doSimpleTest(String input, String expected) throws Exception {
-    doSimpleTest(input, expected, null);
-  }
-
-  public void doSimpleTest(String input, String expected, @Nullable Runnable setupSettings) throws Exception {
-    myFixture.configureByText(myFileType, input);
-    final Project project = getProject();
-    final PsiFile file = myFixture.getFile();
-    if (setupSettings != null) setupSettings.run();
-    new WriteCommandAction.Simple(project, file) {
-      @Override
-      public void run() {
-        CodeStyleManager.getInstance(project).reformatText(file, Collections.singleton(file.getTextRange()));
-      }
-    }.execute().throwException();
-    myFixture.checkResult(expected);
   }
 }

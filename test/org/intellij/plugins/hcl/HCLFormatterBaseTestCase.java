@@ -16,6 +16,7 @@
 package org.intellij.plugins.hcl;
 
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
@@ -23,10 +24,14 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import org.jetbrains.annotations.Nullable;
+import org.junit.runners.Parameterized;
 
 import java.io.File;
+import java.util.Collections;
 
 public abstract class HCLFormatterBaseTestCase extends LightCodeInsightFixtureTestCase {
+  @Parameterized.Parameter
+  public LanguageFileType myFileType = HCLFileType.INSTANCE;
 
   @Override
   protected String getTestDataPath() {
@@ -47,14 +52,14 @@ public abstract class HCLFormatterBaseTestCase extends LightCodeInsightFixtureTe
   }
 
   protected void doSimpleTest(String input, String expected, @Nullable Runnable setupSettings) throws Exception {
-    myFixture.configureByText(HCLFileType.INSTANCE, input);
+    myFixture.configureByText(myFileType, input);
     final Project project = getProject();
     final PsiFile file = myFixture.getFile();
     if (setupSettings != null) setupSettings.run();
     new WriteCommandAction.Simple(project, file) {
       @Override
       public void run() {
-        CodeStyleManager.getInstance(project).reformat(file);
+        CodeStyleManager.getInstance(project).reformatText(file, Collections.singleton(file.getTextRange()));
       }
     }.execute().throwException();
     myFixture.checkResult(expected);

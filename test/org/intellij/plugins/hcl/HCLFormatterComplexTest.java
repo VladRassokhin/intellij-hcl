@@ -15,7 +15,11 @@
  */
 package org.intellij.plugins.hcl;
 
+import com.intellij.openapi.fileTypes.LanguageFileType;
+import org.intellij.plugins.hcl.terraform.config.TerraformFileType;
+
 public class HCLFormatterComplexTest extends HCLFormatterBaseTestCase {
+
   // Next 3 tests are based on test data from https://github.com/hashicorp/hcl/blob/master/hcl/fmtcmd/fmtcmd_test.go
   public void testNoop() throws Exception {
     doSimpleTest("resource \"aws_security_group\" \"firewall\" {\n" +
@@ -111,7 +115,13 @@ public class HCLFormatterComplexTest extends HCLFormatterBaseTestCase {
   }
 
   public void test_multiline_string() throws Exception {
-    doTest("multiline_string");
+    LanguageFileType type = myFileType;
+    try {
+      myFileType = TerraformFileType.INSTANCE;
+      doTest("multiline_string");
+    } finally {
+      myFileType = type;
+    }
   }
 
   public void test_object_singleline() throws Exception {
