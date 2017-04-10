@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2017 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,13 @@ import com.google.common.base.Strings;
 import com.intellij.lexer.Lexer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.testFramework.LexerTestCase;
+import org.intellij.plugins.BaseLexerTestCase;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class HCLLexerTest extends LexerTestCase {
+public class HCLLexerTest extends BaseLexerTestCase {
   @Override
   protected Lexer createLexer() {
     return new HCLLexer();
@@ -673,5 +674,22 @@ public class HCLLexerTest extends LexerTestCase {
         "WHITE_SPACE ('\\n')\n" +
         "] (']')" +
         "");
+  }
+
+  // From several 'panic' issues in HCL itself
+  public void testBrokenInput() throws Exception {
+    doTestNoException("{\"\\0"); // #194
+    doTestNoException("wÔΩø\u00dc<<070005000\n"); // #130
+    doTestNoException("t\"\\400n\"{}"); // #129
+    doTestNoException("{:{"); // #128
+    doTestNoException("\"\\0"); // #127
+  }
+
+  private void doTestNoException(String input) {
+    try {
+      printTokens(input, 0, createLexer());
+    } catch (Throwable t) {
+      fail("Unexpected exception in lexer:" + t.getMessage());
+    }
   }
 }

@@ -16,6 +16,8 @@
 package org.intellij.plugins.hcl;
 
 import com.intellij.lang.ParserDefinition;
+import com.intellij.openapi.fileEditor.impl.LoadTextUtil;
+import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.testFramework.ParsingTestCase;
 import com.intellij.testFramework.TestDataPath;
 import org.jetbrains.annotations.NonNls;
@@ -170,5 +172,24 @@ public class HCLParserTest extends ParsingTestCase {
 
   public void testUnfinished_Block_Name() throws Exception {
     doTest();
+  }
+
+  // From several 'panic' issues in HCL itself
+  public void testBrokenInput() throws Exception {
+    doTestNoException("{\"\\0"); // #194
+    doTestNoException("wÔΩø\u00dc<<070005000\n"); // #130
+    doTestNoException("t\"\\400n\"{}"); // #129
+    doTestNoException("{:{"); // #128
+    doTestNoException("\"\\0"); // #127
+  }
+
+  private void doTestNoException(String text) {
+    myFile = createPsiFile("a", text);
+    ensureParsed(myFile);
+    assertEquals("light virtual file text mismatch", text, ((LightVirtualFile) myFile.getVirtualFile()).getContent().toString());
+    assertEquals("virtual file text mismatch", text, LoadTextUtil.loadText(myFile.getVirtualFile()));
+    assertEquals("doc text mismatch", text, myFile.getViewProvider().getDocument().getText());
+    assertEquals("psi text mismatch", text, myFile.getText());
+    toParseTreeText(myFile, skipSpaces(), includeRanges());
   }
 }
