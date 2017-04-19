@@ -145,12 +145,14 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("data x y {}\nresource a b {depends_on=[<caret>]}", 0);
   }
 
-  public void testResourceTypeCompletionGivenDefinedProviders() throws Exception {
+  public void testResourceTypeCompletionGivenDefinedProvidersOrForNoPropsProviders() throws Exception {
     final TreeSet<String> set = new TreeSet<String>();
     for (ResourceType resource : TypeModelProvider.Companion.getModel(getProject()).getResources()) {
-      if (!resource.getProvider().getType().equals("aws")) continue;
+      ProviderType provider = resource.getProvider();
+      if (!provider.getType().equals("aws") && provider.getProperties().length != 0) continue;
       set.add(resource.getType());
     }
+    then(set).contains("template_file", "aws_vpc");
     doBasicCompletionTest("provider aws {}\nresource <caret>", set);
     doBasicCompletionTest("provider aws {}\nresource <caret> {}", set);
     doBasicCompletionTest("provider aws {}\nresource <caret> \"aaa\" {}", set);

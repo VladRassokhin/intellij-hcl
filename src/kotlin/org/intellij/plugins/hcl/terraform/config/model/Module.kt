@@ -250,4 +250,7 @@ class Module private constructor(val item: PsiFileSystemItem) {
     return found
   }
 
+  val model: TypeModel
+    get() = TypeModelProvider.getModel(item.project)
+
 }

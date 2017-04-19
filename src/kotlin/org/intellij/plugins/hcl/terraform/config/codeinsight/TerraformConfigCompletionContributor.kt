@@ -324,10 +324,10 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       val project = position.project
       when (type) {
         "resource" ->
-          consumer.addAll(getTypeModel(project).resources.filter { invocationCount > 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type) })
+          consumer.addAll(getTypeModel(project).resources.filter { invocationCount >= 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type) })
 
         "data" ->
-          consumer.addAll(getTypeModel(project).dataSources.filter { invocationCount > 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type) })
+          consumer.addAll(getTypeModel(project).dataSources.filter { invocationCount >= 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type) })
 
         "provider" ->
           consumer.addAll(getTypeModel(project).providers.map { create(it.type) })
@@ -352,6 +352,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       if (!cache.containsKey(providerName)) {
         val providers = module.getDefinedProviders()
         cache[providerName] = providers.isEmpty() || providers.any { it.first.name == providerName }
+            || module.model.getProviderType(providerName)?.properties?.isEmpty() ?: false
       }
       return cache[providerName]!!
     }
