@@ -16,6 +16,7 @@
 package org.intellij.plugins.hcl.psi
 
 import com.intellij.lang.injection.InjectedLanguageManager
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PsiElementPattern
@@ -70,6 +71,10 @@ fun <T : PsiElement, Self : PsiElementPattern<T, Self>> PsiElementPattern<T, Sel
 
 fun PsiElement.isInHCLFileWithInterpolations(): Boolean {
   var file = containingFile
+  if (file == null) {
+    Logger.getInstance("#org.intellij.plugins.hcl.psi.UtilKt").warn("Cannot obtain 'containingFile' for element $this")
+    return false
+  }
   if (file.containingDirectory == null) {
     // Probably injected language
     file = InjectedLanguageManager.getInstance(project).getTopLevelFile(this)
