@@ -235,9 +235,11 @@ public class TerraformConfigCompletionTest extends CompletionTestCase {
   public void testDataSourceTypeCompletionGivenDefinedProviders() throws Exception {
     final TreeSet<String> set = new TreeSet<String>();
     for (DataSourceType ds : TypeModelProvider.Companion.getModel(getProject()).getDataSources()) {
-      if (!ds.getProvider().getType().equals("aws")) continue;
+      ProviderType provider = ds.getProvider();
+      if (!provider.getType().equals("aws") && provider.getProperties().length != 0) continue;
       set.add(ds.getType());
     }
+    then(set).contains("template_file", "aws_vpc");
     doBasicCompletionTest("provider aws {}\ndata <caret>", set);
     doBasicCompletionTest("provider aws {}\ndata <caret> {}", set);
     doBasicCompletionTest("provider aws {}\ndata <caret> \"aaa\" {}", set);
