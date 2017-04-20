@@ -25,9 +25,10 @@ import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCa
 import com.intellij.util.BooleanFunction;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import static org.assertj.core.api.BDDAssertions.then;
 
 public abstract class CompletionTestCase extends LightPlatformCodeInsightFixtureTestCase {
   private static final Logger LOG = Logger.getInstance(CompletionTestCase.class);
@@ -71,7 +72,7 @@ public abstract class CompletionTestCase extends LightPlatformCodeInsightFixture
     return new BooleanFunction<Collection<String>>() {
       @Override
       public boolean fun(Collection<String> strings) {
-        assertEquals(strings, Arrays.asList(expectedPart));
+        then(strings).containsOnly(expectedPart);
         return true;
       }
     };
@@ -82,7 +83,7 @@ public abstract class CompletionTestCase extends LightPlatformCodeInsightFixture
     return new BooleanFunction<Collection<String>>() {
       @Override
       public boolean fun(Collection<String> strings) {
-        assertContainsElements(strings, expectedPart);
+        then(strings).contains(expectedPart);
         return true;
       }
     };
@@ -93,7 +94,7 @@ public abstract class CompletionTestCase extends LightPlatformCodeInsightFixture
     return new BooleanFunction<Collection<String>>() {
       @Override
       public boolean fun(Collection<String> strings) {
-        assertContainsElements(strings, expectedPart);
+        then(strings).containsAll(expectedPart);
         return true;
       }
     };
@@ -104,8 +105,9 @@ public abstract class CompletionTestCase extends LightPlatformCodeInsightFixture
     return new BooleanFunction<Collection<String>>() {
       @Override
       public boolean fun(Collection<String> strings) {
-        assertContainsElements(strings, expectedPart);
-        assertEquals("Actual lookup elements: " + strings, expectedAllSize, strings.size());
+        then(strings)
+            .contains(expectedPart)
+            .hasSize(expectedAllSize);
         return true;
       }
     };
