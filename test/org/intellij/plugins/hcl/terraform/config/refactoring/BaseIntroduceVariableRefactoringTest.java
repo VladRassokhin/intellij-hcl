@@ -38,6 +38,7 @@ public abstract class BaseIntroduceVariableRefactoringTest extends LightPlatform
       BaseIntroduceVariableHandler handler = createHandler();
       final BaseIntroduceOperation operation = createIntroduceOperation(name);
       operation.setReplaceAll(replaceAll);
+      //noinspection unchecked
       handler.performAction(operation);
       myFixture.checkResultByFile(getTestName(false) + ".after" + ".tf");
     } finally {
