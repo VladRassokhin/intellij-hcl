@@ -57,7 +57,7 @@ class Module private constructor(val item: PsiFileSystemItem) {
       // Hopefully user already executed `terraform get`
       dir = doFindModule(name, source, directory)
       if (dir == null) {
-        Module.LOG.warn("Terraform Module '$name' with source '$source' directory not found locally, use `terraform get` to fetch modules.")
+        Module.LOG.warn("Terraform Module '$name' with source '$source' directory not found locally under '$directory', use `terraform get` to fetch modules.")
         return null
       }
       return Module(dir)
