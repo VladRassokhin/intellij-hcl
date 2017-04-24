@@ -122,4 +122,32 @@ class TypeModel(
   fun getProvisionerType(name: String): ProvisionerType? {
     return provisioners.firstOrNull { it.type == name }
   }
+
+  fun getByFQN(fqn: String): Any? {
+    val parts = fqn.split('.')
+    if (parts.size < 2) return null
+    val root = parts[0]
+    val second = when (root) {
+      "resource" -> {
+        getResourceType(parts[1])
+      }
+      "data" -> {
+        getDataSourceType(parts[1])
+      }
+      else -> null
+    } ?: return null
+    if (parts.size == 2) return second
+    return find(second, parts.subList(2, parts.size))
+  }
+
+  private fun find(block: BlockType, parts: List<String>): Any? {
+    if (parts.isEmpty()) return null
+    val pobt = block.properties.find { it.name == parts[0] } ?: return null
+    if (pobt.property != null) {
+      return if (parts.size == 1) pobt else null
+    } else if (pobt.block != null) {
+      return if (parts.size == 1) pobt else find(pobt.block, parts.subList(1, parts.size))
+    }
+    return null
+  }
 }

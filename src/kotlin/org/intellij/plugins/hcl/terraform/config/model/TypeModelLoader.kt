@@ -310,6 +310,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     // TODO: Consider move 'has_default' to Additional
 
     val required = additional.required ?: m["Required"]?.string("value")?.toLowerCase()?.toBoolean() ?: false
+    val computed = m["Computed"]?.string("value")?.toLowerCase()?.toBoolean() ?: false
 
     if (type == Types.Object) {
       isBlock = true
@@ -324,12 +325,14 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       }
       return BlockType(name, required = required,
           deprecated = deprecated,
+          computed = computed,
           description = additional.description ?: m["Description"]?.string("value"), properties = *bh).toPOBT()
     }
     return PropertyType(name, type, hint = additional.hint?.let { SimpleHint(it) } ?: hint,
         description = additional.description ?: m["Description"]?.string("value"),
         required = required,
         deprecated = deprecated,
+        computed = computed,
         has_default = has_default).toPOBT()
   }
 

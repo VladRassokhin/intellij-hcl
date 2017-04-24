@@ -28,6 +28,7 @@ import org.intellij.plugins.hcl.navigation.HCLQualifiedNameProvider
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.Module
+import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
 import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
@@ -128,6 +129,13 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
         val blockType = r.getNameElementUnquoted(0)
 
         val fqn = HCLQualifiedNameProvider.getQualifiedModelName(r)
+        if (fqn != null) {
+          val type = ModelHelper.getTypeModel(r.project).getByFQN(fqn)
+          if (type is PropertyOrBlockType && type.block != null && type.computed) {
+            found.add(FakeHCLProperty(name, r))
+            return
+          }
+        }
         if (ServiceManager.getService(TypeModelProvider::class.java).ignored_references.contains(fqn)) {
           if (fake) found.add(FakeHCLProperty(name, r))
         } else if ("module" == blockType) {
@@ -168,6 +176,13 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
         if (r is FakeHCLProperty) {
           if (fake) {
             val fqn = HCLQualifiedNameProvider.getQualifiedModelName(r)
+            if (fqn != null) {
+              val type = ModelHelper.getTypeModel(r.project).getByFQN(fqn)
+              if (type is PropertyOrBlockType && type.block != null && type.computed) {
+                found.add(FakeHCLProperty(name, r))
+                return
+              }
+            }
             if (ServiceManager.getService(TypeModelProvider::class.java).ignored_references.contains(fqn)) {
               found.add(FakeHCLProperty(name, r))
             }

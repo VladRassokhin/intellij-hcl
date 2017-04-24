@@ -41,9 +41,9 @@ open class InterpolationHint(hint: String) : SimpleHint(hint)
 open class SimpleValueHint(vararg hint: String) : SimpleHint(*hint)
 
 // TODO: Support 'default' values for certain types
-open class PropertyType(val name: String, val type: Type, val hint: Hint? = null, val injectionAllowed: Boolean = true, description: String? = null, required: Boolean = false, deprecated: String? = null, val has_default: Boolean = false) : BaseModelType(description = description, required = required, deprecated = deprecated)
+open class PropertyType(val name: String, val type: Type, val hint: Hint? = null, val injectionAllowed: Boolean = true, description: String? = null, required: Boolean = false, deprecated: String? = null, val has_default: Boolean = false, val computed: Boolean = false) : BaseModelType(description = description, required = required, deprecated = deprecated)
 
-open class BlockType(val literal: String, val args: Int = 0, description: String? = null, required: Boolean = false, deprecated: String? = null, vararg val properties: PropertyOrBlockType = arrayOf()) : BaseModelType(description = description, required = required, deprecated = deprecated) {
+open class BlockType(val literal: String, val args: Int = 0, description: String? = null, required: Boolean = false, deprecated: String? = null, val computed: Boolean = false, vararg val properties: PropertyOrBlockType = arrayOf()) : BaseModelType(description = description, required = required, deprecated = deprecated) {
   override fun toString(): String {
     return "BlockType(literal='$literal', args=$args, properties=${Arrays.toString(properties)})"
   }
@@ -53,6 +53,8 @@ class PropertyOrBlockType private constructor(val property: PropertyType? = null
   val name: String = property?.name ?: block!!.literal
   val required: Boolean = property?.required ?: block!!.required
   val deprecated: String? = if (property != null) property.deprecated else block!!.deprecated
+  val computed: Boolean
+    get() = property?.computed ?: block!!.computed
 
   init {
     assert(property != null || block != null, { "Either property or block expected" })
