@@ -80,6 +80,7 @@ class HILCompletionContributor : CompletionContributor() {
         Pair("self", SelfCompletionProvider),
         Pair("path", PathCompletionProvider),
         Pair("count", CountCompletionProvider),
+        Pair("terraform", TerraformCompletionProvider),
         Pair("module", ModuleCompletionProvider)
     )
     val SCOPES = SCOPE_PROVIDERS.keys
@@ -218,6 +219,13 @@ class HILCompletionContributor : CompletionContributor() {
     override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       getResource(variable) ?: getDataSource(variable) ?: return
       result.addElement(create("index"))
+    }
+  }
+
+  private object TerraformCompletionProvider : SelectFromScopeCompletionProvider("count") {
+    override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      getResource(variable) ?: getDataSource(variable) ?: return
+      result.addElement(create("env"))
     }
   }
 
