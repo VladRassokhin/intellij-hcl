@@ -41,6 +41,7 @@ import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformReferenceContributor
 import org.intellij.plugins.hil.HILFileType
+import org.intellij.plugins.hil.codeinsight.ReferenceCompletionHelper.findByFQNRef
 import org.intellij.plugins.hil.psi.ILExpression
 import org.intellij.plugins.hil.psi.TypeCachedValueProvider
 import java.util.*
@@ -139,14 +140,14 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         , BlockPropertiesCompletionProvider)
 
     // Property value
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+    extend(null, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
         .withParent(Identifier)
         .withSuperParent(2, Property)
         .withSuperParent(3, Object)
         .withSuperParent(4, Block)
         , PropertyValueCompletionProvider)
-    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
+    extend(null, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
         .inFile(TerraformConfigFile)
         .withParent(Literal)
         .withSuperParent(2, Property)
@@ -154,7 +155,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         .withSuperParent(4, Block)
         , PropertyValueCompletionProvider)
     // depends_on completion
-    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
+    extend(null, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
         .inFile(TerraformConfigFile)
         .withParent(Literal)
         .withSuperParent(2, Array)
@@ -467,6 +468,23 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       val hint = hints.firstOrNull() ?: return
       if (hint is SimpleValueHint) {
         result.addAllElements(hint.hint.map { create(it) })
+        return
+      }
+      if (hint is ReferenceHint) {
+        val module = property.getTerraformModule()
+        hint.hint
+            .mapNotNull { findByFQNRef(it, module) }
+            .flatMap { it }
+            .mapNotNull { it ->
+              return@mapNotNull when (it) {
+                // TODO: Enable or remove next two lines
+//                is HCLBlock -> HCLQualifiedNameProvider.getQualifiedModelName(it)
+//                is HCLProperty -> HCLQualifiedNameProvider.getQualifiedModelName(it)
+                is String -> "" + '$' + "{$it}"
+                else -> null
+              }
+            }
+            .forEach { result.addElement(create(it)) }
         return
       }
       // TODO: Support other hint types

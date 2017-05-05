@@ -26,9 +26,11 @@ import com.intellij.patterns.PatternCondition
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import com.intellij.util.SmartList
 import org.intellij.plugins.debug
+import org.intellij.plugins.hcl.navigation.HCLQualifiedNameProvider
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor
@@ -37,6 +39,7 @@ import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformLookupElem
 import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.model.Function
 import org.intellij.plugins.hil.HILLanguage
+import org.intellij.plugins.hil.codeinsight.ReferenceCompletionHelper.findByFQNRef
 import org.intellij.plugins.hil.psi.*
 import org.intellij.plugins.hil.psi.impl.getHCLHost
 import java.util.*
@@ -45,6 +48,7 @@ class HILCompletionContributor : CompletionContributor() {
   init {
     extend(CompletionType.BASIC, METHOD_POSITION, MethodsCompletionProvider)
     extend(CompletionType.BASIC, METHOD_POSITION, ResourceTypesCompletionProvider)
+    extend(null, METHOD_POSITION, FullReferenceCompletionProvider)
     extend(CompletionType.BASIC, PlatformPatterns.psiElement().withLanguage(HILLanguage)
         .withParent(ILVariable::class.java).withSuperParent(2, ILSE_FROM_KNOWN_SCOPE)
         , KnownScopeCompletionProvider)
@@ -382,6 +386,42 @@ class HILCompletionContributor : CompletionContributor() {
         }
         result.addAllElements(resources.map { it.type }.filter { it !in types }.map { create(it) })
       }
+    }
+  }
+
+  private object FullReferenceCompletionProvider : TerraformConfigCompletionContributor.OurCompletionProvider() {
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      if (parameters.completionType != CompletionType.SMART && !parameters.isExtendedCompletion) return
+      val position = parameters.position
+      val parent = position.parent as? ILExpression ?: return
+      val leftNWS = position.getPrevSiblingNonWhiteSpace()
+      LOG.debug { "HIL.ResourceTypesCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}" }
+
+      val host = parent.getHCLHost() ?: return
+
+      val property = PsiTreeUtil.getParentOfType(host, HCLProperty::class.java) ?: return
+      val block = PsiTreeUtil.getParentOfType(property, HCLBlock::class.java) ?: return
+
+      val props = ModelHelper.getBlockProperties(block).map { it.property }.filterNotNull()
+      val hints = props.filter { it.name == property.name && it.hint != null }.map { it.hint }
+      val hint = hints.firstOrNull() ?: return
+      if (hint is ReferenceHint) {
+        val module = property.getTerraformModule()
+        hint.hint
+            .mapNotNull { findByFQNRef(it, module) }
+            .flatMap { it }
+            .mapNotNull { it ->
+              return@mapNotNull when (it) {
+                is HCLBlock -> HCLQualifiedNameProvider.getQualifiedModelName(it)
+                is HCLProperty -> HCLQualifiedNameProvider.getQualifiedModelName(it)
+                is String -> it
+                else -> null
+              }
+            }
+            .forEach { result.addElement(create(it)) }
+        return
+      }
+      // TODO: Support other hint types
     }
   }
 }

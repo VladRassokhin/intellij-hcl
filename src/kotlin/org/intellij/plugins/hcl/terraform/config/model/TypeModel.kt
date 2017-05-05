@@ -83,8 +83,8 @@ class TypeModel(
     @JvmField val AbstractResource: BlockType = BlockType("resource", 2, properties = *arrayOf(
         PropertyType("id", Types.String, injectionAllowed = false, description = "A unique ID for this resource", required = false).toPOBT(),
         PropertyType("count", Types.Number).toPOBT(),
-        PropertyType("depends_on", Types.Array, hint = ReferenceHint("resource.name", "data_source.name")).toPOBT(),
-        PropertyType("provider", Types.String, hint = ReferenceHint("provider.type", "provider.alias")).toPOBT(),
+        PropertyType("depends_on", Types.Array, hint = ReferenceHint("resource.#name", "data_source.#name")).toPOBT(),
+        PropertyType("provider", Types.String, hint = ReferenceHint("provider.#type", "provider.#alias")).toPOBT(),
         ResourceLifecycle.toPOBT(),
         // Also may have connection? and provisioner+ blocks
         Connection.toPOBT(),
@@ -93,8 +93,8 @@ class TypeModel(
     @JvmField val AbstractDataSource: BlockType = BlockType("data", 2, properties = *arrayOf(
         PropertyType("id", Types.String, injectionAllowed = false, description = "A unique ID for this data source", required = false).toPOBT(),
         PropertyType("count", Types.Number).toPOBT(),
-        PropertyType("depends_on", Types.Array, hint = TypeHint(Types.String)).toPOBT(),
-        PropertyType("provider", Types.String, hint = ReferenceHint("provider.type", "provider.alias")).toPOBT()
+        PropertyType("depends_on", Types.Array, hint = ReferenceHint("resource.#name", "data_source.#name")).toPOBT(),
+        PropertyType("provider", Types.String, hint = ReferenceHint("provider.#type", "provider.#alias")).toPOBT()
     ))
     val AbstractProvider: BlockType = BlockType("provider", 1, required = false, properties = *arrayOf(
         PropertyType("alias", Types.String, injectionAllowed = false).toPOBT())
