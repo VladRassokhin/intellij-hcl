@@ -15,49 +15,14 @@
  */
 package org.intellij.plugins.hcl.terraform.config.codeinsight;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.intellij.lang.Language;
 import com.intellij.util.BooleanFunction;
-import org.intellij.plugins.hcl.CompletionTestCase;
-import org.intellij.plugins.hcl.terraform.config.TerraformLanguage;
 import org.intellij.plugins.hcl.terraform.config.model.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-public class TerraformConfigCompletionTest extends CompletionTestCase {
-
-  public static final Collection<String> COMMON_RESOURCE_PROPERTIES = new TreeSet<String>(Collections2.transform(Arrays.asList(TypeModel.AbstractResource.getProperties()), new Function<PropertyOrBlockType, String>() {
-    @Override
-    public String apply(@SuppressWarnings("NullableProblems") @NotNull PropertyOrBlockType propertyOrBlockType) {
-      return propertyOrBlockType.getName();
-    }
-  }));
-  public static final Collection<String> COMMON_DATA_SOURCE_PROPERTIES = new TreeSet<String>(Collections2.transform(Arrays.asList(TypeModel.AbstractDataSource.getProperties()), new Function<PropertyOrBlockType, String>() {
-    @Override
-    public String apply(@SuppressWarnings("NullableProblems") @NotNull PropertyOrBlockType propertyOrBlockType) {
-      return propertyOrBlockType.getName();
-    }
-  }));
-
-
-  @Override
-  protected String getTestDataPath() {
-    return "tests/data";
-  }
-
-  @Override
-  protected String getFileName() {
-    return "a.tf";
-  }
-
-  @Override
-  protected Language getExpectedLanguage() {
-    return TerraformLanguage.INSTANCE;
-  }
+public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
 
   public void testBlockKeywordCompletion() throws Exception {
     doBasicCompletionTest("<caret> {}", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
