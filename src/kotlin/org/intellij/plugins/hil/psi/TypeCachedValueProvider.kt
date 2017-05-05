@@ -44,7 +44,7 @@ class TypeCachedValueProvider private constructor(private val e: ILExpression) :
     }
 
     private fun doGetType(e: ILLiteralExpression): Type? {
-      // TODO: Don't use `ILLiteralExpression#getType` cause it would cause SO
+      // Don't use `ILLiteralExpression#getType` cause it would cause SO
       return when {
         e.doubleQuotedString != null -> Types.String
         e.number != null -> Types.Number

@@ -41,6 +41,8 @@ import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformReferenceContributor
 import org.intellij.plugins.hil.HILFileType
+import org.intellij.plugins.hil.psi.ILExpression
+import org.intellij.plugins.hil.psi.TypeCachedValueProvider
 import java.util.*
 
 class TerraformConfigCompletionContributor : HCLCompletionContributor() {
@@ -376,6 +378,13 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
               override fun visit(injectedPsi: PsiFile, places: MutableList<PsiLanguageInjectionHost.Shred>) {
                 if (injectedPsi.fileType == HILFileType) {
                   right = Types.StringWithInjection
+                  val root = injectedPsi.firstChild
+                  if (root == injectedPsi.lastChild && root is ILExpression) {
+                    val type = TypeCachedValueProvider.getType(root)
+                    if (type != null && type != Types.Any) {
+                      right = type
+                    }
+                  }
                 }
               }
             })
@@ -419,8 +428,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       if (!isProperty) return false
       if (it.property == null) return false
       if (right == Types.StringWithInjection) {
-        // StringWithInjection may be anything
-        // TODO: Check interpolation result
+        // StringWithInjection means TypeCachedValueProvider was unable to understand type of interpolation
         return true
       }
       return it.property.type == right

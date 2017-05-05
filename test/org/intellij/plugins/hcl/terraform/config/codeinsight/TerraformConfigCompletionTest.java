@@ -80,6 +80,23 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
     doBasicCompletionTest("resource aws_instance x {\n<caret> = \"name\"\n}", "provider", "ami");
     doBasicCompletionTest("resource aws_instance x {\n<caret> = true\n}", "ebs_optimized", "monitoring");
     doBasicCompletionTest("resource aws_instance x {\n<caret> {}\n}", "lifecycle");
+
+    // Should understand interpolation result
+    doBasicCompletionTest("resource aws_instance x {\n<caret> = \"${true}\"\n}", new BooleanFunction<Collection<String>>() {
+      @Override
+      public boolean fun(Collection<String> strings) {
+        then(strings).contains("ebs_optimized", "monitoring").doesNotContain("lifecycle", "provider", "ami");
+        return true;
+      }
+    });
+    // Or not
+    doBasicCompletionTest("resource aws_instance x {\n<caret> = \"${}\"\n}", new BooleanFunction<Collection<String>>() {
+      @Override
+      public boolean fun(Collection<String> strings) {
+        then(strings).contains("ebs_optimized", "monitoring", "provider", "ami").doesNotContain("lifecycle");
+        return true;
+      }
+    });
   }
 
   public void testResourceProviderCompletionFromModel() throws Exception {
@@ -175,6 +192,19 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
     );
     doBasicCompletionTest("data aws_ecs_container_definition x {\n<caret> = true\n}", "disable_networking");
     doBasicCompletionTest("data aws_ecs_container_definition x {\n<caret> {}\n}", "docker_labels", "environment");
+
+    // Should understand interpolation result
+    doBasicCompletionTest("data aws_ecs_container_definition x {\n<caret> = \"${true}\"\n}", new BooleanFunction<Collection<String>>() {
+      @Override
+      public boolean fun(Collection<String> strings) {
+        then(strings).contains("disable_networking").doesNotContain(
+            // Blocks
+            "docker_labels", "environment",
+            // Strings
+            "container_name", "task_definition", "image", "image_digest", "provider");
+        return true;
+      }
+    });
   }
 
   public void testDataSourceProviderCompletionFromModel() throws Exception {
