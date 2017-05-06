@@ -60,7 +60,11 @@ object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {
       parent = element.parent ?: return
     } else if (element.node?.elementType == HCLElementTypes.ID) {
       val p = element.parent
-      parent = p as? HCLObject ?: p?.parent ?: return
+      if (p is HCLElement) {
+        parent = p as? HCLObject ?: p.parent ?: return
+      } else {
+        parent = p
+      }
     } else {
       return
     }
@@ -69,7 +73,7 @@ object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {
       // ??? Do nothing
       return
     }
-    if (item.lookupString in TypeModel.RootBlocksMap.keys && parent.parent !is PsiFile) {
+    if (item.lookupString in TypeModel.RootBlocksMap.keys && (element.parent !is PsiFile && parent.parent !is PsiFile)) {
       return
     }
     var offset: Int? = null
