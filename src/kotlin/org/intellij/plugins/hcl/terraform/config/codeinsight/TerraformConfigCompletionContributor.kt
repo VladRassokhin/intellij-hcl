@@ -38,6 +38,7 @@ import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionContributor
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.inspection.TFNoInterpolationsAllowedInspection
 import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformReferenceContributor
 import org.intellij.plugins.hil.HILFileType
@@ -237,7 +238,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       var builder = LookupElementBuilder.create(value, lookupString ?: value.name)
       builder = builder.withRenderer(TerraformLookupElementRenderer())
       if (value.block != null) {
-        builder = builder.withInsertHandler(ResourceBlockNameInsertHandler)
+        builder = builder.withInsertHandler(ResourceBlockNameInsertHandler(value.block))
       } else if (value.property != null) {
         builder = builder.withInsertHandler(ResourcePropertyInsertHandler)
       }
@@ -337,6 +338,9 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
 
         "provisioner" ->
           consumer.addAll(getTypeModel(project).provisioners.map { create(it.type) })
+
+        "backend" ->
+          consumer.addAll(getTypeModel(project).backends.map { create(it.type) })
       }
       return
     }
@@ -544,6 +548,10 @@ object ModelHelper {
   fun getBlockProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
     val type = block.getNameElementUnquoted(0) ?: return emptyArray()
     val props: Array<out PropertyOrBlockType>
+    // Special case for 'backend' blocks, since it's located not in root
+    if (type == "backend" && TFNoInterpolationsAllowedInspection.Backend.accepts(block)) {
+      return getBackendProperties(block)
+    }
     if (type in TypeModel.RootBlocksMap.keys && block.parent !is PsiFile) {
       return emptyArray()
     }
@@ -559,6 +567,7 @@ object ModelHelper {
       "connection" -> getConnectionProperties(block)
 
       "module" -> getModuleProperties(block)
+      "terraform" -> getTerraformProperties(block)
       else -> return TypeModel.RootBlocksMap[type]?.properties?:getModelBlockProperties(block, type)
     }
     return props
@@ -598,6 +607,22 @@ object ModelHelper {
       properties.addAll(provisionerType.properties)
     }
     return properties.toTypedArray()
+  }
+
+  fun getBackendProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
+    val type = block.getNameElementUnquoted(1)
+    val backendType = type?.let { getTypeModel(block.project).getBackendType(it) } ?: return emptyArray()
+    return backendType.properties.toList().toTypedArray()
+  }
+
+  fun getTerraformProperties(block: HCLBlock): Array<PropertyOrBlockType> {
+    val base: Array<out PropertyOrBlockType> = TypeModel.Terraform.properties
+    val additional: List<PropertyOrBlockType> = getTypeModel(block.project).backends.map { it.toPOBT() }
+    if (additional.isEmpty()) {
+      // Include default backend if nothing loaded from model
+      return (base.toList() + TypeModel.AbstractBackend.toPOBT()).toTypedArray()
+    }
+    return (additional + base).toTypedArray()
   }
 
   fun getConnectionProperties(block: HCLBlock): Array<out PropertyOrBlockType> {

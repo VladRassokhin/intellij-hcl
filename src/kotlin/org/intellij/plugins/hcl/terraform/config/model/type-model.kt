@@ -121,3 +121,9 @@ class ProvisionerType(val type: String, vararg properties: PropertyOrBlockType =
     return "ProvisionerType(type='$type') ${super.toString()}"
   }
 }
+
+class BackendType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("backend", 1, properties = *properties) {
+  override fun toString(): String {
+    return "BackendType(type='$type') ${super.toString()}"
+  }
+}

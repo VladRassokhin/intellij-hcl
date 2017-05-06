@@ -20,6 +20,7 @@ class TypeModel(
     val dataSources: List<DataSourceType> = arrayListOf(),
     val providers: List<ProviderType> = arrayListOf(),
     val provisioners: List<ProvisionerType> = arrayListOf(),
+    val backends: MutableList<BackendType> = arrayListOf(),
     val functions: List<Function> = arrayListOf()
 ) {
   companion object {
@@ -99,6 +100,7 @@ class TypeModel(
     val AbstractProvider: BlockType = BlockType("provider", 1, required = false, properties = *arrayOf(
         PropertyType("alias", Types.String, injectionAllowed = false).toPOBT())
     )
+    val AbstractBackend: BlockType = BlockType("backend", 1)
     val Terraform: BlockType = BlockType("terraform", properties = *arrayOf(
         PropertyType("required_version", Types.String, injectionAllowed = false).toPOBT()
     ))
@@ -121,6 +123,10 @@ class TypeModel(
 
   fun getProvisionerType(name: String): ProvisionerType? {
     return provisioners.firstOrNull { it.type == name }
+  }
+
+  fun getBackendType(name: String): BackendType? {
+    return backends.firstOrNull { it.type == name }
   }
 
   fun getByFQN(fqn: String): Any? {

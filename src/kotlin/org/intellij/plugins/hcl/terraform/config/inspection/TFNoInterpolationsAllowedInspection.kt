@@ -65,6 +65,10 @@ class TFNoInterpolationsAllowedInspection : LocalInspectionTool() {
         psiElement(HCLBlock::class.java)
             .and(RootBlockSelector)
             .with(createBlockPattern("terraform"))
+    val Backend: PsiElementPattern.Capture<HCLBlock> =
+        psiElement(HCLBlock::class.java)
+            .with(createBlockPattern("backend"))
+            .withSuperParent(2, TerraformRootBlockSelector)
 
     fun createBlockPattern(type: String): PatternCondition<HCLBlock?> {
       return object : PatternCondition<HCLBlock?>("HCLBlock($type)") {

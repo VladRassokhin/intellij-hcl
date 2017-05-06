@@ -29,26 +29,14 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.model.BlockType
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 
-object ResourceBlockNameInsertHandler : BasicInsertHandler<LookupElement>() {
+class ResourceBlockNameInsertHandler(val type: BlockType) : BasicInsertHandler<LookupElement>() {
   override fun handleInsert(context: InsertionContext?, item: LookupElement?) {
     if (context == null || item == null) return
     val editor = context.editor
     val file = context.file
-    val type = when (item.lookupString) {
-      "atlas" -> TypeModel.Atlas
-      "module" -> TypeModel.Module
-      "output" -> TypeModel.Output
-      "variable" -> TypeModel.Variable
-      "resource" -> TypeModel.AbstractResource
-      "data" -> TypeModel.AbstractDataSource
-      "provider" -> TypeModel.AbstractProvider
-      "provisioner" -> TypeModel.AbstractResourceProvisioner
-      "connection" -> TypeModel.Connection
-      "lifecycle" -> TypeModel.ResourceLifecycle
-      else -> return // TODO: Support other block types
-    }
 
     val project = editor.project
     if (project == null || project.isDisposed) return

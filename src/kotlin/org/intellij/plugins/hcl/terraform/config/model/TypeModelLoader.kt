@@ -32,6 +32,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   val dataSources: MutableList<DataSourceType> = arrayListOf()
   val providers: MutableList<ProviderType> = arrayListOf()
   val provisioners: MutableList<ProvisionerType> = arrayListOf()
+  val backends: MutableList<BackendType> = arrayListOf()
   val functions: MutableList<Function> = arrayListOf()
 
   fun load(): TypeModel? {
@@ -39,7 +40,8 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     try {
       val providers = loadList("/terraform/model/providers.list")?.map { "providers/$it.json" } ?: emptyList()
       val provisioners = loadList("/terraform/model/provisioners.list")?.map { "provisioners/$it.json" } ?: emptyList()
-      val resources: Collection<String> = (providers + provisioners + "functions.json").map { "/terraform/model/" + it }
+      val backends = loadList("/terraform/model/backends.list")?.map { "backends/$it.json" } ?: emptyList()
+      val resources: Collection<String> = (providers + provisioners + backends + "functions.json").map { "/terraform/model/" + it }
 
       for (it in resources) {
         val file = it.ensureHavePrefix("/")
@@ -65,7 +67,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       }
 
       // TODO: Fetch latest model from github (?)
-      return TypeModel(this.resources, this.dataSources, this.providers, this.provisioners, this.functions)
+      return TypeModel(this.resources, this.dataSources, this.providers, this.provisioners, this.backends, this.functions)
     } catch(e: Exception) {
       logErrorAndFailInInternalMode(application, "Failed to load Terraform Model", e)
       return null
@@ -173,6 +175,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       "provisioner" -> return parseProvisionerFile(json, file)
       "provider" -> return parseProviderFile(json, file)
       "functions" -> return parseInterpolationFunctions(json, file)
+      "backend" -> return parseBackendFile(json, file)
     }
     LOG.warn("Cannot determine model file content, $file")
   }
@@ -212,6 +215,17 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     this.provisioners.add(info)
   }
 
+  private fun parseBackendFile(json: JsonObject, file: String) {
+    val name = json.string("name")!!
+    val provisioner = json.obj("schema")
+    if (provisioner == null) {
+      LOG.warn("No provisioner schema in file '$file'")
+      return
+    }
+    val info = parseBackendInfo(name, provisioner)
+    this.backends.add(info)
+  }
+
   private fun parseInterpolationFunctions(json: JsonObject, file: String) {
     val functions = json.obj("schema")
     if (functions == null) {
@@ -238,6 +252,10 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
 
   private fun parseProvisionerInfo(name: String, obj: JsonObject): ProvisionerType {
     return ProvisionerType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray())
+  }
+
+  private fun parseBackendInfo(name: String, obj: JsonObject): BackendType {
+    return BackendType(name, *obj.map { parseSchemaElement(it, name) }.toTypedArray())
   }
 
   private fun parseResourceInfo(entry: Map.Entry<String, Any?>, info: ProviderType): ResourceType {
