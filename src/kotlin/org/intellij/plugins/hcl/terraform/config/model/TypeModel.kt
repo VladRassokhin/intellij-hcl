@@ -100,7 +100,7 @@ class TypeModel(
         PropertyType("alias", Types.String, injectionAllowed = false).toPOBT())
     )
     val Terraform: BlockType = BlockType("terraform", properties = *arrayOf(
-        PropertyType("required_version", Types.String, injectionAllowed = false, required = true).toPOBT()
+        PropertyType("required_version", Types.String, injectionAllowed = false).toPOBT()
     ))
 
     val RootBlocks = listOf(Atlas, Module, Output, Variable, AbstractProvider, AbstractResource, AbstractDataSource, Terraform)
