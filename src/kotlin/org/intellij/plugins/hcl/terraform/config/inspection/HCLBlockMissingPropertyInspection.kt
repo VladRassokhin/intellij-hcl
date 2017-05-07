@@ -30,11 +30,9 @@ import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ResourcePropertyInsertHandler
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
-import org.intellij.plugins.hcl.terraform.config.model.ReferenceHint
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
-import org.intellij.plugins.hil.codeinsight.ReferenceCompletionHelper
 import java.util.*
 
 class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
@@ -114,23 +112,7 @@ class AddResourcePropertiesFix(val add: Collection<PropertyOrBlockType>) : Local
                 else if (type == Types.Null) "null"
                 else "\"\""
 
-            val hint = it.property.hint
-            if (hint is ReferenceHint) {
-              val module = element.getTerraformModule()
-              val suggestions = hint.hint
-                  .mapNotNull { ReferenceCompletionHelper.findByFQNRef(it, module) }
-                  .flatMap { it }
-                  .mapNotNull { it ->
-                    return@mapNotNull when (it) {
-                    // TODO: Enable or remove next two lines
-//                is HCLBlock -> HCLQualifiedNameProvider.getQualifiedModelName(it)
-//                is HCLProperty -> HCLQualifiedNameProvider.getQualifiedModelName(it)
-                      is String -> "\"\${$it}\""
-                      else -> null
-                    }
-                  }
-              if (suggestions.size == 1) value = suggestions.first()
-            }
+            value = ResourcePropertyInsertHandler.getProposedValueFromModelAndHint(it.property, element.getTerraformModule())?.first ?: value
 
             generator.createProperty(it.name, value)
           } else generator.createBlock(it.name)

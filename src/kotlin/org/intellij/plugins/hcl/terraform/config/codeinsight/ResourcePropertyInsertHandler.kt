@@ -21,12 +21,15 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.PsiTreeUtil
 import org.intellij.plugins.hcl.HCLElementTypes
+import org.intellij.plugins.hcl.HCLParserDefinition
+import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.psi.HCLIdentifier
+import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.psi.getNextSiblingNonWhiteSpace
-import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
-import org.intellij.plugins.hcl.terraform.config.model.Type
-import org.intellij.plugins.hcl.terraform.config.model.Types
+import org.intellij.plugins.hcl.terraform.config.model.*
+import org.intellij.plugins.hil.codeinsight.ReferenceCompletionHelper
 
 object ResourcePropertyInsertHandler : BasicInsertHandler<LookupElement>() {
   override fun handleInsert(context: InsertionContext?, item: LookupElement?) {
@@ -38,9 +41,9 @@ object ResourcePropertyInsertHandler : BasicInsertHandler<LookupElement>() {
     val element = context.file.findElementAt(context.startOffset)
 
     // Ensure not modifying existing property
-    if (element is HCLIdentifier) {
+    if (element is HCLIdentifier || element is HCLStringLiteral) {
       if (isNextIsEqual(element)) return
-    } else if (element?.node?.elementType == HCLElementTypes.ID) {
+    } else if (HCLParserDefinition.IDENTIFYING_LITERALS.contains(element?.node?.elementType)) {
       if (isNextIsEqual(element?.parent)) return
     }
 
@@ -55,11 +58,11 @@ object ResourcePropertyInsertHandler : BasicInsertHandler<LookupElement>() {
     if (obj is PropertyOrBlockType) {
       val property = obj.property
       if (property != null) {
-        val type = property.type
-        val pair = getPlaceholderValue(type)
+        val module = PsiTreeUtil.getParentOfType(element, HCLElement::class.java)?.getTerraformModule()
+        val pair = module?.let { getProposedValueFromModelAndHint(property, module) } ?: getPlaceholderValue(property.type)
         if (pair != null) {
           EditorModificationUtil.insertStringAtCaret(editor, pair.first)
-          editor.caretModel.moveToOffset(editor.caretModel.offset - pair.second)
+          EditorModificationUtil.moveCaretRelatively(editor, pair.second)
         }
       }
     }
@@ -69,12 +72,34 @@ object ResourcePropertyInsertHandler : BasicInsertHandler<LookupElement>() {
 
   fun getPlaceholderValue(type: Type): Pair<String, Int>? {
     return when (type) {
-      Types.StringWithInjection -> Pair("\"\${}\"", 2)
-      Types.String -> Pair("\"\"", 1)
-      Types.Object -> Pair("{}", 1)
-      Types.Array -> Pair("[]", 1)
+      Types.StringWithInjection -> Pair("\"\${}\"", -2)
+      Types.String -> Pair("\"\"", -1)
+      Types.Object -> Pair("{}", -1)
+      Types.Array -> Pair("[]", -1)
       else -> null
     }
+  }
+
+  fun getProposedValueFromModelAndHint(property: PropertyType, module: Module): Pair<String, Int>? {
+    val hint = property.hint
+    if (hint is ReferenceHint) {
+      val suggestions = hint.hint
+          .mapNotNull { ReferenceCompletionHelper.findByFQNRef(it, module) }
+          .flatMap { it }
+          .mapNotNull { it ->
+            return@mapNotNull when (it) {
+            // TODO: Enable or remove next two lines
+            // is HCLBlock -> HCLQualifiedNameProvider.getQualifiedModelName(it)
+            // is HCLProperty -> HCLQualifiedNameProvider.getQualifiedModelName(it)
+              is String -> Pair("\"\${$it}\"", 0)
+              else -> null
+            }
+          }
+      if (suggestions.size == 1) {
+        return suggestions.first()
+      }
+    }
+    return null
   }
 
   private fun isNextIsEqual(element: PsiElement?): Boolean {
