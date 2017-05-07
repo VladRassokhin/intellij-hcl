@@ -27,6 +27,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElementVisitor
@@ -40,6 +41,7 @@ import java.util.*
 abstract class AbstractGenerate : SimpleCodeInsightAction() {
   override fun invoke(project: Project, editor: Editor, file: PsiFile) {
     if (!CodeInsightUtilBase.prepareEditorForWrite(editor)) return
+    setCaretToNearbyRoot(editor, file)
     val offset = editor.caretModel.currentCaret.offset
     val marker = editor.document.createRangeMarker(offset, offset)
     marker.isGreedyToLeft = true
@@ -51,8 +53,8 @@ abstract class AbstractGenerate : SimpleCodeInsightAction() {
           val block = PsiTreeUtil.getParentOfType(element, HCLBlock::class.java, false)
           if (block != null) {
             if (TextRange(marker.startOffset, marker.endOffset).contains(block.textOffset)) {
-              // It's out new block
-              // TODO: Invoke add properties quick fix
+              // It's our new block
+              // Invoke add properties quick fix
               val inspection = HCLBlockMissingPropertyInspection()
               val holder = ProblemsHolder(InspectionManager.getInstance(project), file, true)
               val visitor = inspection.buildVisitor(holder, true)
@@ -67,6 +69,32 @@ abstract class AbstractGenerate : SimpleCodeInsightAction() {
         }
       }
     })
+  }
+
+  private fun setCaretToNearbyRoot(editor: Editor, file: PsiFile) {
+    val offset = editor.caretModel.currentCaret.offset
+    val node = file.node.findLeafElementAt(offset) ?: return
+    var element = node.psi
+    while (element != null) {
+      val parent = element.parent
+      if (parent is PsiFile) break
+      element = parent
+    }
+    if (element != null && element !is PsiWhiteSpace) {
+      val line = editor.document.getLineNumber(offset)
+      val start = editor.document.getLineNumber(element.node.startOffset)
+      val end = editor.document.getLineNumber(element.node.startOffset + element.node.textLength)
+      if (line - start < end - line) {
+        // Place before element
+        editor.caretModel.currentCaret.moveToOffset(editor.document.getLineStartOffset(start))
+      } else {
+        // Place after element
+        if (editor.document.lineCount == end + 1) {
+          editor.document.insertString(element.node.startOffset + element.node.textLength, "\n")
+        }
+        editor.caretModel.currentCaret.moveToOffset(editor.document.getLineEndOffset(end + 1))
+      }
+    }
   }
 
   abstract val template: Template

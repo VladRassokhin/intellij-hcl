@@ -25,7 +25,7 @@ class GenerateModule : AbstractGenerate() {
     t.addVariable("name", InvokeCompletionExpression, InvokeCompletionExpression, true)
     t.addTextSegment("\" {\n  source = \"")
     t.addEndVariable()
-    t.addTextSegment("\"\n}")
+    t.addTextSegment("\"\n}\n")
     t.isToReformat = true
     t.isToIndent = true
     t
