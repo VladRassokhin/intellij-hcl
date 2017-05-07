@@ -328,19 +328,19 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       val project = position.project
       when (type) {
         "resource" ->
-          consumer.addAll(getTypeModel(project).resources.filter { invocationCount >= 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type) })
+          consumer.addAll(getTypeModel(project).resources.filter { invocationCount >= 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type).withInsertHandler(ResourceBlockSubNameInsertHandler(it)) })
 
         "data" ->
-          consumer.addAll(getTypeModel(project).dataSources.filter { invocationCount >= 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type) })
+          consumer.addAll(getTypeModel(project).dataSources.filter { invocationCount >= 3 || isProviderUsed(parent, it.provider.type, cache) }.map { create(it.type).withInsertHandler(ResourceBlockSubNameInsertHandler(it)) })
 
         "provider" ->
-          consumer.addAll(getTypeModel(project).providers.map { create(it.type) })
+          consumer.addAll(getTypeModel(project).providers.map { create(it.type).withInsertHandler(ResourceBlockSubNameInsertHandler(it)) })
 
         "provisioner" ->
-          consumer.addAll(getTypeModel(project).provisioners.map { create(it.type) })
+          consumer.addAll(getTypeModel(project).provisioners.map { create(it.type).withInsertHandler(ResourceBlockSubNameInsertHandler(it)) })
 
         "backend" ->
-          consumer.addAll(getTypeModel(project).backends.map { create(it.type) })
+          consumer.addAll(getTypeModel(project).backends.map { create(it.type).withInsertHandler(ResourceBlockSubNameInsertHandler(it)) })
       }
       return
     }

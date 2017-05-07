@@ -20,13 +20,11 @@ import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import org.intellij.plugins.hcl.HCLElementTypes
+import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.model.BlockType
-import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 
-class ResourceBlockNameInsertHandler(val type: BlockType) : BasicInsertHandler<LookupElement>() {
+class ResourceBlockSubNameInsertHandler(val type: BlockType) : BasicInsertHandler<LookupElement>() {
   override fun handleInsert(context: InsertionContext?, item: LookupElement?) {
     if (context == null || item == null) return
     val editor = context.editor
@@ -35,13 +33,16 @@ class ResourceBlockNameInsertHandler(val type: BlockType) : BasicInsertHandler<L
 
     if (project.isDisposed) return
 
-    val element = file.findElementAt(context.startOffset) ?: return
+    var element = file.findElementAt(context.startOffset) ?: return
     val parent: PsiElement
 
     if (element is HCLIdentifier) {
       parent = element.parent ?: return
-    } else if (element.node?.elementType == HCLElementTypes.ID) {
-      val p = element.parent
+    } else if (element is HCLStringLiteral) {
+      parent = element.parent ?: return
+    } else if (HCLParserDefinition.IDENTIFYING_LITERALS.contains(element.node?.elementType)) {
+      element = element.parent
+      val p = element
       if (p is HCLElement) {
         parent = p as? HCLObject ?: p.parent ?: return
       } else {
@@ -59,31 +60,34 @@ class ResourceBlockNameInsertHandler(val type: BlockType) : BasicInsertHandler<L
       return
     }
     var offset: Int? = null
-    val current: Int
+    val already: Int
     val expected = type.args
-    var addBraces = false
     if (parent is HCLBlock && InsertHandlersUtil.isNextNameOnTheSameLine(element, context.document)) {
       // Count existing arguments and add missing
       val elements = parent.nameElements
-      current = elements.size - 1
-      // Locate caret to latest argument
-      val last = elements.last()
-      // TODO: Move caret to last argument properly
-      editor.caretModel.moveToOffset(last.textRange.endOffset)
-    } else {
-      // Add arguments and braces
-      current = 0
-      addBraces = true
-    }
-    // TODO check context.completionChar before adding arguments or braces
+      already = elements.size - 1
+      val i = elements.indexOf(element)
+      assert(i != -1)
 
-    if (current < expected) {
-      offset = editor.caretModel.offset + 2
-      InsertHandlersUtil.addArguments(expected - current, editor)
-      InsertHandlersUtil.scheduleBasicCompletion(context)
+      // Locate caret to next argument
+      // Do not invoke completion for last name
+      if (i < elements.lastIndex && i + 1 != elements.lastIndex) {
+        val next = elements[i + 1]
+        if (next.textContains('"') && next.textLength < 3) {
+          editor.caretModel.moveToOffset(next.textRange.endOffset - 1)
+          InsertHandlersUtil.scheduleBasicCompletion(context)
+        }
+      }
+    } else {
+      return
     }
-    if (addBraces) {
-      InsertHandlersUtil.addBraces(editor)
+
+    if (already < expected) {
+      offset = editor.caretModel.offset + 2
+      InsertHandlersUtil.addArguments(expected - already, editor)
+      if (expected - already != 1) { // Do not invoke completion for last name
+        InsertHandlersUtil.scheduleBasicCompletion(context)
+      }
     }
 
     PsiDocumentManager.getInstance(project).commitDocument(editor.document)
