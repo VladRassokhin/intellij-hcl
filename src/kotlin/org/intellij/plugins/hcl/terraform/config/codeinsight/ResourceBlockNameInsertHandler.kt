@@ -20,6 +20,8 @@ import com.intellij.codeInsight.completion.CodeCompletionHandlerBase
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorModificationUtil
@@ -27,8 +29,10 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.PsiTreeUtil
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.inspection.HCLBlockMissingPropertyInspection
 import org.intellij.plugins.hcl.terraform.config.model.BlockType
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 
@@ -37,9 +41,9 @@ class ResourceBlockNameInsertHandler(val type: BlockType) : BasicInsertHandler<L
     if (context == null || item == null) return
     val editor = context.editor
     val file = context.file
+    val project = context.project
 
-    val project = editor.project
-    if (project == null || project.isDisposed) return
+    if (project.isDisposed) return
 
     val element = file.findElementAt(context.startOffset) ?: return
     val parent: PsiElement
@@ -95,6 +99,20 @@ class ResourceBlockNameInsertHandler(val type: BlockType) : BasicInsertHandler<L
     PsiDocumentManager.getInstance(project).commitDocument(editor.document)
     if (offset != null) {
       editor.caretModel.moveToOffset(offset)
+    }
+    if (type.properties.isNotEmpty()) {
+      val block = PsiTreeUtil.getParentOfType(file.findElementAt(editor.caretModel.offset), HCLBlock::class.java)
+      if (block != null) {
+        val inspection = HCLBlockMissingPropertyInspection()
+        val holder = ProblemsHolder(InspectionManager.getInstance(project), file, true)
+        val visitor = inspection.buildVisitor(holder, true)
+        if (visitor is HCLElementVisitor) {
+          visitor.visitBlock(block)
+        }
+        for (result in holder.results) {
+          result.fixes?.forEach { it.applyFix(project, result) }
+        }
+      }
     }
   }
 
