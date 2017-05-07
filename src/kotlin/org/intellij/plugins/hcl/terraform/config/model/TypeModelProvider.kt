@@ -15,6 +15,7 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
+import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.boolean
 import com.beust.klaxon.string
@@ -49,7 +50,13 @@ class TypeModelProvider {
           TypeModelLoader.LOG.warn("In external-data.json value for '$fqn' root key is not an object")
           continue
         }
-        val additional = Additional(fqn, obj.string("description"), obj.string("hint"), obj.boolean("required"))
+        val hintV = obj["hint"]
+        val hint: Hint? = when (hintV) {
+          is String -> ReferenceHint(hintV)
+          is JsonArray<*> -> SimpleValueHint(*hintV.map { it.toString() }.toTypedArray())
+          else -> null
+        }
+        val additional = Additional(fqn, obj.string("description"), hint, obj.boolean("required"))
         map.put(fqn, additional)
       }
     }
@@ -72,5 +79,5 @@ class TypeModelProvider {
   }
 
 
-  data class Additional(val name: String, val description: String? = null, val hint: String? = null, val required: Boolean? = null)
+  data class Additional(val name: String, val description: String? = null, val hint: Hint? = null, val required: Boolean? = null)
 }

@@ -346,7 +346,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
           computed = computed,
           description = additional.description ?: m["Description"]?.string("value"), properties = *bh).toPOBT()
     }
-    return PropertyType(name, type, hint = additional.hint?.let { ReferenceHint(it) } ?: hint,
+    return PropertyType(name, type, hint = additional.hint ?: hint,
         description = additional.description ?: m["Description"]?.string("value"),
         required = required,
         deprecated = deprecated,
