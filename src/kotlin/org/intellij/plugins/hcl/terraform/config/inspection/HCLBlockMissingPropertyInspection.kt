@@ -23,6 +23,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.TokenType
 import org.intellij.plugins.hcl.psi.HCLBlock
+import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.psi.HCLElementVisitor
 import org.intellij.plugins.hcl.psi.getNameElementUnquoted
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
@@ -39,21 +40,35 @@ import java.util.*
 class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
 
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+    return buildVisitor(holder, isOnTheFly, false)
+  }
+
+  fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, recursive: Boolean): PsiElementVisitor {
     val ft = holder.file.fileType
     if (ft != TerraformFileType) {
       return super.buildVisitor(holder, isOnTheFly)
     }
 
-    return MyEV(holder)
+    return MyEV(holder, recursive)
   }
 
-  inner class MyEV(val holder: ProblemsHolder) : HCLElementVisitor() {
+  inner class MyEV(val holder: ProblemsHolder, val recursive: Boolean) : HCLElementVisitor() {
     override fun visitBlock(block: HCLBlock) {
       ProgressIndicatorProvider.checkCanceled()
       block.getNameElementUnquoted(0) ?: return
-      block.`object` ?: return
+      val obj = block.`object` ?: return
       val properties = ModelHelper.getBlockProperties(block)
       doCheck(block, holder, properties)
+      if (recursive) {
+        visitElement(obj)
+      }
+    }
+
+    override fun visitElement(element: HCLElement) {
+      super.visitElement(element)
+      if (recursive) {
+        element.acceptChildren(this)
+      }
     }
   }
 

@@ -20,8 +20,6 @@ import com.intellij.codeInsight.actions.SimpleCodeInsightAction
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.codeInsight.template.*
-import com.intellij.codeInspection.InspectionManager
-import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
@@ -30,11 +28,10 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import org.intellij.plugins.hcl.psi.HCLBlock
-import org.intellij.plugins.hcl.psi.HCLElementVisitor
 import org.intellij.plugins.hcl.psi.HCLFile
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
+import org.intellij.plugins.hcl.terraform.config.codeinsight.InsertHandlersUtil.addHCLBlockRequiredProperties
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor
-import org.intellij.plugins.hcl.terraform.config.inspection.HCLBlockMissingPropertyInspection
 import java.util.*
 
 
@@ -55,15 +52,7 @@ abstract class AbstractGenerate : SimpleCodeInsightAction() {
             if (TextRange(marker.startOffset, marker.endOffset).contains(block.textOffset)) {
               // It's our new block
               // Invoke add properties quick fix
-              val inspection = HCLBlockMissingPropertyInspection()
-              val holder = ProblemsHolder(InspectionManager.getInstance(project), file, true)
-              val visitor = inspection.buildVisitor(holder, true)
-              if (visitor is HCLElementVisitor) {
-                visitor.visitBlock(block)
-              }
-              for (result in holder.results) {
-                result.fixes?.forEach { it.applyFix(project, result) }
-              }
+              addHCLBlockRequiredProperties(file, project, block)
             }
           }
         }

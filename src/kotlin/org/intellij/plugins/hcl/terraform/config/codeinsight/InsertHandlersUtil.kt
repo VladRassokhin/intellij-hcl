@@ -56,16 +56,28 @@ object InsertHandlersUtil {
   internal fun addHCLBlockRequiredProperties(file: PsiFile, editor: Editor, project: Project) {
     val block = PsiTreeUtil.getParentOfType(file.findElementAt(editor.caretModel.offset), HCLBlock::class.java)
     if (block != null) {
-      val inspection = HCLBlockMissingPropertyInspection()
+      addHCLBlockRequiredProperties(file, project, block)
+    }
+  }
+
+  fun addHCLBlockRequiredProperties(file: PsiFile, project: Project, block: HCLBlock) {
+    val inspection = HCLBlockMissingPropertyInspection()
+    var changed: Boolean
+    do {
+      changed = false
       val holder = ProblemsHolder(InspectionManager.getInstance(project), file, true)
-      val visitor = inspection.buildVisitor(holder, true)
+      val visitor = inspection.buildVisitor(holder, true, true)
       if (visitor is HCLElementVisitor) {
         visitor.visitBlock(block)
       }
       for (result in holder.results) {
-        result.fixes?.forEach { it.applyFix(project, result) }
+        val fixes = result.fixes
+        if (fixes != null && fixes.isNotEmpty()) {
+          changed = true
+          fixes.forEach { it.applyFix(project, result) }
+        }
       }
-    }
+    } while (changed)
   }
 
   internal fun addSpace(editor: Editor) {
