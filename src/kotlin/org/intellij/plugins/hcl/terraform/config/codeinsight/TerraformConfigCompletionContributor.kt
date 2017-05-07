@@ -617,12 +617,7 @@ object ModelHelper {
 
   fun getTerraformProperties(block: HCLBlock): Array<PropertyOrBlockType> {
     val base: Array<out PropertyOrBlockType> = TypeModel.Terraform.properties
-    val additional: List<PropertyOrBlockType> = getTypeModel(block.project).backends.map { it.toPOBT() }
-    if (additional.isEmpty()) {
-      // Include default backend if nothing loaded from model
-      return (base.toList() + TypeModel.AbstractBackend.toPOBT()).toTypedArray()
-    }
-    return (additional + base).toTypedArray()
+    return (base.toList() + TypeModel.AbstractBackend.toPOBT()).toTypedArray()
   }
 
   fun getConnectionProperties(block: HCLBlock): Array<out PropertyOrBlockType> {

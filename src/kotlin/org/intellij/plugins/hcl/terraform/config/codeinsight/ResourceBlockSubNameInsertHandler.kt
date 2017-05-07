@@ -56,9 +56,6 @@ class ResourceBlockSubNameInsertHandler(val type: BlockType) : BasicInsertHandle
       // ??? Do nothing
       return
     }
-    if (item.lookupString in TypeModel.RootBlocksMap.keys && (element.parent !is PsiFile && parent.parent !is PsiFile)) {
-      return
-    }
     var offset: Int? = null
     val already: Int
     val expected = type.args
