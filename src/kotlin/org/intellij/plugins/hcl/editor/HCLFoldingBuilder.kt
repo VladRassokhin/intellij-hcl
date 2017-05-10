@@ -16,30 +16,29 @@
 package org.intellij.plugins.hcl.editor
 
 import com.intellij.lang.ASTNode
-import com.intellij.lang.folding.FoldingBuilder
+import com.intellij.lang.folding.CustomFoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.lang.folding.NamedFoldingDescriptor
 import com.intellij.openapi.editor.Document
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.HCLArray
 import org.intellij.plugins.hcl.psi.HCLObject
-import java.util.*
 
-class HCLFoldingBuilder : FoldingBuilder {
-  override fun isCollapsedByDefault(node: ASTNode): Boolean {
+class HCLFoldingBuilder : CustomFoldingBuilder() {
+  override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
     return false
   }
 
-  override fun buildFoldRegions(node: ASTNode, document: Document): Array<out FoldingDescriptor> {
-    val descriptors = ArrayList<FoldingDescriptor>()
-    collect(node, document, descriptors)
-    return descriptors.toTypedArray()
+  override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
+    collect(root, document, descriptors)
   }
 
-  private fun collect(node: ASTNode, document: Document, descriptors: ArrayList<FoldingDescriptor>) {
+  private fun collect(element: PsiElement, document: Document, descriptors: MutableList<FoldingDescriptor>) {
+    val node = element.node
     when (node.elementType) {
       HCLElementTypes.OBJECT -> {
-        val element = node.psi
         if (isSpanMultipleLines(node, document) && element is HCLObject) {
           val props = element.propertyList.size
           val blocks = element.blockList.size
@@ -51,7 +50,6 @@ class HCLFoldingBuilder : FoldingBuilder {
         }
       }
       HCLElementTypes.ARRAY -> {
-        val element = node.psi
         if (isSpanMultipleLines(node, document) && element is HCLArray) {
           val count = element.valueList.size
           when (count) {
@@ -62,9 +60,10 @@ class HCLFoldingBuilder : FoldingBuilder {
       }
       HCLElementTypes.BLOCK_COMMENT -> descriptors.add(FoldingDescriptor(node, node.textRange))
     // TODO: multiple single comments into one folding block
-      HCLElementTypes.LINE_COMMENT -> descriptors.add(FoldingDescriptor(node, node.textRange))
+      HCLElementTypes.LINE_COMMENT -> {
+      }
     }
-    for (c in node.getChildren(null)) {
+    for (c in element.children) {
       collect(c, document, descriptors)
     }
   }
@@ -99,7 +98,7 @@ class HCLFoldingBuilder : FoldingBuilder {
     return "[${node.text}]"
   }
 
-  override fun getPlaceholderText(node: ASTNode): String? {
+  override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String {
     return when (node.elementType) {
       HCLElementTypes.ARRAY -> "[...]"
       HCLElementTypes.OBJECT -> "{...}"
