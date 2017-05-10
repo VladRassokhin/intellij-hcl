@@ -26,6 +26,7 @@ import com.intellij.psi.PsiElement
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.HCLArray
 import org.intellij.plugins.hcl.psi.HCLObject
+import org.intellij.plugins.hcl.psi.getNextSiblingNonWhiteSpace
 
 class HCLFoldingBuilder : CustomFoldingBuilder(), DumbAware {
   override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
@@ -33,10 +34,10 @@ class HCLFoldingBuilder : CustomFoldingBuilder(), DumbAware {
   }
 
   override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
-    collect(root, descriptors)
+    collect(root, descriptors, HashSet())
   }
 
-  private fun collect(element: PsiElement, descriptors: MutableList<FoldingDescriptor>) {
+  private fun collect(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, usedComments: MutableSet<PsiElement>) {
     val node = element.node
     when (node.elementType) {
       HCLElementTypes.OBJECT -> {
@@ -60,12 +61,37 @@ class HCLFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         }
       }
       HCLElementTypes.BLOCK_COMMENT -> descriptors.add(FoldingDescriptor(node, node.textRange))
-    // TODO: multiple single comments into one folding block
       HCLElementTypes.LINE_COMMENT -> {
+        if (usedComments.add(element)) {
+          if (!isCustomRegionElement(element)) {
+            var end: PsiElement? = null
+            var current: PsiElement? = element.getNextSiblingNonWhiteSpace()
+            while (current != null) {
+              if (current.node.elementType === HCLElementTypes.LINE_COMMENT) {
+                if (isCustomRegionElement(current)) {
+                  // Stop current folding
+                  usedComments.add(current)
+                  break
+                }
+                end = current
+                usedComments.add(current)
+                current = current.getNextSiblingNonWhiteSpace()
+                continue
+              }
+              break
+            }
+            if (end != null) {
+              val range = TextRange(element.textRange.startOffset, end.textRange.endOffset)
+              descriptors.add(FoldingDescriptor(element, range))
+            }
+          }
+        }
       }
     }
+
+    val childUsedCommends = HashSet<PsiElement>()
     for (c in element.children) {
-      collect(c, descriptors)
+      collect(c, descriptors, childUsedCommends)
     }
   }
 
