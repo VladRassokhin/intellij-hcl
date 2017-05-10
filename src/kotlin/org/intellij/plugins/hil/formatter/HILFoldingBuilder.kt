@@ -16,21 +16,23 @@
 package org.intellij.plugins.hil.formatter
 
 import com.intellij.lang.ASTNode
-import com.intellij.lang.folding.FoldingBuilder
+import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
+import com.intellij.openapi.project.DumbAware
+import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.TokenSet
 import org.intellij.plugins.hil.HILElementTypes
 import java.util.*
 
-class HILFoldingBuilder : FoldingBuilder {
+class HILFoldingBuilder : FoldingBuilderEx(), DumbAware {
   override fun isCollapsedByDefault(node: ASTNode): Boolean {
     return false
   }
 
-  override fun buildFoldRegions(node: ASTNode, document: Document): Array<out FoldingDescriptor> {
+  override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
     val descriptors = ArrayList<FoldingDescriptor>()
-    collect(node, document, descriptors)
+    collect(root.node, document, descriptors)
     return descriptors.toTypedArray()
   }
 

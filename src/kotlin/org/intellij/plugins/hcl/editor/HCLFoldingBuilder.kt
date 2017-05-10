@@ -20,26 +20,27 @@ import com.intellij.lang.folding.CustomFoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.lang.folding.NamedFoldingDescriptor
 import com.intellij.openapi.editor.Document
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.HCLArray
 import org.intellij.plugins.hcl.psi.HCLObject
 
-class HCLFoldingBuilder : CustomFoldingBuilder() {
+class HCLFoldingBuilder : CustomFoldingBuilder(), DumbAware {
   override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
     return false
   }
 
   override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
-    collect(root, document, descriptors)
+    collect(root, descriptors)
   }
 
-  private fun collect(element: PsiElement, document: Document, descriptors: MutableList<FoldingDescriptor>) {
+  private fun collect(element: PsiElement, descriptors: MutableList<FoldingDescriptor>) {
     val node = element.node
     when (node.elementType) {
       HCLElementTypes.OBJECT -> {
-        if (isSpanMultipleLines(node, document) && element is HCLObject) {
+        if (isSpanMultipleLines(node) && element is HCLObject) {
           val props = element.propertyList.size
           val blocks = element.blockList.size
           val count = props + blocks
@@ -50,7 +51,7 @@ class HCLFoldingBuilder : CustomFoldingBuilder() {
         }
       }
       HCLElementTypes.ARRAY -> {
-        if (isSpanMultipleLines(node, document) && element is HCLArray) {
+        if (isSpanMultipleLines(node) && element is HCLArray) {
           val count = element.valueList.size
           when (count) {
             0, 1 -> descriptors.add(NamedFoldingDescriptor(node, node.textRange, null, getCollapsedArrayPlaceholder(element)))
@@ -64,7 +65,7 @@ class HCLFoldingBuilder : CustomFoldingBuilder() {
       }
     }
     for (c in element.children) {
-      collect(c, document, descriptors)
+      collect(c, descriptors)
     }
   }
 
@@ -108,8 +109,7 @@ class HCLFoldingBuilder : CustomFoldingBuilder() {
     }
   }
 
-  private fun isSpanMultipleLines(node: ASTNode, document: Document): Boolean {
-    val range = node.textRange
-    return document.getLineNumber(range.startOffset) < document.getLineNumber(range.endOffset)
+  private fun isSpanMultipleLines(node: ASTNode): Boolean {
+    return node.textContains('\n') || node.textContains('\r')
   }
 }
