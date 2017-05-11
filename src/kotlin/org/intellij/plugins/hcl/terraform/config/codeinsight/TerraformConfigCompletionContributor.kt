@@ -372,6 +372,12 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       var right: Type? = null
       var isProperty = false
       var isBlock = false
+      val original = parameters.originalPosition ?: return
+      val original_parent = original.parent
+      if (HCLElementTypes.L_CURLY === original.node.elementType && original_parent is HCLObject) {
+        LOG.debug { "Origin is '{' inside Object, O.P.P = ${original_parent.parent}" }
+        if (original_parent.parent is HCLBlock) return
+      }
       if (_parent is HCLIdentifier) {
         val pob = _parent.parent // Property or Block
         if (pob is HCLProperty) {
@@ -407,25 +413,33 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         if (isBlock || isProperty) {
           _parent = pob?.parent // Object
         }
-        LOG.debug { "TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, right=$right, isBlock=$isBlock, isProperty=$isProperty}" }
+        LOG.debug { "TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, original=$original, right=$right, isBlock=$isBlock, isProperty=$isProperty}" }
       } else {
-        LOG.debug { "TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, no right part}" }
+        LOG.debug { "TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, original=$original, no right part}" }
       }
       val parent: HCLObject = _parent as? HCLObject ?: return failIfInUnitTestsMode(position, "Parent should be HCLObject")
-      val pp = parent.parent
-      if (pp is HCLBlock) {
-        val props = ModelHelper.getBlockProperties(pp)
-        doAddCompletion(isBlock, isProperty, parent, result, right, parameters, props)
+      val original_object = parameters.originalFile.findElementAt(parent.textRange.startOffset)?.parent
+      val use = if (original_object is HCLObject) original_object else parent
+      val block = use.parent
+      if (block is HCLBlock) {
+        val props = ModelHelper.getBlockProperties(block)
+        doAddCompletion(isBlock, isProperty, use, result, right, parameters, props, original)
       }
     }
 
-    private fun doAddCompletion(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?, parameters: CompletionParameters, properties: Array<out PropertyOrBlockType>) {
+    private fun doAddCompletion(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?, parameters: CompletionParameters, properties: Array<out PropertyOrBlockType>, original: PsiElement) {
       if (properties.isEmpty()) return
+      val incomplete = if (original is HCLIdentifier || original.node.elementType === HCLElementTypes.ID) {
+        original.text
+      } else null
+      if (incomplete != null) {
+        LOG.debug { "Including properties which contains incomplete result: $incomplete" }
+      }
       addResultsWithCustomSorter(result, parameters, properties
           .filter { it.name != "__has_dynamic_attributes" }
           .filter { isRightOfPropertyWithCompatibleType(isProperty, it, right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
           // TODO: Filter should be based on 'max-count' model property (?)
-          .filter { (it.property != null && parent.findProperty(it.name) == null) || (it.block != null) }
+          .filter { (it.property != null && (parent.findProperty(it.name) == null || (incomplete != null && it.name.contains(incomplete)))) || (it.block != null) }
           .map { create(it) })
     }
 

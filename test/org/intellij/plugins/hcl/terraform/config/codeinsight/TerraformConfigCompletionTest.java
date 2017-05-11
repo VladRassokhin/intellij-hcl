@@ -21,6 +21,7 @@ import org.intellij.plugins.hcl.terraform.config.model.*;
 import java.util.*;
 
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.intellij.plugins.hcl.CompletionTestCase.Matcher.*;
 
 public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
 
@@ -97,6 +98,40 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
         return true;
       }
     });
+  }
+
+  public void testResourceCommonPropertyAlreadyDefinedNotShownAgain() throws Exception {
+    final ResourceType type = TypeModelProvider.Companion.getModel(getProject()).getResourceType("aws_vpc_endpoint");
+    assertNotNull(type);
+
+    // Should not add existing props to completion variants
+    doBasicCompletionTest("resource aws_vpc_endpoint x {\n" +
+        "  <caret>" +
+        "  service_name = \"\"\n" +
+        "  vpc_id = \"\"\n" +
+        "}\n", not("service_name", "vpc_id"));
+    doBasicCompletionTest("resource aws_vpc_endpoint x {\n" +
+        "  service_name = \"\"\n" +
+        "  <caret>" +
+        "  vpc_id = \"\"\n" +
+        "}\n", not("service_name", "vpc_id"));
+    doBasicCompletionTest("resource aws_vpc_endpoint x {\n" +
+        "  service_name = \"\"\n" +
+        "  vpc_id = \"\"\n" +
+        "  <caret>" +
+        "}\n", not("service_name", "vpc_id"));
+
+    // yet should advice if we stand on it
+    doBasicCompletionTest("resource aws_vpc_endpoint x {\n" +
+        "  service_name = \"\"\n" +
+        "  <caret>vpc_id = \"\"\n" +
+        "}\n", and(not("service_name"), all("vpc_id")));
+    doBasicCompletionTest("resource aws_vpc_endpoint x {\n" +
+        "  <caret>service_name = \"\"\n" +
+        "  vpc_id = \"\"\n" +
+        "}\n", and(not("vpc_id"), all("service_name")));
+
+
   }
 
   public void testResourceProviderCompletionFromModel() throws Exception {
