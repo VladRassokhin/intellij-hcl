@@ -67,6 +67,41 @@ public abstract class CompletionTestCase extends LightPlatformCodeInsightFixture
     assertTrue("Matcher expected to return true", matcher.fun(strings));
   }
 
+  public static abstract class Matcher implements BooleanFunction<Collection<String>> {
+    public static Matcher and(final Matcher first, final Matcher second, final Matcher... rest){
+      return new Matcher() {
+        @Override
+        public boolean fun(Collection<String> strings) {
+          if (!first.fun(strings)) return false;
+          if (!second.fun(strings)) return false;
+          for (Matcher matcher : rest) {
+            if (!matcher.fun(strings)) return false;
+          }
+          return true;
+        }
+      };
+    }
+
+    public static Matcher all(final String... unexpected) {
+      return new Matcher() {
+        @Override
+        public boolean fun(Collection<String> strings) {
+          then(strings).contains(unexpected);
+          return true;
+        }
+      };
+    }
+    public static Matcher not(final String... unexpected) {
+      return new Matcher() {
+        @Override
+        public boolean fun(Collection<String> strings) {
+          then(strings).doesNotContain(unexpected);
+          return true;
+        }
+      };
+    }
+  }
+
   @NotNull
   protected BooleanFunction<Collection<String>> getExactMatcher(final String... expectedPart) {
     return new BooleanFunction<Collection<String>>() {
