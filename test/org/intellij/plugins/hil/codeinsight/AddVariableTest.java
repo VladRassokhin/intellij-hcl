@@ -30,7 +30,7 @@ public class AddVariableTest extends LightQuickFixTestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    enableInspectionTools(HILUnresolvedReferenceInspection.class);
+    enableInspectionTools(new HILUnresolvedReferenceInspection());
   }
 
   public void testSimpleVariable() throws Exception {
