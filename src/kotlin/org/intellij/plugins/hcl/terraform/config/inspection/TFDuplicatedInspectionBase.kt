@@ -15,10 +15,30 @@
  */
 package org.intellij.plugins.hcl.terraform.config.inspection
 
-import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.codeInspection.*
+import com.intellij.ide.DataManager
+import com.intellij.ide.projectView.PresentationData
+import com.intellij.navigation.ItemPresentation
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.fileEditor.FileEditor
+import com.intellij.openapi.fileEditor.OpenFileDescriptor
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.refactoring.RefactoringActionHandlerFactory
+import com.intellij.refactoring.RefactoringFactory
+import com.intellij.usageView.UsageInfo
+import com.intellij.usages.*
+import com.intellij.util.Consumer
+import com.intellij.util.NullableFunction
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
+import org.jetbrains.annotations.NotNull
+
 
 abstract class TFDuplicatedInspectionBase : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -31,8 +51,120 @@ abstract class TFDuplicatedInspectionBase : LocalInspectionTool() {
   }
 
   companion object {
+    abstract class RenameQuickFix(name: String) : LocalQuickFixBase(name) {
+      protected fun invokeRenameRefactoring(project: Project, element: PsiElement) {
+        // TODO: Find way to remove only current element
+
+        val factory = RefactoringFactory.getInstance(project)
+        val renameRefactoring = factory.createRename(element, "newName")
+        renameRefactoring.isSearchInComments = false
+        renameRefactoring.isSearchInNonJavaFiles = false
+        renameRefactoring.run()
+        if (true) return
+
+        val renameHandler = RefactoringActionHandlerFactory.getInstance().createRenameHandler()
+        val dataManager = DataManager.getInstance()
+        if (ApplicationManager.getApplication().isUnitTestMode) {
+          @Suppress("DEPRECATION")
+          renameHandler.invoke(project, arrayOf(element), dataManager.dataContext)
+          return
+        }
+        dataManager.dataContextFromFocus.doWhenDone(Consumer { context: DataContext? ->
+          context?.let {
+            ApplicationManager.getApplication().invokeLater(Runnable {
+              renameHandler.invoke(project, arrayOf(element), context)
+            }, project.disposed)
+          }
+        })
+      }
+    }
   }
 
   abstract fun createVisitor(holder: ProblemsHolder): PsiElementVisitor
+
+  protected fun createNavigateToDupeFix(file: VirtualFile, offsetInOtherFile: Int): LocalQuickFix? {
+    return object : LocalQuickFixBase("Navigate to duplicate") {
+      override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
+        OpenFileDescriptor(project, file, offsetInOtherFile).navigate(true)
+      }
+    }
+  }
+
+  protected fun createShowOtherDupesFix(file: VirtualFile, offset: Int, duplicates: NullableFunction<PsiElement, List<PsiElement>?>): LocalQuickFix? {
+
+    return object : LocalQuickFixBase("View duplicates like this") {
+      override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
+        @Suppress("NAME_SHADOWING")
+        val duplicates = duplicates.`fun`(descriptor.psiElement) ?: return
+
+        val presentation = UsageViewPresentation()
+        val title = buildTitle()
+        presentation.usagesString = title
+        presentation.tabName = title
+        presentation.tabText = title
+        val scope = GlobalSearchScope.allScope(project)
+        presentation.scopeText = scope.displayName
+
+        UsageViewManager.getInstance(project).searchAndShowUsages(arrayOf<UsageTarget>(object : UsageTarget {
+          override fun findUsages() {}
+
+          override fun findUsagesInEditor(@NotNull editor: FileEditor) {}
+
+          override fun highlightUsages(@NotNull file: PsiFile, @NotNull editor: Editor, clearHighlights: Boolean) {}
+
+          override fun isValid(): Boolean {
+            return true
+          }
+
+          override fun isReadOnly(): Boolean {
+            return true
+          }
+
+          override fun getFiles(): Array<VirtualFile>? {
+            return null
+          }
+
+          override fun update() {}
+
+          @NotNull
+          override fun getName(): String? {
+            return buildTitle()
+          }
+
+          @NotNull
+          override fun getPresentation(): ItemPresentation? {
+            return PresentationData(name, "", null, null)
+          }
+
+          override fun navigate(requestFocus: Boolean) {
+            OpenFileDescriptor(project, file, offset).navigate(requestFocus)
+          }
+
+          override fun canNavigate(): Boolean {
+            return true
+          }
+
+          override fun canNavigateToSource(): Boolean {
+            return canNavigate()
+          }
+        }), {
+          UsageSearcher { processor ->
+            val infos = ApplicationManager.getApplication().runReadAction<List<UsageInfo>> {
+              duplicates.map { dup -> UsageInfo(dup.containingFile, dup.textRange.startOffset, dup.textRange.endOffset) }
+            }
+            for (info in infos) {
+              processor.process(UsageInfo2UsageAdapter(info))
+            }
+          }
+        }, false, false, presentation, null)
+      }
+
+      var myTitle: String? = null
+      private fun buildTitle(): String {
+        if (myTitle == null) myTitle = "Duplicate code like in " + file.name + ":" + offset
+        return myTitle!!
+      }
+    }
+  }
 }
 

@@ -18,6 +18,7 @@ package org.intellij.plugins.hcl.terraform.config.inspection
 import com.intellij.codeInspection.*
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.util.NullableFunction
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElementVisitor
 import org.intellij.plugins.hcl.psi.getNameElementUnquoted
@@ -34,29 +35,46 @@ class TFDuplicatedProviderInspection : TFDuplicatedInspectionBase() {
 
   inner class MyEV(val holder: ProblemsHolder) : HCLElementVisitor() {
     override fun visitBlock(block: HCLBlock) {
-      if (!TerraformPatterns.ProviderRootBlock.accepts(block)) return
-      if (TerraformPatterns.ConfigOverrideFile.accepts(block.containingFile)) return
-
-      val module = block.getTerraformModule()
-
+      val duplicates = getDuplicates(block) ?: return
       val fqn = block.getProviderFQName() ?: return
-
-      val same = module.getDefinedProviders().filter { it.second == fqn && !TerraformPatterns.ConfigOverrideFile.accepts(it.first.containingFile)}
-      if (same.isEmpty()) return
-      if (same.size == 1) {
-        assert(same.first().first == block)
-        return
-      }
-      holder.registerProblem(block, "Provider '$fqn' declared multiple times", ProblemHighlightType.GENERIC_ERROR, *getFixes(fqn != block.getNameElementUnquoted(1)))
+      holder.registerProblem(block, "Provider '$fqn' declared multiple times", ProblemHighlightType.GENERIC_ERROR, *getFixes(fqn != block.getNameElementUnquoted(1), block, duplicates))
     }
   }
 
-  private fun getFixes(aliased: Boolean): Array<LocalQuickFix> {
-    if (true) return emptyArray()
-    return arrayOf(
-        if (aliased) ChangeAliasFix
-        else AddAliasFix
-    )
+  private fun getDuplicates(block: HCLBlock): List<HCLBlock>? {
+    if (!TerraformPatterns.ProviderRootBlock.accepts(block)) return null
+    if (TerraformPatterns.ConfigOverrideFile.accepts(block.containingFile)) return null
+
+    val module = block.getTerraformModule()
+
+    val fqn = block.getProviderFQName() ?: return null
+
+    val same = module.getDefinedProviders().filter { it.second == fqn && !TerraformPatterns.ConfigOverrideFile.accepts(it.first.containingFile) }
+    if (same.isEmpty()) return null
+    if (same.size == 1) {
+      assert(same.first().first == block)
+      return null
+    }
+    return same.map { it.first }
+  }
+
+  private fun getFixes(aliased: Boolean, block: HCLBlock, duplicates: List<HCLBlock>): Array<LocalQuickFix> {
+    val fixes = ArrayList<LocalQuickFix>()
+
+    val first = duplicates.firstOrNull { it != block }
+    first?.containingFile?.virtualFile?.let { createNavigateToDupeFix(it, first.textOffset)?.let { fixes.add(it) } }
+    block.containingFile?.virtualFile?.let { createShowOtherDupesFix(it, block.textOffset, NullableFunction { param -> getDuplicates(param as HCLBlock) })?.let { fixes.add(it) } }
+
+    if (false) {
+      // TODO: Implement fixes
+      if (aliased) {
+        fixes.add(ChangeAliasFix)
+      } else {
+        fixes.add(AddAliasFix)
+      }
+    }
+
+    return fixes.toTypedArray()
   }
 
   private object AddAliasFix : LocalQuickFixBase("Add provider alias") {

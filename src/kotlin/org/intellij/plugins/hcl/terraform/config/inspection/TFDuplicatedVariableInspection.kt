@@ -15,9 +15,12 @@
  */
 package org.intellij.plugins.hcl.terraform.config.inspection
 
+import com.intellij.codeInsight.intention.LowPriorityAction
 import com.intellij.codeInspection.*
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.util.NullableFunction
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElementVisitor
 import org.intellij.plugins.hcl.psi.getNameElementUnquoted
@@ -31,40 +34,53 @@ class TFDuplicatedVariableInspection : TFDuplicatedInspectionBase() {
 
   inner class MyEV(val holder: ProblemsHolder) : HCLElementVisitor() {
     override fun visitBlock(block: HCLBlock) {
-      if (!TerraformPatterns.VariableRootBlock.accepts(block)) return
-      if (TerraformPatterns.ConfigOverrideFile.accepts(block.containingFile)) return
-
-      val module = block.getTerraformModule()
-
+      val duplicates = getDuplicates(block) ?: return
       val name = block.getNameElementUnquoted(1) ?: return
-
-      val same = module.getDefinedVariables().filter { name == it.getNameElementUnquoted(1) && !TerraformPatterns.ConfigOverrideFile.accepts(it.containingFile) }
-      if (same.isEmpty()) return
-      if (same.size == 1) {
-        assert(same.first() == block)
-        return
-      }
-      holder.registerProblem(block, "Variable '$name' declared multiple times", ProblemHighlightType.GENERIC_ERROR, *getFixes())
+      holder.registerProblem(block, "Variable '$name' declared multiple times", ProblemHighlightType.GENERIC_ERROR, *getFixes(block, duplicates))
     }
   }
 
-  private fun getFixes(): Array<LocalQuickFix> {
-    if (true) return emptyArray()
-    return arrayOf(
-        DeleteVariableFix,
-        RenameVariableFix
-    )
+  private fun getDuplicates(block: HCLBlock): List<HCLBlock>? {
+    if (!TerraformPatterns.VariableRootBlock.accepts(block)) return null
+    if (TerraformPatterns.ConfigOverrideFile.accepts(block.containingFile)) return null
+
+    val module = block.getTerraformModule()
+
+    val name = block.getNameElementUnquoted(1) ?: return null
+
+    val same = module.getDefinedVariables().filter { name == it.getNameElementUnquoted(1) && !TerraformPatterns.ConfigOverrideFile.accepts(it.containingFile) }
+    if (same.isEmpty()) return null
+    if (same.size == 1) {
+      assert(same.first() == block)
+      return null
+    }
+    return same
   }
 
-  private object DeleteVariableFix : LocalQuickFixBase("Delete variable") {
+  private fun getFixes(block: HCLBlock, duplicates: List<HCLBlock>): Array<LocalQuickFix> {
+    val fixes = ArrayList<LocalQuickFix>()
+
+    val first = duplicates.first { it != block }
+    first.containingFile?.virtualFile?.let { createNavigateToDupeFix(it, first.textOffset)?.let { fixes.add(it) } }
+    block.containingFile?.virtualFile?.let { createShowOtherDupesFix(it, block.textOffset, NullableFunction { param -> getDuplicates(param as HCLBlock) })?.let { fixes.add(it) } }
+
+    fixes.add(DeleteVariableFix)
+//    fixes.add(RenameVariableFix)
+    return fixes.toTypedArray()
+  }
+
+
+  private object DeleteVariableFix : LocalQuickFixBase("Delete variable"), LowPriorityAction {
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-      // TODO Implement
+      val block = descriptor.psiElement as? HCLBlock ?: return
+      ApplicationManager.getApplication().runWriteAction { block.delete() }
     }
   }
 
-  private object RenameVariableFix : LocalQuickFixBase("Rename variable") {
+  private object RenameVariableFix : RenameQuickFix("Rename variable") {
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-      // TODO Implement
+      val block = descriptor.psiElement as? HCLBlock ?: return
+      invokeRenameRefactoring(project, block)
     }
   }
 }
