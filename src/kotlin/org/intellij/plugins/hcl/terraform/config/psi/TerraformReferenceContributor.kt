@@ -17,26 +17,21 @@ package org.intellij.plugins.hcl.terraform.config.psi
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PatternCondition
-import com.intellij.patterns.PlatformPatterns.*
-import com.intellij.patterns.PsiFilePattern
+import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferenceSet
 import com.intellij.psi.tree.TokenSet
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.*
-import org.intellij.plugins.hcl.terraform.config.TerraformFileType
-import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformConfigFile
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformVariablesFile
 import org.intellij.plugins.hil.psi.HCLElementLazyReference
 import org.intellij.plugins.hil.psi.HCLElementLazyReferenceBase
 
 class TerraformReferenceContributor : PsiReferenceContributor() {
   companion object {
-    val TerraformVariablesFile: PsiFilePattern.Capture<HCLFile> = psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
-        .inVirtualFile(virtualFile().withExtension(TerraformFileType.TFVARS_EXTENSION))
-    val TerraformConfigFile: PsiFilePattern.Capture<HCLFile> = psiFile(HCLFile::class.java).withLanguage(TerraformLanguage)
-        .andNot(TerraformVariablesFile)
   }
 
   override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {

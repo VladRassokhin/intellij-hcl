@@ -24,6 +24,7 @@ import org.intellij.plugins.hcl.terraform.config.model.SimpleValueHint
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hcl.terraform.config.model.getValueType
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 
 class TFIncorrectVariableTypeInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -37,7 +38,7 @@ class TFIncorrectVariableTypeInspection : LocalInspectionTool() {
 
   inner class MyEV(val holder: ProblemsHolder) : HCLElementVisitor() {
     override fun visitBlock(block: HCLBlock) {
-      if (!TFNoInterpolationsAllowedInspection.VariableRootBlockSelector.accepts(block)) return
+      if (!TerraformPatterns.VariableRootBlock.accepts(block)) return
 
       val obj = block.`object` ?: return
 

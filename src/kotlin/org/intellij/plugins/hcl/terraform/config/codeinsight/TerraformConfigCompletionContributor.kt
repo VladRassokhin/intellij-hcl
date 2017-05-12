@@ -38,8 +38,10 @@ import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionContributor
 import org.intellij.plugins.hcl.psi.*
-import org.intellij.plugins.hcl.terraform.config.inspection.TFNoInterpolationsAllowedInspection
 import org.intellij.plugins.hcl.terraform.config.model.*
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformConfigFile
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformVariablesFile
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformReferenceContributor
 import org.intellij.plugins.hil.HILFileType
 import org.intellij.plugins.hil.codeinsight.ReferenceCompletionHelper.findByFQNRef
@@ -59,8 +61,6 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     val Property = psiElement(HCLProperty::class.java)
     val Object = psiElement(HCLObject::class.java)
     val Array = psiElement(HCLArray::class.java)
-
-    val TerraformConfigFile = TerraformReferenceContributor.TerraformConfigFile
 
     val AtLeastOneEOL = psiElement(PsiWhiteSpace::class.java).withText(StandardPatterns.string().contains("\n"))
     val Nothing = StandardPatterns.alwaysFalse<PsiElement>()
@@ -168,7 +168,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
 
     // Variables in .tvars files
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-        .inFile(TerraformReferenceContributor.TerraformVariablesFile)
+        .inFile(TerraformVariablesFile)
         .andOr(
             psiElement()
                 .withParent(File),
@@ -178,7 +178,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
                 .withSuperParent(3, File)
         ), VariableNameTFVARSCompletionProvider)
     extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
-        .inFile(TerraformReferenceContributor.TerraformVariablesFile)
+        .inFile(TerraformVariablesFile)
         .andOr(
             psiElement()
                 .withParent(File),
@@ -188,7 +188,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
                 .withSuperParent(3, File)
         ), VariableNameTFVARSCompletionProvider)
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-        .inFile(TerraformReferenceContributor.TerraformVariablesFile)
+        .inFile(TerraformVariablesFile)
         .andOr(
             psiElement()
                 .withSuperParent(1, Identifier)
@@ -202,7 +202,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
                 .withSuperParent(3, File)
         ), MappedVariableTFVARSCompletionProvider)
     extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
-        .inFile(TerraformReferenceContributor.TerraformVariablesFile)
+        .inFile(TerraformVariablesFile)
         .andOr(
             psiElement()
                 .withSuperParent(1, Literal)
@@ -563,7 +563,7 @@ object ModelHelper {
     val type = block.getNameElementUnquoted(0) ?: return emptyArray()
     val props: Array<out PropertyOrBlockType>
     // Special case for 'backend' blocks, since it's located not in root
-    if (type == "backend" && TFNoInterpolationsAllowedInspection.Backend.accepts(block)) {
+    if (type == "backend" && TerraformPatterns.Backend.accepts(block)) {
       return getBackendProperties(block)
     }
     if (type in TypeModel.RootBlocksMap.keys && block.parent !is PsiFile) {

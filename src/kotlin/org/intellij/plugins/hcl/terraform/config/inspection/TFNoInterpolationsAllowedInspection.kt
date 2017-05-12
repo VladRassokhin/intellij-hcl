@@ -27,7 +27,10 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
-import org.intellij.plugins.hcl.terraform.config.psi.TerraformReferenceContributor
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.ModuleRootBlock
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.ResourceRootBlock
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformRootBlock
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.VariableRootBlock
 import org.intellij.plugins.hil.ILLanguageInjector
 import java.util.*
 
@@ -42,53 +45,17 @@ class TFNoInterpolationsAllowedInspection : LocalInspectionTool() {
   }
 
   companion object {
-    val RootBlockSelector: PsiElementPattern.Capture<HCLBlock> =
-        psiElement(HCLBlock::class.java)
-            .withParent(TerraformReferenceContributor.TerraformConfigFile)
-    val ModuleRootBlockSelector: PsiElementPattern.Capture<HCLBlock> =
-        psiElement(HCLBlock::class.java)
-            .and(RootBlockSelector)
-            .with(createBlockPattern("module"))
-    val VariableRootBlockSelector: PsiElementPattern.Capture<HCLBlock> =
-        psiElement(HCLBlock::class.java)
-            .and(RootBlockSelector)
-            .with(createBlockPattern("variable"))
-    val ResourceRootBlockSelector: PsiElementPattern.Capture<HCLBlock> =
-        psiElement(HCLBlock::class.java)
-            .and(RootBlockSelector)
-            .with(createBlockPattern("resource"))
-    val DataSourceRootBlockSelector: PsiElementPattern.Capture<HCLBlock> =
-        psiElement(HCLBlock::class.java)
-            .and(RootBlockSelector)
-            .with(createBlockPattern("data"))
-    val TerraformRootBlockSelector: PsiElementPattern.Capture<HCLBlock> =
-        psiElement(HCLBlock::class.java)
-            .and(RootBlockSelector)
-            .with(createBlockPattern("terraform"))
-    val Backend: PsiElementPattern.Capture<HCLBlock> =
-        psiElement(HCLBlock::class.java)
-            .with(createBlockPattern("backend"))
-            .withSuperParent(2, TerraformRootBlockSelector)
-
-    fun createBlockPattern(type: String): PatternCondition<HCLBlock?> {
-      return object : PatternCondition<HCLBlock?>("HCLBlock($type)") {
-        override fun accepts(t: HCLBlock, context: ProcessingContext?): Boolean {
-          return t.getNameElementUnquoted(0) == type
-        }
-      }
-    }
-
     val StringLiteralAnywhereInVariable: PsiElementPattern.Capture<HCLStringLiteral> =
         psiElement(HCLStringLiteral::class.java)
-            .inside(true, VariableRootBlockSelector)
+            .inside(true, VariableRootBlock)
     val HeredocContentAnywhereInVariable: PsiElementPattern.Capture<HCLHeredocContent> =
         psiElement(HCLHeredocContent::class.java)
-            .inside(true, VariableRootBlockSelector)
+            .inside(true, VariableRootBlock)
 
     val DependsOnPropertyOfResource: PsiElementPattern.Capture<HCLProperty> =
         psiElement(HCLProperty::class.java)
             .withSuperParent(1, HCLObject::class.java)
-            .withSuperParent(2, ResourceRootBlockSelector)
+            .withSuperParent(2, ResourceRootBlock)
             .with(object : PatternCondition<HCLProperty?>("HCLProperty(depends_on)") {
               override fun accepts(t: HCLProperty, context: ProcessingContext?): Boolean {
                 return t.name == "depends_on"
@@ -98,9 +65,9 @@ class TFNoInterpolationsAllowedInspection : LocalInspectionTool() {
 
   inner class MyEV(val holder: ProblemsHolder) : HCLElementVisitor() {
     override fun visitBlock(block: HCLBlock) {
-      if (ModuleRootBlockSelector.accepts(block)) {
+      if (ModuleRootBlock.accepts(block)) {
         checkModule(block)
-      } else if (TerraformRootBlockSelector.accepts(block)) {
+      } else if (TerraformRootBlock.accepts(block)) {
         checkTerraform(block)
       }
     }

@@ -22,7 +22,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import org.intellij.plugins.hcl.psi.*
-import org.intellij.plugins.hcl.terraform.config.inspection.TFNoInterpolationsAllowedInspection
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 
 class HCLQualifiedNameProvider : QualifiedNameProvider {
   override fun adjustElementToCopy(element: PsiElement?): PsiElement? {
@@ -90,7 +90,7 @@ class HCLQualifiedNameProvider : QualifiedNameProvider {
     fun getFQN(block: HCLBlock): String? {
       var elements = block.nameElements.asList()
 
-      if (TFNoInterpolationsAllowedInspection.ResourceRootBlockSelector.accepts(block)) {
+      if (TerraformPatterns.ResourceRootBlock.accepts(block)) {
         elements = elements.drop(1)
       } else if (block.parent !is HCLFile) {
         // TODO: Implement
@@ -107,8 +107,8 @@ class HCLQualifiedNameProvider : QualifiedNameProvider {
       val parent = block.parent
       var prefix: String? = null
 
-      if (TFNoInterpolationsAllowedInspection.ResourceRootBlockSelector.accepts(block)
-          || TFNoInterpolationsAllowedInspection.DataSourceRootBlockSelector.accepts(block)) {
+      if (TerraformPatterns.ResourceRootBlock.accepts(block)
+          || TerraformPatterns.DataSourceRootBlock.accepts(block)) {
         elements = elements.dropLast(1)
       } else if (parent !is HCLFile) {
         if (parent is HCLObject && parent.parent is HCLBlock) {
