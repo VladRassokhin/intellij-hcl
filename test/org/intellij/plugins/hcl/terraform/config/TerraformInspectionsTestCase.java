@@ -17,8 +17,8 @@ package org.intellij.plugins.hcl.terraform.config;
 
 import com.intellij.testFramework.InspectionFixtureTestCase;
 import org.intellij.plugins.hcl.terraform.config.inspection.*;
-import org.intellij.plugins.hil.inspection.HILOperationTypesMismatchInspection;
 import org.intellij.plugins.hil.inspection.HILMissingSelfInContextInspection;
+import org.intellij.plugins.hil.inspection.HILOperationTypesMismatchInspection;
 import org.intellij.plugins.hil.inspection.HILUnresolvedReferenceInspection;
 
 public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
@@ -56,6 +56,14 @@ public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
 
   public void testDuplicatedProvider() throws Exception {
     doTest("duplicated_provider", new TFDuplicatedProviderInspection());
+  }
+
+  public void testDuplicatedOutput() throws Exception {
+    doTest("duplicated_output", new TFDuplicatedOutputInspection());
+  }
+
+  public void testDuplicatedVariable() throws Exception {
+    doTest("duplicated_variable", new TFDuplicatedVariableInspection());
   }
 
   public void testInterpolationsInWrongPlaces() throws Exception {

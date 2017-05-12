@@ -250,6 +250,20 @@ class Module private constructor(val item: PsiFileSystemItem) {
     return found
   }
 
+  fun getDefinedVariables(): List<HCLBlock> {
+    val found = ArrayList<HCLBlock>()
+    process(PsiElementProcessor { file ->
+      file.acceptChildren(object : HCLElementVisitor() {
+        override fun visitBlock(o: HCLBlock) {
+          if ("variable" != o.getNameElementUnquoted(0)) return
+          o.getNameElementUnquoted(1) ?: return
+          found.add(o)
+        }
+      }); true
+    })
+    return found
+  }
+
   val model: TypeModel
     get() = TypeModelProvider.getModel(item.project)
 

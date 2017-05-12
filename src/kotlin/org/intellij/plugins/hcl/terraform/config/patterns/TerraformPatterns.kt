@@ -15,10 +15,7 @@
  */
 package org.intellij.plugins.hcl.terraform.config.patterns
 
-import com.intellij.patterns.PatternCondition
-import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.PsiElementPattern
-import com.intellij.patterns.PsiFilePattern
+import com.intellij.patterns.*
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLFile
@@ -35,6 +32,10 @@ object TerraformPatterns {
       PlatformPatterns.psiFile(HCLFile::class.java)
           .withLanguage(TerraformLanguage)
           .andNot(TerraformVariablesFile)
+  val ConfigOverrideFile: PsiFilePattern.Capture<HCLFile> =
+      PlatformPatterns.psiFile(HCLFile::class.java)
+          .and(TerraformConfigFile)
+          .inVirtualFile(PlatformPatterns.virtualFile().withName(StandardPatterns.string().endsWith("_override." + TerraformFileType.DEFAULT_EXTENSION)))
 
   val RootBlock: PsiElementPattern.Capture<HCLBlock> =
       PlatformPatterns.psiElement(HCLBlock::class.java)
@@ -49,6 +50,11 @@ object TerraformPatterns {
       PlatformPatterns.psiElement(HCLBlock::class.java)
           .and(RootBlock)
           .with(createBlockPattern("variable"))
+
+  val OutputRootBlock: PsiElementPattern.Capture<HCLBlock> =
+      PlatformPatterns.psiElement(HCLBlock::class.java)
+          .and(RootBlock)
+          .with(createBlockPattern("output"))
 
   val ResourceRootBlock: PsiElementPattern.Capture<HCLBlock> =
       PlatformPatterns.psiElement(HCLBlock::class.java)
