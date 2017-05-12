@@ -29,7 +29,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.refactoring.RefactoringActionHandlerFactory
 import com.intellij.refactoring.RefactoringFactory
 import com.intellij.usageView.UsageInfo
@@ -37,6 +36,7 @@ import com.intellij.usages.*
 import com.intellij.util.Consumer
 import com.intellij.util.NullableFunction
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
+import org.intellij.plugins.hcl.terraform.config.model.getTerraformSearchScope
 import org.jetbrains.annotations.NotNull
 
 
@@ -102,7 +102,7 @@ abstract class TFDuplicatedInspectionBase : LocalInspectionTool() {
         presentation.usagesString = title
         presentation.tabName = title
         presentation.tabText = title
-        val scope = GlobalSearchScope.allScope(project)
+        val scope = descriptor.psiElement.getTerraformSearchScope()
         presentation.scopeText = scope.displayName
 
         UsageViewManager.getInstance(project).searchAndShowUsages(arrayOf<UsageTarget>(object : UsageTarget {
@@ -150,7 +150,7 @@ abstract class TFDuplicatedInspectionBase : LocalInspectionTool() {
         }), {
           UsageSearcher { processor ->
             val infos = ApplicationManager.getApplication().runReadAction<List<UsageInfo>> {
-              duplicates.map { dup -> UsageInfo(dup.containingFile, dup.textRange.startOffset, dup.textRange.endOffset) }
+              duplicates.map { dup -> UsageInfo(dup.containingFile) }
             }
             for (info in infos) {
               processor.process(UsageInfo2UsageAdapter(info))
