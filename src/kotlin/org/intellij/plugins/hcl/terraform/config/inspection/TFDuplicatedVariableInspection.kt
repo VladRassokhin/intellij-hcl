@@ -44,8 +44,6 @@ class TFDuplicatedVariableInspection : TFDuplicatedInspectionBase() {
         assert(same.first() == block)
         return
       }
-      // TODO: Filter overrides
-
       holder.registerProblem(block, "Variable '$name' declared multiple times", ProblemHighlightType.GENERIC_ERROR, *getFixes())
     }
   }
