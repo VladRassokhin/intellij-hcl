@@ -38,10 +38,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   fun load(): TypeModel? {
     val application = ApplicationManager.getApplication()
     try {
-      val providers = loadList("/terraform/model/providers.list")?.map { "providers/$it.json" } ?: emptyList()
-      val provisioners = loadList("/terraform/model/provisioners.list")?.map { "provisioners/$it.json" } ?: emptyList()
-      val backends = loadList("/terraform/model/backends.list")?.map { "backends/$it.json" } ?: emptyList()
-      val resources: Collection<String> = (providers + provisioners + backends + "functions.json").map { "/terraform/model/" + it }
+      val resources: Collection<String> = getAllResourcesToLoad(ModelResourcesPrefix)
 
       for (it in resources) {
         val file = it.ensureHavePrefix("/")
@@ -105,11 +102,6 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     }
   }
 
-  private fun isPluginUnpacked(): Boolean {
-    val resource = TypeModelProvider::class.java.getResource("/terraform/model/") ?: return false
-    return resource.protocol == "file"
-  }
-
   private fun getSharedSchemas(): List<File> {
     val terraform_d: File
     if (SystemInfo.isWindows) {
@@ -122,14 +114,15 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     if (!terraform_d.exists() || !terraform_d.isDirectory) return emptyList()
     val schemas = File(terraform_d, "schemas")
     if (!schemas.exists() || !schemas.isDirectory) return emptyList()
-    val files = schemas.listFiles { dir, name ->
+    val files = schemas.listFiles { _, name ->
       name.endsWith(".json", true)
     }
     return files?.toList()?.filter { it.exists() && it.isFile } ?: emptyList()
   }
 
   companion object {
-    internal val LOG = Logger.getInstance(TypeModelLoader::class.java)
+    internal val LOG by lazy { Logger.getInstance(TypeModelLoader::class.java) }
+    val ModelResourcesPrefix = "/terraform/model"
 
     fun getResource(path: String): InputStream? {
       return TypeModelProvider::class.java.getResourceAsStream(path)
@@ -147,26 +140,36 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
         return parser.parse(stream)
       }
     }
-  }
 
-  private fun loadList(name: String): Set<String>? {
-    try {
-      val stream = getResource(name)
-      if (stream == null) {
-        val message = "Cannot read list '$name': resource not found"
-        LOG.warn(message)
-        val application = ApplicationManager.getApplication()
-        if (application.isUnitTestMode || application.isInternal) {
-          assert(false) { message }
+    internal fun getAllResourcesToLoad(prefix: String): Collection<String> {
+      val resources = ArrayList<String>()
+      loadList("$prefix/providers.list")?.map { "$prefix/providers/$it.json" }?.toCollection(resources)
+      loadList("$prefix/provisioners.list")?.map { "$prefix/provisioners/$it.json" }?.toCollection(resources)
+      loadList("$prefix/backends.list")?.map { "$prefix/backends/$it.json" }?.toCollection(resources)
+      resources.add("$prefix/functions.json")
+      return resources
+    }
+
+    private fun loadList(name: String): Set<String>? {
+      try {
+        val stream = getResource(name)
+        if (stream == null) {
+          val message = "Cannot read list '$name': resource not found"
+          LOG.warn(message)
+          val application = ApplicationManager.getApplication()
+          if (application.isUnitTestMode || application.isInternal) {
+            assert(false) { message }
+          }
+          return emptySet()
         }
+        val lines = stream.bufferedReader(Charsets.UTF_8).readLines().map { it.trim() }.filter { !it.isEmpty() }
+        return LinkedHashSet<String>(lines)
+      } catch(e: Exception) {
+        LOG.warn("Cannot read 'ignored-references.list': ${e.message}")
         return emptySet()
       }
-      val lines = stream.bufferedReader(Charsets.UTF_8).readLines().map { it.trim() }.filter { !it.isEmpty() }
-      return LinkedHashSet<String>(lines)
-    } catch(e: Exception) {
-      LOG.warn("Cannot read 'ignored-references.list': ${e.message}")
-      return emptySet()
     }
+
   }
 
   private fun parseFile(json: JsonObject, file: String) {
