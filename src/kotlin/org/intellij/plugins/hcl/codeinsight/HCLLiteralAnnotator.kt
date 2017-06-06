@@ -37,7 +37,8 @@ class HCLLiteralAnnotator : Annotator {
     private val DQS_VALID_ESCAPE = Pattern.compile("\\\\(\"|$COMMON_REGEX)")
     private val SQS_VALID_ESCAPE = Pattern.compile("\\\\(\'|$COMMON_REGEX)")
     // TODO: AFAIK that should be handled by lexer/parser
-    private val VALID_NUMBER_LITERAL = Pattern.compile("-?(0x)?(0|[1-9])\\d*(\\.\\d+)?([eE][+-]?\\d+)?([KMGBkmgb][Bb]?)?")
+    private val VALID_NUMBER_LITERAL = Pattern.compile("-?(0x)?([0-9])\\d*(\\.\\d+)?([e][+-]?\\d+)?([kmgb][b]?)?", Pattern.CASE_INSENSITIVE)
+    private val VALID_HEX_NUMBER_LITERAL = Pattern.compile("-?(0x)?([0-9a-f])+", Pattern.CASE_INSENSITIVE)
 
     private val DEBUG = ApplicationManager.getApplication().isUnitTestMode
     private fun addBlockNameAnnotation(element: PsiElement, holder: AnnotationHolder, name: String) = holder.createInfoAnnotation(element, if (DEBUG) name else null)
@@ -108,7 +109,7 @@ class HCLLiteralAnnotator : Annotator {
         }
       }
     } else if (element is HCLNumberLiteral) {
-      if (!VALID_NUMBER_LITERAL.matcher(text).matches()) {
+      if (!VALID_NUMBER_LITERAL.matcher(text).matches() && !VALID_HEX_NUMBER_LITERAL.matcher(text).matches()) {
         holder.createErrorAnnotation(element, "Illegal number literal")
       }
     }
