@@ -38,7 +38,9 @@ class TerraformInterpolationStartTypedHandler : TypedHandlerDelegate() {
     val offset = editor.caretModel.offset
     val element = file.findElementAt(offset)
 
-    if (HCLParserDefinition.STRING_LITERALS.contains(element?.node?.elementType) && "\$" == editor.document.getText(TextRange.from(offset - 2, 1))) {
+    if (HCLParserDefinition.STRING_LITERALS.contains(element?.node?.elementType)
+        && "\$" == editor.document.getText(TextRange.from(offset - 2, 1))
+        && (offset >= editor.document.textLength || "}" != editor.document.getText(TextRange.from(offset, 1)))) {
       editor.document.insertString(offset, "}")
       return Result.STOP
     }
