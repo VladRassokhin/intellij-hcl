@@ -19,7 +19,8 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.impl.source.tree.CompositeElement;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
 import org.intellij.plugins.hcl.psi.HCLHeredocContent;
 import org.intellij.plugins.hcl.psi.HCLStringLiteral;
 import org.intellij.plugins.hcl.psi.UtilKt;
@@ -31,7 +32,6 @@ import java.util.List;
 
 public class JavaUtil {
   private static final Key<List<Pair<TextRange, String>>> STRING_FRAGMENTS = new Key<List<Pair<TextRange, String>>>("HCL string fragments");
-  private static final Key<Integer> STRING_FRAGMENTS_MC = new Key<Integer>("HCL string fragments MC");
   public static final String ourEscapesTable = "\"\"\\\\//b\bf\fn\nr\rt\tv\013a\007";
   public static final String ourEscapedSymbols = "\"\\/\b\f\n\r\t\013\007";
   @SuppressWarnings("SpellCheckingInspection")
@@ -48,21 +48,14 @@ public class JavaUtil {
   }
 
   @NotNull
-  public static List<Pair<TextRange, String>> getTextFragments(@NotNull HCLHeredocContent content) {
-    final CompositeElement node = (CompositeElement) content.getNode();
-    final int modificationCount = node.getModificationCount();
-
-    List<Pair<TextRange, String>> result = node.getUserData(STRING_FRAGMENTS);
-    Integer dataModificationCount = node.getUserData(STRING_FRAGMENTS_MC);
-    if (dataModificationCount == null) dataModificationCount = -1;
-    if (dataModificationCount != modificationCount) result = null;
-
-    if (result != null) return result;
-    result = doGetTextFragments(content.getText(), UtilKt.isInHCLFileWithInterpolations(content), false);
-
-    node.putUserData(STRING_FRAGMENTS, result);
-    node.putUserData(STRING_FRAGMENTS_MC, modificationCount);
-    return result;
+  public static List<Pair<TextRange, String>> getTextFragments(@NotNull final HCLHeredocContent content) {
+    return CachedValuesManager.getCachedValue(content, new CachedValueProvider<List<Pair<TextRange, String>>>() {
+      @Override
+      public Result<List<Pair<TextRange, String>>> compute() {
+        List<Pair<TextRange, String>> result = doGetTextFragments(content.getText(), UtilKt.isInHCLFileWithInterpolations(content), false);
+        return Result.create(result, content);
+      }
+    });
   }
 
   @NotNull
