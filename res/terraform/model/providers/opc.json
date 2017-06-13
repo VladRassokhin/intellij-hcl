@@ -36,7 +36,29 @@
         "value": "The OPC identity domain for API operations"
       }
     ],
-    "max_retry_timeout": [
+    "insecure": [
+      {
+        "name": "Type",
+        "type": "schema.ValueType",
+        "value": "TypeBool"
+      },
+      {
+        "name": "Optional",
+        "type": "bool",
+        "value": "true"
+      },
+      {
+        "name": "Description",
+        "type": "string",
+        "value": "Skip TLS Verification for self-signed certificates. Should only be used if absolutely required."
+      },
+      {
+        "name": "DefaultValue_Computed",
+        "type": "bool",
+        "value": "false"
+      }
+    ],
+    "max_retries": [
       {
         "name": "Type",
         "type": "schema.ValueType",
@@ -50,12 +72,12 @@
       {
         "name": "Description",
         "type": "string",
-        "value": "Max num seconds to wait for successful response when operating on resources within OPC (defaults to 3000)"
+        "value": "Maximum number retries to wait for a successful response when operating on resources within OPC (defaults to 1)"
       },
       {
         "name": "DefaultValue_Computed",
         "type": "int",
-        "value": "3000"
+        "value": "1"
       }
     ],
     "password": [
@@ -336,6 +358,23 @@
           ]
         }
       ],
+      "desired_state": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Optional",
+          "type": "bool",
+          "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "running"
+        }
+      ],
       "domain": [
         {
           "name": "Type",
@@ -361,6 +400,18 @@
         }
       ],
       "fingerprint": [
+        {
+          "name": "Type",
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        },
+        {
+          "name": "Computed",
+          "type": "bool",
+          "value": "true"
+        }
+      ],
+      "fqdn": [
         {
           "name": "Type",
           "type": "schema.ValueType",
@@ -1523,9 +1574,14 @@
           "value": "TypeString"
         },
         {
-          "name": "Required",
+          "name": "Optional",
           "type": "bool",
           "value": "true"
+        },
+        {
+          "name": "Default",
+          "type": "interface {}",
+          "value": "/oracle/public/ippool"
         }
       ],
       "permanent": [
