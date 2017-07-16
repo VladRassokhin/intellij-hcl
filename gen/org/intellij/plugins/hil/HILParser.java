@@ -239,8 +239,8 @@ public class HILParser implements PsiParser, LightPsiParser {
   // 0: PREFIX(ILParenthesizedExpression)
   // 1: PREFIX(ILExpressionHolder)
   // 2: POSTFIX(ILConditionalExpression)
-  // 3: BINARY(ILBinaryAndExpression)
-  // 4: BINARY(ILBinaryOrExpression)
+  // 3: BINARY(ILBinaryOrExpression)
+  // 4: BINARY(ILBinaryAndExpression)
   // 5: BINARY(ILBinaryEqualityExpression)
   // 6: BINARY(ILBinaryRelationalExpression)
   // 7: BINARY(ILBinaryAdditionExpression)
@@ -276,13 +276,13 @@ public class HILParser implements PsiParser, LightPsiParser {
         r = true;
         exit_section_(b, l, m, IL_CONDITIONAL_EXPRESSION, r, true, null);
       }
-      else if (g < 3 && andOp(b, l + 1)) {
+      else if (g < 3 && orOp(b, l + 1)) {
         r = ILExpression(b, l, 3);
-        exit_section_(b, l, m, IL_BINARY_AND_EXPRESSION, r, true, null);
-      }
-      else if (g < 4 && orOp(b, l + 1)) {
-        r = ILExpression(b, l, 4);
         exit_section_(b, l, m, IL_BINARY_OR_EXPRESSION, r, true, null);
+      }
+      else if (g < 4 && andOp(b, l + 1)) {
+        r = ILExpression(b, l, 4);
+        exit_section_(b, l, m, IL_BINARY_AND_EXPRESSION, r, true, null);
       }
       else if (g < 5 && equalityOp(b, l + 1)) {
         r = ILExpression(b, l, 5);
