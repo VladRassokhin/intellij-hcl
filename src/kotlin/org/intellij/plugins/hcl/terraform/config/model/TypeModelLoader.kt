@@ -301,16 +301,16 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     if (elem != null) {
       // Valid only for TypeSet and TypeList, should parse internal structure
       // TODO: ensure set only for TypeSet and TypeList
-      val et = elem.string("type")
-      if (et == "ResourceSchemaElements") {
-        val a = elem.array<Any>("value")
+      val et = elem.string("type") ?: ""
+      if (et.contains("SchemaElements")) {
+        val a = elem.array<Any>("elements") ?: elem.array<Any>("value")
         if (a != null) {
           val parsed = parseSchemaElement("__inner__", a, fqn)
           hint = parsed.property?.type?.let { TypeHint(it) } ?: parsed.block?.properties?.let { ListHint(it.asList()) }
         }
       }
-      if (et == "ResourceSchemaInfo") {
-        val o = elem.obj("value")
+      if (et.contains("SchemaInfo")) {
+        val o = elem.obj("info") ?: elem.obj("value")
         if (o != null) {
           val innerTypeProperties = o.map { parseSchemaElement(it, fqn) }
           hint = ListHint(innerTypeProperties)
