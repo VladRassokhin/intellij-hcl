@@ -185,7 +185,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
 
   private fun parseProviderFile(json: JsonObject, file: String) {
     val name = json.string("name")!!
-    val provider = json.obj("schema")
+    val provider = json.obj("provider")
     if (provider == null) {
       LOG.warn("No provider schema in file '$file'")
       return
@@ -280,14 +280,9 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   }
 
   private fun parseSchemaElement(name: String, value: Any?, providerName: String): PropertyOrBlockType {
-    assert(value is JsonArray<*>, { "Right part of schema element (field parameters) should be array" })
-    val obj = (value as JsonArray<*>).filterIsInstance(JsonObject::class.java)
-    val m = HashMap<String, JsonObject>()
-    for (it in obj) {
-      val n = it.string("name")
-      if (n != null) {
-        m.put(n, it)
-      }
+    assert(value is JsonObject, { "Right part of schema element (field parameters) should be object" })
+    if (value !is JsonObject) {
+      throw IllegalStateException()
     }
 
     val fqn = "$providerName.$name"
@@ -296,21 +291,21 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
 
     var isBlock = false
 
-    val type = parseType(m["Type"])
-    val elem = m["Elem"]
-    if (elem != null) {
+    val type = parseType(value.string("Type"))
+    val elem = value.obj("Elem")
+    if (elem != null && elem.isNotEmpty()) {
       // Valid only for TypeSet and TypeList, should parse internal structure
       // TODO: ensure set only for TypeSet and TypeList
-      val et = elem.string("type") ?: ""
-      if (et.contains("SchemaElements")) {
-        val a = elem.array<Any>("elements") ?: elem.array<Any>("value")
+      val et = elem.string("type")
+      if (et == "SchemaElements") {
+        val a = elem.array<Any>("elements")
         if (a != null) {
           val parsed = parseSchemaElement("__inner__", a, fqn)
           hint = parsed.property?.type?.let { TypeHint(it) } ?: parsed.block?.properties?.let { ListHint(it.asList()) }
         }
       }
-      if (et.contains("SchemaInfo")) {
-        val o = elem.obj("info") ?: elem.obj("value")
+      if (et == "SchemaInfo") {
+        val o = elem.obj("info")
         if (o != null) {
           val innerTypeProperties = o.map { parseSchemaElement(it, fqn) }
           hint = ListHint(innerTypeProperties)
@@ -321,21 +316,22 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       }
       // ?? return BlockType(name).toPOBT()
     }
-    val deprecated = m["Deprecated"]?.string("value")
-    val has_default: Boolean =
-        m["Default"]?.string("value") != null
-            || m["DefaultValue_Computed"]?.string("value") != null
+
+    val deprecated = value.string("Deprecated")
+    val has_default: Boolean = value.obj("Default")?.isNotEmpty() ?: false
     // || m["InputDefault"]?.string("value") != null // Not sure about this property TODO: Investigate how it works in terraform
 
     val additional = external[fqn] ?: TypeModelProvider.Additional(name)
     // TODO: Consider move 'has_default' to Additional
 
-    val required = additional.required ?: m["Required"]?.string("value")?.toLowerCase()?.toBoolean() ?: false
-    val computed = m["Computed"]?.string("value")?.toLowerCase()?.toBoolean() ?: false
+    val required = additional.required ?: value.boolean("Required") ?: false
+    val computed = value.boolean("Computed") ?: false
 
     if (type == Types.Object) {
       isBlock = true
     }
+
+    val description = additional.description ?: value.string("Description")
 
     // External description and hint overrides one from model
     if (isBlock) {
@@ -347,10 +343,11 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       return BlockType(name, required = required,
           deprecated = deprecated,
           computed = computed,
-          description = additional.description ?: m["Description"]?.string("value"), properties = *bh).toPOBT()
+          description = description,
+          properties = *bh).toPOBT()
     }
     return PropertyType(name, type, hint = additional.hint ?: hint,
-        description = additional.description ?: m["Description"]?.string("value"),
+        description = description,
         required = required,
         deprecated = deprecated,
         computed = computed,
