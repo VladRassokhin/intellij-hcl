@@ -19,9 +19,12 @@ import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.boolean
 import com.beust.klaxon.string
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 class TypeModelProvider {
   private val _model: TypeModel by lazy {
@@ -37,8 +40,32 @@ class TypeModelProvider {
      *   TypeModelProvider should become either per-project service
      *   OR properly handle project in getModel method.
      */
-    @Suppress("UNUSED_PARAMETER")
-    @JvmStatic fun getModel(project: Project) = ServiceManager.getService(TypeModelProvider::class.java)._model
+    @JvmStatic fun getModel(project: Project): TypeModel {
+      val model = ourModels[project]
+      if (model != null) return model
+      return ServiceManager.getService(TypeModelProvider::class.java)._model
+    }
+
+    /**
+     * To be used by tests
+     */
+    internal fun setModel(project: Project, model: TypeModel?) {
+      if (model == null) {
+        ourModels.remove(project)
+        return
+      }
+      ourModels.put(project, model)
+      val disposable = Disposable {
+        ourModels.remove(project)
+        ourDisposers.remove(project)
+      }
+      if (ourDisposers.putIfAbsent(project, disposable) == null) {
+        Disposer.register(project, disposable)
+      }
+    }
+
+    private val ourModels: MutableMap<Project, TypeModel> = ConcurrentHashMap()
+    private val ourDisposers: MutableMap<Project, Disposable> = ConcurrentHashMap()
   }
 
   private fun loadExternalInformation(): Map<String, Additional> {
