@@ -1,968 +1,386 @@
 {
   "name": "postgresql",
   "type": "provider",
-  "schema": {
-    "connect_timeout": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeInt"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "Maximum wait for connection, in seconds. Zero or not specified means wait indefinitely."
-      },
-      {
-        "name": "DefaultValue_Computed",
+  "provider": {
+    "connect_timeout": {
+      "Type": "TypeInt",
+      "Optional": true,
+      "Description": "Maximum wait for connection, in seconds. Zero or not specified means wait indefinitely.",
+      "Default": {
         "type": "int",
         "value": "180"
-      }
-    ],
-    "database": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
       },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "The name of the database to connect to in order to conenct to (defaults to `postgres`)."
-      },
-      {
-        "name": "DefaultValue_Computed",
+      "Elem": {}
+    },
+    "database": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "The name of the database to connect to in order to conenct to (defaults to `postgres`).",
+      "Default": {
         "type": "string",
         "value": "postgres"
-      }
-    ],
-    "host": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
       },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "Name of PostgreSQL server address to connect to"
-      }
-    ],
-    "password": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "Password to be used if the PostgreSQL server demands password authentication"
-      }
-    ],
-    "port": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeInt"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "The PostgreSQL port number to connect to at the server host, or socket file name extension for Unix-domain connections"
-      },
-      {
-        "name": "DefaultValue_Computed",
+      "Elem": {}
+    },
+    "expected_version": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "Specify the expected version of PostgreSQL.",
+      "Default": {},
+      "Elem": {}
+    },
+    "host": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "Name of PostgreSQL server address to connect to",
+      "Default": {},
+      "Elem": {}
+    },
+    "max_connections": {
+      "Type": "TypeInt",
+      "Optional": true,
+      "Description": "Maximum number of connections to establish to the database. Zero means unlimited.",
+      "Default": {},
+      "Elem": {}
+    },
+    "password": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "Password to be used if the PostgreSQL server demands password authentication",
+      "Default": {},
+      "Elem": {}
+    },
+    "port": {
+      "Type": "TypeInt",
+      "Optional": true,
+      "Description": "The PostgreSQL port number to connect to at the server host, or socket file name extension for Unix-domain connections",
+      "Default": {
         "type": "int",
         "value": "5432"
-      }
-    ],
-    "ssl_mode": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
       },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Deprecated",
-        "type": "string",
-        "value": "Rename PostgreSQL provider `ssl_mode` attribute to `sslmode`"
-      }
-    ],
-    "sslmode": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "This option determines whether or with what priority a secure SSL TCP/IP connection will be negotiated with the PostgreSQL server"
-      }
-    ],
-    "username": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "PostgreSQL user name to connect as"
-      },
-      {
-        "name": "DefaultValue_Computed",
+      "Elem": {}
+    },
+    "ssl_mode": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Deprecated": "Rename PostgreSQL provider `ssl_mode` attribute to `sslmode`",
+      "Default": {},
+      "Elem": {}
+    },
+    "sslmode": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "This option determines whether or with what priority a secure SSL TCP/IP connection will be negotiated with the PostgreSQL server",
+      "Default": {},
+      "Elem": {}
+    },
+    "username": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "PostgreSQL user name to connect as",
+      "Default": {
         "type": "string",
         "value": "postgres"
-      }
-    ]
+      },
+      "Elem": {}
+    }
   },
   "resources": {
     "postgresql_database": {
-      "allow_connections": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "If false then no one can connect to this database"
-        }
-      ],
-      "connection_limit": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "-1"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "How many concurrent connections can be made to this database"
-        }
-      ],
-      "encoding": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Character set encoding to use in the new database"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "is_template": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "If true, then this database can be cloned by any user with CREATEDB privileges"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "lc_collate": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Collation order (LC_COLLATE) to use in the new database"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "lc_ctype": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Character classification (LC_CTYPE) to use in the new database"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The PostgreSQL database name to connect to"
-        }
-      ],
-      "owner": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The ROLE which owns the database"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "tablespace_name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The name of the tablespace that will be associated with the new database"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "template": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The name of the template from which to create the new database"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "allow_connections": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "If false then no one can connect to this database",
+        "Default": {},
+        "Elem": {}
+      },
+      "connection_limit": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "How many concurrent connections can be made to this database",
+        "Default": {},
+        "Elem": {}
+      },
+      "encoding": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Character set encoding to use in the new database",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "is_template": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "If true, then this database can be cloned by any user with CREATEDB privileges",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "lc_collate": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Collation order (LC_COLLATE) to use in the new database",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "lc_ctype": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Character classification (LC_CTYPE) to use in the new database",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The PostgreSQL database name to connect to",
+        "Default": {},
+        "Elem": {}
+      },
+      "owner": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The ROLE which owns the database",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tablespace_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The name of the tablespace that will be associated with the new database",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "template": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The name of the template from which to create the new database",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "postgresql_extension": {
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "schema": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Sets the schema of an extension"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "version": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Sets the version number of the extension"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "schema": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Sets the schema of an extension",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "version": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Sets the version number of the extension",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "postgresql_role": {
-      "bypass_row_level_security": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Determine whether a role bypasses every row-level security (RLS) policy"
-        }
-      ],
-      "connection_limit": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "-1"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "How many concurrent connections can be made with this role"
-        }
-      ],
-      "create_database": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Define a role's ability to create databases"
-        }
-      ],
-      "create_role": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Determine whether this role will be permitted to create new roles"
-        }
-      ],
-      "encrypted": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Deprecated",
-          "type": "string",
-          "value": "Rename PostgreSQL role resource attribute \"encrypted\" to \"encrypted_password\""
-        }
-      ],
-      "encrypted_password": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Control whether the password is stored encrypted in the system catalogs"
-        }
-      ],
-      "inherit": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Determine whether a role \"inherits\" the privileges of roles it is a member of"
-        }
-      ],
-      "login": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Determine whether a role is allowed to log in"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The name of the role"
-        }
-      ],
-      "password": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Sets the role's password"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "replication": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Determine whether a role is allowed to initiate streaming replication or put the system in and out of backup mode"
-        }
-      ],
-      "skip_drop_role": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Skip actually running the DROP ROLE command when removing a ROLE from PostgreSQL"
-        }
-      ],
-      "skip_reassign_owned": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Skip actually running the REASSIGN OWNED command when removing a role from PostgreSQL"
-        }
-      ],
-      "superuser": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Determine whether the new role is a \"superuser\""
-        }
-      ],
-      "valid_until": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "infinity"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Sets a date and time after which the role's password is no longer valid"
-        }
-      ]
+      "bypass_row_level_security": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Determine whether a role bypasses every row-level security (RLS) policy",
+        "Default": {},
+        "Elem": {}
+      },
+      "connection_limit": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "How many concurrent connections can be made with this role",
+        "Default": {},
+        "Elem": {}
+      },
+      "create_database": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Define a role's ability to create databases",
+        "Default": {},
+        "Elem": {}
+      },
+      "create_role": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Determine whether this role will be permitted to create new roles",
+        "Default": {},
+        "Elem": {}
+      },
+      "encrypted": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Deprecated": "Rename PostgreSQL role resource attribute \"encrypted\" to \"encrypted_password\"",
+        "Default": {},
+        "Elem": {}
+      },
+      "encrypted_password": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Control whether the password is stored encrypted in the system catalogs",
+        "Default": {},
+        "Elem": {}
+      },
+      "inherit": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Determine whether a role \"inherits\" the privileges of roles it is a member of",
+        "Default": {},
+        "Elem": {}
+      },
+      "login": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Determine whether a role is allowed to log in",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The name of the role",
+        "Default": {},
+        "Elem": {}
+      },
+      "password": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Sets the role's password",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "replication": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Determine whether a role is allowed to initiate streaming replication or put the system in and out of backup mode",
+        "Default": {},
+        "Elem": {}
+      },
+      "skip_drop_role": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Skip actually running the DROP ROLE command when removing a ROLE from PostgreSQL",
+        "Default": {},
+        "Elem": {}
+      },
+      "skip_reassign_owned": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Skip actually running the REASSIGN OWNED command when removing a role from PostgreSQL",
+        "Default": {},
+        "Elem": {}
+      },
+      "superuser": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Determine whether the new role is a \"superuser\"",
+        "Default": {},
+        "Elem": {}
+      },
+      "valid_until": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Sets a date and time after which the role's password is no longer valid",
+        "Default": {},
+        "Elem": {}
+      }
     },
     "postgresql_schema": {
-      "if_not_exists": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "When true, use the existing schema if it exsts"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The name of the schema"
-        }
-      ],
-      "owner": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The ROLE name who owns the schema"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "policy": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "create": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "false"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "If true, allow the specified ROLEs to CREATE new objects within the schema(s)"
+      "if_not_exists": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "When true, use the existing schema if it exists",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The name of the schema",
+        "Default": {},
+        "Elem": {}
+      },
+      "owner": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The ROLE name who owns the schema",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "create": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "If true, allow the specified ROLEs to CREATE new objects within the schema(s)",
+              "ConflictsWith": [
+                "policy.create_with_grant"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "create_with_grant": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "If true, allow the specified ROLEs to CREATE new objects within the schema(s) and GRANT the same CREATE privilege to different ROLEs",
+              "ConflictsWith": [
+                "policy.create"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "role": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "ROLE who will receive this policy (default: PUBLIC)",
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
               }
-            ],
-            "create_with_grant": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "false"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "If true, allow the specified ROLEs to CREATE new objects within the schema(s) and GRANT the same CREATE privilege to different ROLEs"
-              }
-            ],
-            "role": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": ""
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "ROLE who will receive this policy (default: PUBLIC)"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ],
-            "usage": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "false"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "If true, allow the specified ROLEs to use objects within the schema(s)"
-              }
-            ],
-            "usage_with_grant": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "false"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "If true, allow the specified ROLEs to use objects within the schema(s) and GRANT the same USAGE privilege to different ROLEs"
-              }
-            ]
+            },
+            "usage": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "If true, allow the specified ROLEs to use objects within the schema(s)",
+              "ConflictsWith": [
+                "policy.usage_with_grant"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "usage_with_grant": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "If true, allow the specified ROLEs to use objects within the schema(s) and GRANT the same USAGE privilege to different ROLEs",
+              "ConflictsWith": [
+                "policy.usage"
+              ],
+              "Default": {},
+              "Elem": {}
+            }
           }
         }
-      ]
+      }
     }
   },
   "data-sources": {}

@@ -1,3368 +1,1743 @@
 {
   "name": "opc",
   "type": "provider",
-  "schema": {
-    "endpoint": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Required",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "The HTTP endpoint for OPC API operations."
-      }
-    ],
-    "identity_domain": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Required",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "The OPC identity domain for API operations"
-      }
-    ],
-    "insecure": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeBool"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "Skip TLS Verification for self-signed certificates. Should only be used if absolutely required."
-      },
-      {
-        "name": "DefaultValue_Computed",
+  "provider": {
+    "endpoint": {
+      "Type": "TypeString",
+      "Required": true,
+      "Description": "The HTTP endpoint for OPC API operations.",
+      "Default": {},
+      "Elem": {}
+    },
+    "identity_domain": {
+      "Type": "TypeString",
+      "Required": true,
+      "Description": "The OPC identity domain for API operations",
+      "Default": {},
+      "Elem": {}
+    },
+    "insecure": {
+      "Type": "TypeBool",
+      "Optional": true,
+      "Description": "Skip TLS Verification for self-signed certificates. Should only be used if absolutely required.",
+      "Default": {
         "type": "bool",
         "value": "false"
-      }
-    ],
-    "max_retries": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeInt"
       },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "Maximum number retries to wait for a successful response when operating on resources within OPC (defaults to 1)"
-      },
-      {
-        "name": "DefaultValue_Computed",
+      "Elem": {}
+    },
+    "max_retries": {
+      "Type": "TypeInt",
+      "Optional": true,
+      "Description": "Maximum number retries to wait for a successful response when operating on resources within OPC (defaults to 1)",
+      "Default": {
         "type": "int",
         "value": "1"
-      }
-    ],
-    "password": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
       },
-      {
-        "name": "Required",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "The user password for OPC API operations."
-      }
-    ],
-    "user": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Required",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "The user name for OPC API operations."
-      }
-    ]
+      "Elem": {}
+    },
+    "password": {
+      "Type": "TypeString",
+      "Required": true,
+      "Description": "The user password for OPC API operations.",
+      "Default": {},
+      "Elem": {}
+    },
+    "storage_endpoint": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "The HTTP endpoint for Oracle Storage operations.",
+      "Default": {},
+      "Elem": {}
+    },
+    "user": {
+      "Type": "TypeString",
+      "Required": true,
+      "Description": "The user name for OPC API operations.",
+      "Default": {},
+      "Elem": {}
+    }
   },
   "resources": {
     "opc_compute_acl": {
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "enabled": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "uri": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_image_list": {
-      "default": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "1"
-        }
-      ],
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "default": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_image_list_entry": {
-      "attributes": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      "attributes": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "machine_images": {
+        "Type": "TypeList",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "machine_images": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "uri": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "version": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "version": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_instance": {
-      "attributes": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
+      "attributes": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "availability_domain": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "boot_order": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeInt"
         }
-      ],
-      "availability_domain": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "boot_order": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeInt"
+      },
+      "desired_state": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "domain": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "entry": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "fingerprint": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "fqdn": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "hostname": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "image_format": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "image_list": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instance_attributes": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_address": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "label": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "networking_info": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "dns": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
+            },
+            "index": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ip_address": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ip_network": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "mac_address": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name_servers": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
+            },
+            "nat": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
+            },
+            "search_domains": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
+            },
+            "sec_lists": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
+            },
+            "shared_network": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "vnic": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "vnic_sets": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
             }
-          ]
-        }
-      ],
-      "desired_state": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "running"
-        }
-      ],
-      "domain": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "entry": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "fingerprint": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "fqdn": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "hostname": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "image_format": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "image_list": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "instance_attributes": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "ip_address": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "label": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "networking_info": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "dns": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ],
-            "index": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "ip_address": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "ip_network": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "mac_address": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "name_servers": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ],
-            "nat": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ],
-            "search_domains": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ],
-            "sec_lists": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ],
-            "shared_network": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "false"
-              }
-            ],
-            "vnic": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "vnic_sets": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ]
           }
         }
-      ],
-      "placement_requirements": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      },
+      "placement_requirements": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      },
+      "platform": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "priority": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "quota_reservation": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "relationships": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      },
+      "resolvers": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      },
+      "reverse_dns": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "shape": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "site": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ssh_keys": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      },
+      "start_time": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "state": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "storage": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "index": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "volume": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
             }
-          ]
-        }
-      ],
-      "platform": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "priority": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "quota_reservation": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "relationships": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "resolvers": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "reverse_dns": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        }
-      ],
-      "shape": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "site": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "ssh_keys": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "start_time": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "state": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "storage": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "index": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "name": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "volume": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
           }
         }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "vcable": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "virtio": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "vnc_address": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "vcable": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "virtio": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vnc_address": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_ip_address_association": {
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_address_reservation": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "ip_address_reservation": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "uri": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "vnic": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vnic": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_ip_address_prefix_set": {
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "prefixes": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "prefixes": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "uri": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_ip_address_reservation": {
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_address": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_address_pool": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "ip_address": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "ip_address_pool": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "uri": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_ip_association": {
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "parent_pool": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "vcable": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "parent_pool": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vcable": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_ip_network": {
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_address_prefix": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_network_exchange": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "public_napt_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "ip_address_prefix": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "ip_network_exchange": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "public_napt_enabled": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "uri": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_ip_network_exchange": {
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "uri": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_ip_reservation": {
-      "ip": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
+      "ip": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "parent_pool": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "permanent": {
+        "Type": "TypeBool",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "parent_pool": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "/oracle/public/ippool"
-        }
-      ],
-      "permanent": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ]
+      }
     },
     "opc_compute_route": {
-      "admin_distance": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      "admin_distance": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_address_prefix": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "next_hop_vnic_set": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "ip_address_prefix": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "next_hop_vnic_set": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ]
+      }
     },
     "opc_compute_sec_rule": {
-      "action": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "application": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "destination_list": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "disabled": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "source_list": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "action": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "application": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "destination_list": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "disabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "source_list": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_security_application": {
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "dport": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "icmpcode": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "icmptype": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "protocol": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "dport": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "icmpcode": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "icmptype": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "protocol": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_security_association": {
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "seclist": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "vcable": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "seclist": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vcable": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_security_ip_list": {
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_entries": {
+        "Type": "TypeList",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "ip_entries": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_security_list": {
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "outbound_cidr_policy": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "permit"
-        }
-      ],
-      "policy": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "deny"
-        }
-      ]
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "outbound_cidr_policy": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_security_protocol": {
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "dst_ports": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "dst_ports": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
+      },
+      "ip_protocol": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "src_ports": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "ip_protocol": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "all"
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "src_ports": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "uri": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_security_rule": {
-      "acl": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      "acl": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "dst_ip_address_prefixes": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      },
+      "dst_vnic_set": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "flow_direction": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "security_protocols": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "dst_ip_address_prefixes": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
+      },
+      "src_ip_address_prefixes": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "dst_vnic_set": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      },
+      "src_vnic_set": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "enabled": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        }
-      ],
-      "flow_direction": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "security_protocols": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "src_ip_address_prefixes": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "src_vnic_set": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "uri": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "opc_compute_snapshot": {
+      "account": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "creation_time": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instance": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "machine_image": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_ssh_key": {
-      "enabled": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        }
-      ],
-      "key": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_storage_volume": {
-      "bootable": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
+      "bootable": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "hypervisor": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "image_list": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "image_list_entry": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "machine_image": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "managed": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "platform": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "readonly": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "size": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "snapshot": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "snapshot_account": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "snapshot_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "storage_pool": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "storage_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "hypervisor": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "image_list": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "image_list_entry": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "-1"
-        }
-      ],
-      "machine_image": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "managed": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "platform": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "readonly": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "size": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "snapshot": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "snapshot_account": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "snapshot_id": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "status": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "storage_pool": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "storage_type": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "/oracle/public/storage/default"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "uri": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_storage_volume_snapshot": {
-      "account": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
+      "account": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "collocated": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "machine_image_name": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "parent_volume_bootable": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "platform": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "property": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "size": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "snapshot_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "snapshot_timestamp": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "start_timestamp": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status_detail": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status_timestamp": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "collocated": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        }
-      ],
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "machine_image_name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "parent_volume_bootable": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        }
-      ],
-      "platform": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "property": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "size": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "snapshot_id": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "snapshot_timestamp": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "start_timestamp": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "status": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "status_detail": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "status_timestamp": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "uri": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "volume_name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "volume_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_vnic_set": {
-      "applied_acls": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
+      "applied_acls": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
+      },
+      "virtual_nics": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
+      }
+    },
+    "opc_storage_container": {
+      "allowed_origins": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "virtual_nics": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
+      },
+      "max_age": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "primary_key": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "read_acls": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ]
+      },
+      "secondary_key": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "write_acls": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      }
     }
   },
   "data-sources": {
     "opc_compute_network_interface": {
-      "dns": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
+      "dns": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "instance_id": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
+      },
+      "instance_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instance_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "interface": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_address": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_network": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "mac_address": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "model": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name_servers": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "instance_name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
+      },
+      "nat": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "interface": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
+      },
+      "search_domains": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "ip_address": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
+      },
+      "sec_lists": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "ip_network": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
+      },
+      "shared_network": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vnic": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vnic_sets": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "mac_address": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
+      }
+    },
+    "opc_compute_storage_volume_snapshot": {
+      "account": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "collocated": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "machine_image_name": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "parent_volume_bootable": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "platform": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "property": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "size": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "snapshot_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "snapshot_timestamp": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "start_timestamp": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status_detail": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status_timestamp": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "model": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name_servers": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "nat": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "search_domains": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "sec_lists": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "shared_network": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "vnic": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "vnic_sets": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ]
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "volume_name": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "opc_compute_vnic": {
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
+      "description": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "mac_address": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "mac_address": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "transit_flag": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "uri": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "transit_flag": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "uri": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     }
   }
 }

@@ -1,4609 +1,2135 @@
 {
   "name": "circonus",
   "type": "provider",
-  "schema": {
-    "api_url": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Default",
-        "type": "interface {}",
-        "value": "https://api.circonus.com/v2"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "URL of the Circonus API"
-      }
-    ],
-    "auto_tag": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeBool"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Default",
-        "type": "interface {}",
-        "value": "false"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "Signals that the provider should automatically add a tag to all API calls denoting that the resource was created by Terraform"
-      }
-    ],
-    "key": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Required",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "API token used to authenticate with the Circonus API"
-      }
-    ]
+  "provider": {
+    "api_url": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "URL of the Circonus API",
+      "Default": {},
+      "Elem": {}
+    },
+    "auto_tag": {
+      "Type": "TypeBool",
+      "Optional": true,
+      "Description": "Signals that the provider should automatically add a tag to all API calls denoting that the resource was created by Terraform",
+      "Default": {},
+      "Elem": {}
+    },
+    "key": {
+      "Type": "TypeString",
+      "Required": true,
+      "Description": "API token used to authenticate with the Circonus API",
+      "Default": {},
+      "Elem": {}
+    }
   },
   "resources": {
     "circonus_check": {
-      "active": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "If the check is activate or disabled"
-        }
-      ],
-      "caql": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "CAQL check configuration"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "query": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The query definition"
-              }
-            ]
-          }
-        }
-      ],
-      "check_by_collector": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeMap"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      "active": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "If the check is activate or disabled",
+        "Default": {},
+        "Elem": {}
+      },
+      "caql": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "CAQL check configuration",
+        "MaxItems": 1,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "query": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The query definition",
+              "Default": {},
+              "Elem": {}
             }
-          ]
+          }
         }
-      ],
-      "check_id": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
+      },
+      "check_by_collector": {
+        "Type": "TypeMap",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "checks": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      },
+      "check_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "checks": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      },
+      "cloudwatch": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "CloudWatch check configuration",
+        "MaxItems": 1,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "api_key": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The AWS API Key",
+              "Default": {
+                "type": "string"
+              },
+              "Elem": {}
+            },
+            "api_secret": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The AWS API Secret",
+              "Default": {
+                "type": "string"
+              },
+              "Elem": {}
+            },
+            "dimmensions": {
+              "Type": "TypeMap",
+              "Required": true,
+              "Description": "The dimensions to query for the metric",
+              "Default": {},
+              "Elem": {
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              }
+            },
+            "metric": {
+              "Type": "TypeSet",
+              "Required": true,
+              "Description": "One or more CloudWatch Metric attributes",
+              "MinItems": 1,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
+            },
+            "namespace": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The namespace to pull telemetry from",
+              "Default": {},
+              "Elem": {}
+            },
+            "url": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The URL including schema and hostname for the Cloudwatch monitoring server. This value will be used to specify the region - for example, to pull from us-east-1, the URL would be https://monitoring.us-east-1.amazonaws.com.",
+              "Default": {},
+              "Elem": {}
+            },
+            "version": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The version of the Cloudwatch API to use.",
+              "Default": {},
+              "Elem": {}
             }
-          ]
-        }
-      ],
-      "cloudwatch": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "CloudWatch check configuration"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "api_key": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The AWS API Key"
-              },
-              {
-                "name": "DefaultValue_Computed",
-                "type": "string",
-                "value": ""
-              }
-            ],
-            "api_secret": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The AWS API Secret"
-              },
-              {
-                "name": "DefaultValue_Computed",
-                "type": "string",
-                "value": ""
-              }
-            ],
-            "dimmensions": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeMap"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The dimensions to query for the metric"
-              },
-              {
-                "name": "Elem",
-                "type": "interface {}",
-                "value": "TypeString"
-              }
-            ],
-            "metric": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeSet"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "One or more CloudWatch Metric attributes"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ],
-            "namespace": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The namespace to pull telemetry from"
-              }
-            ],
-            "url": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The URL including schema and hostname for the Cloudwatch monitoring server. This value will be used to specify the region - for example, to pull from us-east-1, the URL would be https://monitoring.us-east-1.amazonaws.com."
-              }
-            ],
-            "version": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "2010-08-01"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The version of the Cloudwatch API to use."
-              }
-            ]
           }
         }
-      ],
-      "collector": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The collector(s) that are responsible for gathering the metrics"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "id": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The ID of the collector"
-              }
-            ]
-          }
-        }
-      ],
-      "consul": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Consul check configuration"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "acl_token": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A Consul ACL token"
-              }
-            ],
-            "allow_stale": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Allow Consul to read from a non-leader system"
-              }
-            ],
-            "ca_chain": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A path to a file containing all the certificate authorities that should be loaded to validate the remote certificate (for TLS checks)"
-              }
-            ],
-            "certificate_file": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A path to a file containing the client certificate that will be presented to the remote server (for TLS-enabled checks)"
-              }
-            ],
-            "check_blacklist": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A blacklist of check names to exclude from metric results"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ],
-            "ciphers": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A list of ciphers to be used in the TLS protocol (for HTTPS checks)"
-              }
-            ],
-            "dc": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The Consul datacenter to extract health information from"
-              }
-            ],
-            "headers": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeMap"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Map of HTTP Headers to send along with HTTP Requests"
-              },
-              {
-                "name": "Elem",
-                "type": "interface {}",
-                "value": "TypeString"
-              }
-            ],
-            "http_addr": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "http://consul.service.consul"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The HTTP Address of a Consul agent to query"
-              }
-            ],
-            "key_file": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A path to a file containing key to be used in conjunction with the cilent certificate (for TLS checks)"
-              }
-            ],
-            "node": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Node Name or NodeID of a Consul agent"
-              }
-            ],
-            "node_blacklist": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A blacklist of node names or IDs to exclude from metric results"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ],
-            "service": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Name of the Consul service to check"
-              }
-            ],
-            "service_blacklist": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A blacklist of service names to exclude from metric results"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ],
-            "state": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Check for Consul services in this particular state"
-              }
-            ]
-          }
-        }
-      ],
-      "created": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "http": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "HTTP check configuration"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "auth_method": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The HTTP Authentication method"
-              }
-            ],
-            "auth_password": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The HTTP Authentication user password"
-              }
-            ],
-            "auth_user": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The HTTP Authentication user name"
-              }
-            ],
-            "body_regexp": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "This regular expression is matched against the body of the response. If a match is not found, the check will be marked as \"bad."
-              }
-            ],
-            "ca_chain": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A path to a file containing all the certificate authorities that should be loaded to validate the remote certificate (for TLS checks)"
-              }
-            ],
-            "certificate_file": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A path to a file containing the client certificate that will be presented to the remote server (for TLS-enabled checks)"
-              }
-            ],
-            "ciphers": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A list of ciphers to be used in the TLS protocol (for HTTPS checks)"
-              }
-            ],
-            "code": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "^200$"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The HTTP code that is expected. If the code received does not match this regular expression, the check is marked as \"bad.\""
-              }
-            ],
-            "extract": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "This regular expression is matched against the body of the response globally. The first capturing match is the key and the second capturing match is the value. Each key/value extracted is registered as a metric for the check."
-              }
-            ],
-            "headers": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeMap"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Map of HTTP Headers to send along with HTTP Requests"
-              },
-              {
-                "name": "Elem",
-                "type": "interface {}",
-                "value": "TypeString"
-              }
-            ],
-            "key_file": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A path to a file containing key to be used in conjunction with the cilent certificate (for TLS checks)"
-              }
-            ],
-            "method": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "GET"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The HTTP method to use"
-              }
-            ],
-            "payload": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The information transferred as the payload of an HTTP request"
-              }
-            ],
-            "read_limit": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Sets an approximate limit on the data read (0 means no limit)"
-              }
-            ],
-            "url": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The URL to use as the target of the check"
-              }
-            ],
-            "version": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "1.1"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Sets the HTTP version for the check to use"
-              }
-            ]
-          }
-        }
-      ],
-      "httptrap": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "HTTP Trap check configuration"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "async_metrics": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "false"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Specify whether httptrap metrics are logged immediately or held until the status message is emitted"
-              }
-            ],
-            "secret": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ],
-      "icmp_ping": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "ICMP ping check configuration"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "availability": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeFloat"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "100"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The percentage of ICMP available required for the check to be considered \"good.\""
-              }
-            ],
-            "count": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "5"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The number of ICMP requests to send during a single check."
-              }
-            ],
-            "interval": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "2s"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The number of milliseconds between ICMP requests."
-              }
-            ]
-          }
-        }
-      ],
-      "json": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "JSON check configuration"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "auth_method": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The HTTP Authentication method"
-              }
-            ],
-            "auth_password": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The HTTP Authentication user password"
-              }
-            ],
-            "auth_user": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The HTTP Authentication user name"
-              }
-            ],
-            "ca_chain": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A path to a file containing all the certificate authorities that should be loaded to validate the remote certificate (for TLS checks)"
-              }
-            ],
-            "certificate_file": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A path to a file containing the client certificate that will be presented to the remote server (for TLS-enabled checks)"
-              }
-            ],
-            "ciphers": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A list of ciphers to be used in the TLS protocol (for HTTPS checks)"
-              }
-            ],
-            "headers": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeMap"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Map of HTTP Headers to send along with HTTP Requests"
-              },
-              {
-                "name": "Elem",
-                "type": "interface {}",
-                "value": "TypeString"
-              }
-            ],
-            "key_file": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A path to a file containing key to be used in conjunction with the cilent certificate (for TLS checks)"
-              }
-            ],
-            "method": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "GET"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The HTTP method to use"
-              }
-            ],
-            "payload": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The information transferred as the payload of an HTTP request"
-              }
-            ],
-            "port": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "443"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Specifies the port on which the management interface can be reached"
-              }
-            ],
-            "read_limit": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Sets an approximate limit on the data read (0 means no limit)"
-              }
-            ],
-            "url": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The URL to use as the target of the check"
-              }
-            ],
-            "version": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "1.1"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Sets the HTTP version for the check to use"
-              }
-            ]
-          }
-        }
-      ],
-      "last_modified": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "last_modified_by": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "metric": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Configuration for a stream of metrics"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "active": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Enables or disables the metric"
-              }
-            ],
-            "name": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Name of the metric"
-              }
-            ],
-            "tags": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeSet"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Tags assigned to the metric"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ],
-            "type": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Type of metric (e.g. numeric, histogram, text)"
-              }
-            ],
-            "unit": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": ""
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The unit of measurement for a metric"
-              }
-            ]
-          }
-        }
-      ],
-      "metric_limit": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Setting a metric_limit will enable all (-1), disable (0), or allow up to the specified limit of metrics for this check (\"N+\", where N is a positive integer)"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "mysql": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "MySQL check configuration"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "dsn": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The connect DSN for the MySQL instance"
-              }
-            ],
-            "query": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The SQL to use as the query"
-              }
-            ]
-          }
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The name of the check bundle that will be displayed in the web interface"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "notes": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Notes about this check bundle"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "period": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The period between each time the check is made"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "postgresql": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "PostgreSQL check configuration"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "dsn": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The connect DSN for the PostgreSQL instance"
-              }
-            ],
-            "query": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The SQL to use as the query"
-              }
-            ]
-          }
-        }
-      ],
-      "reverse_connect_urls": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      },
+      "collector": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "The collector(s) that are responsible for gathering the metrics",
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "id": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The ID of the collector",
+              "Default": {},
+              "Elem": {}
             }
-          ]
-        }
-      ],
-      "statsd": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "statsd check configuration"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "source_ip": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The source IP of the statsd metrics stream"
-              }
-            ]
           }
         }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "A list of tags assigned to the check"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      },
+      "consul": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "Consul check configuration",
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "acl_token": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A Consul ACL token",
+              "Default": {},
+              "Elem": {}
+            },
+            "allow_stale": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "Allow Consul to read from a non-leader system",
+              "Default": {},
+              "Elem": {}
+            },
+            "ca_chain": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A path to a file containing all the certificate authorities that should be loaded to validate the remote certificate (for TLS checks)",
+              "Default": {},
+              "Elem": {}
+            },
+            "certificate_file": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A path to a file containing the client certificate that will be presented to the remote server (for TLS-enabled checks)",
+              "Default": {},
+              "Elem": {}
+            },
+            "check_blacklist": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "A blacklist of check names to exclude from metric results",
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
+            },
+            "ciphers": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A list of ciphers to be used in the TLS protocol (for HTTPS checks)",
+              "Default": {},
+              "Elem": {}
+            },
+            "dc": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The Consul datacenter to extract health information from",
+              "Default": {},
+              "Elem": {}
+            },
+            "headers": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Description": "Map of HTTP Headers to send along with HTTP Requests",
+              "Default": {},
+              "Elem": {
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              }
+            },
+            "http_addr": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The HTTP Address of a Consul agent to query",
+              "Default": {},
+              "Elem": {}
+            },
+            "key_file": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A path to a file containing key to be used in conjunction with the cilent certificate (for TLS checks)",
+              "Default": {},
+              "Elem": {}
+            },
+            "node": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Node Name or NodeID of a Consul agent",
+              "ConflictsWith": [
+                "consul.service",
+                "consul.state"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "node_blacklist": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "A blacklist of node names or IDs to exclude from metric results",
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
+            },
+            "service": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Name of the Consul service to check",
+              "ConflictsWith": [
+                "consul.node",
+                "consul.state"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "service_blacklist": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "A blacklist of service names to exclude from metric results",
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
+            },
+            "state": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Check for Consul services in this particular state",
+              "ConflictsWith": [
+                "consul.node",
+                "consul.service"
+              ],
+              "Default": {},
+              "Elem": {}
             }
-          ]
-        }
-      ],
-      "target": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The target of the check (e.g. hostname, URL, IP, etc)"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "tcp": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "TCP check configuration"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "banner_regexp": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "This regular expression is matched against the response banner. If a match is not found, the check will be marked as bad."
-              }
-            ],
-            "ca_chain": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A path to a file containing all the certificate authorities that should be loaded to validate the remote certificate (for TLS checks)."
-              }
-            ],
-            "certificate_file": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A path to a file containing the client certificate that will be presented to the remote server (for TLS checks)."
-              }
-            ],
-            "ciphers": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A list of ciphers to be used when establishing a TLS connection"
-              }
-            ],
-            "host": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Specifies the host name or IP address to connect to for this TCP check"
-              }
-            ],
-            "key_file": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A path to a file containing key to be used in conjunction with the cilent certificate (for TLS checks)"
-              }
-            ],
-            "port": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Specifies the port on which the management interface can be reached."
-              }
-            ],
-            "tls": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "false"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Upgrade TCP connection to use TLS."
-              }
-            ]
           }
         }
-      ],
-      "timeout": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The length of time in seconds (and fractions of a second) before the check will timeout if no response is returned to the collector"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "type": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The check type"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "uuids": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      },
+      "created": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "http": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "HTTP check configuration",
+        "MaxItems": 1,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "auth_method": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The HTTP Authentication method",
+              "Default": {},
+              "Elem": {}
+            },
+            "auth_password": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The HTTP Authentication user password",
+              "Default": {},
+              "Elem": {}
+            },
+            "auth_user": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The HTTP Authentication user name",
+              "Default": {},
+              "Elem": {}
+            },
+            "body_regexp": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "This regular expression is matched against the body of the response. If a match is not found, the check will be marked as \"bad.",
+              "Default": {},
+              "Elem": {}
+            },
+            "ca_chain": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A path to a file containing all the certificate authorities that should be loaded to validate the remote certificate (for TLS checks)",
+              "Default": {},
+              "Elem": {}
+            },
+            "certificate_file": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A path to a file containing the client certificate that will be presented to the remote server (for TLS-enabled checks)",
+              "Default": {},
+              "Elem": {}
+            },
+            "ciphers": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A list of ciphers to be used in the TLS protocol (for HTTPS checks)",
+              "Default": {},
+              "Elem": {}
+            },
+            "code": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The HTTP code that is expected. If the code received does not match this regular expression, the check is marked as \"bad.\"",
+              "Default": {},
+              "Elem": {}
+            },
+            "extract": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "This regular expression is matched against the body of the response globally. The first capturing match is the key and the second capturing match is the value. Each key/value extracted is registered as a metric for the check.",
+              "Default": {},
+              "Elem": {}
+            },
+            "headers": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Description": "Map of HTTP Headers to send along with HTTP Requests",
+              "Default": {},
+              "Elem": {
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              }
+            },
+            "key_file": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A path to a file containing key to be used in conjunction with the cilent certificate (for TLS checks)",
+              "Default": {},
+              "Elem": {}
+            },
+            "method": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The HTTP method to use",
+              "Default": {},
+              "Elem": {}
+            },
+            "payload": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The information transferred as the payload of an HTTP request",
+              "Default": {},
+              "Elem": {}
+            },
+            "read_limit": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Description": "Sets an approximate limit on the data read (0 means no limit)",
+              "Default": {},
+              "Elem": {}
+            },
+            "url": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The URL to use as the target of the check",
+              "Default": {},
+              "Elem": {}
+            },
+            "version": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Sets the HTTP version for the check to use",
+              "Default": {},
+              "Elem": {}
             }
-          ]
+          }
         }
-      ]
+      },
+      "httptrap": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "HTTP Trap check configuration",
+        "MaxItems": 1,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "async_metrics": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "Specify whether httptrap metrics are logged immediately or held until the status message is emitted",
+              "Default": {},
+              "Elem": {}
+            },
+            "secret": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "icmp_ping": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "ICMP ping check configuration",
+        "MaxItems": 1,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "availability": {
+              "Type": "TypeFloat",
+              "Optional": true,
+              "Description": "The percentage of ICMP available required for the check to be considered \"good.\"",
+              "Default": {},
+              "Elem": {}
+            },
+            "count": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Description": "The number of ICMP requests to send during a single check.",
+              "Default": {},
+              "Elem": {}
+            },
+            "interval": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The number of milliseconds between ICMP requests.",
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "json": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "JSON check configuration",
+        "MaxItems": 1,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "auth_method": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The HTTP Authentication method",
+              "Default": {},
+              "Elem": {}
+            },
+            "auth_password": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The HTTP Authentication user password",
+              "Default": {},
+              "Elem": {}
+            },
+            "auth_user": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The HTTP Authentication user name",
+              "Default": {},
+              "Elem": {}
+            },
+            "ca_chain": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A path to a file containing all the certificate authorities that should be loaded to validate the remote certificate (for TLS checks)",
+              "Default": {},
+              "Elem": {}
+            },
+            "certificate_file": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A path to a file containing the client certificate that will be presented to the remote server (for TLS-enabled checks)",
+              "Default": {},
+              "Elem": {}
+            },
+            "ciphers": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A list of ciphers to be used in the TLS protocol (for HTTPS checks)",
+              "Default": {},
+              "Elem": {}
+            },
+            "headers": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Description": "Map of HTTP Headers to send along with HTTP Requests",
+              "Default": {},
+              "Elem": {
+                "type": "schema.ValueType",
+                "value": "TypeString"
+              }
+            },
+            "key_file": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A path to a file containing key to be used in conjunction with the cilent certificate (for TLS checks)",
+              "Default": {},
+              "Elem": {}
+            },
+            "method": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The HTTP method to use",
+              "Default": {},
+              "Elem": {}
+            },
+            "payload": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The information transferred as the payload of an HTTP request",
+              "Default": {},
+              "Elem": {}
+            },
+            "port": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Description": "Specifies the port on which the management interface can be reached",
+              "Default": {},
+              "Elem": {}
+            },
+            "read_limit": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Description": "Sets an approximate limit on the data read (0 means no limit)",
+              "Default": {},
+              "Elem": {}
+            },
+            "url": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The URL to use as the target of the check",
+              "Default": {},
+              "Elem": {}
+            },
+            "version": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Sets the HTTP version for the check to use",
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "last_modified": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "last_modified_by": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "metric": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "Configuration for a stream of metrics",
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "active": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "Enables or disables the metric",
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "Name of the metric",
+              "Default": {},
+              "Elem": {}
+            },
+            "tags": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Description": "Tags assigned to the metric",
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "Type of metric (e.g. numeric, histogram, text)",
+              "Default": {},
+              "Elem": {}
+            },
+            "unit": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The unit of measurement for a metric",
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "metric_limit": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "Setting a metric_limit will enable all (-1), disable (0), or allow up to the specified limit of metrics for this check (\"N+\", where N is a positive integer)",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "mysql": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "MySQL check configuration",
+        "MaxItems": 1,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "dsn": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The connect DSN for the MySQL instance",
+              "Default": {},
+              "Elem": {}
+            },
+            "query": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The SQL to use as the query",
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The name of the check bundle that will be displayed in the web interface",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "notes": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Notes about this check bundle",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "period": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The period between each time the check is made",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "postgresql": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "PostgreSQL check configuration",
+        "MaxItems": 1,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "dsn": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The connect DSN for the PostgreSQL instance",
+              "Default": {},
+              "Elem": {}
+            },
+            "query": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The SQL to use as the query",
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "reverse_connect_urls": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      },
+      "statsd": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "statsd check configuration",
+        "MaxItems": 1,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "source_ip": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The source IP of the statsd metrics stream",
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "A list of tags assigned to the check",
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      },
+      "target": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The target of the check (e.g. hostname, URL, IP, etc)",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tcp": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "TCP check configuration",
+        "MaxItems": 1,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "banner_regexp": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "This regular expression is matched against the response banner. If a match is not found, the check will be marked as bad.",
+              "Default": {},
+              "Elem": {}
+            },
+            "ca_chain": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A path to a file containing all the certificate authorities that should be loaded to validate the remote certificate (for TLS checks).",
+              "Default": {},
+              "Elem": {}
+            },
+            "certificate_file": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A path to a file containing the client certificate that will be presented to the remote server (for TLS checks).",
+              "Default": {},
+              "Elem": {}
+            },
+            "ciphers": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A list of ciphers to be used when establishing a TLS connection",
+              "Default": {},
+              "Elem": {}
+            },
+            "host": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "Specifies the host name or IP address to connect to for this TCP check",
+              "Default": {},
+              "Elem": {}
+            },
+            "key_file": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A path to a file containing key to be used in conjunction with the cilent certificate (for TLS checks)",
+              "Default": {},
+              "Elem": {}
+            },
+            "port": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Description": "Specifies the port on which the management interface can be reached.",
+              "Default": {},
+              "Elem": {}
+            },
+            "tls": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "Upgrade TCP connection to use TLS.",
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "timeout": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The length of time in seconds (and fractions of a second) before the check will timeout if no response is returned to the collector",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The check type",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "uuids": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      }
     },
     "circonus_contact_group": {
-      "aggregation_window": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "300s"
-        }
-      ],
-      "alert_option": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "escalate_after": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "escalate_to": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "reminder": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "severity": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ],
-      "email": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "address": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "user": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ],
-      "http": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "address": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "format": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "json"
-              }
-            ],
-            "method": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "POST"
-              }
-            ]
-          }
-        }
-      ],
-      "irc": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "user": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ],
-      "last_modified": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "last_modified_by": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "long_message": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "long_subject": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "long_summary": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "pager_duty": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "contact_group_fallback": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "service_key": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "webhook_url": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ],
-      "short_message": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "short_summary": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "slack": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "buttons": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "true"
-              }
-            ],
-            "channel": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "contact_group_fallback": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "team": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "username": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "Circonus"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Username Slackbot uses in Slack to deliver a notification"
-              }
-            ]
-          }
-        }
-      ],
-      "sms": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "address": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "user": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      "aggregation_window": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "alert_option": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "escalate_after": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "escalate_to": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "reminder": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "severity": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
             }
-          ]
-        }
-      ],
-      "victorops": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "api_key": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "contact_group_fallback": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "critical": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "info": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "team": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "warning": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
           }
         }
-      ],
-      "xmpp": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "address": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "user": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
+      },
+      "email": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "address": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "email.user"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "user": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "email.address"
+              ],
+              "Default": {},
+              "Elem": {}
+            }
           }
         }
-      ]
+      },
+      "http": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "address": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "format": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "method": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "irc": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "user": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "last_modified": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "last_modified_by": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "long_message": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "long_subject": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "long_summary": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "pager_duty": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "contact_group_fallback": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "service_key": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "webhook_url": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "short_message": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "short_summary": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "slack": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "buttons": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "channel": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "contact_group_fallback": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "team": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "username": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Username Slackbot uses in Slack to deliver a notification",
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "sms": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "address": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "sms.user"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "user": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "sms.address"
+              ],
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      },
+      "victorops": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "api_key": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "contact_group_fallback": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "critical": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "info": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "team": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "warning": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "xmpp": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "address": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "xmpp.user"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "user": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "xmpp.address"
+              ],
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      }
     },
     "circonus_graph": {
-      "description": [
-        {
-          "name": "Type",
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "graph_style": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "left": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
           "type": "schema.ValueType",
           "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
         }
-      ],
-      "graph_style": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "line"
-        }
-      ],
-      "left": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeMap"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "interface {}",
-          "value": "TypeString"
-        }
-      ],
-      "line_style": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "stepped"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "How the line should change between point. A string containing either 'stepped', 'interpolated' or null."
-        }
-      ],
-      "metric": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "active": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "true"
-              }
-            ],
-            "alpha": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeFloat"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "axis": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "left"
-              }
-            ],
-            "caql": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "check": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "color": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "formula": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "function": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "gauge"
-              }
-            ],
-            "legend_formula": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "metric_name": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "metric_type": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "name": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "stack": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ],
-      "metric_cluster": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "active": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "true"
-              }
-            ],
-            "aggregate": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "none"
-              }
-            ],
-            "axis": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "left"
-              }
-            ],
-            "color": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "name": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "query": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "notes": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "right": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeMap"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "interface {}",
-          "value": "TypeString"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      },
+      "line_style": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "How the line should change between point. A string containing either 'stepped', 'interpolated' or null.",
+        "Default": {},
+        "Elem": {}
+      },
+      "metric": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "active": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "alpha": {
+              "Type": "TypeFloat",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "axis": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "caql": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "metric.check",
+                "metric.metric_name"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "check": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "metric.caql"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "color": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "formula": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "function": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "legend_formula": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "metric_name": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "metric_type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "stack": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
             }
-          ]
+          }
         }
-      ]
+      },
+      "metric_cluster": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "active": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "aggregate": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "axis": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "color": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "query": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "notes": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "right": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "schema.ValueType",
+          "value": "TypeString"
+        }
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      }
     },
     "circonus_metric": {
-      "active": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Enables or disables the metric"
+      "active": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enables or disables the metric",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Name of the metric",
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "Tags assigned to the metric",
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Name of the metric"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Tags assigned to the metric"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "type": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Type of metric (e.g. numeric, histogram, text)"
-        }
-      ],
-      "unit": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": ""
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The unit of measurement for a metric"
-        }
-      ]
+      },
+      "type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Type of metric (e.g. numeric, histogram, text)",
+        "Default": {},
+        "Elem": {}
+      },
+      "unit": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The unit of measurement for a metric",
+        "Default": {},
+        "Elem": {}
+      }
     },
     "circonus_metric_cluster": {
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "A description of the metric cluster"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "id": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The ID of this metric cluster"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The name of the metric cluster"
-        }
-      ],
-      "query": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "A metric cluster query definition"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "definition": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A query to select a collection of metric streams"
-              }
-            ],
-            "type": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The operation to perform on the matching metric streams"
-              }
-            ]
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "A description of the metric cluster",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "id": {
+        "Type": "TypeString",
+        "Description": "The ID of this metric cluster",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The name of the metric cluster",
+        "Default": {},
+        "Elem": {}
+      },
+      "query": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "A metric cluster query definition",
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "definition": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "A query to select a collection of metric streams",
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The operation to perform on the matching metric streams",
+              "Default": {},
+              "Elem": {}
+            }
           }
         }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "A list of tags assigned to the metric cluster"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "A list of tags assigned to the metric cluster",
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ]
+      }
     },
     "circonus_rule_set": {
-      "check": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The CID of the check that contains the metric for this rule set"
-        }
-      ],
-      "if": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "A rule to execute for this rule set"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "then": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeSet"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Description of the action(s) to take when this rule set is active"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaInfo",
-                "value": {
-                  "after": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "The length of time we should wait before contacting the contact groups after this ruleset has faulted."
+      "check": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The CID of the check that contains the metric for this rule set",
+        "Default": {},
+        "Elem": {}
+      },
+      "if": {
+        "Type": "TypeList",
+        "Required": true,
+        "Description": "A rule to execute for this rule set",
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "then": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Description": "Description of the action(s) to take when this rule set is active",
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaInfo",
+                "info": {
+                  "after": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "The length of time we should wait before contacting the contact groups after this ruleset has faulted.",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "notify": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "List of contact groups to notify at the following appropriate severity if this rule set is active.",
+                    "MinItems": 1,
+                    "Default": {},
+                    "Elem": {
+                      "type": "SchemaElements",
+                      "elements-type": "TypeString"
                     }
-                  ],
-                  "notify": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeList"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "List of contact groups to notify at the following appropriate severity if this rule set is active."
-                    },
-                    {
-                      "name": "Elem",
-                      "type": "ResourceSchemaElements",
-                      "value": [
-                        {
-                          "name": "Type",
-                          "type": "schema.ValueType",
-                          "value": "TypeString"
-                        }
-                      ]
-                    }
-                  ],
-                  "severity": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeInt"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Default",
-                      "type": "interface {}",
-                      "value": "1"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "Send a notification at this severity level."
-                    }
-                  ]
+                  },
+                  "severity": {
+                    "Type": "TypeInt",
+                    "Optional": true,
+                    "Description": "Send a notification at this severity level.",
+                    "Default": {},
+                    "Elem": {}
+                  }
                 }
               }
-            ],
-            "value": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeSet"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Predicate that the rule set uses to evaluate a stream of metrics"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaInfo",
-                "value": {
-                  "absent": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "Fire the rule set if there has been no data for the given metric stream over the last duration"
-                    }
-                  ],
-                  "changed": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeBool"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "Boolean indicating the value has changed"
-                    }
-                  ],
-                  "contains": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "Fire the rule set if the text metric contain the following string"
-                    }
-                  ],
-                  "match": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "Fire the rule set if the text metric exactly match the following string"
-                    }
-                  ],
-                  "max_value": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "Fire the rule set if the numeric value is more than the specified value"
-                    }
-                  ],
-                  "min_value": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "Fire the rule set if the numeric value less than the specified value"
-                    }
-                  ],
-                  "not_contain": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "Fire the rule set if the text metric does not contain the following string"
-                    }
-                  ],
-                  "not_match": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "Fire the rule set if the text metric not match the following string"
-                    }
-                  ],
-                  "over": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeSet"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "Use a derived value using a window"
-                    },
-                    {
-                      "name": "Elem",
-                      "type": "ResourceSchemaInfo",
-                      "value": {
-                        "last": [
-                          {
-                            "name": "Type",
-                            "type": "schema.ValueType",
-                            "value": "TypeString"
-                          },
-                          {
-                            "name": "Optional",
-                            "type": "bool",
-                            "value": "true"
-                          },
-                          {
-                            "name": "Default",
-                            "type": "interface {}",
-                            "value": "300s"
-                          },
-                          {
-                            "name": "Description",
-                            "type": "string",
-                            "value": "Duration over which data from the last interval is examined"
-                          }
-                        ],
-                        "using": [
-                          {
-                            "name": "Type",
-                            "type": "schema.ValueType",
-                            "value": "TypeString"
-                          },
-                          {
-                            "name": "Optional",
-                            "type": "bool",
-                            "value": "true"
-                          },
-                          {
-                            "name": "Default",
-                            "type": "interface {}",
-                            "value": "average"
-                          },
-                          {
-                            "name": "Description",
-                            "type": "string",
-                            "value": "Define the window funciton to use over the last duration"
-                          }
-                        ]
+            },
+            "value": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Description": "Predicate that the rule set uses to evaluate a stream of metrics",
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaInfo",
+                "info": {
+                  "absent": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Fire the rule set if there has been no data for the given metric stream over the last duration",
+                    "ConflictsWith": [
+                      "if.value.changed",
+                      "if.value.contains",
+                      "if.value.match",
+                      "if.value.not_match",
+                      "if.value.min_value",
+                      "if.value.not_contain",
+                      "if.value.max_value",
+                      "if.value.over"
+                    ],
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "changed": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "Description": "Boolean indicating the value has changed",
+                    "ConflictsWith": [
+                      "if.value.absent",
+                      "if.value.contains",
+                      "if.value.match",
+                      "if.value.not_match",
+                      "if.value.min_value",
+                      "if.value.not_contain",
+                      "if.value.max_value",
+                      "if.value.over"
+                    ],
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "contains": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Fire the rule set if the text metric contain the following string",
+                    "ConflictsWith": [
+                      "if.value.absent",
+                      "if.value.changed",
+                      "if.value.match",
+                      "if.value.not_match",
+                      "if.value.min_value",
+                      "if.value.not_contain",
+                      "if.value.max_value",
+                      "if.value.over"
+                    ],
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "match": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Fire the rule set if the text metric exactly match the following string",
+                    "ConflictsWith": [
+                      "if.value.absent",
+                      "if.value.changed",
+                      "if.value.contains",
+                      "if.value.not_match",
+                      "if.value.min_value",
+                      "if.value.not_contain",
+                      "if.value.max_value",
+                      "if.value.over"
+                    ],
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "max_value": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Fire the rule set if the numeric value is more than the specified value",
+                    "ConflictsWith": [
+                      "if.value.absent",
+                      "if.value.changed",
+                      "if.value.contains",
+                      "if.value.match",
+                      "if.value.not_match",
+                      "if.value.min_value",
+                      "if.value.not_contain"
+                    ],
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "min_value": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Fire the rule set if the numeric value less than the specified value",
+                    "ConflictsWith": [
+                      "if.value.absent",
+                      "if.value.changed",
+                      "if.value.contains",
+                      "if.value.match",
+                      "if.value.not_match",
+                      "if.value.not_contain",
+                      "if.value.max_value"
+                    ],
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "not_contain": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Fire the rule set if the text metric does not contain the following string",
+                    "ConflictsWith": [
+                      "if.value.absent",
+                      "if.value.changed",
+                      "if.value.contains",
+                      "if.value.match",
+                      "if.value.not_match",
+                      "if.value.min_value",
+                      "if.value.max_value",
+                      "if.value.over"
+                    ],
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "not_match": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Fire the rule set if the text metric not match the following string",
+                    "ConflictsWith": [
+                      "if.value.absent",
+                      "if.value.changed",
+                      "if.value.contains",
+                      "if.value.match",
+                      "if.value.min_value",
+                      "if.value.not_contain",
+                      "if.value.max_value",
+                      "if.value.over"
+                    ],
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "over": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "Description": "Use a derived value using a window",
+                    "MaxItems": 1,
+                    "ConflictsWith": [
+                      "if.value.absent",
+                      "if.value.changed",
+                      "if.value.contains",
+                      "if.value.match",
+                      "if.value.not_match",
+                      "if.value.not_contain"
+                    ],
+                    "Default": {},
+                    "Elem": {
+                      "type": "SchemaInfo",
+                      "info": {
+                        "last": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "Duration over which data from the last interval is examined",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "using": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "Define the window funciton to use over the last duration",
+                          "Default": {},
+                          "Elem": {}
+                        }
                       }
                     }
-                  ]
+                  }
                 }
               }
-            ]
+            }
           }
         }
-      ],
-      "link": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "URL to show users when this rule set is active (e.g. wiki)"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
+      },
+      "link": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "URL to show users when this rule set is active (e.g. wiki)",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "metric_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The name of the metric stream within a check to register the rule set with",
+        "Default": {},
+        "Elem": {}
+      },
+      "metric_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The type of data flowing through the specified metric stream",
+        "Default": {},
+        "Elem": {}
+      },
+      "notes": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Notes describing this rule set",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "parent": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Parent CID that must be healthy for this rule set to be active",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "Tags associated with this rule set",
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "metric_name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The name of the metric stream within a check to register the rule set with"
-        }
-      ],
-      "metric_type": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "numeric"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The type of data flowing through the specified metric stream"
-        }
-      ],
-      "notes": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Notes describing this rule set"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "parent": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Parent CID that must be healthy for this rule set to be active"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Tags associated with this rule set"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ]
+      }
     }
   },
   "data-sources": {
     "circonus_account": {
-      "address1": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
+      "address1": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "address2": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "cc_email": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "city": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "contact_groups": {
+        "Type": "TypeList",
+        "Description": "Contact Groups in this account",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "address2": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "cc_email": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "city": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "contact_groups": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Contact Groups in this account"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      },
+      "country": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "current": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "id"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "current"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "invites": {
+        "Type": "TypeList",
+        "Description": "Outstanding invites attached to the account",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "email": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "role": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
             }
-          ]
-        }
-      ],
-      "country": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "current": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "id": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "invites": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Outstanding invites attached to the account"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "email": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "role": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
           }
         }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "owner": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "state": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "timezone": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "ui_base_url": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "usage": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Account's usage limits"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "limit": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "type": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "used": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
+      },
+      "name": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "owner": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "state": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "timezone": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ui_base_url": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "usage": {
+        "Type": "TypeList",
+        "Description": "Account's usage limits",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "limit": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "used": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
           }
         }
-      ],
-      "users": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Users attached to this account"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "id": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "role": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
+      },
+      "users": {
+        "Type": "TypeList",
+        "Description": "Users attached to this account",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "role": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
           }
         }
-      ]
+      }
     },
     "circonus_collector": {
-      "details": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Details associated with individual collectors (a.k.a. broker)"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "cn": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
+      "details": {
+        "Type": "TypeList",
+        "Description": "Details associated with individual collectors (a.k.a. broker)",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "cn": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "external_host": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "external_port": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ip": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "min_version": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "modules": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
               }
-            ],
-            "external_host": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "external_port": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "ip": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "min_version": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "modules": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ],
-            "port": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "skew": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "status": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "version": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
+            },
+            "port": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "skew": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "status": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "version": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
           }
         }
-      ],
-      "id": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
+      },
+      "id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "latitude": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "longitude": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "latitude": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "longitude": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "type": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "type": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     }
   }
 }

@@ -1,838 +1,427 @@
 {
   "name": "librato",
   "type": "provider",
-  "schema": {
-    "email": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Required",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "The email address for the Librato account."
-      }
-    ],
-    "token": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Required",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "The auth token for the Librato account."
-      }
-    ]
+  "provider": {
+    "email": {
+      "Type": "TypeString",
+      "Required": true,
+      "Description": "The email address for the Librato account.",
+      "Default": {},
+      "Elem": {}
+    },
+    "token": {
+      "Type": "TypeString",
+      "Required": true,
+      "Description": "The auth token for the Librato account.",
+      "Default": {},
+      "Elem": {}
+    }
   },
   "resources": {
     "librato_alert": {
-      "active": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        }
-      ],
-      "attributes": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "runbook_url": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ],
-      "condition": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "detect_reset": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "duration": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "metric_name": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "source": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "summary_function": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "threshold": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeFloat"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "type": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ],
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "rearm_seconds": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "600"
-        }
-      ],
-      "services": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      "active": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "attributes": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "runbook_url": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
             }
-          ]
+          }
         }
-      ]
+      },
+      "condition": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "detect_reset": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "duration": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "metric_name": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "source": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "summary_function": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "threshold": {
+              "Type": "TypeFloat",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "rearm_seconds": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "services": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      }
     },
     "librato_metric": {
-      "attributes": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "aggregate": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "color": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "created_by_ua": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "display_max": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "display_min": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "display_stacked": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "false"
-              }
-            ],
-            "display_units_long": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "display_units_short": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "gap_detection": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
+      "attributes": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "aggregate": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "color": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "created_by_ua": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "display_max": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "display_min": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "display_stacked": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "display_units_long": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "display_units_short": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "gap_detection": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
           }
         }
-      ],
-      "composite": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "display_name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "period": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "type": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "composite": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "display_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "period": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "librato_service": {
-      "id": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "settings": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "title": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "type": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "id": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "settings": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "title": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "librato_space": {
-      "id": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "id": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "librato_space_chart": {
-      "label": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "max": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeFloat"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "NaN"
-        },
-        {
-          "name": "DefaultValue_Computed",
+      "label": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "max": {
+        "Type": "TypeFloat",
+        "Optional": true,
+        "Default": {
           "type": "float64",
           "value": "NaN"
-        }
-      ],
-      "min": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeFloat"
         },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "NaN"
-        },
-        {
-          "name": "DefaultValue_Computed",
+        "Elem": {}
+      },
+      "min": {
+        "Type": "TypeFloat",
+        "Optional": true,
+        "Default": {
           "type": "float64",
           "value": "NaN"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
         },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "related_space": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "space_id": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "stream": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "color": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "composite": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "group_function": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "max": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeFloat"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "NaN"
-              },
-              {
-                "name": "DefaultValue_Computed",
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "related_space": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "space_id": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "stream": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "color": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "composite": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "stream.metric",
+                "stream.source",
+                "stream.group_function"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "group_function": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "stream.composite"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "max": {
+              "Type": "TypeFloat",
+              "Optional": true,
+              "Default": {
                 "type": "float64",
                 "value": "NaN"
-              }
-            ],
-            "metric": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
               },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "min": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeFloat"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "NaN"
-              },
-              {
-                "name": "DefaultValue_Computed",
+              "Elem": {}
+            },
+            "metric": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "stream.composite"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "min": {
+              "Type": "TypeFloat",
+              "Optional": true,
+              "Default": {
                 "type": "float64",
                 "value": "NaN"
-              }
-            ],
-            "name": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
               },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "period": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "source": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "summary_function": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "transform_function": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "units_long": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "units_short": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "period": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "source": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "stream.composite"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "summary_function": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "transform_function": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "units_long": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "units_short": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
           }
         }
-      ],
-      "type": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     }
   },
   "data-sources": {}

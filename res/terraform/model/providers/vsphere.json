@@ -1,1173 +1,536 @@
 {
   "name": "vsphere",
   "type": "provider",
-  "schema": {
-    "allow_unverified_ssl": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeBool"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "If set, VMware vSphere client will permit unverifiable SSL certificates."
-      },
-      {
-        "name": "DefaultValue_Computed",
+  "provider": {
+    "allow_unverified_ssl": {
+      "Type": "TypeBool",
+      "Optional": true,
+      "Description": "If set, VMware vSphere client will permit unverifiable SSL certificates.",
+      "Default": {
         "type": "bool",
         "value": "false"
-      }
-    ],
-    "client_debug": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeBool"
       },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "govomomi debug"
-      },
-      {
-        "name": "DefaultValue_Computed",
+      "Elem": {}
+    },
+    "client_debug": {
+      "Type": "TypeBool",
+      "Optional": true,
+      "Description": "govomomi debug",
+      "Default": {
         "type": "bool",
         "value": "false"
-      }
-    ],
-    "client_debug_path": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
       },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
+      "Elem": {}
+    },
+    "client_debug_path": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "govomomi debug path for debug",
+      "Default": {
+        "type": "string"
       },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "govomomi debug path for debug"
+      "Elem": {}
+    },
+    "client_debug_path_run": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "govomomi debug path for a single run",
+      "Default": {
+        "type": "string"
       },
-      {
-        "name": "DefaultValue_Computed",
-        "type": "string",
-        "value": ""
-      }
-    ],
-    "client_debug_path_run": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "govomomi debug path for a single run"
-      },
-      {
-        "name": "DefaultValue_Computed",
-        "type": "string",
-        "value": ""
-      }
-    ],
-    "password": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Required",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "The user password for vSphere API operations."
-      }
-    ],
-    "user": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Required",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "The user name for vSphere API operations."
-      }
-    ],
-    "vcenter_server": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Deprecated",
-        "type": "string",
-        "value": "This field has been renamed to vsphere_server."
-      }
-    ],
-    "vsphere_server": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Optional",
-        "type": "bool",
-        "value": "true"
-      },
-      {
-        "name": "Description",
-        "type": "string",
-        "value": "The vSphere Server name for vSphere API operations."
-      }
-    ]
+      "Elem": {}
+    },
+    "password": {
+      "Type": "TypeString",
+      "Required": true,
+      "Description": "The user password for vSphere API operations.",
+      "Default": {},
+      "Elem": {}
+    },
+    "user": {
+      "Type": "TypeString",
+      "Required": true,
+      "Description": "The user name for vSphere API operations.",
+      "Default": {},
+      "Elem": {}
+    },
+    "vcenter_server": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Deprecated": "This field has been renamed to vsphere_server.",
+      "Default": {},
+      "Elem": {}
+    },
+    "vsphere_server": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "The vSphere Server name for vSphere API operations.",
+      "Default": {},
+      "Elem": {}
+    }
   },
   "resources": {
     "vsphere_file": {
-      "create_directories": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "datacenter": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "datastore": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "destination_file": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "source_datacenter": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "source_datastore": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "source_file": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "create_directories": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "datacenter": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "datastore": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "destination_file": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "source_datacenter": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "source_datastore": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "source_file": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "vsphere_folder": {
-      "datacenter": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "existing_path": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "path": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "datacenter": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "existing_path": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "path": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "vsphere_virtual_disk": {
-      "adapter_type": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "ide"
-        }
-      ],
-      "datacenter": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "datastore": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "size": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "type": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "eagerZeroedThick"
-        }
-      ],
-      "vmdk_path": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "adapter_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "datacenter": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "datastore": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "size": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vmdk_path": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "vsphere_virtual_machine": {
-      "cdrom": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "datastore": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "path": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ],
-      "cluster": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "custom_configuration_parameters": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeMap"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "datacenter": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "detach_unknown_disks_on_delete": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        }
-      ],
-      "disk": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeSet"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "bootable": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "controller_type": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "scsi"
-              }
-            ],
-            "datastore": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "iops": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "keep_on_remove": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "key": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "name": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "size": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "template": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "type": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Default",
-                "type": "interface {}",
-                "value": "eager_zeroed"
-              }
-            ],
-            "uuid": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "vmdk": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
-          }
-        }
-      ],
-      "dns_servers": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      "cdrom": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "datastore": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "path": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
             }
-          ]
+          }
         }
-      ],
-      "dns_suffixes": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      },
+      "cluster": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "custom_configuration_parameters": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "datacenter": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "detach_unknown_disks_on_delete": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "disk": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "bootable": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "controller_type": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "datastore": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "iops": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "keep_on_remove": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "key": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "size": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "template": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "uuid": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "vmdk": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
             }
-          ]
-        }
-      ],
-      "domain": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "vsphere.local"
-        }
-      ],
-      "enable_disk_uuid": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        }
-      ],
-      "folder": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "gateway": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Deprecated",
-          "type": "string",
-          "value": "Please use network_interface.ipv4_gateway"
-        }
-      ],
-      "linked_clone": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        }
-      ],
-      "memory": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "memory_reservation": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "0"
-        }
-      ],
-      "moid": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "network_interface": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "adapter_type": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "ip_address": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Deprecated",
-                "type": "string",
-                "value": "Please use ipv4_address"
-              }
-            ],
-            "ipv4_address": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "ipv4_gateway": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "ipv4_prefix_length": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "ipv6_address": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "ipv6_gateway": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "ipv6_prefix_length": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "label": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "mac_address": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "subnet_mask": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Computed",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Deprecated",
-                "type": "string",
-                "value": "Please use ipv4_prefix_length"
-              }
-            ]
           }
         }
-      ],
-      "resource_pool": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      },
+      "dns_servers": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "skip_customization": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
+      },
+      "dns_suffixes": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "time_zone": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "Etc/UTC"
-        }
-      ],
-      "uuid": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "vcpu": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "windows_opt_config": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "admin_password": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "domain": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "domain_user": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "domain_user_password": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "product_key": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
+      },
+      "domain": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "enable_disk_uuid": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "folder": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "gateway": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Deprecated": "Please use network_interface.ipv4_gateway",
+        "Default": {},
+        "Elem": {}
+      },
+      "linked_clone": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "memory": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "memory_reservation": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "moid": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "network_interface": {
+        "Type": "TypeList",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "adapter_type": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ip_address": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Deprecated": "Please use ipv4_address",
+              "Default": {},
+              "Elem": {}
+            },
+            "ipv4_address": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ipv4_gateway": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ipv4_prefix_length": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ipv6_address": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ipv6_gateway": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ipv6_prefix_length": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "label": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "mac_address": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "subnet_mask": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Deprecated": "Please use ipv4_prefix_length",
+              "Default": {},
+              "Elem": {}
+            }
           }
         }
-      ]
+      },
+      "resource_pool": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "skip_customization": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "time_zone": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "uuid": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vcpu": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "windows_opt_config": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "admin_password": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "domain": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "domain_user": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "domain_user_password": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "product_key": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      }
     }
   },
   "data-sources": {}

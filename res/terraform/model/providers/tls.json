@@ -1,886 +1,388 @@
 {
   "name": "tls",
   "type": "provider",
-  "schema": {},
+  "provider": {},
   "resources": {
     "tls_cert_request": {
-      "cert_request_pem": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
+      "cert_request_pem": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "dns_names": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "List of DNS names to use as subjects of the certificate",
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "dns_names": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "List of DNS names to use as subjects of the certificate"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      },
+      "ip_addresses": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "List of IP addresses to use as subjects of the certificate",
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      },
+      "key_algorithm": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Name of the algorithm to use to generate the certificate's private key",
+        "Default": {},
+        "Elem": {}
+      },
+      "private_key_pem": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "PEM-encoded private key that the certificate will belong to",
+        "Default": {},
+        "Elem": {}
+      },
+      "subject": {
+        "Type": "TypeList",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "common_name": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "country": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "locality": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "organization": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "organizational_unit": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "postal_code": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "province": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "serial_number": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "street_address": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
             }
-          ]
-        }
-      ],
-      "ip_addresses": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "List of IP addresses to use as subjects of the certificate"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "key_algorithm": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Name of the algorithm to use to generate the certificate's private key"
-        }
-      ],
-      "private_key_pem": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "PEM-encoded private key that the certificate will belong to"
-        }
-      ],
-      "subject": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "common_name": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "country": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "locality": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "organization": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "organizational_unit": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "postal_code": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "province": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "serial_number": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "street_address": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ]
           }
         }
-      ]
+      }
     },
     "tls_locally_signed_cert": {
-      "allowed_uses": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Uses that are allowed for the certificate"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
+      "allowed_uses": {
+        "Type": "TypeList",
+        "Required": true,
+        "Description": "Uses that are allowed for the certificate",
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "ca_cert_pem": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "PEM-encoded CA certificate"
-        }
-      ],
-      "ca_key_algorithm": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Name of the algorithm used to generate the certificate's private key"
-        }
-      ],
-      "ca_private_key_pem": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "PEM-encoded CA private key used to sign the certificate"
-        }
-      ],
-      "cert_pem": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "cert_request_pem": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "PEM-encoded certificate request"
-        }
-      ],
-      "early_renewal_hours": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "0"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Number of hours before the certificates expiry when a new certificate will be generated"
-        }
-      ],
-      "is_ca_certificate": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Whether the generated certificate will be usable as a CA certificate"
-        }
-      ],
-      "validity_end_time": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "validity_period_hours": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Number of hours that the certificate will remain valid for"
-        }
-      ],
-      "validity_start_time": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "ca_cert_pem": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "PEM-encoded CA certificate",
+        "Default": {},
+        "Elem": {}
+      },
+      "ca_key_algorithm": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Name of the algorithm used to generate the certificate's private key",
+        "Default": {},
+        "Elem": {}
+      },
+      "ca_private_key_pem": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "PEM-encoded CA private key used to sign the certificate",
+        "Default": {},
+        "Elem": {}
+      },
+      "cert_pem": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "cert_request_pem": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "PEM-encoded certificate request",
+        "Default": {},
+        "Elem": {}
+      },
+      "early_renewal_hours": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "Number of hours before the certificates expiry when a new certificate will be generated",
+        "Default": {},
+        "Elem": {}
+      },
+      "is_ca_certificate": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Whether the generated certificate will be usable as a CA certificate",
+        "Default": {},
+        "Elem": {}
+      },
+      "validity_end_time": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "validity_period_hours": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Description": "Number of hours that the certificate will remain valid for",
+        "Default": {},
+        "Elem": {}
+      },
+      "validity_start_time": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "tls_private_key": {
-      "algorithm": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Name of the algorithm to use to generate the private key"
-        }
-      ],
-      "ecdsa_curve": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "P224"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "ECDSA curve to use when generating a key"
-        }
-      ],
-      "private_key_pem": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "public_key_openssh": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "public_key_pem": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "rsa_bits": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "2048"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Number of bits to use when generating an RSA key"
-        }
-      ]
+      "algorithm": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Name of the algorithm to use to generate the private key",
+        "Default": {},
+        "Elem": {}
+      },
+      "ecdsa_curve": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "ECDSA curve to use when generating a key",
+        "Default": {},
+        "Elem": {}
+      },
+      "private_key_pem": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "public_key_openssh": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "public_key_pem": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "rsa_bits": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "Number of bits to use when generating an RSA key",
+        "Default": {},
+        "Elem": {}
+      }
     },
     "tls_self_signed_cert": {
-      "allowed_uses": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Uses that are allowed for the certificate"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      "allowed_uses": {
+        "Type": "TypeList",
+        "Required": true,
+        "Description": "Uses that are allowed for the certificate",
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      },
+      "cert_pem": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "dns_names": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "List of DNS names to use as subjects of the certificate",
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      },
+      "early_renewal_hours": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "Number of hours before the certificates expiry when a new certificate will be generated",
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_addresses": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "List of IP addresses to use as subjects of the certificate",
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      },
+      "is_ca_certificate": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Whether the generated certificate will be usable as a CA certificate",
+        "Default": {},
+        "Elem": {}
+      },
+      "key_algorithm": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Name of the algorithm to use to generate the certificate's private key",
+        "Default": {},
+        "Elem": {}
+      },
+      "private_key_pem": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "PEM-encoded private key that the certificate will belong to",
+        "Default": {},
+        "Elem": {}
+      },
+      "subject": {
+        "Type": "TypeList",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "common_name": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "country": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "locality": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "organization": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "organizational_unit": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "postal_code": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "province": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "serial_number": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "street_address": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
             }
-          ]
-        }
-      ],
-      "cert_pem": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "dns_names": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "List of DNS names to use as subjects of the certificate"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "early_renewal_hours": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "0"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Number of hours before the certificates expiry when a new certificate will be generated"
-        }
-      ],
-      "ip_addresses": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "List of IP addresses to use as subjects of the certificate"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
-        }
-      ],
-      "is_ca_certificate": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Whether the generated certificate will be usable as a CA certificate"
-        }
-      ],
-      "key_algorithm": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Name of the algorithm to use to generate the certificate's private key"
-        }
-      ],
-      "private_key_pem": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "PEM-encoded private key that the certificate will belong to"
-        }
-      ],
-      "subject": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "common_name": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "country": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "locality": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "organization": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "organizational_unit": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "postal_code": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "province": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "serial_number": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "street_address": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ]
           }
         }
-      ],
-      "validity_end_time": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "validity_period_hours": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "Number of hours that the certificate will remain valid for"
-        }
-      ],
-      "validity_start_time": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "validity_end_time": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "validity_period_hours": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Description": "Number of hours that the certificate will remain valid for",
+        "Default": {},
+        "Elem": {}
+      },
+      "validity_start_time": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     }
   },
   "data-sources": {}

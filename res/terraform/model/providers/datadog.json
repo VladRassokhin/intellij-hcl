@@ -1,1344 +1,613 @@
 {
   "name": "datadog",
   "type": "provider",
-  "schema": {
-    "api_key": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Required",
-        "type": "bool",
-        "value": "true"
-      }
-    ],
-    "app_key": [
-      {
-        "name": "Type",
-        "type": "schema.ValueType",
-        "value": "TypeString"
-      },
-      {
-        "name": "Required",
-        "type": "bool",
-        "value": "true"
-      }
-    ]
+  "provider": {
+    "api_key": {
+      "Type": "TypeString",
+      "Required": true,
+      "Default": {},
+      "Elem": {}
+    },
+    "app_key": {
+      "Type": "TypeString",
+      "Required": true,
+      "Default": {},
+      "Elem": {}
+    }
   },
   "resources": {
     "datadog_downtime": {
-      "active": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "disabled": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "end": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "message": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "recurrence": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "period": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
+      "active": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "disabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "end": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "message": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "recurrence": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "period": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "until_date": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "ConflictsWith": [
+                "recurrence.until_occurrences"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "until_occurrences": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "ConflictsWith": [
+                "recurrence.until_date"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "week_days": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
               }
-            ],
-            "type": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "until_date": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "until_occurrences": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeInt"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "week_days": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ]
+            }
           }
         }
-      ],
-      "scope": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
-            }
-          ]
+      },
+      "scope": {
+        "Type": "TypeList",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "start": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "start": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "datadog_monitor": {
-      "escalation_message": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "evaluation_delay": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "include_tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        }
-      ],
-      "locked": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "message": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "new_host_delay": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "no_data_timeframe": [
-        {
-          "name": "Type",
+      "escalation_message": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "evaluation_delay": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "include_tags": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "locked": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "message": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "new_host_delay": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "no_data_timeframe": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "notify_audit": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "notify_no_data": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "query": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "renotify_interval": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "require_full_window": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "silenced": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
           "type": "schema.ValueType",
           "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
         }
-      ],
-      "notify_audit": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
         }
-      ],
-      "notify_no_data": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        }
-      ],
-      "query": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "renotify_interval": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "require_full_window": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "true"
-        }
-      ],
-      "silenced": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeMap"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "interface {}",
-          "value": "TypeInt"
-        }
-      ],
-      "tags": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaElements",
-          "value": [
-            {
-              "name": "Type",
-              "type": "schema.ValueType",
-              "value": "TypeString"
+      },
+      "thresholds": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "critical": {
+              "Type": "TypeFloat",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ok": {
+              "Type": "TypeFloat",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "warning": {
+              "Type": "TypeFloat",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
             }
-          ]
-        }
-      ],
-      "thresholds": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeMap"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "critical": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeFloat"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "ok": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeFloat"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "warning": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeFloat"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
           }
         }
-      ],
-      "timeout_h": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeInt"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "type": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      },
+      "timeout_h": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
     },
     "datadog_timeboard": {
-      "description": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "A description of the dashboard's content."
-        }
-      ],
-      "graph": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "A list of graph definitions."
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "autoscale": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Automatically scale graphs"
+      "description": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "A description of the dashboard's content.",
+        "Default": {},
+        "Elem": {}
+      },
+      "graph": {
+        "Type": "TypeList",
+        "Required": true,
+        "Description": "A list of graph definitions.",
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "autoscale": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "Automatically scale graphs",
+              "Default": {},
+              "Elem": {}
+            },
+            "custom_unit": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Use a custom unit (like 'users')",
+              "Default": {},
+              "Elem": {}
+            },
+            "events": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Description": "Filter for events to be overlayed on the graph.",
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
               }
-            ],
-            "custom_unit": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Use a custom unit (like 'users')"
+            },
+            "group": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Description": "A list of groupings for hostmap type graphs.",
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
               }
-            ],
-            "events": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeSet"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Filter for events to be overlayed on the graph."
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
+            },
+            "include_no_metric_hosts": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "Include hosts without metrics in hostmap graphs",
+              "Default": {},
+              "Elem": {}
+            },
+            "include_ungrouped_hosts": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "Include ungrouped hosts in hostmap graphs",
+              "Default": {},
+              "Elem": {}
+            },
+            "marker": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaInfo",
+                "info": {
+                  "label": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "type": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "value": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
                   }
-                ]
-              }
-            ],
-            "group": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeSet"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A list of groupings for hostmap type graphs."
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
-              }
-            ],
-            "include_no_metric_hosts": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Include hosts without metrics in hostmap graphs"
-              }
-            ],
-            "include_ungrouped_hosts": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeBool"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "Include ungrouped hosts in hostmap graphs"
-              }
-            ],
-            "marker": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaInfo",
-                "value": {
-                  "label": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    }
-                  ],
-                  "type": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Required",
-                      "type": "bool",
-                      "value": "true"
-                    }
-                  ],
-                  "value": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Required",
-                      "type": "bool",
-                      "value": "true"
-                    }
-                  ]
                 }
               }
-            ],
-            "precision": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "How many digits to show"
-              }
-            ],
-            "request": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeList"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaInfo",
-                "value": {
-                  "aggregator": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    }
-                  ],
-                  "change_type": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "Type of change for change graphs."
-                    }
-                  ],
-                  "compare_to": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "The time period to compare change against in change graphs."
-                    }
-                  ],
-                  "conditional_format": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeList"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "A list of conditional formatting rules."
-                    },
-                    {
-                      "name": "Elem",
-                      "type": "ResourceSchemaInfo",
-                      "value": {
-                        "comparator": [
-                          {
-                            "name": "Type",
-                            "type": "schema.ValueType",
-                            "value": "TypeString"
-                          },
-                          {
-                            "name": "Required",
-                            "type": "bool",
-                            "value": "true"
-                          },
-                          {
-                            "name": "Description",
-                            "type": "string",
-                            "value": "Comparator (\u003c, \u003e, etc)"
-                          }
-                        ],
-                        "custom_bg_color": [
-                          {
-                            "name": "Type",
-                            "type": "schema.ValueType",
-                            "value": "TypeString"
-                          },
-                          {
-                            "name": "Optional",
-                            "type": "bool",
-                            "value": "true"
-                          },
-                          {
-                            "name": "Description",
-                            "type": "string",
-                            "value": "Custom background color (e.g., #205081)"
-                          }
-                        ],
-                        "custom_fg_color": [
-                          {
-                            "name": "Type",
-                            "type": "schema.ValueType",
-                            "value": "TypeString"
-                          },
-                          {
-                            "name": "Optional",
-                            "type": "bool",
-                            "value": "true"
-                          },
-                          {
-                            "name": "Description",
-                            "type": "string",
-                            "value": "Custom foreground color (e.g., #59afe1)"
-                          }
-                        ],
-                        "palette": [
-                          {
-                            "name": "Type",
-                            "type": "schema.ValueType",
-                            "value": "TypeString"
-                          },
-                          {
-                            "name": "Optional",
-                            "type": "bool",
-                            "value": "true"
-                          },
-                          {
-                            "name": "Description",
-                            "type": "string",
-                            "value": "The palette to use if this condition is met."
-                          }
-                        ],
-                        "value": [
-                          {
-                            "name": "Type",
-                            "type": "schema.ValueType",
-                            "value": "TypeString"
-                          },
-                          {
-                            "name": "Optional",
-                            "type": "bool",
-                            "value": "true"
-                          },
-                          {
-                            "name": "Description",
-                            "type": "string",
-                            "value": "Value that is threshold for conditional format"
-                          }
-                        ]
+            },
+            "precision": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "How many digits to show",
+              "Default": {},
+              "Elem": {}
+            },
+            "request": {
+              "Type": "TypeList",
+              "Required": true,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaInfo",
+                "info": {
+                  "aggregator": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "change_type": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Type of change for change graphs.",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "compare_to": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "The time period to compare change against in change graphs.",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "conditional_format": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "A list of conditional formatting rules.",
+                    "Default": {},
+                    "Elem": {
+                      "type": "SchemaInfo",
+                      "info": {
+                        "comparator": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Description": "Comparator (\u003c, \u003e, etc)",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "custom_bg_color": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "Custom background color (e.g., #205081)",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "custom_fg_color": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "Custom foreground color (e.g., #59afe1)",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "palette": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "The palette to use if this condition is met.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "value": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "Value that is threshold for conditional format",
+                          "Default": {},
+                          "Elem": {}
+                        }
                       }
                     }
-                  ],
-                  "extra_col": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "If set to 'present', this will include the present values in change graphs."
-                    }
-                  ],
-                  "increase_good": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeBool"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "Decides whether to represent increases as good or bad in change graphs."
-                    }
-                  ],
-                  "order_by": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "The field a change graph will be ordered by."
-                    }
-                  ],
-                  "order_direction": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Description",
-                      "type": "string",
-                      "value": "Sort change graph in ascending or descending order."
-                    }
-                  ],
-                  "q": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Required",
-                      "type": "bool",
-                      "value": "true"
-                    }
-                  ],
-                  "stacked": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeBool"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Default",
-                      "type": "interface {}",
-                      "value": "false"
-                    }
-                  ],
-                  "style": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeMap"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    }
-                  ],
-                  "type": [
-                    {
-                      "name": "Type",
-                      "type": "schema.ValueType",
-                      "value": "TypeString"
-                    },
-                    {
-                      "name": "Optional",
-                      "type": "bool",
-                      "value": "true"
-                    },
-                    {
-                      "name": "Default",
-                      "type": "interface {}",
-                      "value": "line"
-                    }
-                  ]
+                  },
+                  "extra_col": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "If set to 'present', this will include the present values in change graphs.",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "increase_good": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "Description": "Decides whether to represent increases as good or bad in change graphs.",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "order_by": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "The field a change graph will be ordered by.",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "order_direction": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Sort change graph in ascending or descending order.",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "q": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "stacked": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "style": {
+                    "Type": "TypeMap",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "type": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
                 }
               }
-            ],
-            "scope": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeSet"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "A list of scope filters for hostmap type graphs."
-              },
-              {
-                "name": "Elem",
-                "type": "ResourceSchemaElements",
-                "value": [
-                  {
-                    "name": "Type",
-                    "type": "schema.ValueType",
-                    "value": "TypeString"
-                  }
-                ]
+            },
+            "scope": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Description": "A list of scope filters for hostmap type graphs.",
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
               }
-            ],
-            "style": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeMap"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "text_align": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "How to align text"
-              }
-            ],
-            "title": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The name of the graph."
-              }
-            ],
-            "viz": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              }
-            ],
-            "yaxis": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeMap"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              }
-            ]
+            },
+            "style": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "text_align": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "How to align text",
+              "Default": {},
+              "Elem": {}
+            },
+            "title": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The name of the graph.",
+              "Default": {},
+              "Elem": {}
+            },
+            "viz": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "yaxis": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
           }
         }
-      ],
-      "read_only": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        }
-      ],
-      "template_variable": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeList"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "A list of template variables for using Dashboard templating."
-        },
-        {
-          "name": "Elem",
-          "type": "ResourceSchemaInfo",
-          "value": {
-            "default": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The default value for the template variable on dashboard load."
-              }
-            ],
-            "name": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Required",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The name of the variable."
-              }
-            ],
-            "prefix": [
-              {
-                "name": "Type",
-                "type": "schema.ValueType",
-                "value": "TypeString"
-              },
-              {
-                "name": "Optional",
-                "type": "bool",
-                "value": "true"
-              },
-              {
-                "name": "Description",
-                "type": "string",
-                "value": "The tag prefix associated with the variable. Only tags with this prefix will appear in the variable dropdown."
-              }
-            ]
+      },
+      "read_only": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "template_variable": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "A list of template variables for using Dashboard templating.",
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "default": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The default value for the template variable on dashboard load.",
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The name of the variable.",
+              "Default": {},
+              "Elem": {}
+            },
+            "prefix": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The tag prefix associated with the variable. Only tags with this prefix will appear in the variable dropdown.",
+              "Default": {},
+              "Elem": {}
+            }
           }
         }
-      ],
-      "title": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Description",
-          "type": "string",
-          "value": "The name of the dashboard."
-        }
-      ]
+      },
+      "title": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The name of the dashboard.",
+        "Default": {},
+        "Elem": {}
+      }
     },
     "datadog_user": {
-      "disabled": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        }
-      ],
-      "email": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "handle": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "is_admin": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        },
-        {
-          "name": "Default",
-          "type": "interface {}",
-          "value": "false"
-        }
-      ],
-      "name": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Required",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "role": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeString"
-        },
-        {
-          "name": "Optional",
-          "type": "bool",
-          "value": "true"
-        }
-      ],
-      "verified": [
-        {
-          "name": "Type",
-          "type": "schema.ValueType",
-          "value": "TypeBool"
-        },
-        {
-          "name": "Computed",
-          "type": "bool",
-          "value": "true"
-        }
-      ]
+      "disabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "email": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "handle": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "is_admin": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "verified": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
     }
   },
   "data-sources": {}
