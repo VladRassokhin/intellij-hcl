@@ -193,18 +193,12 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     val info = parseProviderInfo(name, provider)
     this.providers.add(info)
     val resources = json.obj("resources")
-    if (resources == null) {
-      LOG.warn("No resources for provider '$name' in file '$file'")
-      return
-    }
-    val map = resources.map { parseResourceInfo(it, info) }
-    this.resources.addAll(map)
     val dataSources = json.obj("data-sources")
-    if (dataSources == null) {
-      LOG.warn("No data-sources for provider '$name' in file '$file'")
-      return
+    if (resources == null && dataSources == null) {
+      LOG.warn("No resources nor data-sources defined for provider '$name' in file '$file'")
     }
-    this.dataSources.addAll(dataSources.map { parseDataSourceInfo(it, info) })
+    resources?.let { it.mapTo(this.resources) { parseResourceInfo(it, info) } }
+    dataSources?.let { it.mapTo(this.dataSources) { parseDataSourceInfo(it, info) } }
   }
 
   private fun parseProvisionerFile(json: JsonObject, file: String) {
