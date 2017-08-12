@@ -164,12 +164,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
           found.addAll(blocks.map { it.nameIdentifier as HCLElement })
         } else if (fake) {
           val properties = ModelHelper.getBlockProperties(r)
-          val list = properties.filter { it.name == name }.map { FakeHCLProperty(it.name, r) }
-          if (list.isEmpty() && properties.any { it.name == "__has_dynamic_attributes" }) {
-            found.add(FakeHCLProperty(name, r))
-          } else {
-            found.addAll(list)
-          }
+          addBlockProperty(properties, name, r, found)
         }
       }
       is HCLProperty -> {
@@ -193,6 +188,16 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
             val property = value.findProperty(name)
             if (property != null) {
               found.add(property)
+              return
+            }
+            if (fake) {
+              val fqn = HCLQualifiedNameProvider.getQualifiedModelName(r)
+              val type = fqn?.let { ModelHelper.getTypeModel(r.project).getByFQN(it) }
+              if (type is PropertyOrBlockType && type.block != null) {
+                // It's actually an incorrectly defined block, e.g. 'test = {}' instead of 'test {}'
+                val properties = type.block.properties
+                addBlockProperty(properties, name, r, found)
+              }
             }
           }
         }
@@ -200,6 +205,14 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
     }
   }
 
+  private fun addBlockProperty(properties: Array<out PropertyOrBlockType>, name: String, r: PsiElement, found: MutableCollection<HCLElement>) {
+    val list = properties.filter { it.name == name }.map { FakeHCLProperty(it.name, r) }
+    if (list.isEmpty() && properties.any { it.name == "__has_dynamic_attributes" }) {
+      found.add(FakeHCLProperty(name, r))
+    } else {
+      found.addAll(list)
+    }
+  }
 
 }
 

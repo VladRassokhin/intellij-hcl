@@ -42,6 +42,10 @@ public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
     doTest("mapping_variable_reference", new HILUnresolvedReferenceInspection());
   }
 
+  public void testWeirdBlockComputedPropertyReference() throws Exception {
+    doTest("weird_block_computed_property_reference", new HILUnresolvedReferenceInspection());
+  }
+
   public void testKnownBlockNameFromModel() throws Exception {
     doTest("unknown_block_name", new HCLUnknownBlockTypeInspection());
   }
