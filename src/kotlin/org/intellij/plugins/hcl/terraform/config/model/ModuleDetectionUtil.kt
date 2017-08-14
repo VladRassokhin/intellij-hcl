@@ -142,8 +142,6 @@ object ModuleDetectionUtil {
     return src to subdir
   }
 
-
-  @Throws(URISyntaxException::class)
   fun detect(src: String): String? {
     var (getForce, getSrc) = getForcedGetter(src)
 
