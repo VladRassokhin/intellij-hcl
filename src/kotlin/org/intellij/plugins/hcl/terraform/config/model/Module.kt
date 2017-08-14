@@ -70,8 +70,14 @@ class Module private constructor(val item: PsiFileSystemItem) {
     }
 
     internal fun doFindModule(nameElementUnquoted: String, source: String, directory: PsiDirectory): PsiDirectory? {
-      val md5 = computeModuleStorageName(nameElementUnquoted, source)
+      val md5 = ModuleDetectionUtil.computeModuleStorageName(nameElementUnquoted, source)
       val dir = directory.findSubdirectory(".terraform")?.findSubdirectory("modules")?.findSubdirectory(md5)
+      if (dir != null) {
+        val additional = ModuleDetectionUtil.getModuleSourceAdditionalPath(source)
+        if (additional != null) {
+          return dir.virtualFile.findFileByRelativePath(additional)?.let { dir.manager.findDirectory(it) }
+        }
+      }
       return dir
     }
 
