@@ -17,6 +17,7 @@ package org.intellij.plugins.hcl.terraform.run;
 
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
+import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
 import org.intellij.plugins.hcl.HCLBundle;
@@ -26,32 +27,31 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 public class TerraformConfigurationType implements ConfigurationType {
-  private final ConfigurationFactory myFactory;
+  private final ConfigurationFactory myBaseFactory;
+  private final ConfigurationFactory myPlanFactory;
+  private final ConfigurationFactory myApplyFactory;
 
   public TerraformConfigurationType() {
-    myFactory = new ConfigurationFactory(this) {
-      @NotNull
-      @Override
-      public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
-        TerraformRunConfiguration configuration = new TerraformRunConfiguration(project, this, "");
-        String path = project.getBasePath();
-        if (path != null) {
-          configuration.setWorkingDirectory(path);
-        }
-        return configuration;
-      }
+    myBaseFactory = new MyConfigurationFactory(null, null);
+    myPlanFactory = new MyConfigurationFactory("Plan", "plan");
+    myApplyFactory = new MyConfigurationFactory("Apply", "apply");
+  }
 
-      @Override
-      public boolean isApplicable(@NotNull Project project) {
-        // TODO: Implement
-        return true;
-      }
+  @NotNull
+  public static TerraformConfigurationType getInstance() {
+    return ConfigurationTypeUtil.findConfigurationType(TerraformConfigurationType.class);
+  }
 
-      @Override
-      public boolean isConfigurationSingletonByDefault() {
-        return true;
-      }
-    };
+  public ConfigurationFactory getBaseFactory() {
+    return myBaseFactory;
+  }
+
+  public ConfigurationFactory getPlanFactory() {
+    return myPlanFactory;
+  }
+
+  public ConfigurationFactory getApplyFactory() {
+    return myApplyFactory;
   }
 
   @Override
@@ -71,7 +71,7 @@ public class TerraformConfigurationType implements ConfigurationType {
 
   @Override
   public ConfigurationFactory[] getConfigurationFactories() {
-    return new ConfigurationFactory[]{myFactory};
+    return new ConfigurationFactory[]{myBaseFactory, myPlanFactory, myApplyFactory};
   }
 
   @NotNull
@@ -80,4 +80,46 @@ public class TerraformConfigurationType implements ConfigurationType {
     return "#org.intellij.plugins.hcl.terraform.run.TerraformConfigurationType";
   }
 
+  private class MyConfigurationFactory extends ConfigurationFactory {
+    private final String myParameters;
+    private final String myNameSuffix;
+
+    public MyConfigurationFactory(String nameSuffix, String parameters) {
+      super(TerraformConfigurationType.this);
+      myNameSuffix = nameSuffix;
+      myParameters = parameters;
+    }
+
+    @Override
+    public String getName() {
+      final String name = super.getName();
+      if (myNameSuffix != null) return name + " " + myNameSuffix;
+      return name;
+    }
+
+    @NotNull
+    @Override
+    public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
+      TerraformRunConfiguration configuration = new TerraformRunConfiguration(project, this, "");
+      String path = project.getBasePath();
+      if (path != null) {
+        configuration.setWorkingDirectory(path);
+      }
+      if (myParameters != null) {
+        configuration.setProgramParameters(myParameters);
+      }
+      return configuration;
+    }
+
+    @Override
+    public boolean isApplicable(@NotNull Project project) {
+      // TODO: Implement
+      return true;
+    }
+
+    @Override
+    public boolean isConfigurationSingletonByDefault() {
+      return true;
+    }
+  }
 }

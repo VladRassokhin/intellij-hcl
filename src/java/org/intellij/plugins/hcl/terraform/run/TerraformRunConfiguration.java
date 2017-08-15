@@ -44,9 +44,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @SuppressWarnings("WeakerAccess")
-public class TerraformRunConfiguration extends RunConfigurationBase implements CommonProgramRunConfigurationParameters {
-  public String PROGRAM_PARAMETERS;
-  public String WORKING_DIRECTORY;
+public class TerraformRunConfiguration extends LocatableConfigurationBase implements CommonProgramRunConfigurationParameters {
+  public String PROGRAM_PARAMETERS = "";
+  public String WORKING_DIRECTORY = "";
   private final Map<String, String> myEnvs = new LinkedHashMap<String, String>();
   public boolean PASS_PARENT_ENVS = true;
 
