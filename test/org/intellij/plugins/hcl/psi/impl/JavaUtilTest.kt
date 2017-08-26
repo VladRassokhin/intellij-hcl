@@ -65,6 +65,12 @@ class JavaUtilTest {
     doTestDoGetTextFragments("\"\\U00000050 \"", 1 to 10 to "\\U00000050", 11 to 1 to " ")
   }
 
+  @Test
+  @Throws(Exception::class)
+  fun testDoGetTextFragments_ClosingCurlyBracesInStrings() {
+    doTestDoGetTextFragments("\"\${replace(\"}\", \"$\")}\"", 1 to 20 to "\${replace(\"}\", \"$\")}")
+  }
+
   private fun doTestDoGetTextFragments(text: String, vararg expected: Pair<Pair<Int, Int>, String>) {
     val rangesAndValues: List<Pair<TextRange, String>> = expected.map { TextRange.from(it.first.first, it.first.second) to it.second }
     val fragments: List<Pair<TextRange, String>> = JavaUtil.doGetTextFragments(text, true, true).map { it.first to it.second }

@@ -193,6 +193,10 @@ public class HILParserTest extends ParsingTestCase {
         "    PsiElement(:)(':')");
   }
 
+  public void testClosingCurlyBraceInString() throws Exception {
+    doCodeTest("${x(\"}\")}");
+  }
+
   protected void doCodeTest(@NotNull final String code, @NotNull final String expected) throws IOException {
     myFile = createPsiFile("a", code);
     ensureParsed(myFile);

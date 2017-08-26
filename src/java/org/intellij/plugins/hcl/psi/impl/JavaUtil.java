@@ -19,16 +19,21 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import org.intellij.plugins.hcl.psi.HCLHeredocContent;
 import org.intellij.plugins.hcl.psi.HCLStringLiteral;
 import org.intellij.plugins.hcl.psi.UtilKt;
+import org.intellij.plugins.hil.psi.HILLexer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static org.intellij.plugins.hil.HILElementTypes.INTERPOLATION_END;
+import static org.intellij.plugins.hil.HILElementTypes.INTERPOLATION_START;
 
 public class JavaUtil {
   private static final Key<List<Pair<TextRange, String>>> STRING_FRAGMENTS = new Key<List<Pair<TextRange, String>>>("HCL string fragments");
@@ -64,7 +69,6 @@ public class JavaUtil {
     result = new ArrayList<Pair<TextRange, String>>();
     final int length = text.length();
     int pos = quotes ? 1 : 0, unescapedSequenceStart = pos;
-    int braces = 0;
     while (pos < length) {
 
       final char c = text.charAt(pos);
@@ -73,18 +77,38 @@ public class JavaUtil {
           result.add(Pair.create(new TextRange(unescapedSequenceStart, pos), text.substring(unescapedSequenceStart, pos)));
         }
         unescapedSequenceStart = pos;
-        pos += 2;
-        braces++;
-        while (pos < length && braces > 0) {
-          final char c2 = text.charAt(pos);
-          if (c2 == '{') {
-            braces++;
-          } else if (c2 == '}') {
-            braces--;
+        int level = 0;
+        final HILLexer lexer = new HILLexer();
+        lexer.start(text, pos, length);
+        while (true) {
+          final IElementType type = lexer.getTokenType();
+          if (type == INTERPOLATION_START) {
+            level++;
+          } else if (type == INTERPOLATION_END) {
+            assert level > 0;
+            level--;
+            if (level == 0) {
+              final int end = lexer.getTokenEnd();
+              result.add(Pair.create(new TextRange(unescapedSequenceStart, end), text.substring(unescapedSequenceStart, end)));
+              pos = end;
+              break;
+            }
+          } else if (type == null) {
+            final int end = Math.min(lexer.getTokenEnd(), length);
+            if (lexer.getTokenEnd() >= length) {
+              // Real end
+              result.add(Pair.create(new TextRange(unescapedSequenceStart, end), text.substring(unescapedSequenceStart, end)));
+              pos = end;
+              break;
+            } else {
+              // Non-parsable, probably not IL, retry from current position.
+              result.add(Pair.create(new TextRange(unescapedSequenceStart, end), text.substring(unescapedSequenceStart, end)));
+              pos = end;
+              break;
+            }
           }
-          pos++;
+          lexer.advance();
         }
-        result.add(Pair.create(new TextRange(unescapedSequenceStart, pos), text.substring(unescapedSequenceStart, pos)));
         unescapedSequenceStart = pos;
         continue;
       }

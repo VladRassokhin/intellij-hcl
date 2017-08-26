@@ -102,6 +102,14 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "SINGLE_QUOTED_STRING (''${call(\"count\")}'')");
   }
 
+  public void testTerraformILWithStringWithClosingBrace() throws Exception {
+    doTest("a = \"${foo(\"}\")}\"", "ID ('a')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "= ('=')\n" +
+        "WHITE_SPACE (' ')\n" +
+        "DOUBLE_QUOTED_STRING ('\"${foo(\"}\")}\"')");
+  }
+
   public void testTerraformILWithString_Unfinished() throws Exception {
     doTest("a = '${\"uf)}'", "ID ('a')\n" +
         "WHITE_SPACE (' ')\n" +

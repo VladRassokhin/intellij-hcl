@@ -52,4 +52,9 @@ public class TerraformConfigParserTest extends HCLParserTest {
     setTerraformExtension();
     doTest();
   }
+
+  public void testClosingBraceInInterpolationStringLiteral() throws Exception {
+    setTerraformExtension();
+    doTest();
+  }
 }

@@ -16,7 +16,6 @@
 package org.intellij.plugins.hil;
 
 import com.intellij.lexer.Lexer;
-import com.intellij.testFramework.LexerTestCase;
 import org.intellij.plugins.BaseLexerTestCase;
 import org.intellij.plugins.hil.psi.HILLexer;
 
@@ -136,4 +135,14 @@ public class HILLexerTest extends BaseLexerTestCase {
         "BAD_CHARACTER ('=')\n" +
         "NUMBER ('2')");
   }
+
+  public void testClosingCurlyBraceInString() throws Exception {
+    doTest("${x(\"\\\"}\\\\\")}", "${ ('${')\n" +
+        "ID ('x')\n" +
+        "( ('(')\n" +
+        "DOUBLE_QUOTED_STRING ('\"\\\"}\\\\\"')\n" +
+        ") (')')\n" +
+        "} ('}')");
+  }
+
 }

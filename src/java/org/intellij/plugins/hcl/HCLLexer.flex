@@ -40,11 +40,12 @@ HIL_STOP=(\})
 
 HEREDOC_START="<<"
 
-IL_STRING_ELEMENT=([^\"\'\$\{\}]|\\[^\r\n])+
+IL_STRING_ELEMENT=([^\"\'\$\{\}]|\\[^\r\n\"\'])+
 STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
 
 %state D_STRING, S_STRING, HIL_EXPRESSION, IN_NUMBER
 %state S_HEREDOC_MARKER, S_HEREDOC_LINE, S_HEREDOC_LINE_END
+%state HIL_EXPRESSION_STRING
 %{
   // This parameters can be getted from capabilities
     private boolean withNumbersWithBytesPostfix;
@@ -65,6 +66,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
     int myHereDocMarkerLength = 0;
     int myHereDocMarkerWeakHash = 0;
     boolean myHereDocIndented = false;
+    char myILStringChar;
 
     private void hil_inc() {
       hil++;
@@ -162,8 +164,23 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
   {HIL_START} {hil_inc();}
   {HIL_STOP} {if (hil_dec() <= 0) yybegin(stringType == StringType.SingleQ ? S_STRING: D_STRING); }
   {IL_STRING_ELEMENT} {}
-  \' {}
-  \" {}
+  \\\' {}
+  \\\" {}
+  \' { myILStringChar=yycharat(yylength() - 1); yybegin(HIL_EXPRESSION_STRING); }
+  \" { myILStringChar=yycharat(yylength() - 1); yybegin(HIL_EXPRESSION_STRING); }
+  \$ {}
+  \{ {}
+  <<EOF>> { return eoil(); }
+}
+
+<HIL_EXPRESSION_STRING> {
+  {HIL_START} {}
+  {HIL_STOP} {}
+  {IL_STRING_ELEMENT} {}
+  \\\' {}
+  \\\" {}
+  \' { if(myILStringChar == yycharat(yylength() - 1)) {yybegin(HIL_EXPRESSION);} }
+  \" { if(myILStringChar == yycharat(yylength() - 1)) {yybegin(HIL_EXPRESSION);} }
   \$ {}
   \{ {}
   <<EOF>> { return eoil(); }

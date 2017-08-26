@@ -75,6 +75,11 @@ public class HILInjectorTest extends UsefulTestCase {
     doTestRanges("\"${\n}\"", 1, 4);
   }
 
+  public void testClosingBraceInString() throws Exception {
+    doTestRanges("${\"}\"}", 0, 6);
+    doTestRanges("${replace(\"}\", \"$\")}", 0, 22);
+  }
+
   /**
    * @param range pairs of [start, length]
    */
