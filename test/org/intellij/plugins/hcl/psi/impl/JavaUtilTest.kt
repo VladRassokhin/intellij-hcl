@@ -68,7 +68,8 @@ class JavaUtilTest {
   @Test
   @Throws(Exception::class)
   fun testDoGetTextFragments_ClosingCurlyBracesInStrings() {
-    doTestDoGetTextFragments("\"\${replace(\"}\", \"$\")}\"", 1 to 20 to "\${replace(\"}\", \"$\")}")
+    doTestDoGetTextFragments("\"\${x(\"}\", \"$\")}\"", 1 to 14 to "\${x(\"}\", \"$\")}")
+    doTestDoGetTextFragments("\"\${x(\"}\")}\"", 1 to 9 to "\${x(\"}\")}")
   }
 
   private fun doTestDoGetTextFragments(text: String, vararg expected: Pair<Pair<Int, Int>, String>) {

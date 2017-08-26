@@ -77,7 +77,7 @@ public class HILInjectorTest extends UsefulTestCase {
 
   public void testClosingBraceInString() throws Exception {
     doTestRanges("${\"}\"}", 0, 6);
-    doTestRanges("${replace(\"}\", \"$\")}", 0, 22);
+    doTestRanges("${replace(\"}\", \"$\")}", 0, 20);
   }
 
   /**
