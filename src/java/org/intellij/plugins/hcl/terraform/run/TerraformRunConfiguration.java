@@ -26,6 +26,7 @@ import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessTerminatedListener;
 import com.intellij.execution.runners.ExecutionEnvironment;
+import com.intellij.execution.util.ProgramParametersUtil;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.DefaultJDOMExternalizer;
@@ -37,7 +38,6 @@ import org.intellij.plugins.hcl.HCLBundle;
 import org.intellij.plugins.hcl.terraform.TerraformToolProjectSettings;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -93,23 +93,11 @@ public class TerraformRunConfiguration extends LocatableConfigurationBase implem
       protected SimpleProgramParameters getParameters() throws ExecutionException {
         final SimpleProgramParameters params = new SimpleProgramParameters();
 
-        fillParameterList(params.getProgramParametersList(), PROGRAM_PARAMETERS);
-
-        params.setWorkingDirectory(getWorkingDirectory());
+        ProgramParametersUtil.configureConfiguration(params, TerraformRunConfiguration.this);
 
         return params;
       }
     };
-  }
-
-  private static void fillParameterList(ParametersList list, @Nullable String value) {
-    if (value == null) return;
-
-    for (String parameter : value.split(" ")) {
-      if (parameter != null && parameter.length() > 0) {
-        list.add(parameter);
-      }
-    }
   }
 
   @Override
