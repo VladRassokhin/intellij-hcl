@@ -21,7 +21,11 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.psi.search.UseScopeEnlarger
 import org.intellij.plugins.hcl.psi.*
 
-class OutputBlocksUseScopeEnlarger : UseScopeEnlarger() {
+class OutputsAndVariablesBlocksUseScopeEnlarger : UseScopeEnlarger() {
+  companion object {
+    private val EnlargeBlockTypes = setOf("output", "variable")
+  }
+
   override fun getAdditionalUseScope(element: PsiElement): SearchScope? {
     if (element !is HCLElement) return null
     if (element.containingFile.fileType != TerraformFileType) return null
@@ -33,7 +37,7 @@ class OutputBlocksUseScopeEnlarger : UseScopeEnlarger() {
     } else if (element is HCLBlock) {
       block = element
     } else return null
-    if (block.getNameElementUnquoted(0) != "output") return null
+    if (block.getNameElementUnquoted(0) !in EnlargeBlockTypes) return null
 
     val module = com.intellij.openapi.module.ModuleUtilCore.findModuleForPsiElement(element)
     if (module != null) {

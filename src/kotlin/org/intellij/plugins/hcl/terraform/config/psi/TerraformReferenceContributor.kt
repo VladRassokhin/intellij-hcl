@@ -25,6 +25,7 @@ import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformConfigFile
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformVariablesFile
 import org.intellij.plugins.hil.psi.HCLElementLazyReference
@@ -94,13 +95,20 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
                 return "source" == t.name
               }
             }))
-            .withSuperParent(3, psiElement(HCLBlock::class.java).with(object : PatternCondition<HCLBlock?>("HCLBlock(module)") {
-              override fun accepts(t: HCLBlock, context: ProcessingContext?): Boolean {
-                val type = t.getNameElementUnquoted(0)
-                return type == "module"
+            .withSuperParent(3, TerraformPatterns.ModuleRootBlock)
+        , ModuleSourceReferenceProvider)
+
+    // 'module' variable setter
+    registrar.registerReferenceProvider(
+        psiElement(HCLIdentifier::class.java)
+            .inFile(TerraformConfigFile)
+            .withParent(psiElement(HCLProperty::class.java).with(object : PatternCondition<HCLProperty?>("HCLProperty(!source)") {
+              override fun accepts(t: HCLProperty, context: ProcessingContext?): Boolean {
+                return "source" != t.name
               }
             }))
-        , ModuleSourceReferenceProvider)
+            .withSuperParent(3, TerraformPatterns.ModuleRootBlock)
+        , ModuleVariableReferenceProvider)
   }
 }
 
