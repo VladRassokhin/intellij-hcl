@@ -189,7 +189,6 @@
         "Type": "TypeString",
         "Optional": true,
         "Description": "Administrator's initial password (Windows only)",
-        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -197,9 +196,37 @@
         "Type": "TypeString",
         "Optional": true,
         "Description": "copied to machine on boot",
-        "Computed": true,
         "Default": {},
         "Elem": {}
+      },
+      "cns": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "Container Name Service",
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "disable": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "Disable CNS for this instance (after create)",
+              "Default": {},
+              "Elem": {}
+            },
+            "services": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "Assign CNS service names to this instance",
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
+            }
+          }
+        }
       },
       "created": {
         "Type": "TypeString",
@@ -256,10 +283,49 @@
           "elements-type": "TypeString"
         }
       },
+      "locality": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "Datacenter locality hints for assisting placement behavior",
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "close_to": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "UUIDs of other instances to attempt to provision alongside",
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
+            },
+            "far_from": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "UUIDs of other instances to attempt not to provision alongside",
+              "Default": {},
+              "Elem": {
+                "type": "SchemaElements",
+                "elements-type": "TypeString"
+              }
+            }
+          }
+        }
+      },
       "memory": {
         "Type": "TypeInt",
         "Description": "Amount of memory allocated to the machine (in Mb)",
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "metadata": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "Machine metadata",
         "Default": {},
         "Elem": {}
       },
@@ -391,7 +457,6 @@
         "Type": "TypeString",
         "Optional": true,
         "Description": "Data copied to machine on boot",
-        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -399,7 +464,6 @@
         "Type": "TypeString",
         "Optional": true,
         "Description": "User script to run on boot (every boot on SmartMachines)",
-        "Computed": true,
         "Default": {},
         "Elem": {}
       }
@@ -430,6 +494,12 @@
   },
   "data-sources": {
     "triton_image": {
+      "most_recent": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "name": {
         "Type": "TypeString",
         "Optional": true,

@@ -2,6 +2,13 @@
   "name": "opc",
   "type": "provider",
   "provider": {
+    "database_endpoint": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "The HTTP endpoint for Oracle Database operations.",
+      "Default": {},
+      "Elem": {}
+    },
     "endpoint": {
       "Type": "TypeString",
       "Required": true,
@@ -1215,6 +1222,7 @@
       "snapshot_account": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -1410,6 +1418,7 @@
       "virtual_nics": {
         "Type": "TypeList",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {
           "type": "SchemaElements",
@@ -1419,6 +1428,16 @@
     },
     "opc_storage_container": {
       "allowed_origins": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaElements",
+          "elements-type": "TypeString"
+        }
+      },
+      "exposed_headers": {
         "Type": "TypeList",
         "Optional": true,
         "Computed": true,
@@ -1471,6 +1490,141 @@
           "type": "SchemaElements",
           "elements-type": "TypeString"
         }
+      }
+    },
+    "opc_storage_object": {
+      "accept_ranges": {
+        "Type": "TypeString",
+        "Description": "Type of ranges that the object accepts",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "container": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Name of the storage container",
+        "Default": {},
+        "Elem": {}
+      },
+      "content": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Raw content in string-form of the data",
+        "ConflictsWith": [
+          "copy_from",
+          "file"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "content_disposition": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Overrides the behavior of the browser",
+        "Default": {},
+        "Elem": {}
+      },
+      "content_encoding": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Set the content-encoding metadata",
+        "Default": {},
+        "Elem": {}
+      },
+      "content_length": {
+        "Type": "TypeInt",
+        "Description": "Length of the object in bytes",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "content_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Set the MIME type for the object",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "copy_from": {
+        "Type": "TypeString",
+        "Optional": true,
+        "ConflictsWith": [
+          "content",
+          "file"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "delete_at": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "Specify the number of seconds after which the system deletes the object",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "etag": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "MD5 checksum value of the request body. Unquoted. Strongly Recommended",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "File path for the content to use for data",
+        "ConflictsWith": [
+          "copy_from",
+          "content"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "last_modified": {
+        "Type": "TypeString",
+        "Description": "Date and Time that the object was created/modified in ISO 8601",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Name of the storage object",
+        "Default": {},
+        "Elem": {}
+      },
+      "object_manifest": {
+        "Type": "TypeString",
+        "Description": "The dynamic large-object manifest object",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "timestamp": {
+        "Type": "TypeString",
+        "Description": "Date and Time in UNIX EPOCH when the account, container, or object was initially created at the current version",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "transaction_id": {
+        "Type": "TypeString",
+        "Description": "Transaction ID of the request. Used for bug reports",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "transfer_encoding": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Sets the transfer encoding. Can only be 'chunked' or Nil, requires Content-Length to be 0 if set",
+        "Default": {},
+        "Elem": {}
       }
     }
   },

@@ -2076,6 +2076,12 @@
           "elements-type": "TypeString"
         }
       },
+      "body": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "created_date": {
         "Type": "TypeString",
         "Computed": true,
@@ -6917,6 +6923,12 @@
         "Default": {},
         "Elem": {}
       },
+      "tags": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "type": {
         "Type": "TypeString",
         "Optional": true,
@@ -7882,6 +7894,20 @@
     },
     "aws_efs_file_system": {
       "creation_token": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "encrypted": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "kms_key_id": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
@@ -9362,7 +9388,7 @@
               "Default": {},
               "Elem": {}
             },
-            "resolution:": {
+            "resolution": {
               "Type": "TypeString",
               "Optional": true,
               "Default": {},
@@ -9932,6 +9958,80 @@
           }
         }
       },
+      "instance_group": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "type": "SchemaInfo",
+          "info": {
+            "bid_price": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ebs_config": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "type": "SchemaInfo",
+                "info": {
+                  "iops": {
+                    "Type": "TypeInt",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "size": {
+                    "Type": "TypeInt",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "type": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "volumes_per_instance": {
+                    "Type": "TypeInt",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "instance_count": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "instance_role": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "instance_type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
       "keep_job_flow_alive_when_no_steps": {
         "Type": "TypeBool",
         "Optional": true,
@@ -9947,7 +10047,7 @@
       },
       "master_instance_type": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -11357,6 +11457,18 @@
       "user_data": {
         "Type": "TypeString",
         "Optional": true,
+        "ConflictsWith": [
+          "user_data_base64"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "user_data_base64": {
+        "Type": "TypeString",
+        "Optional": true,
+        "ConflictsWith": [
+          "user_data"
+        ],
         "Default": {},
         "Elem": {}
       },
@@ -15961,6 +16073,12 @@
         "Default": {},
         "Elem": {}
       },
+      "arn": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "berkshelf_version": {
         "Type": "TypeString",
         "Optional": true,
@@ -16115,6 +16233,12 @@
       "stack_endpoint": {
         "Type": "TypeString",
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeMap",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -16476,7 +16600,7 @@
       },
       "engine": {
         "Type": "TypeString",
-        "Computed": true,
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -16603,6 +16727,12 @@
       "auto_minor_version_upgrade": {
         "Type": "TypeBool",
         "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "availability_zone": {
+        "Type": "TypeString",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -20022,6 +20152,18 @@
       "user_data": {
         "Type": "TypeString",
         "Optional": true,
+        "ConflictsWith": [
+          "user_data_base64"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "user_data_base64": {
+        "Type": "TypeString",
+        "Optional": true,
+        "ConflictsWith": [
+          "user_data"
+        ],
         "Default": {},
         "Elem": {}
       },
@@ -20201,6 +20343,13 @@
     "aws_ssm_association": {
       "association_id": {
         "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "document_version": {
+        "Type": "TypeString",
+        "Optional": true,
         "Computed": true,
         "Default": {},
         "Elem": {}
@@ -23743,9 +23892,21 @@
         "Default": {},
         "Elem": {}
       },
+      "encrypted": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "file_system_id": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "kms_key_id": {
+        "Type": "TypeString",
         "Computed": true,
         "Default": {},
         "Elem": {}
@@ -24258,9 +24419,34 @@
         "Default": {},
         "Elem": {}
       },
+      "assume_role_policy": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "assume_role_policy_document": {
         "Type": "TypeString",
         "Computed": true,
+        "Deprecated": "Use `assume_role_policy` instead",
+        "Default": {},
+        "Elem": {}
+      },
+      "create_date": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -24273,12 +24459,20 @@
       "role_id": {
         "Type": "TypeString",
         "Computed": true,
+        "Deprecated": "Use `unique_id` instead",
         "Default": {},
         "Elem": {}
       },
       "role_name": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
+        "Deprecated": "Use `name` instead",
+        "Default": {},
+        "Elem": {}
+      },
+      "unique_id": {
+        "Type": "TypeString",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }
@@ -25540,6 +25734,18 @@
       "dhcp_options_id": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "enable_dns_hostnames": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "enable_dns_support": {
+        "Type": "TypeBool",
         "Computed": true,
         "Default": {},
         "Elem": {}
