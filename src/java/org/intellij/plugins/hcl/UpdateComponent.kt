@@ -22,9 +22,12 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ex.ApplicationInfoEx
 import com.intellij.openapi.components.ApplicationComponent
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.event.EditorFactoryAdapter
 import com.intellij.openapi.editor.event.EditorFactoryEvent
+import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.editor.ex.FocusChangeListener
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileTypes.FileType
@@ -44,7 +47,8 @@ import java.util.concurrent.TimeUnit
 /**
  * Based on org.rust.ide.update.UpdateComponent
  */
-class UpdateComponent() : ApplicationComponent.Adapter(), Disposable {
+@Suppress("DEPRECATION")
+class UpdateComponent : ApplicationComponent.Adapter(), Disposable {
 
   init {
     Disposer.register(ApplicationManager.getApplication(), this)
@@ -57,21 +61,27 @@ class UpdateComponent() : ApplicationComponent.Adapter(), Disposable {
   override fun initComponent() {
     val application = ApplicationManager.getApplication()
     if (!application.isUnitTestMode) {
-      EditorFactory.getInstance().addEditorFactoryListener(EDITOR_LISTENER, this)
+      EditorFactory.getInstance().addEditorFactoryListener(EditorListener(this), this)
     }
   }
 
   override fun dispose() {
   }
 
-  object EDITOR_LISTENER : EditorFactoryAdapter() {
+  private class EditorListener(val parentDisposable: Disposable) : EditorFactoryAdapter() {
     override fun editorCreated(event: EditorFactoryEvent) {
       val document = event.editor.document
       val file = FileDocumentManager.getInstance().getFile(document)
       if (file != null && file.fileType in FILE_TYPES) {
-        ApplicationManager.getApplication().executeOnPooledThread {
-          update()
-        }
+        updateOnPooledThread()
+
+        (event.editor as? EditorEx)?.addFocusListener(object : FocusChangeListener {
+          override fun focusGained(editor: Editor) {
+            updateOnPooledThread()
+          }
+
+          override fun focusLost(editor: Editor) {}
+        }, parentDisposable)
       }
     }
   }
@@ -87,6 +97,8 @@ class UpdateComponent() : ApplicationComponent.Adapter(), Disposable {
     private val LOG = Logger.getInstance(UpdateComponent::class.java)
 
     private var ourCurrentPluginVersion: String? = null
+
+    fun updateOnPooledThread() = ApplicationManager.getApplication().executeOnPooledThread { update() }
 
     fun update() {
       val properties = PropertiesComponent.getInstance()
