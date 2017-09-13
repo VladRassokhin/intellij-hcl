@@ -66,7 +66,7 @@ class HILCompletionContributor : CompletionContributor() {
 
 
   companion object {
-    @JvmField val GLOBAL_SCOPES: SortedSet<String> = sortedSetOf("var", "path", "data", "module")
+    @JvmField val GLOBAL_SCOPES: SortedSet<String> = sortedSetOf("var", "path", "data", "module", "local")
 
     private fun getScopeSelectPatternCondition(scopes: Set<String>): PatternCondition<ILSelectExpression?> {
       return object : PatternCondition<ILSelectExpression?>("ScopeSelect($scopes)") {
@@ -85,6 +85,7 @@ class HILCompletionContributor : CompletionContributor() {
         Pair("path", PathCompletionProvider),
         Pair("count", CountCompletionProvider),
         Pair("terraform", TerraformCompletionProvider),
+        Pair("local", LocalsCompletionProvider),
         Pair("module", ModuleCompletionProvider)
     )
     val SCOPES = SCOPE_PROVIDERS.keys
@@ -226,10 +227,19 @@ class HILCompletionContributor : CompletionContributor() {
     }
   }
 
-  private object TerraformCompletionProvider : SelectFromScopeCompletionProvider("count") {
+  private object TerraformCompletionProvider : SelectFromScopeCompletionProvider("terraform") {
     override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       getResource(variable) ?: getDataSource(variable) ?: return
       result.addElement(create("env"))
+    }
+  }
+
+  private object LocalsCompletionProvider : SelectFromScopeCompletionProvider("local") {
+    override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+      val variables: List<String> = getLocalDefinedLocals(variable)
+      for (v in variables) {
+        result.addElement(create(v))
+      }
     }
   }
 

@@ -76,6 +76,11 @@ object TerraformPatterns {
           .and(RootBlock)
           .with(createBlockPattern("terraform"))
 
+  val LocalsRootBlock: PsiElementPattern.Capture<HCLBlock> =
+      PlatformPatterns.psiElement(HCLBlock::class.java)
+          .and(RootBlock)
+          .with(createBlockPattern("locals"))
+
   val Backend: PsiElementPattern.Capture<HCLBlock> =
       PlatformPatterns.psiElement(HCLBlock::class.java)
           .with(createBlockPattern("backend"))

@@ -104,8 +104,9 @@ class TypeModel(
     val Terraform: BlockType = BlockType("terraform", properties = *arrayOf(
         PropertyType("required_version", Types.String, injectionAllowed = false).toPOBT()
     ))
+    val Locals: BlockType = BlockType("locals")
 
-    val RootBlocks = listOf(Atlas, Module, Output, Variable, AbstractProvider, AbstractResource, AbstractDataSource, Terraform)
+    val RootBlocks = listOf(Atlas, Module, Output, Variable, AbstractProvider, AbstractResource, AbstractDataSource, Terraform, Locals)
     val RootBlocksMap = RootBlocks.map { it.literal to it }.toMap()
   }
 

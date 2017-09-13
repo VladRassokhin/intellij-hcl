@@ -42,7 +42,6 @@ import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformConfigFile
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformVariablesFile
-import org.intellij.plugins.hcl.terraform.config.psi.TerraformReferenceContributor
 import org.intellij.plugins.hil.HILFileType
 import org.intellij.plugins.hil.codeinsight.ReferenceCompletionHelper.findByFQNRef
 import org.intellij.plugins.hil.psi.ILExpression

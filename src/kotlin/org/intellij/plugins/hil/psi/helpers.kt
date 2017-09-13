@@ -34,6 +34,9 @@ fun getTerraformModule(element: ILExpression): Module? {
 fun getLocalDefinedVariables(element: ILExpression): List<Variable> {
   return getTerraformModule(element)?.getAllVariables()?.map { it.first } ?: emptyList()
 }
+fun getLocalDefinedLocals(element: ILExpression): List<String> {
+  return getTerraformModule(element)?.getAllLocals()?.map { it.first } ?: emptyList()
+}
 
 fun getProvisionerResource(position: ILExpression): HCLBlock? {
   val host = position.getHCLHost() ?: return null

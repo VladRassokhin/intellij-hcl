@@ -214,4 +214,12 @@ public class HILCompletionTest extends CompletionTestCase {
       }
     });
   }
+
+  public void testLocalCompletion() throws Exception {
+    doBasicCompletionTest("foo='${<caret>}'", "local");
+    doBasicCompletionTest("foo='${local.<caret>}'", 0);
+    doBasicCompletionTest("locals {x='y'} foo='${local.<caret>}'", "x");
+    doBasicCompletionTest("locals {x='y' a=true} foo='${local.<caret>}'", "x", "a");
+  }
+
 }

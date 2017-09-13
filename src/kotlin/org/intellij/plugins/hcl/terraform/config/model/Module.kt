@@ -23,6 +23,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.PsiElementProcessor
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 import java.util.*
 
 class Module private constructor(val item: PsiFileSystemItem) {
@@ -96,6 +97,17 @@ class Module private constructor(val item: PsiFileSystemItem) {
         collected.add(Pair(Variable(name, *props.toTypedArray()), o))
       }
     }
+
+    private class CollectLocalsVisitor : HCLElementVisitor() {
+      val collected: MutableSet<Pair<String, HCLProperty>> = HashSet()
+      override fun visitBlock(o: HCLBlock) {
+        if (!TerraformPatterns.LocalsRootBlock.accepts(o)) return
+
+        val propList = o.`object`?.propertyList ?: return
+
+        propList.mapTo(collected) { it.name to it }
+      }
+    }
   }
 
   constructor(file: HCLFile) : this(file as PsiFileSystemItem)
@@ -112,6 +124,18 @@ class Module private constructor(val item: PsiFileSystemItem) {
     val visitor = CollectVariablesVisitor()
     process(PsiElementProcessor { file -> file.acceptChildren(visitor); true })
     return visitor.collected.filter { it.first.name == name }.firstOrNull()
+  }
+
+  fun getAllLocals(): List<Pair<String, HCLProperty>> {
+    val visitor = CollectLocalsVisitor()
+    process(PsiElementProcessor { file -> file.acceptChildren(visitor); true })
+    return visitor.collected.toList()
+  }
+
+  fun findLocal(name: String): Pair<String, HCLProperty>? {
+    val visitor = CollectLocalsVisitor()
+    process(PsiElementProcessor { file -> file.acceptChildren(visitor); true })
+    return visitor.collected.firstOrNull { it.first == name }
   }
 
   // val helper = PsiSearchHelper.SERVICE.getInstance(position.project)

@@ -88,6 +88,13 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
           this.element.getHCLHost()?.getTerraformModule()?.findModules(this.element.name)?.map { it.nameIdentifier as HCLElement } ?: emptyList()
         })
       }
+      "local" -> {
+        return arrayOf(HCLElementLazyReference(element, false) { _, _ ->
+          this.element.getHCLHost()?.getTerraformModule()?.getAllLocals()
+              ?.filter { this.element.name == it.first }?.map { it.second.nameElement }?.filterNotNull()
+              ?: emptyList()
+        })
+      }
     }
     return PsiReference.EMPTY_ARRAY
   }
