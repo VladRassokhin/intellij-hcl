@@ -53,6 +53,21 @@ class TerraformDocumentationProvider : AbstractDocumentationProvider() {
       val pp = element.parent?.parent
       if (pp !is HCLBlock) {
         val block = TypeModel.RootBlocks.firstOrNull { it.literal == element.getNameElementUnquoted(0) } ?: return null
+        if (block == TypeModel.Variable) {
+          return buildString {
+            append("Variable '")
+            append(element.name)
+            append('\'')
+            (element.`object`?.findProperty(TypeModel.Variable_Type.name)?.value as? HCLStringLiteral)?.value?.let {
+              append(" of type ")
+              append(it)
+            }
+            (element.`object`?.findProperty(TypeModel.Variable_Description.name)?.value as? HCLStringLiteral)?.value?.let {
+              append("<br/>")
+              append(it)
+            }
+          }
+        }
         return buildString {
           append("Block ")
           append(element.name)

@@ -19,4 +19,12 @@ class Variable(val name: String, vararg properties: PropertyOrBlock = arrayOf())
   fun getDefault(): Any? {
     return properties.firstOrNull { TypeModel.Variable_Default == it.property?.type }?.property?.value
   }
+
+  fun getType(): Any? {
+    return properties.firstOrNull { TypeModel.Variable_Type == it.property?.type }?.property?.value
+  }
+
+  fun getDescription(): Any? {
+    return properties.firstOrNull { TypeModel.Variable_Description == it.property?.type }?.property?.value
+  }
 }
