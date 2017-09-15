@@ -39,7 +39,7 @@ sealed class TerraformResourceConfigurationProducer(private val type: Type) : Ru
     } else {
       configuration.programParameters += " -target=$target"
     }
-    configuration.workingDirectory = context.psiLocation!!.containingFile.originalFile.containingDirectory.virtualFile.path
+    configuration.workingDirectory = context.psiLocation?.containingFile?.originalFile?.containingDirectory?.virtualFile?.path ?: context.project.basePath
     configuration.name = type.title + " " + target
     configuration.setNameChangedByUser(false)
     return true
