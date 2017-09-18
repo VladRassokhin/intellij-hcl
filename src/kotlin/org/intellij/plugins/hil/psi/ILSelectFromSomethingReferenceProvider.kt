@@ -26,6 +26,7 @@ import com.intellij.util.ProcessingContext
 import com.intellij.util.SmartList
 import org.intellij.plugins.hcl.navigation.HCLQualifiedNameProvider
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.Constants
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.model.Module
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
@@ -170,6 +171,10 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
       is HCLProperty -> {
         if (r is FakeHCLProperty) {
           if (fake) {
+            if (r.dynamic) {
+              found.add(FakeHCLProperty(name, r, true))
+              return
+            }
             val fqn = HCLQualifiedNameProvider.getQualifiedModelName(r)
             if (fqn != null) {
               val type = ModelHelper.getTypeModel(r.project).getByFQN(fqn)
@@ -207,8 +212,8 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
 
   private fun addBlockProperty(properties: Array<out PropertyOrBlockType>, name: String, r: PsiElement, found: MutableCollection<HCLElement>) {
     val list = properties.filter { it.name == name }.map { FakeHCLProperty(it.name, r) }
-    if (list.isEmpty() && properties.any { it.name == "__has_dynamic_attributes" }) {
-      found.add(FakeHCLProperty(name, r))
+    if (list.isEmpty() && properties.any { it.name == Constants.HAS_DYNAMIC_ATTRIBUTES }) {
+      found.add(FakeHCLProperty(name, r, true))
     } else {
       found.addAll(list)
     }

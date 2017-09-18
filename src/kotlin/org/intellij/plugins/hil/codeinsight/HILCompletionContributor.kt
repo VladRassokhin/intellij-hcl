@@ -32,6 +32,7 @@ import com.intellij.util.SmartList
 import org.intellij.plugins.debug
 import org.intellij.plugins.hcl.navigation.HCLQualifiedNameProvider
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.Constants
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor.BlockTypeOrNameCompletionProvider.isProviderUsed
@@ -202,7 +203,7 @@ class HILCompletionContributor : CompletionContributor() {
       // For now 'self' allowed only for provisioners inside resources
 
       val resource = getProvisionerResource(variable) ?: return
-      val properties = ModelHelper.getBlockProperties(resource).filter { it.name != "__has_dynamic_attributes" }
+      val properties = ModelHelper.getBlockProperties(resource).filter { it.name != Constants.HAS_DYNAMIC_ATTRIBUTES }
       // TODO: Filter already defined or computed properties (?)
       // TODO: Add type filtration
       val set = properties.map { it.name }.toHashSet()
@@ -362,7 +363,7 @@ class HILCompletionContributor : CompletionContributor() {
         }
         return
       }
-      val properties = ModelHelper.getBlockProperties(r).filter { it.name != "__has_dynamic_attributes" }
+      val properties = ModelHelper.getBlockProperties(r).filter { it.name != Constants.HAS_DYNAMIC_ATTRIBUTES }
       val done = properties.map { it.name }.toSet()
       found.addAll(properties.map { create(it) })
       val pl = r.`object`?.propertyList

@@ -38,6 +38,7 @@ import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionContributor
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.Constants
 import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformConfigFile
@@ -435,7 +436,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         LOG.debug { "Including properties which contains incomplete result: $incomplete" }
       }
       addResultsWithCustomSorter(result, parameters, properties
-          .filter { it.name != "__has_dynamic_attributes" }
+          .filter { it.name != Constants.HAS_DYNAMIC_ATTRIBUTES }
           .filter { isRightOfPropertyWithCompatibleType(isProperty, it, right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
           // TODO: Filter should be based on 'max-count' model property (?)
           .filter { (it.property != null && (parent.findProperty(it.name) == null || (incomplete != null && it.name.contains(incomplete)))) || (it.block != null) }

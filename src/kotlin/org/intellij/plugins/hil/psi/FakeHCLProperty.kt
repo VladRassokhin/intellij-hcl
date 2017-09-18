@@ -20,7 +20,7 @@ import com.intellij.psi.impl.FakePsiElement
 import org.intellij.plugins.hcl.psi.HCLProperty
 import org.intellij.plugins.hcl.psi.HCLValue
 
-class FakeHCLProperty(val _name: String, val _parent: PsiElement) : FakePsiElement(), HCLProperty {
+class FakeHCLProperty(val _name: String, val _parent: PsiElement, val dynamic: Boolean = false) : FakePsiElement(), HCLProperty {
   override fun getName(): String {
     return _name
   }
