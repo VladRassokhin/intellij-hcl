@@ -42,6 +42,7 @@
 
   <change-notes><![CDATA[
     <h4>0.6.7 (UNRELEASED)</h4>
+    <p>Add action to run 'terraform fmt' (#71)</p>
     <p>Add support for 'locals' block and related completion, navigation, find usages (#106)</p>
     <p>Add 'Go to Definition' support for module parameters (#99)</p>
     <h4>0.6.6</h4>
@@ -266,6 +267,8 @@
     <runConfigurationProducer implementation="org.intellij.plugins.hcl.terraform.run.TerraformFileConfigurationProducer$Companion$Plan"/>
     <runConfigurationProducer implementation="org.intellij.plugins.hcl.terraform.run.TerraformFileConfigurationProducer$Companion$Apply"/>
     <runLineMarkerContributor language="HCL" implementationClass="org.intellij.plugins.hcl.terraform.run.TerraformRunLineMarkerContributor"/>
+
+    <checkinHandlerFactory implementation="org.intellij.plugins.hcl.terraform.actions.TFFmtCheckinFactory" order="last"/>
   </extensions>
 
   <application-components>
@@ -292,6 +295,15 @@
       <add-to-group group-id="GenerateGroup" anchor="first"/>
     </group>
 
+    <group id="TFTools" text="Terraform Tools" description="Terraform External Tools" popup="true">
+      <action id="TFFmtFileAction" class="org.intellij.plugins.hcl.terraform.actions.TFFmtFileAction" text="Terraform fmt file"
+              description="Format selected file with terraform fmt util">
+        <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt F"/>
+      </action>
+      <add-to-group group-id="CodeMenu" anchor="last"/>
+      <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+      <add-to-group group-id="EditorLangPopupMenu" anchor="last"/>
+    </group>
   </actions>
 
 </idea-plugin>

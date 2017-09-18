@@ -36,6 +36,7 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import org.intellij.plugins.hcl.HCLBundle;
 import org.intellij.plugins.hcl.terraform.TerraformToolProjectSettings;
+import org.intellij.plugins.hcl.terraform.util.TFExecutor;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 
@@ -78,16 +79,16 @@ public class TerraformRunConfiguration extends LocatableConfigurationBase implem
       }
 
       protected GeneralCommandLine createCommandLine() throws ExecutionException {
-        final GeneralCommandLine gcl = new GeneralCommandLine();
         final SimpleProgramParameters parameters = getParameters();
 
-        gcl.setExePath(TerraformToolProjectSettings.getInstance(getProject()).getTerraformPath());
-        gcl.withWorkDirectory(parameters.getWorkingDirectory());
-        gcl.getParametersList().addAll(parameters.getProgramParametersList().getParameters());
-        gcl.setPassParentEnvironment(parameters.isPassParentEnvs());
-        gcl.withEnvironment(parameters.getEnv());
-
-        return gcl;
+        return TFExecutor.in(getProject(), null)
+            .withPresentableName("Terraform Run")
+            .withWorkDirectory(parameters.getWorkingDirectory())
+            .withParameters(parameters.getProgramParametersList().getParameters())
+            .withPassParentEnvironment(parameters.isPassParentEnvs())
+            .withExtraEnvironment(parameters.getEnv())
+            .showOutputOnError()
+            .createCommandLine();
       }
 
       protected SimpleProgramParameters getParameters() throws ExecutionException {
