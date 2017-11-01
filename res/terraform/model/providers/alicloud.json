@@ -1,6 +1,7 @@
 {
   "name": "alicloud",
   "type": "provider",
+  "version": "v0.1.0-111-gba8dec1",
   "provider": {
     "access_key": {
       "Type": "TypeString",
@@ -14,8 +15,8 @@
       "Required": true,
       "Description": "Region of alicloud",
       "Default": {
-        "type": "string",
-        "value": "cn-beijing"
+        "Type": "string",
+        "Value": "cn-beijing"
       },
       "Elem": {}
     },
@@ -47,8 +48,8 @@
         "Computed": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "connection_string": {
               "Type": "TypeString",
               "Required": true,
@@ -93,8 +94,8 @@
         "Optional": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "character_set_name": {
               "Type": "TypeString",
               "Required": true,
@@ -177,8 +178,8 @@
         "Computed": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaElements",
-          "elements-type": "TypeString"
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
         }
       },
       "preferred_backup_time": {
@@ -194,8 +195,8 @@
         "Computed": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaElements",
-          "elements-type": "TypeString"
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
         }
       },
       "vswitch_id": {
@@ -346,8 +347,8 @@
         "Optional": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "category": {
               "Type": "TypeString",
               "Optional": true,
@@ -357,6 +358,7 @@
             "device": {
               "Type": "TypeString",
               "Optional": true,
+              "Deprecated": "Attribute device has been deprecated on disk attachment resource. Suggest to remove it from your template.",
               "Default": {},
               "Elem": {}
             },
@@ -393,8 +395,8 @@
         "MaxItems": 20,
         "Default": {},
         "Elem": {
-          "type": "SchemaElements",
-          "elements-type": "TypeString"
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
         }
       },
       "instance_type": {
@@ -425,7 +427,14 @@
       },
       "io_optimized": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
+        "Deprecated": "Attribute io_optimized has been deprecated on instance resource. All the launched alicloud instances will be IO optimized. Suggest to remove it from your template.",
+        "Default": {},
+        "Elem": {}
+      },
+      "is_outdated": {
+        "Type": "TypeBool",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -451,7 +460,6 @@
       "system_disk_category": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true,
         "Default": {},
         "Elem": {}
       }
@@ -463,8 +471,8 @@
         "MaxItems": 3,
         "Default": {},
         "Elem": {
-          "type": "SchemaElements",
-          "elements-type": "TypeString"
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
         }
       },
       "default_cooldown": {
@@ -478,8 +486,8 @@
         "Optional": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaElements",
-          "elements-type": "TypeString"
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
         }
       },
       "max_size": {
@@ -500,8 +508,8 @@
         "MaxItems": 2,
         "Default": {},
         "Elem": {
-          "type": "SchemaElements",
-          "elements-type": "TypeString"
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
         }
       },
       "scaling_group_name": {
@@ -708,6 +716,7 @@
       "internet_charge_type": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -725,7 +734,21 @@
       },
       "io_optimized": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
+        "Deprecated": "Attribute io_optimized has been deprecated on instance resource. All the launched alicloud instances will be IO optimized. Suggest to remove it from your template.",
+        "Default": {},
+        "Elem": {}
+      },
+      "is_outdated": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -759,8 +782,8 @@
         "Required": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaElements",
-          "elements-type": "TypeString"
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
         }
       },
       "status": {
@@ -808,6 +831,59 @@
         "Elem": {}
       }
     },
+    "alicloud_key_pair": {
+      "finger_print": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "key_name_prefix"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "key_name_prefix": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "public_key": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_key_pair_attachment": {
+      "instance_ids": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "key_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "alicloud_nat_gateway": {
       "bandwidth_package_ids": {
         "Type": "TypeString",
@@ -821,8 +897,8 @@
         "MaxItems": 4,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "bandwidth": {
               "Type": "TypeInt",
               "Required": true,
@@ -908,15 +984,15 @@
         "MaxItems": 10,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "allowed_headers": {
               "Type": "TypeList",
               "Optional": true,
               "Default": {},
               "Elem": {
-                "type": "SchemaElements",
-                "elements-type": "TypeString"
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
               }
             },
             "allowed_methods": {
@@ -924,8 +1000,8 @@
               "Required": true,
               "Default": {},
               "Elem": {
-                "type": "SchemaElements",
-                "elements-type": "TypeString"
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
               }
             },
             "allowed_origins": {
@@ -933,8 +1009,8 @@
               "Required": true,
               "Default": {},
               "Elem": {
-                "type": "SchemaElements",
-                "elements-type": "TypeString"
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
               }
             },
             "expose_headers": {
@@ -942,8 +1018,8 @@
               "Optional": true,
               "Default": {},
               "Elem": {
-                "type": "SchemaElements",
-                "elements-type": "TypeString"
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
               }
             },
             "max_age_seconds": {
@@ -979,8 +1055,8 @@
         "MaxItems": 1000,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "enabled": {
               "Type": "TypeBool",
               "Required": true,
@@ -989,11 +1065,11 @@
             },
             "expiration": {
               "Type": "TypeSet",
-              "Optional": true,
+              "Required": true,
               "Default": {},
               "Elem": {
-                "type": "SchemaInfo",
-                "info": {
+                "Type": "SchemaInfo",
+                "Info": {
                   "date": {
                     "Type": "TypeString",
                     "Optional": true,
@@ -1037,8 +1113,8 @@
         "MaxItems": 1,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "target_bucket": {
               "Type": "TypeString",
               "Required": true,
@@ -1072,8 +1148,8 @@
         "MaxItems": 1,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "allow_empty": {
               "Type": "TypeBool",
               "Optional": true,
@@ -1085,8 +1161,8 @@
               "Required": true,
               "Default": {},
               "Elem": {
-                "type": "SchemaElements",
-                "elements-type": "TypeString"
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
               }
             }
           }
@@ -1104,8 +1180,8 @@
         "MaxItems": 1,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "error_document": {
               "Type": "TypeString",
               "Optional": true,
@@ -1243,7 +1319,101 @@
       },
       "router_id": {
         "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Deprecated": "Attribute router_id has been deprecated and suggest removing it from your template.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_router_interface": {
+      "access_point_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "health_check_source_ip": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "health_check_target_ip": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "opposite_access_point_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "opposite_interface_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "opposite_interface_owner_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "opposite_region": {
+        "Type": "TypeString",
         "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "opposite_router_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "opposite_router_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "router_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "router_type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "specification": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       }
@@ -1272,9 +1442,6 @@
       "cidr_ip": {
         "Type": "TypeString",
         "Optional": true,
-        "ConflictsWith": [
-          "source_security_group_id"
-        ],
         "Default": {},
         "Elem": {}
       },
@@ -1357,8 +1524,8 @@
         "Optional": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaElements",
-          "elements-type": "TypeString"
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
         }
       },
       "internet": {
@@ -1378,8 +1545,8 @@
         "Optional": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "bandwidth": {
               "Type": "TypeInt",
               "Required": true,
@@ -1536,8 +1703,8 @@
         "Required": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaElements",
-          "elements-type": "TypeString"
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
         }
       },
       "slb_id": {
@@ -1618,6 +1785,12 @@
         "Default": {},
         "Elem": {}
       },
+      "route_table_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "router_id": {
         "Type": "TypeString",
         "Computed": true,
@@ -1627,6 +1800,7 @@
       "router_table_id": {
         "Type": "TypeString",
         "Computed": true,
+        "Deprecated": "Attribute router_table_id has been deprecated and replaced with route_table_id.",
         "Default": {},
         "Elem": {}
       }
@@ -1671,8 +1845,8 @@
         "Computed": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "architecture": {
               "Type": "TypeString",
               "Computed": true,
@@ -1696,8 +1870,8 @@
               "Computed": true,
               "Default": {},
               "Elem": {
-                "type": "SchemaInfo",
-                "info": {
+                "Type": "SchemaInfo",
+                "Info": {
                   "device": {
                     "Type": "TypeString",
                     "Computed": true,
@@ -1848,6 +2022,12 @@
         "Default": {},
         "Elem": {}
       },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "owners": {
         "Type": "TypeString",
         "Optional": true,
@@ -1856,6 +2036,12 @@
       }
     },
     "alicloud_instance_types": {
+      "availability_zone": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "cpu_core_count": {
         "Type": "TypeInt",
         "Optional": true,
@@ -1873,8 +2059,8 @@
         "Computed": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "cpu_core_count": {
               "Type": "TypeInt",
               "Computed": true,
@@ -1902,8 +2088,151 @@
           }
         }
       },
+      "is_outdated": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "memory_size": {
         "Type": "TypeFloat",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_key_pairs": {
+      "finger_print": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_pairs": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "finger_print": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "instances": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "availability_zone": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "description": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "image_id": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "instance_id": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "instance_name": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "instance_type": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "key_name": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "private_ip": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "public_ip": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "region_id": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "status": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "vswitch_id": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "key_name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "name_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
         "Optional": true,
         "Default": {},
         "Elem": {}
@@ -1924,13 +2253,19 @@
         "Default": {},
         "Elem": {}
       },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "regions": {
         "Type": "TypeList",
         "Computed": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "id": {
               "Type": "TypeString",
               "Computed": true,
@@ -1953,6 +2288,123 @@
         }
       }
     },
+    "alicloud_vpcs": {
+      "cidr_block": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "is_default": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vpcs": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cidr_block": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "creation_time": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "description": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "is_default": {
+              "Type": "TypeBool",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "region_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "route_table_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "status": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "vpc_name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "vrouter_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "vswitch_ids": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            }
+          }
+        }
+      },
+      "vswitch_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "alicloud_zones": {
       "available_disk_category": {
         "Type": "TypeString",
@@ -1972,20 +2424,26 @@
         "Default": {},
         "Elem": {}
       },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "zones": {
         "Type": "TypeList",
         "Computed": true,
         "Default": {},
         "Elem": {
-          "type": "SchemaInfo",
-          "info": {
+          "Type": "SchemaInfo",
+          "Info": {
             "available_disk_categories": {
               "Type": "TypeList",
               "Computed": true,
               "Default": {},
               "Elem": {
-                "type": "SchemaElements",
-                "elements-type": "TypeString"
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
               }
             },
             "available_instance_types": {
@@ -1993,8 +2451,8 @@
               "Computed": true,
               "Default": {},
               "Elem": {
-                "type": "SchemaElements",
-                "elements-type": "TypeString"
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
               }
             },
             "available_resource_creation": {
@@ -2002,8 +2460,8 @@
               "Computed": true,
               "Default": {},
               "Elem": {
-                "type": "SchemaElements",
-                "elements-type": "TypeString"
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
               }
             },
             "id": {

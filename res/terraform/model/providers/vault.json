@@ -1,6 +1,7 @@
 {
   "name": "vault",
   "type": "provider",
+  "version": "v0.1.0-58-gba55b89",
   "provider": {
     "address": {
       "Type": "TypeString",
@@ -14,7 +15,7 @@
       "Optional": true,
       "Description": "Path to directory containing CA certificate files to validate the server's certificate.",
       "Default": {
-        "type": "string"
+        "Type": "string"
       },
       "Elem": {}
     },
@@ -23,7 +24,7 @@
       "Optional": true,
       "Description": "Path to a CA certificate file to validate the server's certificate.",
       "Default": {
-        "type": "string"
+        "Type": "string"
       },
       "Elem": {}
     },
@@ -33,14 +34,14 @@
       "Description": "Client authentication credentials.",
       "Default": {},
       "Elem": {
-        "type": "SchemaInfo",
-        "info": {
+        "Type": "SchemaInfo",
+        "Info": {
           "cert_file": {
             "Type": "TypeString",
             "Required": true,
             "Description": "Path to a file containing the client certificate.",
             "Default": {
-              "type": "string"
+              "Type": "string"
             },
             "Elem": {}
           },
@@ -49,7 +50,7 @@
             "Required": true,
             "Description": "Path to a file containing the private key that the certificate was issued for.",
             "Default": {
-              "type": "string"
+              "Type": "string"
             },
             "Elem": {}
           }
@@ -61,8 +62,8 @@
       "Optional": true,
       "Description": "Maximum TTL for secret leases requested by this provider",
       "Default": {
-        "type": "int",
-        "value": "1200"
+        "Type": "int",
+        "Value": "1200"
       },
       "Elem": {}
     },
@@ -71,7 +72,7 @@
       "Optional": true,
       "Description": "Set this to true only if the target Vault server is an insecure development instance.",
       "Default": {
-        "type": "string"
+        "Type": "string"
       },
       "Elem": {}
     },
@@ -80,7 +81,7 @@
       "Required": true,
       "Description": "Token to use to authenticate to Vault.",
       "Default": {
-        "type": "string"
+        "Type": "string"
       },
       "Elem": {}
     }
@@ -106,6 +107,354 @@
         "Type": "TypeString",
         "Required": true,
         "Description": "Name of the auth backend",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "vault_aws_auth_backend_cert": {
+      "aws_public_cert": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Base64 encoded AWS Public key required to verify PKCS7 signature of the EC2 instance metadata.",
+        "Default": {},
+        "Elem": {}
+      },
+      "backend": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Unique name of the auth backend to configure.",
+        "Default": {},
+        "Elem": {}
+      },
+      "cert_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Name of the certificate to configure.",
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The type of document that can be verified using the certificate. Must be either \"pkcs7\" or \"identity\".",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "vault_aws_auth_backend_client": {
+      "access_key": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "AWS Access key with permissions to query AWS APIs.",
+        "Default": {},
+        "Elem": {}
+      },
+      "backend": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Unique name of the auth backend to configure.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ec2_endpoint": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "URL to override the default generated endpoint for making AWS EC2 API calls.",
+        "Default": {},
+        "Elem": {}
+      },
+      "iam_endpoint": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "URL to override the default generated endpoint for making AWS IAM API calls.",
+        "Default": {},
+        "Elem": {}
+      },
+      "iam_server_id_header_value": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The value to require in the X-Vault-AWS-IAM-Server-ID header as part of GetCallerIdentity requests that are used in the iam auth method.",
+        "Default": {},
+        "Elem": {}
+      },
+      "secret_key": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "AWS Secret key with permissions to query AWS APIs.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sts_endpoint": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "URL to override the default generated endpoint for making AWS STS API calls.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "vault_aws_auth_backend_role": {
+      "allow_instance_migration": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "When true, allows migration of the underlying instance where the client resides. Use with caution.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "auth_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The auth type permitted for this role.",
+        "Default": {},
+        "Elem": {}
+      },
+      "backend": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Unique name of the auth backend to configure.",
+        "Default": {},
+        "Elem": {}
+      },
+      "bound_account_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Only EC2 instances with this account ID in their identity document will be permitted to log in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "bound_ami_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Only EC2 instances using this AMI ID will be permitted to log in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "bound_iam_instance_profile_arn": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Only EC2 instances associated with an IAM instance profile ARN that matches this value will be permitted to log in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "bound_iam_principal_arn": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The IAM principal that must be authenticated using the iam auth method.",
+        "Default": {},
+        "Elem": {}
+      },
+      "bound_iam_role_arn": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Only EC2 instances that match this IAM role ARN will be permitted to log in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "bound_region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Only EC2 instances in this region will be permitted to log in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "bound_subnet_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Only EC2 instances associated with this subnet ID will be permitted to log in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "bound_vpc_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Only EC2 instances associated with this VPC ID will be permitted to log in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "disallow_reauthentication": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "When true, only allows a single token to be granted per instance ID.",
+        "Default": {},
+        "Elem": {}
+      },
+      "inferred_aws_region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The region to search for the inferred entities in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "inferred_entity_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The type of inferencing Vault should do.",
+        "Default": {},
+        "Elem": {}
+      },
+      "max_ttl": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The maximum allowed lifetime of tokens issued using this role.",
+        "Default": {},
+        "Elem": {}
+      },
+      "period": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The duration in which a token should be renewed. At each renewal, the token's TTL will be set to the value of this parameter.",
+        "Default": {},
+        "Elem": {}
+      },
+      "policies": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "Policies to be set on tokens issued using this role.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "resolve_aws_unique_ids": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Whether or not Vault should resolve the bound_iam_principal_arn to an AWS Unique ID. When true, deleting a principal and recreating it with the same name won't automatically grant the new principal the same roles in Vault that the old principal had.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Name of the role.",
+        "Default": {},
+        "Elem": {}
+      },
+      "role_tag": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The key of the tag on EC2 instance to use for role tags.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ttl": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The TTL period of tokens issued using this role, provided as the number of minutes.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "vault_aws_auth_backend_sts_role": {
+      "account_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "AWS account ID to be associated with STS role.",
+        "Default": {},
+        "Elem": {}
+      },
+      "backend": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Unique name of the auth backend to configure.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sts_role": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "AWS ARN for STS role to be assumed when interacting with the account specified.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "vault_aws_secret_backend": {
+      "access_key": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The AWS Access Key ID to use when generating new credentials.",
+        "Default": {},
+        "Elem": {}
+      },
+      "default_lease_ttl_seconds": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "Default lease duration for secrets in seconds",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Human-friendly description of the mount for the backend.",
+        "Default": {},
+        "Elem": {}
+      },
+      "max_lease_ttl_seconds": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "Maximum possible lease duration for secrets in seconds",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "path": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Path to mount the backend at.",
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The AWS region to make API calls against. Defaults to us-east-1.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "secret_key": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The AWS Secret Access Key to use when generating new credentials.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "vault_aws_secret_backend_role": {
+      "backend": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The path of the AWS Secret Backend the role belongs to.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Unique name for the role.",
+        "Default": {},
+        "Elem": {}
+      },
+      "policy": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "IAM policy the role should use in JSON format.",
+        "ConflictsWith": [
+          "policy_arn"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_arn": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "ARN for an existing IAM policy the role should use.",
+        "ConflictsWith": [
+          "policy"
+        ],
         "Default": {},
         "Elem": {}
       }
@@ -190,6 +539,78 @@
     }
   },
   "data-sources": {
+    "vault_aws_access_credentials": {
+      "access_key": {
+        "Type": "TypeString",
+        "Description": "AWS access key ID read from Vault.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "backend": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "AWS Secret Backend to read credentials from.",
+        "Default": {},
+        "Elem": {}
+      },
+      "lease_duration": {
+        "Type": "TypeInt",
+        "Description": "Lease duration in seconds relative to the time in lease_start_time.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "lease_id": {
+        "Type": "TypeString",
+        "Description": "Lease identifier assigned by vault.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "lease_renewable": {
+        "Type": "TypeBool",
+        "Description": "True if the duration of this lease can be extended through renewal.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "lease_start_time": {
+        "Type": "TypeString",
+        "Description": "Time at which the lease was read, using the clock of the system where Terraform was running",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "AWS Secret Role to read credentials from.",
+        "Default": {},
+        "Elem": {}
+      },
+      "secret_key": {
+        "Type": "TypeString",
+        "Description": "AWS secret key read from Vault.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "security_token": {
+        "Type": "TypeString",
+        "Description": "AWS security token read from Vault. (Only returned if type is 'sts'.)",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Type of credentials to read. Must be either 'creds' for Access Key and Secret Key, or 'sts' for STS.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "vault_generic_secret": {
       "data": {
         "Type": "TypeMap",
