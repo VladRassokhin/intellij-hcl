@@ -10,7 +10,7 @@ pushd "$GOPATH/src/github.com/terraform-providers" >/dev/null
 
 mkdir -p "$GOPATH/src/github.com/terraform-providers"
 
-for p in $(cat "$CUR/providers.list"); do
+for p in $(cat "$CUR/providers.list.full"); do
   if [ -d "$p" ]; then
     echo "Updating $p"
     pushd "$p" >/dev/null

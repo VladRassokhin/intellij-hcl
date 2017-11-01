@@ -2,10 +2,10 @@ default: build
 
 build: schemas
 
-schemas: providers.list
+schemas: providers.list.full
 	@sh -c "'$(CURDIR)/build-all.sh'"
 
-providers.list:
+providers.list.full:
 	@sh -c "'$(CURDIR)/fetch-providers.sh'"
 
 
