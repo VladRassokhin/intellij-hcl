@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/terraform"
+	tf "github.com/hashicorp/terraform/terraform"
 	"github.com/terraform-providers/__FULL_NAME__/__NAME__"
 
 	"encoding/json"
@@ -167,7 +167,7 @@ type ResourceProviderSchema struct {
 }
 
 func main() {
-	var provider terraform.ResourceProvider
+	var provider tf.ResourceProvider
 	provider = __NAME__.Provider()
 	Generate(provider.(*schema.Provider), "__NAME__", "__OUT__")
 }
