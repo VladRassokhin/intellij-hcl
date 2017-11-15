@@ -42,7 +42,7 @@ public class HCLCodeStyleSettings extends CustomCodeStyleSettings {
   public int PROPERTY_ALIGNMENT = PropertyAlignment.DO_NOT_ALIGN.getId();
 
   // Commenter properties
-  public int PROPERTY_LINE_COMMENTER_CHARACTER = LineCommenterCharacter.LINE_DOUBLE_SLASHES.getId();
+  public int PROPERTY_LINE_COMMENTER_CHARACTER = LineCommenterPrefix.LINE_DOUBLE_SLASHES.getId();
 
   // Misc
   public int OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS;
@@ -78,22 +78,30 @@ public class HCLCodeStyleSettings extends CustomCodeStyleSettings {
     }
   }
 
-  // Enums  - Line Commenter Character
-  public enum LineCommenterCharacter {
-    LINE_DOUBLE_SLASHES("Double Slashes (//)", 0),
-    LINE_POUND_SIGN("Pound Sign (#)", 1),;
+  // Enums  - Line Commenter Prefix
+  public enum LineCommenterPrefix {
+    LINE_DOUBLE_SLASHES("Double Slashes (//)", "//", 0),
+    LINE_POUND_SIGN("Pound Sign (#)", "#", 1),
+    ;
 
     private final String myDescription;
+    private final String myPrefix;
     private final int myId;
 
-    LineCommenterCharacter(@NotNull String description, int id) {
+    LineCommenterPrefix(@NotNull String description, @NotNull String prefix, int id) {
       myDescription = description;
+      myPrefix = prefix;
       myId = id;
     }
 
     @NotNull
     public String getDescription() {
       return myDescription;
+    }
+
+    @NotNull
+    public String getPrefix() {
+      return myPrefix;
     }
 
     public int getId() {

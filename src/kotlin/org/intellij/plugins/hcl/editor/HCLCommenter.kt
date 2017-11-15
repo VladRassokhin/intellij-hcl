@@ -16,40 +16,59 @@
 package org.intellij.plugins.hcl.editor
 
 import com.intellij.lang.Commenter
+import com.intellij.lang.Language
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.util.Key
+import com.intellij.psi.FileViewProvider
+import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettingsManager
+import com.intellij.psi.templateLanguages.MultipleLangCommentProvider
+import org.intellij.plugins.hcl.HCLFileType
 import org.intellij.plugins.hcl.formatter.HCLCodeStyleSettings
-import kotlin.properties.Delegates
+import org.intellij.plugins.hcl.formatter.HCLCodeStyleSettings.LineCommenterPrefix
+import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 
 
-class HCLCommenter : Commenter {
-
-  private var customSettings : HCLCodeStyleSettings by Delegates.notNull()
-
-  init {
-    customSettings = CodeStyleSettingsManager.getInstance().
-        currentSettings.getCustomSettings(HCLCodeStyleSettings::class.java)
+class HCLCommenter : MultipleLangCommentProvider, Commenter {
+  companion object {
+    private val COMMENTER_KEY = Key<MyCommenter>("Project.HCLCommenter")
   }
 
-  override fun getLineCommentPrefix(): String? {
-    return when (HCLCodeStyleSettings.LineCommenterCharacter.values()[customSettings.PROPERTY_LINE_COMMENTER_CHARACTER]){
-      HCLCodeStyleSettings.LineCommenterCharacter.LINE_DOUBLE_SLASHES -> "//"
-      HCLCodeStyleSettings.LineCommenterCharacter.LINE_POUND_SIGN -> "#"
-    }
+  override fun canProcess(file: PsiFile?, viewProvider: FileViewProvider?) =
+      file?.fileType in setOf(HCLFileType, TerraformFileType)
+
+  override fun getLineCommenter(file: PsiFile?, editor: Editor?, lineStartLanguage: Language?, lineEndLanguage: Language?): Commenter? {
+    val project = file?.project ?: return this
+    val settings = CodeStyleSettingsManager.getSettings(project).getCustomSettings(HCLCodeStyleSettings::class.java)
+    var commenter = project.getUserData(COMMENTER_KEY)
+    if (commenter != null && settings == commenter.settings) return commenter
+    commenter = MyCommenter(settings)
+    project.putUserData(COMMENTER_KEY, commenter)
+    return commenter
   }
 
-  override fun getBlockCommentPrefix(): String? {
-    return "/*"
-  }
+  override fun getLineCommentPrefix() = LineCommenterPrefix.LINE_DOUBLE_SLASHES.prefix
 
-  override fun getBlockCommentSuffix(): String? {
-    return "*/"
-  }
+  override fun getBlockCommentPrefix() = "/*"
 
-  override fun getCommentedBlockCommentPrefix(): String? {
-    return null
-  }
+  override fun getBlockCommentSuffix() = "*/"
 
-  override fun getCommentedBlockCommentSuffix(): String? {
-    return null
-  }
+  override fun getCommentedBlockCommentPrefix() = null
+
+  override fun getCommentedBlockCommentSuffix() = null
+
+  class MyCommenter(val settings: HCLCodeStyleSettings) : Commenter {
+    override fun getLineCommentPrefix() = (
+        LineCommenterPrefix.values().find { it.id == settings.PROPERTY_LINE_COMMENTER_CHARACTER }
+            ?: LineCommenterPrefix.LINE_DOUBLE_SLASHES
+        ).prefix
+
+    override fun getBlockCommentPrefix() = "/*"
+
+    override fun getBlockCommentSuffix() = "*/"
+
+    override fun getCommentedBlockCommentPrefix() = null
+
+    override fun getCommentedBlockCommentSuffix() = null
+  } 
 }

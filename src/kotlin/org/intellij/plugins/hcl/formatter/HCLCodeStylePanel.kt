@@ -31,25 +31,25 @@ class HCLCodeStylePanel(private val language: Language, settings: CodeStyleSetti
 
   override fun initTables() {
     // Format alignment
-    val alignment_values = HCLCodeStyleSettings.PropertyAlignment.values()
-    val alignment_strings = arrayOfNulls<String>(alignment_values.size)
-    val alignment_ints = IntArray(alignment_values.size)
-    for (i in alignment_values.indices) {
-      alignment_strings[i] = alignment_values[i].description
-      alignment_ints[i] = alignment_values[i].id
+    val alignmentValues = HCLCodeStyleSettings.PropertyAlignment.values()
+    val alignmentStrings = arrayOfNulls<String>(alignmentValues.size)
+    val alignmentInts = IntArray(alignmentValues.size)
+    for (i in alignmentValues.indices) {
+      alignmentStrings[i] = alignmentValues[i].description
+      alignmentInts[i] = alignmentValues[i].id
     }
 
     // Line Commenter character
-    val linecommenterchar_values = HCLCodeStyleSettings.LineCommenterCharacter.values()
-    val linecommenterchar_strings = arrayOfNulls<String>(linecommenterchar_values.size)
-    val linecommenterchar_ints = IntArray(linecommenterchar_values.size)
-    for (i in linecommenterchar_values.indices) {
-      linecommenterchar_strings[i] = linecommenterchar_values[i].description
-      linecommenterchar_ints[i] = linecommenterchar_values[i].id
+    val lineCommenterPrefixValues = HCLCodeStyleSettings.LineCommenterPrefix.values()
+    val lineCommenterPrefixStrings = arrayOfNulls<String>(lineCommenterPrefixValues.size)
+    val lineCommenterPrefixInts = IntArray(lineCommenterPrefixValues.size)
+    for (i in lineCommenterPrefixValues.indices) {
+      lineCommenterPrefixStrings[i] = lineCommenterPrefixValues[i].description
+      lineCommenterPrefixInts[i] = lineCommenterPrefixValues[i].id
     }
 
-    showCustomOption(HCLCodeStyleSettings::class.java, "PROPERTY_ALIGNMENT", "Align properties", "Formatting options", alignment_strings, alignment_ints)
-    showCustomOption(HCLCodeStyleSettings::class.java, "PROPERTY_LINE_COMMENTER_CHARACTER", "Line Commenter Character", "Code conventions", linecommenterchar_strings, linecommenterchar_ints)
+    showCustomOption(HCLCodeStyleSettings::class.java, "PROPERTY_ALIGNMENT", "Align properties", "Formatting options", alignmentStrings, alignmentInts)
+    showCustomOption(HCLCodeStyleSettings::class.java, "PROPERTY_LINE_COMMENTER_CHARACTER", "Line Commenter Character", "Code conventions", lineCommenterPrefixStrings, lineCommenterPrefixInts)
   }
 
   override fun getSettingsType(): LanguageCodeStyleSettingsProvider.SettingsType {
