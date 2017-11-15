@@ -30,14 +30,26 @@ class HCLCodeStylePanel(private val language: Language, settings: CodeStyleSetti
   }
 
   override fun initTables() {
-    val values = HCLCodeStyleSettings.PropertyAlignment.values()
-    val strings = arrayOfNulls<String>(values.size)
-    val ints = IntArray(values.size)
-    for (i in values.indices) {
-      strings[i] = values[i].description
-      ints[i] = values[i].id
+    // Format alignment
+    val alignment_values = HCLCodeStyleSettings.PropertyAlignment.values()
+    val alignment_strings = arrayOfNulls<String>(alignment_values.size)
+    val alignment_ints = IntArray(alignment_values.size)
+    for (i in alignment_values.indices) {
+      alignment_strings[i] = alignment_values[i].description
+      alignment_ints[i] = alignment_values[i].id
     }
-    showCustomOption(HCLCodeStyleSettings::class.java, "PROPERTY_ALIGNMENT", "Align properties", "Formatting options", strings, ints)
+
+    // Line Commenter character
+    val linecommenterchar_values = HCLCodeStyleSettings.LineCommenterCharacter.values()
+    val linecommenterchar_strings = arrayOfNulls<String>(linecommenterchar_values.size)
+    val linecommenterchar_ints = IntArray(linecommenterchar_values.size)
+    for (i in linecommenterchar_values.indices) {
+      linecommenterchar_strings[i] = linecommenterchar_values[i].description
+      linecommenterchar_ints[i] = linecommenterchar_values[i].id
+    }
+
+    showCustomOption(HCLCodeStyleSettings::class.java, "PROPERTY_ALIGNMENT", "Align properties", "Formatting options", alignment_strings, alignment_ints)
+    showCustomOption(HCLCodeStyleSettings::class.java, "PROPERTY_LINE_COMMENTER_CHARACTER", "Line Commenter Character", "Code conventions", linecommenterchar_strings, linecommenterchar_ints)
   }
 
   override fun getSettingsType(): LanguageCodeStyleSettingsProvider.SettingsType {

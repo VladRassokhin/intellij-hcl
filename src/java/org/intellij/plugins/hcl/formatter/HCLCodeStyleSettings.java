@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class HCLCodeStyleSettings extends CustomCodeStyleSettings {
 
+  // Format alignment properties
   public static int DO_NOT_ALIGN_PROPERTY = PropertyAlignment.DO_NOT_ALIGN.getId();
   public static int ALIGN_PROPERTY_ON_VALUE = PropertyAlignment.ALIGN_ON_VALUE.getId();
   public static int ALIGN_PROPERTY_ON_EQUALS = PropertyAlignment.ALIGN_ON_EQUALS.getId();
@@ -40,6 +41,10 @@ public class HCLCodeStyleSettings extends CustomCodeStyleSettings {
    */
   public int PROPERTY_ALIGNMENT = PropertyAlignment.DO_NOT_ALIGN.getId();
 
+  // Commenter properties
+  public int PROPERTY_LINE_COMMENTER_CHARACTER = LineCommenterCharacter.LINE_DOUBLE_SLASHES.getId();
+
+  // Misc
   public int OBJECT_WRAPPING = CommonCodeStyleSettings.WRAP_ALWAYS;
   // This was default policy for array elements wrapping in JavaScript's JSON.
   // CHOP_DOWN_IF_LONG seems more appropriate however for short arrays.
@@ -49,6 +54,7 @@ public class HCLCodeStyleSettings extends CustomCodeStyleSettings {
     super(language.getID(), container);
   }
 
+  // Enums  - Format alignment
   public enum PropertyAlignment {
     DO_NOT_ALIGN("Do not align", 0),
     ALIGN_ON_VALUE("On value", 1),
@@ -58,6 +64,29 @@ public class HCLCodeStyleSettings extends CustomCodeStyleSettings {
     private final int myId;
 
     PropertyAlignment(@NotNull String description, int id) {
+      myDescription = description;
+      myId = id;
+    }
+
+    @NotNull
+    public String getDescription() {
+      return myDescription;
+    }
+
+    public int getId() {
+      return myId;
+    }
+  }
+
+  // Enums  - Line Commenter Character
+  public enum LineCommenterCharacter {
+    LINE_DOUBLE_SLASHES("Double Slashes (//)", 0),
+    LINE_POUND_SIGN("Pound Sign (#)", 1),;
+
+    private final String myDescription;
+    private final int myId;
+
+    LineCommenterCharacter(@NotNull String description, int id) {
       myDescription = description;
       myId = id;
     }
