@@ -70,6 +70,10 @@ public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
     doTest("duplicated_variable", new TFDuplicatedVariableInspection());
   }
 
+  public void testDuplicatedBlockProperty() throws Exception {
+    doTest("duplicated_block_property", new TFDuplicatedBlockPropertyInspection());
+  }
+
   public void testInterpolationsInWrongPlaces() throws Exception {
     doTest("interpolations_in_wrong_places", new TFNoInterpolationsAllowedInspection());
   }

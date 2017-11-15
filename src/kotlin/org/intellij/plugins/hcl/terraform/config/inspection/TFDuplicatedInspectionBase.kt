@@ -82,8 +82,8 @@ abstract class TFDuplicatedInspectionBase : LocalInspectionTool() {
 
   abstract fun createVisitor(holder: ProblemsHolder): PsiElementVisitor
 
-  protected fun createNavigateToDupeFix(file: VirtualFile, offsetInOtherFile: Int): LocalQuickFix? {
-    return object : LocalQuickFixBase("Navigate to duplicate") {
+  protected fun createNavigateToDupeFix(file: VirtualFile, offsetInOtherFile: Int, single: Boolean): LocalQuickFix? {
+    return object : LocalQuickFixBase("Navigate to ${if (!single) "first " else ""}duplicate") {
       override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         OpenFileDescriptor(project, file, offsetInOtherFile).navigate(true)
       }
