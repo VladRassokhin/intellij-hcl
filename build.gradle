@@ -49,6 +49,7 @@ intellij {
     pluginName 'intellij-hcl'
     sandboxDirectory="${project.projectDir}/idea-sandbox"
     updateSinceUntilBuild = false
+    plugins = ["com.intellij.plugins.watcher:${getFileWatcherPluginVersion(version)}"]
 }
 
 test {
@@ -105,4 +106,25 @@ idea {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '3.5'
+}
+
+String getFileWatcherPluginVersion(String ideaVersion) {
+    def version = GradleVersion.version(ideaVersion)
+
+    if (version >= GradleVersion.version("2017.3")) {
+        return "173.662"
+    }
+    if (version >= GradleVersion.version("2017.2")) {
+        return "172.1909.7"
+    }
+    if (version >= GradleVersion.version("2017.1")) {
+        return "171.1834.8"
+    }
+    if (version >= GradleVersion.version("2016.3")) {
+        return "163.666"
+    }
+    if (version >= GradleVersion.version("2016.2")) {
+        return "162.80"
+    }
+    return "143.110"
 }
