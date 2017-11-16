@@ -33,7 +33,7 @@ class TerraformInterpolationStartTypedHandler : TypedHandlerDelegate() {
 
     if (!CodeInsightSettings.getInstance().AUTOINSERT_PAIR_BRACKET) return Result.CONTINUE
 
-    PsiDocumentManager.getInstance(project).commitAllDocuments()
+    PsiDocumentManager.getInstance(project).commitDocument(editor.document)
 
     val offset = editor.caretModel.offset
     val element = file.findElementAt(offset)
