@@ -30,6 +30,14 @@ wait
 echo "All providers updated"
 echo
 
+generate_one() {
+  go run generate-schema/generate-schema.go
+  if [[ $? -ne 0 ]]; then
+     echo "$1" >> "$2/failure.txt"
+  fi
+  echo "Finished $1"
+}
+
 for p in $(cat "$CUR/providers.list.full"); do
   pushd "$p" >/dev/null
 
@@ -48,15 +56,28 @@ for p in $(cat "$CUR/providers.list.full"); do
   #make
 
   echo "Generating schema for $p"
-  go run generate-schema/generate-schema.go
-  if [[ $? -ne 0 ]]; then
-     echo "$p" >> "$CUR/failure.txt"
+  if [[ "$KILL_CPU" == "1" ]]; then
+  (
+    generate_one "$p" "$CUR"
+  )&
+  else
+    generate_one "$p" "$CUR"
   fi
-
-  echo "Finished $p"
 
   popd >/dev/null
 done
+
+if [[ "$KILL_CPU" == "1" ]]; then
+echo
+echo "========================================"
+echo "Waiting for 'generate-schemas' processes to finish"
+wait
+echo
+fi
+
+echo "========================================"
+echo "Everything done!"
+echo
 
 popd >/dev/null
 
