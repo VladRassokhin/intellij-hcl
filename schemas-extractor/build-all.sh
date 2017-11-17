@@ -14,16 +14,24 @@ for p in $(cat "$CUR/providers.list.full"); do
   if [ -d "$p" ]; then
     echo "Updating $p"
     pushd "$p" >/dev/null
-    git checkout -- vendor/
-    git pull
+    [[ -d 'vendor' ]] && git checkout -- vendor/ >/dev/null
+    git pull >/dev/null &
     popd >/dev/null
   else
     echo "Cloning $p"
-    git clone "https://github.com/terraform-providers/$p.git"
+    git clone "https://github.com/terraform-providers/$p.git" >/dev/null &
   fi
+done
 
+echo
+echo "========================================"
+echo "Waiting for update processes to finish"
+wait
+echo "All providers updated"
+echo
+
+for p in $(cat "$CUR/providers.list.full"); do
   pushd "$p" >/dev/null
-
 
   echo "Preparing $p"
   revision="$(git describe)"
