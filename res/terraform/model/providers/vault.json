@@ -1,7 +1,7 @@
 {
   "name": "vault",
   "type": "provider",
-  "version": "v0.1.0-58-gba55b89",
+  "version": "v1.0.0-1-g18b2517",
   "provider": {
     "address": {
       "Type": "TypeString",
@@ -188,6 +188,142 @@
         "Type": "TypeString",
         "Optional": true,
         "Description": "URL to override the default generated endpoint for making AWS STS API calls.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "vault_aws_auth_backend_login": {
+      "accessor": {
+        "Type": "TypeString",
+        "Description": "The accessor returned from Vault for this token.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "auth_type": {
+        "Type": "TypeString",
+        "Description": "The auth method used to generate this token.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "backend": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "AWS Auth Backend to read the token from.",
+        "Default": {},
+        "Elem": {}
+      },
+      "client_token": {
+        "Type": "TypeString",
+        "Description": "The token returned by Vault.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "iam_http_request_method": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The HTTP method used in the signed request.",
+        "Default": {},
+        "Elem": {}
+      },
+      "iam_request_body": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The Base64-encoded body of the signed request.",
+        "Default": {},
+        "Elem": {}
+      },
+      "iam_request_headers": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The Base64-encoded, JSON serialized representation of the sts:GetCallerIdentity HTTP request headers.",
+        "Default": {},
+        "Elem": {}
+      },
+      "iam_request_url": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The Base64-encoded HTTP URL used in the signed request.",
+        "Default": {},
+        "Elem": {}
+      },
+      "identity": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Base64-encoded EC2 instance identity document to authenticate with.",
+        "Default": {},
+        "Elem": {}
+      },
+      "lease_duration": {
+        "Type": "TypeInt",
+        "Description": "Lease duration in seconds relative to the time in lease_start_time.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "lease_start_time": {
+        "Type": "TypeString",
+        "Description": "Time at which the lease was read, using the clock of the system where Terraform was running",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "metadata": {
+        "Type": "TypeMap",
+        "Description": "The metadata reported by the Vault server.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "schema.ValueType",
+          "Value": "TypeString"
+        }
+      },
+      "nonce": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The nonce to be used for subsequent login requests.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "pkcs7": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "PKCS7 signature of the identity document to authenticate with, with all newline characters removed.",
+        "Default": {},
+        "Elem": {}
+      },
+      "policies": {
+        "Type": "TypeList",
+        "Description": "The policies assigned to this token.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "renewable": {
+        "Type": "TypeBool",
+        "Description": "True if the duration of this lease can be extended through renewal.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "AWS Auth Role to read the token from.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "signature": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Base64-encoded SHA256 RSA signature of the instance identtiy document to authenticate with.",
         "Default": {},
         "Elem": {}
       }
@@ -463,7 +599,8 @@
       "allow_read": {
         "Type": "TypeBool",
         "Optional": true,
-        "Description": "True if the provided token is allowed to read the secret from vault",
+        "Description": "Attempt to read the token from Vault if true; if false, drift won't be detected.",
+        "Deprecated": "Please use disable_read instead.",
         "Default": {},
         "Elem": {}
       },
@@ -471,6 +608,13 @@
         "Type": "TypeString",
         "Required": true,
         "Description": "JSON-encoded secret data to write.",
+        "Default": {},
+        "Elem": {}
+      },
+      "disable_read": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Don't attempt to read the token from Vault if true; drift won't be detected.",
         "Default": {},
         "Elem": {}
       },

@@ -1,7 +1,7 @@
 {
   "name": "google",
   "type": "provider",
-  "version": "v1.1.1-38-gc889e7d",
+  "version": "v1.2.0-38-g17ea5ea",
   "provider": {
     "credentials": {
       "Type": "TypeString",
@@ -332,7 +332,14 @@
     "google_compute_address": {
       "address": {
         "Type": "TypeString",
+        "Optional": true,
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "address_type": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -357,6 +364,13 @@
       },
       "self_link": {
         "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "subnetwork": {
+        "Type": "TypeString",
+        "Optional": true,
         "Computed": true,
         "Default": {},
         "Elem": {}
@@ -903,9 +917,35 @@
           "ElementsType": "TypeString"
         }
       },
+      "source_service_accounts": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "ConflictsWith": [
+          "source_tags",
+          "target_tags"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
       "source_tags": {
         "Type": "TypeSet",
         "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "target_service_accounts": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "ConflictsWith": [
+          "source_tags",
+          "target_tags"
+        ],
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -3637,6 +3677,7 @@
       "health_checks": {
         "Type": "TypeList",
         "Optional": true,
+        "MaxItems": 1,
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -4202,6 +4243,40 @@
         "Default": {},
         "Elem": {}
       },
+      "maintenance_policy": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "daily_maintenance_window": {
+              "Type": "TypeList",
+              "Required": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "duration": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "start_time": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "master_auth": {
         "Type": "TypeList",
         "Optional": true,
@@ -4240,6 +4315,41 @@
               "Required": true,
               "Default": {},
               "Elem": {}
+            }
+          }
+        }
+      },
+      "master_authorized_networks_config": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cidr_blocks": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Computed": true,
+              "MaxItems": 10,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "cidr_block": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "display_name": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
             }
           }
         }
@@ -5198,6 +5308,26 @@
         "Elem": {}
       }
     },
+    "google_kms_crypto_key": {
+      "key_ring": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "rotation_period": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_kms_key_ring": {
       "location": {
         "Type": "TypeString",
@@ -5322,6 +5452,54 @@
       "writer_identity": {
         "Type": "TypeString",
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_organization_iam_custom_role": {
+      "deleted": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "org_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "permissions": {
+        "Type": "TypeSet",
+        "Required": true,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "role_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "stage": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "title": {
+        "Type": "TypeString",
+        "Required": true,
         "Default": {},
         "Elem": {}
       }
@@ -5567,6 +5745,54 @@
         "Elem": {}
       }
     },
+    "google_project_iam_custom_role": {
+      "deleted": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "permissions": {
+        "Type": "TypeSet",
+        "Required": true,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "stage": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "title": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_project_iam_member": {
       "etag": {
         "Type": "TypeString",
@@ -5622,13 +5848,27 @@
       },
       "project": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
       "restore_policy": {
         "Type": "TypeString",
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_project_service": {
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "service": {
+        "Type": "TypeString",
+        "Required": true,
         "Default": {},
         "Elem": {}
       }
@@ -6310,7 +6550,7 @@
                 "Type": "SchemaInfo",
                 "Info": {
                   "authorized_networks": {
-                    "Type": "TypeList",
+                    "Type": "TypeSet",
                     "Optional": true,
                     "Default": {},
                     "Elem": {
@@ -6844,6 +7084,26 @@
     }
   },
   "data-sources": {
+    "google_active_folder": {
+      "display_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "parent": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_client_config": {
       "project": {
         "Type": "TypeString",
@@ -6852,6 +7112,46 @@
         "Elem": {}
       },
       "region": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_compute_address": {
+      "address": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "self_link": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status": {
         "Type": "TypeString",
         "Computed": true,
         "Default": {},
@@ -7034,14 +7334,38 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
       "region": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
+      },
+      "secondary_ip_range": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_cidr_range": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "range_name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       },
       "self_link": {
         "Type": "TypeString",
