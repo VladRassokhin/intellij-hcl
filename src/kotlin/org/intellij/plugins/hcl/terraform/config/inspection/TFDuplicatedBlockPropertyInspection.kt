@@ -23,6 +23,7 @@ import org.intellij.plugins.hcl.navigation.HCLQualifiedNameProvider
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElementVisitor
 import org.intellij.plugins.hcl.psi.HCLProperty
+import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 
 // TODO: Support overrides in separate files
 class TFDuplicatedBlockPropertyInspection : TFDuplicatedInspectionBase() {
@@ -38,7 +39,10 @@ class TFDuplicatedBlockPropertyInspection : TFDuplicatedInspectionBase() {
       HCLQualifiedNameProvider.getFQN(block) ?: return
       // TODO: Support sub-blocks (based on model)
       val properties = block.`object`?.propertyList ?: return
-      val groupedDuplicates = properties.groupBy { it.name }.filterValues { it.size >= 2 }
+      val model = ModelHelper.getBlockProperties(block).associateBy { it.name }
+      val groupedDuplicates = properties.groupBy { it.name }
+          .filterValues { it.size >= 2 }
+          .filterKeys { model[it]?.property != null }
       for ((name, props) in groupedDuplicates) {
         for (prop in props) {
           holder.registerProblem(prop.nameElement, "Property '$name' declared multiple times inside one block", ProblemHighlightType.GENERIC_ERROR, *getFixes(prop, props))
