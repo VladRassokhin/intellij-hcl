@@ -16,26 +16,20 @@
 package org.intellij.plugins.hcl.terraform.config.watchers.macros
 
 import com.intellij.ide.macro.Macro
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.actionSystem.DataContext
-import org.intellij.plugins.hcl.terraform.TerraformToolProjectSettings
+import com.intellij.openapi.application.ex.ApplicationInfoEx
+import com.intellij.openapi.components.ApplicationComponent
+import com.intellij.openapi.extensions.Extensions
+import com.intellij.openapi.util.BuildNumber
 
-class TerraformExecutableMacro : Macro() {
+class MacrosInstaller : ApplicationComponent.Adapter() {
   companion object {
-    fun isRegistered() = MacrosInstaller.isPluginMacrosSupported
+    val isPluginMacrosSupported by lazy {ApplicationInfoEx.getInstanceEx().build >= BuildNumber.fromString("173.2100")}
   }
 
-  override fun getName(): String {
-    return "TerraformExecPath"
-  }
-
-  override fun getDescription(): String {
-    return "Terraform executable path"
-  }
-
-  @Throws(Macro.ExecutionCancelledException::class)
-  override fun expand(dataContext: DataContext): String? {
-    val project = CommonDataKeys.PROJECT.getData(dataContext) ?: return null
-    return TerraformToolProjectSettings.getInstance(project).terraformPath
+  override fun initComponent() {
+    if (isPluginMacrosSupported) {
+      val point = Extensions.getArea(null).getExtensionPoint<Macro>(Macro.EP_NAME)
+      point.registerExtension(TerraformExecutableMacro())
+    }
   }
 }

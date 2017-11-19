@@ -17,6 +17,7 @@ package org.intellij.plugins.hcl.terraform.config.watchers.consumers
 
 import com.intellij.ide.macro.FilePathMacro
 import com.intellij.plugins.watcher.model.TaskOptions
+import org.intellij.plugins.hcl.terraform.TerraformToolProjectSettings
 import org.intellij.plugins.hcl.terraform.config.watchers.macros.TerraformExecutableMacro
 
 class TerraformFmtTaskConsumer : TerraformToolTaskConsumer() {
@@ -24,7 +25,11 @@ class TerraformFmtTaskConsumer : TerraformToolTaskConsumer() {
     val options = createDefaultOptions()
     options.name = "terraform fmt"
     options.description = "Runs `terraform fmt` on Terraform HCL config file"
-    options.program = "$" + TerraformExecutableMacro().name + "$"
+    options.program = if (TerraformExecutableMacro.isRegistered()) {
+      "$" + TerraformExecutableMacro().name + "$"
+    } else {
+      TerraformToolProjectSettings.getDefaultTerraformPath()
+    }
     options.arguments = "fmt $" + FilePathMacro().name + "$"
     options.output = "$" + FilePathMacro().name + "$"
     return options

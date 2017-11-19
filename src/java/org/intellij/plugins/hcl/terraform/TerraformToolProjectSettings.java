@@ -61,7 +61,7 @@ public class TerraformToolProjectSettings implements PersistentStateComponent<Te
     public String myTerraformPath = getDefaultTerraformPath();
   }
 
-  private static String getDefaultTerraformPath() {
+  public static String getDefaultTerraformPath() {
     File terraform = PathEnvironmentVariableUtil.findInPath("terraform");
 
     if (terraform != null && terraform.canExecute()) {
