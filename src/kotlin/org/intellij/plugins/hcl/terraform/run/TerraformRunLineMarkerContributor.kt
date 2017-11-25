@@ -18,6 +18,12 @@ package org.intellij.plugins.hcl.terraform.run
 import com.intellij.execution.lineMarker.ExecutorAction
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
+import com.intellij.ide.DataManager
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.psi.PsiElement
 import com.intellij.util.Function
 import org.intellij.plugins.hcl.HCLParserDefinition
@@ -41,8 +47,19 @@ class TerraformRunLineMarkerContributor : RunLineMarkerContributor() {
     val actions = ExecutorAction.getActions(0)
     val tooltipProvider: Function<PsiElement, String> = Function { psiElement ->
       @Suppress("UselessCallOnCollection")
-      actions.filterNotNull().map { getText(it, psiElement) }.joinToString("\n")
+      actions.filterNotNull().map { getText(it, psiElement) }.filterNotNull().joinToString("\n")
     }
     return Info(AllIcons.RunConfigurations.TestState.Run, tooltipProvider, *actions)
+  }
+
+  companion object {
+    private fun getText(action: AnAction, element: PsiElement): String? {
+      val parent = DataManager.getInstance().dataContext
+      val dataContext = SimpleDataContext.getSimpleContext(CommonDataKeys.PSI_ELEMENT.name, element, parent)
+      val event = AnActionEvent.createFromAnAction(action, null, ActionPlaces.STATUS_BAR_PLACE, dataContext)
+      action.update(event)
+      val presentation = event.presentation
+      return if (presentation.isEnabled && presentation.isVisible) presentation.text else null
+    }
   }
 }
