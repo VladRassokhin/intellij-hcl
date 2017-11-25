@@ -19,14 +19,30 @@ import com.intellij.execution.lineMarker.ExecutorAction
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
+import com.intellij.util.Function
+import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 
 class TerraformRunLineMarkerContributor : RunLineMarkerContributor() {
-  override fun getInfo(element: PsiElement): Info? {
-    if (element !is HCLBlock) return null
-    if (!TerraformPatterns.ResourceRootBlock.accepts(element)) return null
-    TerraformResourceConfigurationProducer.getResourceTarget(element) ?: return null
-    return Info(AllIcons.RunConfigurations.TestState.Run, null, *ExecutorAction.getActions(0))
+  override fun getInfo(leaf: PsiElement): Info? {
+    if (!HCLParserDefinition.IDENTIFYING_LITERALS.contains(leaf.node?.elementType)) return null
+
+    val identifier = leaf.parent ?: return null
+
+    val block = identifier.parent as? HCLBlock ?: return null
+
+    if (block.nameIdentifier !== identifier) return null
+
+    if (!TerraformPatterns.ResourceRootBlock.accepts(block)) return null
+
+    TerraformResourceConfigurationProducer.getResourceTarget(block) ?: return null
+
+    val actions = ExecutorAction.getActions(0)
+    val tooltipProvider: Function<PsiElement, String> = Function { psiElement ->
+      @Suppress("UselessCallOnCollection")
+      actions.filterNotNull().map { getText(it, psiElement) }.joinToString("\n")
+    }
+    return Info(AllIcons.RunConfigurations.TestState.Run, tooltipProvider, *actions)
   }
 }
