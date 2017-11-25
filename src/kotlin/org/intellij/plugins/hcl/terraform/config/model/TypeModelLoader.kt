@@ -346,10 +346,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
         has_default = has_default).toPOBT()
   }
 
-  private fun parseType(attribute: JsonObject?): Type {
-    // Fallback
-    if (attribute == null) return Types.String
-
+  private fun parseType(string: String?): Type {
     /*
     From  terraform/helper/schema/valuetype.go
     const (
@@ -363,11 +360,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
             TypeSet
             typeObject
     )
-     */
-    return parseType(attribute.string("value"))
-  }
-
-  private fun parseType(string: String?): Type {
+    */
     return when (string) {
       "TypeInvalid" -> Types.Invalid
       "TypeBool" -> Types.Boolean
