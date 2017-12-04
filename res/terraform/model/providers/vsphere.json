@@ -1,7 +1,7 @@
 {
   "name": "vsphere",
   "type": "provider",
-  "version": "v0.4.2-6-g5518dd5",
+  "version": "v1.0.1-1-g8246bbb",
   "provider": {
     "allow_unverified_ssl": {
       "Type": "TypeBool",
@@ -1439,28 +1439,28 @@
       "shaping_average_bandwidth": {
         "Type": "TypeInt",
         "Optional": true,
-        "Description": "The average bandwidth in bits per second if shaping is enabled on the port.",
+        "Description": "The average bandwidth in bits per second if traffic shaping is enabled.",
         "Default": {},
         "Elem": {}
       },
       "shaping_burst_size": {
         "Type": "TypeInt",
         "Optional": true,
-        "Description": "The maximum burst size allowed in bytes if shaping is enabled on the port.",
+        "Description": "The maximum burst size allowed in bytes if traffic shaping is enabled.",
         "Default": {},
         "Elem": {}
       },
       "shaping_enabled": {
         "Type": "TypeBool",
         "Optional": true,
-        "Description": "True if the traffic shaper is enabled on the port.",
+        "Description": "Enable traffic shaping on this virtual switch or port group.",
         "Default": {},
         "Elem": {}
       },
       "shaping_peak_bandwidth": {
         "Type": "TypeInt",
         "Optional": true,
-        "Description": "The peak bandwidth during bursts in bits per second if traffic shaping is enabled on the port.",
+        "Description": "The peak bandwidth during bursts in bits per second if traffic shaping is enabled.",
         "Default": {},
         "Elem": {}
       },
@@ -1611,28 +1611,28 @@
       "shaping_average_bandwidth": {
         "Type": "TypeInt",
         "Optional": true,
-        "Description": "The average bandwidth in bits per second if shaping is enabled on the port.",
+        "Description": "The average bandwidth in bits per second if traffic shaping is enabled.",
         "Default": {},
         "Elem": {}
       },
       "shaping_burst_size": {
         "Type": "TypeInt",
         "Optional": true,
-        "Description": "The maximum burst size allowed in bytes if shaping is enabled on the port.",
+        "Description": "The maximum burst size allowed in bytes if traffic shaping is enabled.",
         "Default": {},
         "Elem": {}
       },
       "shaping_enabled": {
         "Type": "TypeBool",
         "Optional": true,
-        "Description": "True if the traffic shaper is enabled on the port.",
+        "Description": "Enable traffic shaping on this virtual switch or port group.",
         "Default": {},
         "Elem": {}
       },
       "shaping_peak_bandwidth": {
         "Type": "TypeInt",
         "Optional": true,
-        "Description": "The peak bandwidth during bursts in bits per second if traffic shaping is enabled on the port.",
+        "Description": "The peak bandwidth during bursts in bits per second if traffic shaping is enabled.",
         "Default": {},
         "Elem": {}
       },
@@ -1884,6 +1884,7 @@
       "adapter_type": {
         "Type": "TypeString",
         "Optional": true,
+        "Deprecated": "this attribute has no effect on controller types - please use scsi_type in vsphere_virtual_machine instead",
         "Default": {},
         "Elem": {}
       },
@@ -1919,222 +1920,767 @@
       }
     },
     "vsphere_virtual_machine": {
+      "alternate_guest_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The guest name for the operating system when guest_id is other or other-64.",
+        "Default": {},
+        "Elem": {}
+      },
       "annotation": {
         "Type": "TypeString",
         "Optional": true,
+        "Description": "User-provided description of the virtual machine.",
+        "Default": {},
+        "Elem": {}
+      },
+      "boot_delay": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The number of milliseconds to wait before starting the boot sequence.",
+        "Default": {},
+        "Elem": {}
+      },
+      "boot_retry_delay": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The number of milliseconds to wait before retrying the boot sequence. This only valid if boot_retry_enabled is true.",
+        "Default": {},
+        "Elem": {}
+      },
+      "boot_retry_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "If set to true, a virtual machine that fails to boot will try again after the delay defined in boot_retry_delay.",
         "Default": {},
         "Elem": {}
       },
       "cdrom": {
         "Type": "TypeList",
         "Optional": true,
+        "Description": "A specification for a CDROM device on this virtual machine.",
+        "MaxItems": 1,
         "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "datastore": {
+            "datastore_id": {
               "Type": "TypeString",
               "Required": true,
+              "Description": "The datastore ID the ISO is located on.",
+              "Default": {},
+              "Elem": {}
+            },
+            "device_address": {
+              "Type": "TypeString",
+              "Description": "The internally-computed address of this device, such as scsi:0:1, denoting scsi bus #0 and device unit 1.",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "key": {
+              "Type": "TypeInt",
+              "Description": "The unique device ID for this device within its virtual machine.",
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "path": {
               "Type": "TypeString",
               "Required": true,
+              "Description": "The path to the ISO file on the datastore.",
               "Default": {},
               "Elem": {}
             }
           }
         }
       },
-      "cluster": {
+      "change_version": {
         "Type": "TypeString",
-        "Optional": true,
+        "Description": "A unique identifier for a given version of the last configuration applied, such the timestamp of the last update to the configuration.",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
-      "custom_configuration_parameters": {
-        "Type": "TypeMap",
+      "clone": {
+        "Type": "TypeList",
         "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "datacenter": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "detach_unknown_disks_on_delete": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "disk": {
-        "Type": "TypeSet",
-        "Required": true,
+        "Description": "A specification for cloning a virtual machine from template.",
+        "MaxItems": 1,
         "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "bootable": {
+            "customize": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "The customization spec for this clone. This allows the user to configure the virtual machine post-clone.",
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "dns_server_list": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "The list of DNS servers for a virtual network adapter with a static IP address.",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  },
+                  "dns_suffix_list": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "A list of DNS search domains to add to the DNS configuration on the virtual machine.",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  },
+                  "ipv4_gateway": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "The IPv4 default gateway when using network_interface customization on the virtual machine. This address must be local to a static IPv4 address configured in an interface sub-resource.",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "ipv6_gateway": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "The IPv6 default gateway when using network_interface customization on the virtual machine. This address must be local to a static IPv4 address configured in an interface sub-resource.",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "linux_options": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "A list of configuration options specific to Linux virtual machines.",
+                    "MaxItems": 1,
+                    "ConflictsWith": [
+                      "clone.0.customize.0.windows_options",
+                      "clone.0.customize.0.windows_sysprep_text"
+                    ],
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "domain": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Description": "The FQDN for this virtual machine.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "host_name": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Description": "The host name for this virtual machine.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "hw_clock_utc": {
+                          "Type": "TypeBool",
+                          "Optional": true,
+                          "Description": "Specifies whether or not the hardware clock should be in UTC or not.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "time_zone": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "Customize the time zone on the VM. This should be a time zone-style entry, like America/Los_Angeles.",
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  },
+                  "network_interface": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "A specification of network interface configuration options.",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "dns_domain": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "A DNS search domain to add to the DNS configuration on the virtual machine.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "dns_server_list": {
+                          "Type": "TypeList",
+                          "Optional": true,
+                          "Description": "Network-interface specific DNS settings for Windows operating systems. Ignored on Linux.",
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "TypeString"
+                          }
+                        },
+                        "ipv4_address": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "The IPv4 address assigned to this network adapter. If left blank, DHCP is used.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "ipv4_netmask": {
+                          "Type": "TypeInt",
+                          "Optional": true,
+                          "Description": "The IPv4 CIDR netmask for the supplied IP address. Ignored if DHCP is selected.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "ipv6_address": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "The IPv6 address assigned to this network adapter. If left blank, default auto-configuration is used.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "ipv6_netmask": {
+                          "Type": "TypeInt",
+                          "Optional": true,
+                          "Description": "The IPv6 CIDR netmask for the supplied IP address. Ignored if auto-configuration is selected.",
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  },
+                  "timeout": {
+                    "Type": "TypeInt",
+                    "Optional": true,
+                    "Description": "The amount of time, in minutes, to wait for guest OS customization to complete before returning with an error. Setting this value to 0 or a negative value skips the waiter.",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "windows_options": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "A list of configuration options specific to Windows virtual machines.",
+                    "MaxItems": 1,
+                    "ConflictsWith": [
+                      "clone.0.customize.0.linux_options",
+                      "clone.0.customize.0.windows_sysprep_text"
+                    ],
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "admin_password": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "The new administrator password for this virtual machine.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "auto_logon": {
+                          "Type": "TypeBool",
+                          "Optional": true,
+                          "Description": "Specifies whether or not the VM automatically logs on as Administrator.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "auto_logon_count": {
+                          "Type": "TypeInt",
+                          "Optional": true,
+                          "Description": "Specifies how many times the VM should auto-logon the Administrator account when auto_logon is true.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "computer_name": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Description": "The host name for this virtual machine.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "domain_admin_password": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "The password of the domain administrator used to join this virtual machine to the domain.",
+                          "ConflictsWith": [
+                            "clone.0.customize.0.windows_options.0.workgroup"
+                          ],
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "domain_admin_user": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "The user account of the domain administrator used to join this virtual machine to the domain.",
+                          "ConflictsWith": [
+                            "clone.0.customize.0.windows_options.0.workgroup"
+                          ],
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "full_name": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "The full name of the user of this virtual machine.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "join_domain": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "The domain that the virtual machine should join.",
+                          "ConflictsWith": [
+                            "clone.0.customize.0.windows_options.0.workgroup"
+                          ],
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "organization_name": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "The organization name this virtual machine is being installed for.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "product_key": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "The product key for this virtual machine.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "run_once_command_list": {
+                          "Type": "TypeList",
+                          "Optional": true,
+                          "Description": "A list of commands to run at first user logon, after guest customization.",
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "TypeString"
+                          }
+                        },
+                        "time_zone": {
+                          "Type": "TypeInt",
+                          "Optional": true,
+                          "Description": "The new time zone for the virtual machine. This is a sysprep-dictated timezone code.",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "workgroup": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "The workgroup for this virtual machine if not joining a domain.",
+                          "ConflictsWith": [
+                            "clone.0.customize.0.windows_options.0.join_domain"
+                          ],
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  },
+                  "windows_sysprep_text": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Use this option to specify a windows sysprep file directly.",
+                    "ConflictsWith": [
+                      "clone.0.customize.0.linux_options",
+                      "clone.0.customize.0.windows_options"
+                    ],
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "linked_clone": {
               "Type": "TypeBool",
               "Optional": true,
+              "Description": "Whether or not to create a linked clone when cloning. When this option is used, the source VM must have a single snapshot associated with it.",
               "Default": {},
               "Elem": {}
             },
-            "controller_type": {
+            "template_uuid": {
               "Type": "TypeString",
-              "Optional": true,
+              "Required": true,
+              "Description": "The UUID of the source virtual machine or template.",
               "Default": {},
               "Elem": {}
             },
-            "datastore": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "iops": {
+            "timeout": {
               "Type": "TypeInt",
               "Optional": true,
+              "Description": "The timeout, in minutes, to wait for the virtual machine clone to complete.",
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "cpu_hot_add_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Allow CPUs to be added to this virtual machine while it is running.",
+        "Default": {},
+        "Elem": {}
+      },
+      "cpu_hot_remove_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Allow CPUs to be added to this virtual machine while it is running.",
+        "Default": {},
+        "Elem": {}
+      },
+      "cpu_limit": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The maximum amount of memory (in MB) or CPU (in MHz) that this virtual machine can consume, regardless of available resources.%!(EXTRA string=cpu)",
+        "Default": {},
+        "Elem": {}
+      },
+      "cpu_performance_counters_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable CPU performance counters on this virtual machine.",
+        "Default": {},
+        "Elem": {}
+      },
+      "cpu_reservation": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The amount of memory (in MB) or CPU (in MHz) that this virtual machine is guaranteed.%!(EXTRA string=cpu)",
+        "Default": {},
+        "Elem": {}
+      },
+      "cpu_share_count": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The amount of shares to allocate to cpu for a custom share level.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "cpu_share_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The allocation level for cpu resources. Can be one of high, low, normal, or custom.",
+        "Default": {},
+        "Elem": {}
+      },
+      "datastore_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The ID of the virtual machine's datastore. The virtual machine configuration is placed here, along with any virtual disks that are created without datastores.",
+        "Default": {},
+        "Elem": {}
+      },
+      "default_ip_address": {
+        "Type": "TypeString",
+        "Description": "The IP address selected by Terraform to be used for the provisioner.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "disk": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "A specification for a virtual disk device on this virtual machine.",
+        "Computed": true,
+        "MaxItems": 60,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "attach": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "If this is true, the disk is attached instead of created. Implies keep_on_remove.",
+              "Default": {},
+              "Elem": {}
+            },
+            "datastore_id": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The datastore ID for this virtual disk, if different than the virtual machine.",
+              "Default": {},
+              "Elem": {}
+            },
+            "device_address": {
+              "Type": "TypeString",
+              "Description": "The internally-computed address of this device, such as scsi:0:1, denoting scsi bus #0 and device unit 1.",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "disk_mode": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The mode of this this virtual disk for purposes of writes and snapshotting. Can be one of append, independent_nonpersistent, independent_persistent, nonpersistent, persistent, or undoable.",
+              "Default": {},
+              "Elem": {}
+            },
+            "disk_sharing": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The sharing mode of this virtual disk. Can be one of sharingMultiWriter or sharingNone.",
+              "Default": {},
+              "Elem": {}
+            },
+            "eagerly_scrub": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "The virtual disk file zeroing policy when thin_provision is not true. The default is false, which lazily-zeros the disk, speeding up thick-provisioned disk creation time.",
+              "Default": {},
+              "Elem": {}
+            },
+            "io_limit": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Description": "The upper limit of IOPS that this disk can use.",
+              "Default": {},
+              "Elem": {}
+            },
+            "io_reservation": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Description": "The I/O guarantee that this disk has, in IOPS.",
+              "Default": {},
+              "Elem": {}
+            },
+            "io_share_count": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Description": "The share count for this disk when the share level is custom.",
+              "Default": {},
+              "Elem": {}
+            },
+            "io_share_level": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The share allocation level for this disk. Can be one of low, normal, high, or custom.",
               "Default": {},
               "Elem": {}
             },
             "keep_on_remove": {
               "Type": "TypeBool",
               "Optional": true,
+              "Description": "Set to true to keep the underlying VMDK file when removing this virtual disk from configuration.",
               "Default": {},
               "Elem": {}
             },
             "key": {
               "Type": "TypeInt",
+              "Description": "The unique device ID for this device within its virtual machine.",
               "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "name": {
               "Type": "TypeString",
-              "Optional": true,
+              "Required": true,
+              "Description": "The file name of the disk. This can be either a name or path relative to the root of the datastore. If simply a name, the disk is located with the virtual machine.",
               "Default": {},
               "Elem": {}
             },
             "size": {
               "Type": "TypeInt",
               "Optional": true,
+              "Description": "The size of the disk, in GB.",
               "Default": {},
               "Elem": {}
             },
-            "template": {
-              "Type": "TypeString",
+            "thin_provisioned": {
+              "Type": "TypeBool",
               "Optional": true,
+              "Description": "If true, this disk is thin provisioned, with space for the file being allocated on an as-needed basis.",
               "Default": {},
               "Elem": {}
             },
-            "type": {
-              "Type": "TypeString",
+            "unit_number": {
+              "Type": "TypeInt",
               "Optional": true,
+              "Description": "The unique device number for this disk. This number determines where on the SCSI bus this device will be attached.",
               "Default": {},
               "Elem": {}
             },
-            "uuid": {
-              "Type": "TypeString",
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "vmdk": {
-              "Type": "TypeString",
+            "write_through": {
+              "Type": "TypeBool",
               "Optional": true,
+              "Description": "If true, writes for this disk are sent directly to the filesystem immediately instead of being buffered.",
               "Default": {},
               "Elem": {}
             }
           }
         }
       },
-      "dns_servers": {
-        "Type": "TypeList",
+      "efi_secure_boot_enabled": {
+        "Type": "TypeBool",
         "Optional": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      },
-      "dns_suffixes": {
-        "Type": "TypeList",
-        "Optional": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      },
-      "domain": {
-        "Type": "TypeString",
-        "Optional": true,
+        "Description": "When the boot type set in firmware is efi, this enables EFI secure boot.",
         "Default": {},
         "Elem": {}
       },
       "enable_disk_uuid": {
         "Type": "TypeBool",
         "Optional": true,
+        "Description": "Expose the UUIDs of attached virtual disks to the virtual machine, allowing access to them in the guest.",
+        "Default": {},
+        "Elem": {}
+      },
+      "enable_logging": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable logging on this virtual machine.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ept_rvi_mode": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The EPT/RVI (hardware memory virtualization) setting for this virtual machine. Can be one of automatic, on, or off.",
+        "Default": {},
+        "Elem": {}
+      },
+      "extra_config": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "Extra configuration data for this virtual machine. Can be used to supply advanced parameters not normally in configuration, such as data for cloud-config (under the guestinfo namespace), or configuration data for OVF images.",
+        "Default": {},
+        "Elem": {}
+      },
+      "firmware": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The firmware interface to use on the virtual machine. Can be one of bios or EFI.",
         "Default": {},
         "Elem": {}
       },
       "folder": {
         "Type": "TypeString",
         "Optional": true,
+        "Description": "The name of the folder to locate the virtual machine in.",
         "Default": {},
         "Elem": {}
       },
-      "gateway": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Deprecated": "Please use network_interface.ipv4_gateway",
-        "Default": {},
-        "Elem": {}
-      },
-      "hostname": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "linked_clone": {
+      "force_power_off": {
         "Type": "TypeBool",
         "Optional": true,
+        "Description": "Set to true to force power-off a virtual machine if a graceful guest shutdown failed for a necessary operation.",
+        "Default": {},
+        "Elem": {}
+      },
+      "guest_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The guest ID for the operating system.",
+        "Default": {},
+        "Elem": {}
+      },
+      "guest_ip_addresses": {
+        "Type": "TypeList",
+        "Description": "The current list of IP addresses on this virtual machine.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "host_system_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The ID of an optional host system to pin the virtual machine to.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "hv_mode": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The (non-nested) hardware virtualization setting for this virtual machine. Can be one of hvAuto, hvOn, or hvOff.",
+        "Default": {},
+        "Elem": {}
+      },
+      "imported": {
+        "Type": "TypeBool",
+        "Description": "A flag internal to Terraform that indicates that this resource was either imported or came from a earlier major version of this resource.",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
       "memory": {
         "Type": "TypeInt",
-        "Required": true,
+        "Optional": true,
+        "Description": "The size of the virtual machine's memory, in MB.",
+        "Default": {},
+        "Elem": {}
+      },
+      "memory_hot_add_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Allow memory to be added to this virtual machine while it is running.",
+        "Default": {},
+        "Elem": {}
+      },
+      "memory_limit": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The maximum amount of memory (in MB) or CPU (in MHz) that this virtual machine can consume, regardless of available resources.%!(EXTRA string=memory)",
         "Default": {},
         "Elem": {}
       },
       "memory_reservation": {
         "Type": "TypeInt",
         "Optional": true,
+        "Description": "The amount of memory (in MB) or CPU (in MHz) that this virtual machine is guaranteed.%!(EXTRA string=memory)",
         "Default": {},
         "Elem": {}
       },
-      "moid": {
-        "Type": "TypeString",
+      "memory_share_count": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The amount of shares to allocate to memory for a custom share level.",
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "memory_share_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The allocation level for memory resources. Can be one of high, low, normal, or custom.",
+        "Default": {},
+        "Elem": {}
+      },
+      "migrate_wait_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The amount of time, in minutes, to wait for a vMotion operation to complete before failing.",
         "Default": {},
         "Elem": {}
       },
       "name": {
         "Type": "TypeString",
         "Required": true,
+        "Description": "The name of this virtual machine.",
+        "Default": {},
+        "Elem": {}
+      },
+      "nested_hv_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable nested hardware virtualization on this virtual machine, facilitating nested virtualization in the guest.",
         "Default": {},
         "Elem": {}
       },
       "network_interface": {
         "Type": "TypeList",
         "Required": true,
+        "Description": "A specification for a virtual NIC on this virtual machine.",
+        "MaxItems": 10,
         "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
@@ -2142,104 +2688,173 @@
             "adapter_type": {
               "Type": "TypeString",
               "Optional": true,
+              "Description": "The controller type. Can be one of e1000, e1000e, or vmxnet3.",
               "Default": {},
               "Elem": {}
             },
-            "ip_address": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Computed": true,
-              "Deprecated": "Please use ipv4_address",
-              "Default": {},
-              "Elem": {}
-            },
-            "ipv4_address": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "ipv4_gateway": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "ipv4_prefix_length": {
+            "bandwidth_limit": {
               "Type": "TypeInt",
               "Optional": true,
-              "Computed": true,
+              "Description": "The upper bandwidth limit of this network interface, in Mbits/sec.",
               "Default": {},
               "Elem": {}
             },
-            "ipv6_address": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "ipv6_gateway": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "ipv6_prefix_length": {
+            "bandwidth_reservation": {
               "Type": "TypeInt",
               "Optional": true,
+              "Description": "The bandwidth reservation of this network interface, in Mbits/sec.",
+              "Default": {},
+              "Elem": {}
+            },
+            "bandwidth_share_count": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Description": "The share count for this network interface when the share level is custom.",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "bandwidth_share_level": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The bandwidth share allocation level for this interface. Can be one of low, normal, high, or custom.",
+              "Default": {},
+              "Elem": {}
+            },
+            "device_address": {
+              "Type": "TypeString",
+              "Description": "The internally-computed address of this device, such as scsi:0:1, denoting scsi bus #0 and device unit 1.",
               "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "key": {
               "Type": "TypeInt",
+              "Description": "The unique device ID for this device within its virtual machine.",
               "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "label": {
-              "Type": "TypeString",
-              "Required": true,
               "Default": {},
               "Elem": {}
             },
             "mac_address": {
               "Type": "TypeString",
               "Optional": true,
+              "Description": "The MAC address of this network interface. Can only be manually set if use_static_mac is true.",
               "Computed": true,
               "Default": {},
               "Elem": {}
             },
-            "subnet_mask": {
+            "network_id": {
               "Type": "TypeString",
+              "Required": true,
+              "Description": "The ID of the network to connect this network interface to.",
+              "Default": {},
+              "Elem": {}
+            },
+            "use_static_mac": {
+              "Type": "TypeBool",
               "Optional": true,
-              "Computed": true,
-              "Deprecated": "Please use ipv4_prefix_length",
+              "Description": "If true, the mac_address field is treated as a static MAC address and set accordingly.",
               "Default": {},
               "Elem": {}
             }
           }
         }
       },
-      "power_state": {
-        "Type": "TypeString",
+      "num_cores_per_socket": {
+        "Type": "TypeInt",
         "Optional": true,
+        "Description": "The number of cores to distribute amongst the CPUs in this virtual machine. If specified, the value supplied to num_cpus must be evenly divisible by this value.",
         "Default": {},
         "Elem": {}
       },
-      "resource_pool": {
-        "Type": "TypeString",
+      "num_cpus": {
+        "Type": "TypeInt",
         "Optional": true,
+        "Description": "The number of virtual processors to assign to this virtual machine.",
         "Default": {},
         "Elem": {}
       },
-      "skip_customization": {
+      "reboot_required": {
+        "Type": "TypeBool",
+        "Description": "Value internal to Terraform used to determine if a configuration set change requires a reboot.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "resource_pool_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The ID of a resource pool to put the virtual machine in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "run_tools_scripts_after_power_on": {
         "Type": "TypeBool",
         "Optional": true,
+        "Description": "Enable the execution of post-power-on scripts when VMware tools is installed.",
+        "Default": {},
+        "Elem": {}
+      },
+      "run_tools_scripts_after_resume": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable the execution of post-resume scripts when VMware tools is installed.",
+        "Default": {},
+        "Elem": {}
+      },
+      "run_tools_scripts_before_guest_reboot": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable the execution of pre-reboot scripts when VMware tools is installed.",
+        "Default": {},
+        "Elem": {}
+      },
+      "run_tools_scripts_before_guest_shutdown": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable the execution of pre-shutdown scripts when VMware tools is installed.",
+        "Default": {},
+        "Elem": {}
+      },
+      "run_tools_scripts_before_guest_standby": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable the execution of pre-standby scripts when VMware tools is installed.",
+        "Default": {},
+        "Elem": {}
+      },
+      "scsi_controller_count": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The number of SCSI controllers that Terraform manages on this virtual machine. This directly affects the amount of disks you can add to the virtual machine and the maximum disk unit number. Note that lowering this value does not remove controllers.",
+        "Default": {},
+        "Elem": {}
+      },
+      "scsi_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The type of SCSI bus this virtual machine will have. Can be one of lsilogic, lsilogic-sas or pvscsi.",
+        "Default": {},
+        "Elem": {}
+      },
+      "shutdown_wait_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The amount of time, in minutes, to wait for shutdown when making necessary updates to the virtual machine.",
+        "Default": {},
+        "Elem": {}
+      },
+      "swap_placement_policy": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The swap file placement policy for this virtual machine. Can be one of inherit, hostLocal, or vmDirectory.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sync_time_with_host": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable guest clock synchronization with the host. Requires VMware tools to be installed.",
         "Default": {},
         "Elem": {}
       },
@@ -2253,75 +2868,33 @@
           "ElementsType": "TypeString"
         }
       },
-      "time_zone": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
       "uuid": {
         "Type": "TypeString",
+        "Description": "The UUID of the virtual machine. Also exposed as the ID of the resource.",
         "Computed": true,
         "Default": {},
         "Elem": {}
       },
-      "vcpu": {
+      "vmware_tools_status": {
+        "Type": "TypeString",
+        "Description": "The state of VMware tools in the guest. This will determine the proper course of action for some device operations.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vmx_path": {
+        "Type": "TypeString",
+        "Description": "The path of the virtual machine's configuration file in the VM's datastore.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "wait_for_guest_net_timeout": {
         "Type": "TypeInt",
-        "Required": true,
+        "Optional": true,
+        "Description": "The amount of time, in minutes, to wait for a routeable IP address on this virtual machine. A value less than 1 disables the waiter.",
         "Default": {},
         "Elem": {}
-      },
-      "wait_for_customization_timeout": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "wait_for_guest_net": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "windows_opt_config": {
-        "Type": "TypeList",
-        "Optional": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "admin_password": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "domain": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "domain_user": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "domain_user_password": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "product_key": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
       }
     },
     "vsphere_virtual_machine_snapshot": {
@@ -2472,6 +3045,22 @@
         "Elem": {}
       }
     },
+    "vsphere_datastore": {
+      "datacenter_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The managed object ID of the datacenter the datastore is in. This is not required when using ESXi directly, or if there is only one datacenter in your infrastructure.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The name or path of the datastore.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "vsphere_distributed_virtual_switch": {
       "datacenter_id": {
         "Type": "TypeString",
@@ -2537,6 +3126,22 @@
         "Elem": {}
       }
     },
+    "vsphere_resource_pool": {
+      "datacenter_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The managed object ID of the datacenter the resource pool is in. This is not required when using ESXi directly, or if there is only one datacenter in your infrastructure.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The name or path of the resource pool.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "vsphere_tag": {
       "category_id": {
         "Type": "TypeString",
@@ -2589,6 +3194,70 @@
         "Type": "TypeString",
         "Required": true,
         "Description": "The display name of the category.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "vsphere_virtual_machine": {
+      "alternate_guest_name": {
+        "Type": "TypeString",
+        "Description": "The alternate guest name of the virtual machine when guest_id is a non-specific operating system, like otherGuest.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "datacenter_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The managed object ID of the datacenter the virtual machine is in. This is not required when using ESXi directly, or if there is only one datacenter in your infrastructure.",
+        "Default": {},
+        "Elem": {}
+      },
+      "disk_sizes": {
+        "Type": "TypeList",
+        "Description": "The sizes of the disks on this virtual machine, sorted by bus and unit number.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeInt"
+        }
+      },
+      "guest_id": {
+        "Type": "TypeString",
+        "Description": "The guest ID of the virtual machine.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The name or path of the virtual machine.",
+        "Default": {},
+        "Elem": {}
+      },
+      "network_interface_types": {
+        "Type": "TypeList",
+        "Description": "The types of network interfaces found on the virtual machine, sorted by unit number.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "scsi_controller_scan_count": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The number of SCSI controllers to scan for disk sizes and controller types on.",
+        "Default": {},
+        "Elem": {}
+      },
+      "scsi_type": {
+        "Type": "TypeString",
+        "Description": "The common SCSI bus type of all controllers on the virtual machine.",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }

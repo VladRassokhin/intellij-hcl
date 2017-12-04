@@ -1,7 +1,7 @@
 {
   "name": "google",
   "type": "provider",
-  "version": "v1.2.0-38-g17ea5ea",
+  "version": "v1.3.0-9-gc9a06eb",
   "provider": {
     "credentials": {
       "Type": "TypeString",
@@ -84,6 +84,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -174,6 +175,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -284,6 +286,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -316,6 +319,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -352,6 +356,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -481,6 +486,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -531,6 +537,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -668,6 +675,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -749,6 +757,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -1080,6 +1089,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -1147,6 +1157,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -1490,6 +1501,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -1561,6 +1573,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -1952,6 +1965,7 @@
                   "nat_ip": {
                     "Type": "TypeString",
                     "Optional": true,
+                    "Computed": true,
                     "Default": {},
                     "Elem": {}
                   }
@@ -2000,6 +2014,14 @@
               "Default": {},
               "Elem": {}
             },
+            "network_ip": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Deprecated": "Please use address",
+              "Default": {},
+              "Elem": {}
+            },
             "subnetwork": {
               "Type": "TypeString",
               "Optional": true,
@@ -2020,6 +2042,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -2180,6 +2203,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -2428,6 +2452,28 @@
           }
         }
       },
+      "guest_accelerator": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "count": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
       "instance_description": {
         "Type": "TypeString",
         "Optional": true,
@@ -2467,6 +2513,12 @@
         "Default": {},
         "Elem": {}
       },
+      "min_cpu_platform": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "name": {
         "Type": "TypeString",
         "Optional": true,
@@ -2497,10 +2549,45 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "assigned_nat_ip": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
                   "nat_ip": {
                     "Type": "TypeString",
                     "Optional": true,
                     "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "address": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "alias_ip_range": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "ip_cidr_range": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "subnetwork_range_name": {
+                    "Type": "TypeString",
+                    "Optional": true,
                     "Default": {},
                     "Elem": {}
                   }
@@ -2517,12 +2604,15 @@
             "network_ip": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
+              "Deprecated": "Please use address",
               "Default": {},
               "Elem": {}
             },
             "subnetwork": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
@@ -2553,6 +2643,7 @@
       "region": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -2608,7 +2699,7 @@
               "Elem": {}
             },
             "scopes": {
-              "Type": "TypeList",
+              "Type": "TypeSet",
               "Required": true,
               "Default": {},
               "Elem": {
@@ -2639,9 +2730,6 @@
       "auto_create_subnetworks": {
         "Type": "TypeBool",
         "Optional": true,
-        "ConflictsWith": [
-          "ipv4_range"
-        ],
         "Default": {},
         "Elem": {}
       },
@@ -2660,7 +2748,7 @@
       "ipv4_range": {
         "Type": "TypeString",
         "Optional": true,
-        "Removed": "Please use google_compute_subnetwork resources instead.",
+        "Deprecated": "Please use google_compute_subnetwork resources instead.",
         "Default": {},
         "Elem": {}
       },
@@ -2673,6 +2761,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -2734,6 +2823,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }
@@ -2748,6 +2838,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -2863,6 +2954,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -2946,6 +3038,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -2959,6 +3052,7 @@
       "region": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -3165,6 +3259,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -3386,6 +3481,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -3482,6 +3578,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -3532,12 +3629,14 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
       "region": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -3586,6 +3685,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -3624,6 +3724,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -3749,6 +3850,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -3803,6 +3905,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -3943,6 +4046,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -4009,12 +4113,14 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
       "region": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -4069,12 +4175,14 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
       "region": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -4236,6 +4344,29 @@
           "ElementsType": "TypeString"
         }
       },
+      "ip_allocation_policy": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cluster_secondary_range_name": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "services_secondary_range_name": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
       "logging_service": {
         "Type": "TypeString",
         "Optional": true,
@@ -4385,6 +4516,30 @@
         "Default": {},
         "Elem": {}
       },
+      "network_policy": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "provider": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
       "node_config": {
         "Type": "TypeList",
         "Optional": true,
@@ -4520,6 +4675,30 @@
               "Default": {},
               "Elem": {}
             },
+            "management": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Computed": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "auto_repair": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "auto_upgrade": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
             "name": {
               "Type": "TypeString",
               "Optional": true,
@@ -4649,6 +4828,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -4702,6 +4882,30 @@
         "Deprecated": "Use node_count instead",
         "Default": {},
         "Elem": {}
+      },
+      "management": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "auto_repair": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "auto_upgrade": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       },
       "name": {
         "Type": "TypeString",
@@ -4822,6 +5026,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -5170,6 +5375,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -5178,6 +5384,726 @@
         "Optional": true,
         "Default": {},
         "Elem": {}
+      }
+    },
+    "google_dataproc_job": {
+      "driver_controls_files_uri": {
+        "Type": "TypeString",
+        "Description": "Output-only. If present, the location of miscellaneous control files which may be used as part of job setup and handling. If not present, control files may be placed in the same location as driver_output_uri.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "driver_output_resource_uri": {
+        "Type": "TypeString",
+        "Description": "Output-only. A URI pointing to the location of the stdout of the job's driver program",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "force_delete": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "hadoop_config": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "spark_config",
+          "pyspark_config",
+          "hive_config",
+          "pig_config",
+          "sparksql_config"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "archive_uris": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "args": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "file_uris": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "jar_file_uris": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "logging_config": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "The runtime logging config of the job",
+              "Computed": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "driver_log_levels": {
+                    "Type": "TypeMap",
+                    "Optional": true,
+                    "Description": "Optional. The per-package log levels for the driver. This may include 'root' package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'.",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            },
+            "main_class": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "hadoop_config.0.main_jar_file_uri"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "main_jar_file_uri": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "hadoop_config.0.main_class"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "properties": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            }
+          }
+        }
+      },
+      "hive_config": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "spark_config",
+          "pyspark_config",
+          "hadoop_config",
+          "pig_config",
+          "sparksql_config"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "continue_on_failure": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "jar_file_uris": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "properties": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "query_file_uri": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "hive_config.0.query_list"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "query_list": {
+              "Type": "TypeList",
+              "Optional": true,
+              "ConflictsWith": [
+                "hive_config.0.query_file_uri"
+              ],
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "script_variables": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            }
+          }
+        }
+      },
+      "labels": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "Optional. The labels to associate with this job.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "pig_config": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "spark_config",
+          "pyspark_config",
+          "hadoop_config",
+          "hive_config",
+          "sparksql_config"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "continue_on_failure": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "jar_file_uris": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "logging_config": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "The runtime logging config of the job",
+              "Computed": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "driver_log_levels": {
+                    "Type": "TypeMap",
+                    "Optional": true,
+                    "Description": "Optional. The per-package log levels for the driver. This may include 'root' package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'.",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            },
+            "properties": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "query_file_uri": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "pig_config.0.query_list"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "query_list": {
+              "Type": "TypeList",
+              "Optional": true,
+              "ConflictsWith": [
+                "pig_config.0.query_file_uri"
+              ],
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "script_variables": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            }
+          }
+        }
+      },
+      "placement": {
+        "Type": "TypeList",
+        "Required": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cluster_name": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "The name of the cluster where the job will be submitted",
+              "Default": {},
+              "Elem": {}
+            },
+            "cluster_uuid": {
+              "Type": "TypeString",
+              "Description": "Output-only. A cluster UUID generated by the Cloud Dataproc service when the job is submitted",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "pyspark_config": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "spark_config",
+          "hadoop_config",
+          "hive_config",
+          "pig_config",
+          "sparksql_config"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "archive_uris": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "Optional. HCFS URIs of archives to be extracted in the working directory of .jar, .tar, .tar.gz, .tgz, and .zip",
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "args": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "Optional. The arguments to pass to the driver. Do not include arguments, such as --conf, that can be set as job properties, since a collision may occur that causes an incorrect job submission",
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "file_uris": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "Optional. HCFS URIs of files to be copied to the working directory of Python drivers and distributed tasks. Useful for naively parallel tasks",
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "jar_file_uris": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "Optional. HCFS URIs of jar files to add to the CLASSPATHs of the Python driver and tasks",
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "logging_config": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "The runtime logging config of the job",
+              "Computed": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "driver_log_levels": {
+                    "Type": "TypeMap",
+                    "Optional": true,
+                    "Description": "Optional. The per-package log levels for the driver. This may include 'root' package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'.",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            },
+            "main_python_file_uri": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "Required. The HCFS URI of the main Python file to use as the driver. Must be a .py file",
+              "Default": {},
+              "Elem": {}
+            },
+            "properties": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Description": "Optional. A mapping of property names to values, used to configure PySpark. Properties that conflict with values set by the Cloud Dataproc API may be overwritten. Can include properties set in /etc/spark/conf/spark-defaults.conf and classes in user code",
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "python_file_uris": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "Optional. HCFS file URIs of Python files to pass to the PySpark framework. Supported file types: .py, .egg, and .zip",
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            }
+          }
+        }
+      },
+      "reference": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "job_id": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The job ID, which must be unique within the project. The job ID is generated by the server upon job submission or provided by the user as a means to perform retries without creating duplicate jobs",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "scheduling": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "Optional. Job scheduling configuration.",
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "max_failures_per_hour": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Description": "Maximum number of times per hour a driver may be restarted as a result of driver terminating with non-zero code before job is reported failed.",
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "spark_config": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "pyspark_config",
+          "hadoop_config",
+          "hive_config",
+          "pig_config",
+          "sparksql_config"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "archive_uris": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "args": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "file_uris": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "jar_file_uris": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "logging_config": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "The runtime logging config of the job",
+              "Computed": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "driver_log_levels": {
+                    "Type": "TypeMap",
+                    "Optional": true,
+                    "Description": "Optional. The per-package log levels for the driver. This may include 'root' package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'.",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            },
+            "main_class": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "spark_config.0.main_jar_file_uri"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "main_jar_file_uri": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "spark_config.0.main_class"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "properties": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            }
+          }
+        }
+      },
+      "sparksql_config": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "spark_config",
+          "pyspark_config",
+          "hadoop_config",
+          "hive_config",
+          "pig_config"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "jar_file_uris": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "logging_config": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "The runtime logging config of the job",
+              "Computed": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "driver_log_levels": {
+                    "Type": "TypeMap",
+                    "Optional": true,
+                    "Description": "Optional. The per-package log levels for the driver. This may include 'root' package name to configure rootLogger. Examples: 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'.",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            },
+            "properties": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "query_file_uri": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "pig_config.0.query_list"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "query_list": {
+              "Type": "TypeList",
+              "Optional": true,
+              "ConflictsWith": [
+                "pig_config.0.query_file_uri"
+              ],
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "script_variables": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            }
+          }
+        }
+      },
+      "status": {
+        "Type": "TypeList",
+        "Computed": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "details": {
+              "Type": "TypeString",
+              "Description": "Output-only. Optional job state details, such as an error description if the state is ERROR",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "state": {
+              "Type": "TypeString",
+              "Description": "Output-only. A state message specifying the overall job state",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "state_start_time": {
+              "Type": "TypeString",
+              "Description": "Output-only. The time when this state was entered",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "substate": {
+              "Type": "TypeString",
+              "Description": "Output-only. Additional state information, which includes status reported by the agent",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       }
     },
     "google_dns_managed_zone": {
@@ -5211,6 +6137,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }
@@ -5231,6 +6158,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -5308,6 +6236,141 @@
         "Elem": {}
       }
     },
+    "google_folder_organization_policy": {
+      "boolean_policy": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "list_policy"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enforced": {
+              "Type": "TypeBool",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "constraint": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "folder": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "list_policy": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "boolean_policy"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allow": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "ConflictsWith": [
+                "list_policy.0.deny"
+              ],
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "all": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "ConflictsWith": [
+                      "list_policy.0.allow.0.values"
+                    ],
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "values": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            },
+            "deny": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "all": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "ConflictsWith": [
+                      "list_policy.0.deny.0.values"
+                    ],
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "values": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            },
+            "suggested_value": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "update_time": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "version": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_kms_crypto_key": {
       "key_ring": {
         "Type": "TypeString",
@@ -5328,6 +6391,61 @@
         "Elem": {}
       }
     },
+    "google_kms_crypto_key_iam_binding": {
+      "crypto_key_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "members": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "role": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_kms_crypto_key_iam_member": {
+      "crypto_key_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "member": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_kms_key_ring": {
       "location": {
         "Type": "TypeString",
@@ -5344,6 +6462,62 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_kms_key_ring_iam_binding": {
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_ring_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "members": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "role": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_kms_key_ring_iam_member": {
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_ring_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "member": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role": {
+        "Type": "TypeString",
+        "Required": true,
         "Default": {},
         "Elem": {}
       }
@@ -5456,6 +6630,35 @@
         "Elem": {}
       }
     },
+    "google_organization_iam_binding": {
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "members": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "org_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_organization_iam_custom_role": {
       "deleted": {
         "Type": "TypeBool",
@@ -5498,6 +6701,32 @@
         "Elem": {}
       },
       "title": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_organization_iam_member": {
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "member": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "org_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role": {
         "Type": "TypeString",
         "Required": true,
         "Default": {},
@@ -5771,6 +7000,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -5849,6 +7079,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -5863,6 +7094,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -5913,6 +7145,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -5959,6 +7192,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }
@@ -5979,6 +7213,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }
@@ -5999,6 +7234,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -6156,6 +7392,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -6191,6 +7428,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -6239,6 +7477,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -6279,6 +7518,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -6342,6 +7582,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -6522,7 +7763,6 @@
             "disk_autoresize": {
               "Type": "TypeBool",
               "Optional": true,
-              "Computed": true,
               "Default": {},
               "Elem": {}
             },
@@ -6702,6 +7942,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }
@@ -6868,6 +8109,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -7017,6 +8259,12 @@
         "Default": {},
         "Elem": {}
       },
+      "detect_md5hash": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "md5hash": {
         "Type": "TypeString",
         "Computed": true,
@@ -7139,6 +8387,39 @@
         "Elem": {}
       },
       "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "self_link": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_compute_global_address": {
+      "address": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,

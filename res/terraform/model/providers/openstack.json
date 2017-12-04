@@ -1,13 +1,15 @@
 {
   "name": "openstack",
   "type": "provider",
-  "version": "v1.0.0-5-gb73d482",
+  "version": "v1.0.0-33-g1da9609",
   "provider": {
     "auth_url": {
       "Type": "TypeString",
-      "Required": true,
+      "Optional": true,
       "Description": "The Identity authentication URL.",
-      "Default": {},
+      "Default": {
+        "Type": "string"
+      },
       "Elem": {}
     },
     "cacert_file": {
@@ -23,6 +25,15 @@
       "Type": "TypeString",
       "Optional": true,
       "Description": "A client certificate to authenticate with.",
+      "Default": {
+        "Type": "string"
+      },
+      "Elem": {}
+    },
+    "cloud": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "An entry in a `clouds.yaml` file to use.",
       "Default": {
         "Type": "string"
       },
@@ -1096,6 +1107,157 @@
         "Required": true,
         "Default": {},
         "Elem": {}
+      }
+    },
+    "openstack_db_instance_v1": {
+      "database": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "charset": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "collate": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "datastore": {
+        "Type": "TypeList",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "version": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "flavor_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "network": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "fixed_ip_v4": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "fixed_ip_v6": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "port": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "uuid": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "region": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {
+          "Type": "string"
+        },
+        "Elem": {}
+      },
+      "size": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "user": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "databases": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "host": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "password": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       }
     },
     "openstack_dns_recordset_v2": {
@@ -2878,6 +3040,9 @@
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
+        "ConflictsWith": [
+          "no_gateway"
+        ],
         "Default": {},
         "Elem": {}
       },
@@ -2924,6 +3089,9 @@
       "no_gateway": {
         "Type": "TypeBool",
         "Optional": true,
+        "ConflictsWith": [
+          "gateway_ip"
+        ],
         "Default": {},
         "Elem": {}
       },

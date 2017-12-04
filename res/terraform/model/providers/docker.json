@@ -1,7 +1,7 @@
 {
   "name": "docker",
   "type": "provider",
-  "version": "v0.1.0-13-g9e21a8f",
+  "version": "v0.1.1-1-g5f666d5",
   "provider": {
     "ca_material": {
       "Type": "TypeString",
@@ -48,6 +48,61 @@
         "Type": "string"
       },
       "Elem": {}
+    },
+    "registry_auth": {
+      "Type": "TypeSet",
+      "Optional": true,
+      "Default": {},
+      "Elem": {
+        "Type": "SchemaInfo",
+        "Info": {
+          "address": {
+            "Type": "TypeString",
+            "Required": true,
+            "Description": "Address of the registry",
+            "Default": {},
+            "Elem": {}
+          },
+          "config_file": {
+            "Type": "TypeString",
+            "Optional": true,
+            "Description": "Path to docker json file for registry auth",
+            "ConflictsWith": [
+              "registry_auth.username",
+              "registry_auth.password"
+            ],
+            "Default": {
+              "Type": "string",
+              "Value": "~/.docker/config.json"
+            },
+            "Elem": {}
+          },
+          "password": {
+            "Type": "TypeString",
+            "Optional": true,
+            "Description": "Password for the registry",
+            "ConflictsWith": [
+              "registry_auth.config_file"
+            ],
+            "Default": {
+              "Type": "string"
+            },
+            "Elem": {}
+          },
+          "username": {
+            "Type": "TypeString",
+            "Optional": true,
+            "Description": "Username for the registry",
+            "ConflictsWith": [
+              "registry_auth.config_file"
+            ],
+            "Default": {
+              "Type": "string"
+            },
+            "Elem": {}
+          }
+        }
+      }
     }
   },
   "resources": {
