@@ -1,7 +1,7 @@
 {
   "name": "azurerm",
   "type": "provider",
-  "version": "v0.3.3-42-gc664ac6",
+  "version": "v1.0.1-44-g9ec2932",
   "provider": {
     "client_id": {
       "Type": "TypeString",
@@ -113,6 +113,12 @@
             }
           }
         }
+      },
+      "default_site_hostname": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
       },
       "enabled": {
         "Type": "TypeBool",
@@ -2563,6 +2569,76 @@
       }
     },
     "azurerm_eventhub": {
+      "capture_description": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "destination": {
+              "Type": "TypeList",
+              "Required": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "archive_name_format": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "blob_container_name": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "name": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "storage_account_id": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "enabled": {
+              "Type": "TypeBool",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "encoding": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "interval_in_seconds": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "size_limit_in_bytes": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
       "location": {
         "Type": "TypeString",
         "Optional": true,
@@ -2883,6 +2959,69 @@
         "Type": "TypeMap",
         "Optional": true,
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "azurerm_function_app": {
+      "app_service_plan_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "app_settings": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "default_hostname": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "location": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "resource_group_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "storage_connection_string": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "version": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       }
@@ -3542,6 +3681,15 @@
         "Default": {},
         "Elem": {}
       },
+      "private_ip_addresses": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
       "resource_group_name": {
         "Type": "TypeString",
         "Required": true,
@@ -3902,6 +4050,36 @@
           "ElementsType": "TypeString"
         }
       },
+      "bgp_settings": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "asn": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "bgp_peering_address": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "peer_weight": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
       "gateway_address": {
         "Type": "TypeString",
         "Required": true,
@@ -3923,6 +4101,13 @@
       "resource_group_name": {
         "Type": "TypeString",
         "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }
@@ -4352,6 +4537,12 @@
           "Type": "SchemaElements",
           "ElementsType": "TypeString"
         }
+      },
+      "enable_accelerated_networking": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
       },
       "enable_ip_forwarding": {
         "Type": "TypeBool",
@@ -5174,7 +5365,8 @@
     "azurerm_role_assignment": {
       "name": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -5526,6 +5718,13 @@
         "Type": "TypeString",
         "Optional": true,
         "Deprecated": "location is no longer used",
+        "Default": {},
+        "Elem": {}
+      },
+      "lock_duration": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -6261,6 +6460,12 @@
         "Default": {},
         "Elem": {}
       },
+      "primary_connection_string": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "primary_file_endpoint": {
         "Type": "TypeString",
         "Computed": true,
@@ -6304,6 +6509,12 @@
         "Elem": {}
       },
       "secondary_blob_endpoint": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "secondary_connection_string": {
         "Type": "TypeString",
         "Computed": true,
         "Default": {},
@@ -6805,6 +7016,30 @@
         "Optional": true,
         "Default": {},
         "Elem": {}
+      },
+      "identity": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "principal_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       },
       "license_type": {
         "Type": "TypeString",
@@ -8098,6 +8333,94 @@
     }
   },
   "data-sources": {
+    "azurerm_app_service_plan": {
+      "kind": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "location": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "maximum_number_of_workers": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "properties": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "per_site_scaling": {
+              "Type": "TypeBool",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "reserved": {
+              "Type": "TypeBool",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "resource_group_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sku": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "capacity": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "size": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "tier": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "tags": {
+        "Type": "TypeMap",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "azurerm_builtin_role_definition": {
       "assignable_scopes": {
         "Type": "TypeList",
@@ -8182,6 +8505,80 @@
       },
       "tenant_id": {
         "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "azurerm_eventhub_namespace": {
+      "auto_inflate_enabled": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "capacity": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "default_primary_connection_string": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "default_primary_key": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "default_secondary_connection_string": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "default_secondary_key": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "location": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "maximum_throughput_units": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "resource_group_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sku": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeMap",
         "Computed": true,
         "Default": {},
         "Elem": {}
@@ -8380,6 +8777,102 @@
       "tags": {
         "Type": "TypeMap",
         "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "azurerm_network_security_group": {
+      "location": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "resource_group_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "security_rule": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "access": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "description": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "destination_address_prefix": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "destination_port_range": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "direction": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "priority": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "protocol": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "source_address_prefix": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "source_port_range": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "tags": {
+        "Type": "TypeMap",
         "Computed": true,
         "Default": {},
         "Elem": {}
@@ -8748,6 +9241,53 @@
       "subscription_id": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "azurerm_virtual_network": {
+      "address_spaces": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "dns_servers": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "resource_group_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "subnets": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "vnet_peerings": {
+        "Type": "TypeMap",
         "Computed": true,
         "Default": {},
         "Elem": {}

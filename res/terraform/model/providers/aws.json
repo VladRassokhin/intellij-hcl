@@ -1,7 +1,7 @@
 {
   "name": "aws",
   "type": "provider",
-  "version": "v1.5.0-29-g94323098",
+  "version": "v1.7.0-22-g53ae3d9b",
   "provider": {
     "access_key": {
       "Type": "TypeString",
@@ -76,6 +76,19 @@
       "Elem": {
         "Type": "SchemaInfo",
         "Info": {
+          "acm": {
+            "Type": "TypeString",
+            "Optional": true,
+            "Default": {},
+            "Elem": {}
+          },
+          "apigateway": {
+            "Type": "TypeString",
+            "Optional": true,
+            "Description": "Use this to override the default endpoint URL constructed from the `region`.\n",
+            "Default": {},
+            "Elem": {}
+          },
           "cloudformation": {
             "Type": "TypeString",
             "Optional": true,
@@ -125,6 +138,18 @@
             "Default": {},
             "Elem": {}
           },
+          "ecr": {
+            "Type": "TypeString",
+            "Optional": true,
+            "Default": {},
+            "Elem": {}
+          },
+          "ecs": {
+            "Type": "TypeString",
+            "Optional": true,
+            "Default": {},
+            "Elem": {}
+          },
           "elb": {
             "Type": "TypeString",
             "Optional": true,
@@ -153,6 +178,19 @@
             "Default": {},
             "Elem": {}
           },
+          "lambda": {
+            "Type": "TypeString",
+            "Optional": true,
+            "Description": "Use this to override the default endpoint URL constructed from the `region`\n",
+            "Default": {},
+            "Elem": {}
+          },
+          "r53": {
+            "Type": "TypeString",
+            "Optional": true,
+            "Default": {},
+            "Elem": {}
+          },
           "rds": {
             "Type": "TypeString",
             "Optional": true,
@@ -178,6 +216,12 @@
             "Type": "TypeString",
             "Optional": true,
             "Description": "Use this to override the default endpoint URL constructed from the `region`.\n",
+            "Default": {},
+            "Elem": {}
+          },
+          "sts": {
+            "Type": "TypeString",
+            "Optional": true,
             "Default": {},
             "Elem": {}
           }
@@ -629,12 +673,14 @@
             "matcher": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "path": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
@@ -653,6 +699,7 @@
             "timeout": {
               "Type": "TypeInt",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
@@ -1517,6 +1564,61 @@
           "Type": "schema.ValueType",
           "Value": "TypeString"
         }
+      }
+    },
+    "aws_api_gateway_documentation_part": {
+      "location": {
+        "Type": "TypeList",
+        "Required": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "method": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "path": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "status_code": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "properties": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "rest_api_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
       }
     },
     "aws_api_gateway_domain_name": {
@@ -2647,6 +2749,79 @@
         }
       }
     },
+    "aws_appautoscaling_scheduled_action": {
+      "arn": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "end_time": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "resource_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "scalable_dimension": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "scalable_target_action": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "max_capacity": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "min_capacity": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "schedule": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "service_namespace": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "start_time": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "aws_appautoscaling_target": {
       "max_capacity": {
         "Type": "TypeInt",
@@ -2668,7 +2843,8 @@
       },
       "role_arn": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -2689,6 +2865,12 @@
       "bucket": {
         "Type": "TypeString",
         "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "force_destroy": {
+        "Type": "TypeBool",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -4478,6 +4660,26 @@
         "Elem": {}
       }
     },
+    "aws_cloudwatch_event_permission": {
+      "action": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "principal": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "statement_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "aws_cloudwatch_event_rule": {
       "arn": {
         "Type": "TypeString",
@@ -4776,6 +4978,20 @@
         "Elem": {}
       }
     },
+    "aws_cloudwatch_log_resource_policy": {
+      "policy_document": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "aws_cloudwatch_log_stream": {
       "arn": {
         "Type": "TypeString",
@@ -4860,6 +5076,12 @@
       "comparison_operator": {
         "Type": "TypeString",
         "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "datapoints_to_alarm": {
+        "Type": "TypeInt",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -5642,6 +5864,12 @@
       }
     },
     "aws_codepipeline": {
+      "arn": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "artifact_store": {
         "Type": "TypeList",
         "Required": true,
@@ -6029,6 +6257,12 @@
           "ElementsType": "TypeString"
         }
       },
+      "arn": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "auto_verified_attributes": {
         "Type": "TypeSet",
         "Optional": true,
@@ -6235,7 +6469,7 @@
           "Info": {
             "attribute_data_type": {
               "Type": "TypeString",
-              "Optional": true,
+              "Required": true,
               "Default": {},
               "Elem": {}
             },
@@ -6253,7 +6487,7 @@
             },
             "name": {
               "Type": "TypeString",
-              "Optional": true,
+              "Required": true,
               "Default": {},
               "Elem": {}
             },
@@ -6417,6 +6651,163 @@
             }
           }
         }
+      }
+    },
+    "aws_cognito_user_pool_client": {
+      "allowed_oauth_flows": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "MaxItems": 3,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "allowed_oauth_flows_user_pool_client": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "allowed_oauth_scopes": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "callback_urls": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 100,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "client_secret": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "default_redirect_uri": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "explicit_auth_flows": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "generate_secret": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "logout_urls": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 100,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "read_attributes": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "refresh_token_validity": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "supported_identity_providers": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "user_pool_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "write_attributes": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    },
+    "aws_cognito_user_pool_domain": {
+      "aws_account_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "cloudfront_distribution_arn": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "domain": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "s3_bucket": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "user_pool_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "version": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
       }
     },
     "aws_config_config_rule": {
@@ -8178,6 +8569,12 @@
         "Default": {},
         "Elem": {}
       },
+      "security_group_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "short_name": {
         "Type": "TypeString",
         "Optional": true,
@@ -8591,6 +8988,20 @@
         "Elem": {}
       },
       "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "aws_dx_connection_association": {
+      "connection_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "lag_id": {
         "Type": "TypeString",
         "Required": true,
         "Default": {},
@@ -9021,6 +9432,12 @@
       }
     },
     "aws_ecs_cluster": {
+      "arn": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "name": {
         "Type": "TypeString",
         "Required": true,
@@ -9054,7 +9471,20 @@
         "Default": {},
         "Elem": {}
       },
+      "health_check_grace_period_seconds": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "iam_role": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "launch_type": {
         "Type": "TypeString",
         "Optional": true,
         "Default": {},
@@ -9100,6 +9530,35 @@
         "Required": true,
         "Default": {},
         "Elem": {}
+      },
+      "network_configuration": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "security_groups": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "subnets": {
+              "Type": "TypeSet",
+              "Required": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            }
+          }
+        }
       },
       "placement_constraints": {
         "Type": "TypeSet",
@@ -9167,9 +9626,27 @@
         "Default": {},
         "Elem": {}
       },
+      "cpu": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "execution_role_arn": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "family": {
         "Type": "TypeString",
         "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "memory": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -9201,6 +9678,15 @@
               "Elem": {}
             }
           }
+        }
+      },
+      "requires_compatibilities": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
         }
       },
       "revision": {
@@ -9387,6 +9873,12 @@
       "public_ip": {
         "Type": "TypeString",
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeMap",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -10014,6 +10506,18 @@
         "Default": {},
         "Elem": {}
       },
+      "at_rest_encryption_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "auth_token": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "auto_minor_version_upgrade": {
         "Type": "TypeBool",
         "Optional": true,
@@ -10194,6 +10698,12 @@
         "Optional": true,
         "Default": {},
         "Elem": {}
+      },
+      "transit_encryption_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
       }
     },
     "aws_elasticache_security_group": {
@@ -10369,6 +10879,40 @@
         "Computed": true,
         "Default": {},
         "Elem": {}
+      },
+      "kibana_endpoint": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "log_publishing_options": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cloudwatch_log_group_arn": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "enabled": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "log_type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       },
       "snapshot_options": {
         "Type": "TypeList",
@@ -11724,6 +12268,76 @@
         "Elem": {}
       }
     },
+    "aws_glue_catalog_database": {
+      "catalog_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "location_uri": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "parameters": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "schema.ValueType",
+          "Value": "TypeString"
+        }
+      }
+    },
+    "aws_guardduty_detector": {
+      "account_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "enable": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "aws_guardduty_member": {
+      "account_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "detector_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "email": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "aws_iam_access_key": {
       "encrypted_secret": {
         "Type": "TypeString",
@@ -12597,6 +13211,12 @@
               "Default": {},
               "Elem": {}
             },
+            "volume_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
             "volume_size": {
               "Type": "TypeInt",
               "Optional": true,
@@ -12805,6 +13425,12 @@
             "iops": {
               "Type": "TypeInt",
               "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "volume_id": {
+              "Type": "TypeString",
               "Computed": true,
               "Default": {},
               "Elem": {}
@@ -13894,6 +14520,12 @@
         "Default": {},
         "Elem": {}
       },
+      "reserved_concurrent_executions": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "role": {
         "Type": "TypeString",
         "Required": true,
@@ -14679,12 +15311,14 @@
             "matcher": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "path": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
@@ -14703,6 +15337,7 @@
             "timeout": {
               "Type": "TypeInt",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
@@ -15127,6 +15762,26 @@
         "Elem": {}
       },
       "vpc_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "aws_media_store_container": {
+      "arn": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "endpoint": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
         "Type": "TypeString",
         "Required": true,
         "Default": {},
@@ -18986,6 +19641,20 @@
         "Default": {},
         "Elem": {}
       },
+      "performance_insights_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "performance_insights_kms_key_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "port": {
         "Type": "TypeInt",
         "Computed": true,
@@ -19759,6 +20428,20 @@
         "Elem": {}
       }
     },
+    "aws_route53_query_log": {
+      "cloudwatch_log_group_arn": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "zone_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "aws_route53_record": {
       "alias": {
         "Type": "TypeSet",
@@ -20514,6 +21197,51 @@
         "Default": {},
         "Elem": {}
       },
+      "server_side_encryption_configuration": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "rule": {
+              "Type": "TypeList",
+              "Required": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "apply_server_side_encryption_by_default": {
+                    "Type": "TypeList",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "kms_master_key_id": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "sse_algorithm": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "tags": {
         "Type": "TypeMap",
         "Optional": true,
@@ -21147,6 +21875,152 @@
         "Elem": {}
       }
     },
+    "aws_service_discovery_private_dns_namespace": {
+      "arn": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "hosted_zone": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vpc": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "aws_service_discovery_public_dns_namespace": {
+      "arn": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "hosted_zone": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "aws_service_discovery_service": {
+      "arn": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "dns_config": {
+        "Type": "TypeList",
+        "Required": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "dns_records": {
+              "Type": "TypeList",
+              "Required": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "ttl": {
+                    "Type": "TypeInt",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "type": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "namespace_id": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "health_check_config": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "failure_threshold": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "resource_path": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "aws_servicecatalog_portfolio": {
       "arn": {
         "Type": "TypeString",
@@ -21243,8 +22117,10 @@
       "cloudwatch_destination": {
         "Type": "TypeSet",
         "Optional": true,
+        "MaxItems": 1,
         "ConflictsWith": [
-          "kinesis_destination"
+          "kinesis_destination",
+          "sns_destination"
         ],
         "Default": {},
         "Elem": {
@@ -21286,8 +22162,10 @@
       "kinesis_destination": {
         "Type": "TypeSet",
         "Optional": true,
+        "MaxItems": 1,
         "ConflictsWith": [
-          "cloudwatch_destination"
+          "cloudwatch_destination",
+          "sns_destination"
         ],
         "Default": {},
         "Elem": {
@@ -21322,6 +22200,27 @@
         "Required": true,
         "Default": {},
         "Elem": {}
+      },
+      "sns_destination": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "cloudwatch_destination",
+          "kinesis_destination"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "topic_arn": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       }
     },
     "aws_ses_receipt_filter": {
@@ -22228,6 +23127,12 @@
               "Default": {},
               "Elem": {}
             },
+            "volume_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
             "volume_size": {
               "Type": "TypeInt",
               "Optional": true,
@@ -22448,6 +23353,12 @@
             "iops": {
               "Type": "TypeInt",
               "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "volume_id": {
+              "Type": "TypeString",
               "Computed": true,
               "Default": {},
               "Elem": {}
@@ -22810,7 +23721,7 @@
         "Type": "TypeList",
         "Optional": true,
         "Computed": true,
-        "MaxItems": 1,
+        "MaxItems": 5,
         "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
@@ -23759,6 +24670,13 @@
         "Default": {},
         "Elem": {}
       },
+      "peer_region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "peer_vpc_id": {
         "Type": "TypeString",
         "Required": true,
@@ -23852,6 +24770,12 @@
         "Elem": {}
       },
       "peer_owner_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "peer_region": {
         "Type": "TypeString",
         "Computed": true,
         "Default": {},
@@ -26936,6 +27860,227 @@
         "Elem": {}
       }
     },
+    "aws_elb": {
+      "access_logs": {
+        "Type": "TypeList",
+        "Computed": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "bucket": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "bucket_prefix": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "enabled": {
+              "Type": "TypeBool",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "interval": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "availability_zones": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "connection_draining": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "connection_draining_timeout": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "cross_zone_load_balancing": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "dns_name": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "health_check": {
+        "Type": "TypeList",
+        "Computed": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "healthy_threshold": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "interval": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "target": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "timeout": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "unhealthy_threshold": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "idle_timeout": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instances": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "internal": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "listener": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "instance_port": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "instance_protocol": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "lb_port": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "lb_protocol": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ssl_certificate_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "security_groups": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "source_security_group": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "source_security_group_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "subnets": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "tags": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "zone_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "aws_elb_hosted_zone_id": {
       "region": {
         "Type": "TypeString",
@@ -27249,6 +28394,18 @@
         "Default": {},
         "Elem": {}
       },
+      "certificate_body": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "certificate_chain": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "expiration_date": {
         "Type": "TypeString",
         "Computed": true,
@@ -27278,6 +28435,12 @@
         "Elem": {}
       },
       "path": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "upload_date": {
         "Type": "TypeString",
         "Computed": true,
         "Default": {},
@@ -27361,6 +28524,12 @@
               "Elem": {}
             },
             "snapshot_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "volume_id": {
               "Type": "TypeString",
               "Computed": true,
               "Default": {},
@@ -27489,6 +28658,12 @@
         "Default": {},
         "Elem": {}
       },
+      "placement_group": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "private_dns": {
         "Type": "TypeString",
         "Computed": true,
@@ -27528,6 +28703,12 @@
             },
             "iops": {
               "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "volume_id": {
+              "Type": "TypeString",
               "Computed": true,
               "Default": {},
               "Elem": {}
@@ -28351,6 +29532,182 @@
         "Elem": {}
       }
     },
+    "aws_network_interface": {
+      "association": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allocation_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "association_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ip_owner_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "public_dns_name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "public_ip": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "attachment": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "attachment_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "device_index": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "instance_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "instance_owner_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "availability_zone": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "interface_type": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ipv6_addresses": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "mac_address": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "owner_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "private_dns_name": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "private_ip": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "private_ips": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "requester_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "security_groups": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "subnet_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vpc_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "aws_partition": {
       "partition": {
         "Type": "TypeString",
@@ -29062,6 +30419,12 @@
         "Computed": true,
         "Default": {},
         "Elem": {}
+      },
+      "with_decryption": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
       }
     },
     "aws_subnet": {
@@ -29423,7 +30786,21 @@
         "Default": {},
         "Elem": {}
       },
+      "peer_region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "peer_vpc_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,

@@ -1,13 +1,15 @@
 {
   "name": "alicloud",
   "type": "provider",
-  "version": "v0.1.0-112-g1fdc4be",
+  "version": "v0.1.0-186-g6c46760",
   "provider": {
     "access_key": {
       "Type": "TypeString",
       "Required": true,
       "Description": "Access key of alicloud",
-      "Default": {},
+      "Default": {
+        "Type": "string"
+      },
       "Elem": {}
     },
     "region": {
@@ -15,8 +17,7 @@
       "Required": true,
       "Description": "Region of alicloud",
       "Default": {
-        "Type": "string",
-        "Value": "cn-beijing"
+        "Type": "string"
       },
       "Elem": {}
     },
@@ -24,28 +25,552 @@
       "Type": "TypeString",
       "Required": true,
       "Description": "Secret key of alicloud",
-      "Default": {},
+      "Default": {
+        "Type": "string"
+      },
+      "Elem": {}
+    },
+    "security_token": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "Alibaba Cloud Security Token",
+      "Default": {
+        "Type": "string"
+      },
       "Elem": {}
     }
   },
   "resources": {
+    "alicloud_cdn_domain": {
+      "auth_config": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "auth_type": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "master_key": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "slave_key": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "timeout": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "block_ips": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "cache_config": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cache_content": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "cache_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "cache_type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ttl": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "weight": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "cdn_type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "domain_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "http_header_config": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "MaxItems": 10,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "header_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "header_key": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "header_value": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "optimize_enable": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "page_404_config": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "custom_page_url": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "error_code": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "page_type": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "page_compress_enable": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "parameter_filter_config": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enable": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "hash_key_args": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Computed": true,
+              "MaxItems": 10,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            }
+          }
+        }
+      },
+      "range_enable": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "refer_config": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allow_empty": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "refer_list": {
+              "Type": "TypeList",
+              "Required": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "refer_type": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "scope": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "source_port": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "source_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sources": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "MaxItems": 20,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "video_seek_enable": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_container_cluster": {
+      "cidr_block": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "disk_category": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "disk_size": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "image_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instance_type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "name_prefix"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "name_prefix": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "network_mode": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "password": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "size": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vswitch_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_db_account": {
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instance_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "password": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_db_account_privilege": {
+      "account_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "db_names": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "instance_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "privilege": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_db_backup_policy": {
+      "backup_period": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "backup_time": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instance_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "log_backup": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "log_retention_period": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "retention_period": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_db_connection": {
+      "connection_prefix": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "connection_string": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instance_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_address": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "port": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_db_database": {
+      "character_set": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instance_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "alicloud_db_instance": {
       "allocate_public_connection": {
         "Type": "TypeBool",
         "Optional": true,
+        "Deprecated": "Field 'allocate_public_connection' has been deprecated from provider version 1.5.0. New resource 'alicloud_db_connection' replaces it.",
         "Default": {},
         "Elem": {}
       },
       "backup_retention_period": {
         "Type": "TypeInt",
         "Optional": true,
+        "Deprecated": "Field 'backup_retention_period' has been deprecated from provider version 1.5.0. New resource 'alicloud_db_backup_policy' field 'retention_period' replaces it.",
+        "Default": {},
+        "Elem": {}
+      },
+      "connection_string": {
+        "Type": "TypeString",
         "Computed": true,
         "Default": {},
         "Elem": {}
       },
       "connections": {
         "Type": "TypeList",
+        "Optional": true,
         "Computed": true,
+        "Deprecated": "Field 'connections' has been deprecated from provider version 1.5.0. New resource 'alicloud_db_connection' replaces it.",
         "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
@@ -73,25 +598,30 @@
       },
       "db_instance_class": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
+        "Deprecated": "Field 'db_instance_class' has been deprecated from provider version 1.5.0. New field 'instance_type' replaces it.",
         "Default": {},
         "Elem": {}
       },
       "db_instance_net_type": {
         "Type": "TypeString",
         "Optional": true,
+        "Deprecated": "Field 'db_instance_net_type' has been deprecated from provider version 1.5.0.",
         "Default": {},
         "Elem": {}
       },
       "db_instance_storage": {
         "Type": "TypeInt",
-        "Required": true,
+        "Optional": true,
+        "Deprecated": "Field 'db_instance_storage' has been deprecated from provider version 1.5.0. New field 'instance_storage' replaces it.",
         "Default": {},
         "Elem": {}
       },
       "db_mappings": {
         "Type": "TypeSet",
         "Optional": true,
+        "Computed": true,
+        "Deprecated": "Field 'db_mappings' has been deprecated from provider version 1.5.0. New resource 'alicloud_db_database' replaces it.",
         "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
@@ -138,25 +668,42 @@
       "instance_network_type": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true,
+        "Deprecated": "Field 'instance_network_type' has been deprecated from provider version 1.5.0.",
+        "Default": {},
+        "Elem": {}
+      },
+      "instance_storage": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instance_type": {
+        "Type": "TypeString",
+        "Required": true,
         "Default": {},
         "Elem": {}
       },
       "master_user_name": {
         "Type": "TypeString",
         "Optional": true,
+        "Deprecated": "Field 'master_user_name' has been deprecated from provider version 1.5.0. New resource 'alicloud_db_account' field 'name' replaces it.",
         "Default": {},
         "Elem": {}
       },
       "master_user_password": {
         "Type": "TypeString",
         "Optional": true,
+        "Deprecated": "Field 'master_user_password' has been deprecated from provider version 1.5.0. New resource 'alicloud_db_account' field 'password' replaces it.",
         "Default": {},
         "Elem": {}
       },
       "multi_az": {
         "Type": "TypeBool",
         "Optional": true,
+        "ConflictsWith": [
+          "zone_id"
+        ],
         "Default": {},
         "Elem": {}
       },
@@ -175,7 +722,7 @@
       "preferred_backup_period": {
         "Type": "TypeList",
         "Optional": true,
-        "Computed": true,
+        "Deprecated": "Field 'preferred_backup_period' has been deprecated from provider version 1.5.0. New resource 'alicloud_db_backup_policy' field 'backup_period' replaces it.",
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -185,7 +732,7 @@
       "preferred_backup_time": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true,
+        "Deprecated": "Field 'preferred_backup_time' has been deprecated from provider version 1.5.0. New resource 'alicloud_db_backup_policy' field 'backup_time' replaces it.",
         "Default": {},
         "Elem": {}
       },
@@ -285,6 +832,93 @@
         "Elem": {}
       }
     },
+    "alicloud_dns": {
+      "dns_server": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "group_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_dns_group": {
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_dns_record": {
+      "host_record": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "locked": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "priority": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "routing": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ttl": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "value": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "alicloud_eip": {
       "bandwidth": {
         "Type": "TypeInt",
@@ -330,6 +964,31 @@
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ess_attachment": {
+      "force": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instance_ids": {
+        "Type": "TypeSet",
+        "Required": true,
+        "MaxItems": 20,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "scaling_group_id": {
+        "Type": "TypeString",
+        "Required": true,
         "Default": {},
         "Elem": {}
       }
@@ -383,6 +1042,12 @@
         "Default": {},
         "Elem": {}
       },
+      "force_delete": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "image_id": {
         "Type": "TypeString",
         "Required": true,
@@ -392,7 +1057,7 @@
       "instance_ids": {
         "Type": "TypeList",
         "Optional": true,
-        "MaxItems": 20,
+        "Deprecated": "Field 'instance_ids' has been deprecated from provider version 1.6.0. New resource 'alicloud_ess_attachment' replaces it.",
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -438,6 +1103,18 @@
         "Default": {},
         "Elem": {}
       },
+      "key_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "scaling_configuration_name": {
         "Type": "TypeString",
         "Optional": true,
@@ -457,7 +1134,26 @@
         "Default": {},
         "Elem": {}
       },
+      "substitute": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "system_disk_category": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "user_data": {
         "Type": "TypeString",
         "Optional": true,
         "Default": {},
@@ -682,6 +1378,12 @@
         "Default": {},
         "Elem": {}
       },
+      "dry_run": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "host_name": {
         "Type": "TypeString",
         "Optional": true,
@@ -692,6 +1394,12 @@
       "image_id": {
         "Type": "TypeString",
         "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "include_data_disks": {
+        "Type": "TypeBool",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -764,16 +1472,28 @@
         "Default": {},
         "Elem": {}
       },
+      "period_unit": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "private_ip": {
         "Type": "TypeString",
+        "Optional": true,
         "Computed": true,
         "Default": {},
         "Elem": {}
       },
       "public_ip": {
         "Type": "TypeString",
-        "Optional": true,
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role_name": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -786,6 +1506,18 @@
           "ElementsType": "TypeString"
         }
       },
+      "spot_price_limit": {
+        "Type": "TypeFloat",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "spot_strategy": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "status": {
         "Type": "TypeString",
         "Computed": true,
@@ -796,6 +1528,9 @@
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
+        "ConflictsWith": [
+          "vswitch_id"
+        ],
         "Default": {},
         "Elem": {}
       },
@@ -1292,6 +2027,383 @@
         "Elem": {}
       }
     },
+    "alicloud_ram_access_key": {
+      "secret_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "user_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_account_alias": {
+      "account_alias": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_alias": {
+      "account_alias": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_group": {
+      "comments": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "force": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_group_membership": {
+      "group_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "user_names": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    },
+    "alicloud_ram_group_policy_attachment": {
+      "group_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_login_profile": {
+      "mfa_bind_required": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "password": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "password_reset_required": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "user_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_policy": {
+      "attachment_count": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "document": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "statement",
+          "version"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "force": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "statement": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "document"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "TypeList",
+              "Required": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "effect": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "resource": {
+              "Type": "TypeList",
+              "Required": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            }
+          }
+        }
+      },
+      "type": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "version": {
+        "Type": "TypeString",
+        "Optional": true,
+        "ConflictsWith": [
+          "document"
+        ],
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_role": {
+      "arn": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "document": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "ram_users",
+          "services",
+          "version"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "force": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ram_users": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "document"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "services": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "document"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "version": {
+        "Type": "TypeString",
+        "Optional": true,
+        "ConflictsWith": [
+          "document"
+        ],
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_role_attachment": {
+      "instance_ids": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "role_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_role_policy_attachment": {
+      "policy_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_user": {
+      "comments": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "display_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "email": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "force": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "mobile": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_user_policy_attachment": {
+      "policy_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "user_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "alicloud_route_entry": {
       "destination_cidrblock": {
         "Type": "TypeString",
@@ -1515,13 +2627,13 @@
       "bandwidth": {
         "Type": "TypeInt",
         "Optional": true,
-        "Computed": true,
         "Default": {},
         "Elem": {}
       },
       "instances": {
         "Type": "TypeSet",
         "Optional": true,
+        "Deprecated": "Field 'instances' has been deprecated from provider version 1.6.0. New resource 'alicloud_slb_attachment' replaces it.",
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -1543,133 +2655,156 @@
       "listener": {
         "Type": "TypeSet",
         "Optional": true,
+        "Computed": true,
+        "Deprecated": "Field 'listener' has been deprecated, and using new resource 'alicloud_slb_listener' to replace.",
         "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "bandwidth": {
               "Type": "TypeInt",
-              "Required": true,
+              "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "cookie": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "cookie_timeout": {
               "Type": "TypeInt",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "health_check": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "health_check_connect_port": {
               "Type": "TypeInt",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "health_check_domain": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "health_check_http_code": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "health_check_interval": {
               "Type": "TypeInt",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "health_check_timeout": {
               "Type": "TypeInt",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "health_check_type": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "health_check_uri": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "healthy_threshold": {
               "Type": "TypeInt",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "instance_port": {
               "Type": "TypeInt",
-              "Required": true,
+              "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "lb_port": {
               "Type": "TypeInt",
-              "Required": true,
+              "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "lb_protocol": {
               "Type": "TypeString",
-              "Required": true,
+              "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "persistence_timeout": {
               "Type": "TypeInt",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "scheduler": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "ssl_certificate_id": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "sticky_session": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "sticky_session_type": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
             "unhealthy_threshold": {
               "Type": "TypeInt",
               "Optional": true,
+              "Computed": true,
               "Default": {},
               "Elem": {}
             }
@@ -1679,7 +2814,6 @@
       "name": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -1698,20 +2832,288 @@
         "Default": {},
         "Elem": {}
       },
-      "instances": {
+      "instance_ids": {
         "Type": "TypeSet",
         "Required": true,
+        "MaxItems": 20,
+        "MinItems": 1,
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "TypeString"
         }
       },
-      "slb_id": {
+      "instances": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Deprecated": "Field 'instances' has been deprecated from provider version 1.6.0. New field 'instance_ids' replaces it.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "load_balancer_id": {
         "Type": "TypeString",
         "Required": true,
         "Default": {},
         "Elem": {}
+      },
+      "slb_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Deprecated": "Field 'instances' has been deprecated from provider version 1.6.0. New field 'load_balancer_id' replaces it.",
+        "Default": {},
+        "Elem": {}
+      },
+      "weight": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_slb_listener": {
+      "backend_port": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "bandwidth": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "cookie": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "cookie_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "frontend_port": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "health_check": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "health_check_connect_port": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "health_check_domain": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "health_check_http_code": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "health_check_interval": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "health_check_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "health_check_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "health_check_uri": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "healthy_threshold": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instance_port": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Deprecated": "Field 'instance_port' has been deprecated, and using 'backend_port' to replace.",
+        "Default": {},
+        "Elem": {}
+      },
+      "lb_port": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Deprecated": "Field 'lb_port' has been deprecated, and using 'frontend_port' to replace.",
+        "Default": {},
+        "Elem": {}
+      },
+      "lb_protocol": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Deprecated": "Field 'lb_protocol' has been deprecated, and using 'protocol' to replace.",
+        "Default": {},
+        "Elem": {}
+      },
+      "load_balancer_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "persistence_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "protocol": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "scheduler": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ssl_certificate_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sticky_session": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sticky_session_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "unhealthy_threshold": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_slb_rule": {
+      "domain": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "frontend_port": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "load_balancer_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "server_group_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "url": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_slb_server_group": {
+      "load_balancer_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "servers": {
+        "Type": "TypeSet",
+        "Required": true,
+        "MaxItems": 20,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "port": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "server_ids": {
+              "Type": "TypeList",
+              "Required": true,
+              "MaxItems": 20,
+              "MinItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "weight": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       }
     },
     "alicloud_snat_entry": {
@@ -1839,6 +3241,423 @@
     }
   },
   "data-sources": {
+    "alicloud_dns_domain_groups": {
+      "groups": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "group_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "group_name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "name_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_dns_domain_records": {
+      "domain_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "host_record_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "is_locked": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "line": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "records": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "domain_name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "host_record": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "line": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "locked": {
+              "Type": "TypeBool",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "priority": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "record_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "status": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ttl": {
+              "Type": "TypeFloat",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "value": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "status": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "value_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_dns_domains": {
+      "ali_domain": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "domain_name_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "domains": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ali_domain": {
+              "Type": "TypeBool",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "dns_servers": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "domain_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "domain_name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "group_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "group_name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "instance_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "puny_code": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "version_code": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "group_name_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instance_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "version_code": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_dns_groups": {
+      "groups": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "group_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "group_name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "name_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_dns_records": {
+      "domain_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "host_record_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "is_locked": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "line": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "records": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "domain_name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "host_record": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "line": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "locked": {
+              "Type": "TypeBool",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "priority": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "record_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "status": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ttl": {
+              "Type": "TypeFloat",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "value": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "status": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "value_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "alicloud_images": {
       "images": {
         "Type": "TypeList",
@@ -2236,6 +4055,334 @@
         "Optional": true,
         "Default": {},
         "Elem": {}
+      }
+    },
+    "alicloud_ram_account_alias": {
+      "account_alias": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_account_aliases": {
+      "account_alias": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_groups": {
+      "groups": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "comments": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "name_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "user_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_policies": {
+      "group_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policies": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "attachment_count": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "create_date": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "default_version": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "description": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "document": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "update_date": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "role_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "user_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_ram_roles": {
+      "name_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "roles": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "arn": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "assume_role_policy_document": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "create_date": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "description": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "document": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "update_date": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      }
+    },
+    "alicloud_ram_users": {
+      "group_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "users": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "create_date": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "last_login_date": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       }
     },
     "alicloud_regions": {

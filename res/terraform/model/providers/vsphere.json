@@ -1,7 +1,7 @@
 {
   "name": "vsphere",
   "type": "provider",
-  "version": "v1.0.1-1-g8246bbb",
+  "version": "v1.2.0-28-ga5a9544",
   "provider": {
     "allow_unverified_ssl": {
       "Type": "TypeBool",
@@ -71,7 +71,30 @@
     }
   },
   "resources": {
+    "vsphere_custom_attribute": {
+      "managed_object_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Object type for which the custom attribute is valid. If not specified, the attribute is valid for all managed object types.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The display name of the custom attribute.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "vsphere_datacenter": {
+      "custom_attributes": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "A list of custom attributes to set on this resource.",
+        "Default": {},
+        "Elem": {}
+      },
       "folder": {
         "Type": "TypeString",
         "Optional": true,
@@ -165,6 +188,13 @@
         "Type": "TypeString",
         "Description": "Version string of the configuration that this spec is trying to change.",
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "custom_attributes": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "A list of custom attributes to set on this resource.",
         "Default": {},
         "Elem": {}
       },
@@ -562,6 +592,13 @@
         "Type": "TypeString",
         "Optional": true,
         "Description": "The contact name for this DVS.",
+        "Default": {},
+        "Elem": {}
+      },
+      "custom_attributes": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "A list of custom attributes to set on this resource.",
         "Default": {},
         "Elem": {}
       },
@@ -1287,6 +1324,13 @@
       }
     },
     "vsphere_folder": {
+      "custom_attributes": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "A list of custom attributes to set on this resource.",
+        "Default": {},
+        "Elem": {}
+      },
       "datacenter_id": {
         "Type": "TypeString",
         "Optional": true,
@@ -1711,6 +1755,13 @@
         "Type": "TypeInt",
         "Description": "Maximum capacity of the datastore, in MB.",
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "custom_attributes": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "A list of custom attributes to set on this resource.",
         "Default": {},
         "Elem": {}
       },
@@ -2371,6 +2422,13 @@
         "Default": {},
         "Elem": {}
       },
+      "custom_attributes": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "A list of custom attributes to set on this resource.",
+        "Default": {},
+        "Elem": {}
+      },
       "datastore_id": {
         "Type": "TypeString",
         "Required": true,
@@ -2875,6 +2933,28 @@
         "Default": {},
         "Elem": {}
       },
+      "vapp": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "vApp configuration data for this virtual machine. Can be used to provide configuration data for OVF images.",
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "properties": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Description": "A map of customizable vApp properties and their values. Allows customization of VMs cloned from OVF templates which have customizable vApp properties.",
+              "Default": {},
+              "Elem": {
+                "Type": "schema.ValueType",
+                "Value": "TypeString"
+              }
+            }
+          }
+        }
+      },
       "vmware_tools_status": {
         "Type": "TypeString",
         "Description": "The state of VMware tools in the guest. This will determine the proper course of action for some device operations.",
@@ -2953,6 +3033,13 @@
         "Type": "TypeInt",
         "Description": "Maximum capacity of the datastore, in MB.",
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "custom_attributes": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "A list of custom attributes to set on this resource.",
         "Default": {},
         "Elem": {}
       },
@@ -3036,6 +3123,22 @@
     }
   },
   "data-sources": {
+    "vsphere_custom_attribute": {
+      "managed_object_type": {
+        "Type": "TypeString",
+        "Description": "Object type for which the custom attribute is valid. If not specified, the attribute is valid for all managed object types.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The display name of the custom attribute.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "vsphere_datacenter": {
       "name": {
         "Type": "TypeString",
@@ -3213,14 +3316,33 @@
         "Default": {},
         "Elem": {}
       },
-      "disk_sizes": {
+      "disks": {
         "Type": "TypeList",
-        "Description": "The sizes of the disks on this virtual machine, sorted by bus and unit number.",
+        "Description": "Select configuration attributes from the disks on this virtual machine, sorted by bus and unit number.",
         "Computed": true,
         "Default": {},
         "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeInt"
+          "Type": "SchemaInfo",
+          "Info": {
+            "eagerly_scrub": {
+              "Type": "TypeBool",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "size": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "thin_provisioned": {
+              "Type": "TypeBool",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
         }
       },
       "guest_id": {

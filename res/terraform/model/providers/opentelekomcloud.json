@@ -1,15 +1,22 @@
 {
-  "name": "openstack",
+  "name": "opentelekomcloud",
   "type": "provider",
-  "version": "v1.1.0-60-g7760d17",
+  "version": "v1.0.0-28-g4f5589f",
   "provider": {
-    "auth_url": {
+    "access_key": {
       "Type": "TypeString",
       "Optional": true,
-      "Description": "The Identity authentication URL.",
+      "Description": "The access key for API operations. You can retrieve this\nfrom the 'My Credential' section of the console.",
       "Default": {
         "Type": "string"
       },
+      "Elem": {}
+    },
+    "auth_url": {
+      "Type": "TypeString",
+      "Required": true,
+      "Description": "The Identity authentication URL.",
+      "Default": {},
       "Elem": {}
     },
     "cacert_file": {
@@ -25,15 +32,6 @@
       "Type": "TypeString",
       "Optional": true,
       "Description": "A client certificate to authenticate with.",
-      "Default": {
-        "Type": "string"
-      },
-      "Elem": {}
-    },
-    "cloud": {
-      "Type": "TypeString",
-      "Optional": true,
-      "Description": "An entry in a `clouds.yaml` file to use.",
       "Default": {
         "Type": "string"
       },
@@ -95,7 +93,16 @@
     "region": {
       "Type": "TypeString",
       "Optional": true,
-      "Description": "The OpenStack region to connect to.",
+      "Description": "The OpenTelekomCloud region to connect to.",
+      "Default": {
+        "Type": "string"
+      },
+      "Elem": {}
+    },
+    "secret_key": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "The secret key for API operations. You can retrieve this\nfrom the 'My Credential' section of the console.",
       "Default": {
         "Type": "string"
       },
@@ -137,15 +144,6 @@
       },
       "Elem": {}
     },
-    "use_octavia": {
-      "Type": "TypeBool",
-      "Optional": true,
-      "Description": "If set to `true`, API requests will go the Load Balancer\nservice (Octavia) instead of the Networking service (Neutron).",
-      "Default": {
-        "Type": "string"
-      },
-      "Elem": {}
-    },
     "user_id": {
       "Type": "TypeString",
       "Optional": true,
@@ -166,204 +164,7 @@
     }
   },
   "resources": {
-    "openstack_blockstorage_volume_attach_v2": {
-      "attach_mode": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "data": {
-        "Type": "TypeMap",
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "device": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "driver_volume_type": {
-        "Type": "TypeString",
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "host_name": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "initiator": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "instance_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Removed": "instance_id is no longer used in this resource",
-        "Default": {},
-        "Elem": {}
-      },
-      "ip_address": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "mount_point_base": {
-        "Type": "TypeString",
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "multipath": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "os_type": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "platform": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "volume_id": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "wwnn": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "wwpn": {
-        "Type": "TypeList",
-        "Optional": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      }
-    },
-    "openstack_blockstorage_volume_v1": {
-      "attachment": {
-        "Type": "TypeSet",
-        "Computed": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "device": {
-              "Type": "TypeString",
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "id": {
-              "Type": "TypeString",
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "instance_id": {
-              "Type": "TypeString",
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
-      "availability_zone": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "description": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "image_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "metadata": {
-        "Type": "TypeMap",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "name": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "size": {
-        "Type": "TypeInt",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "snapshot_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "source_vol_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "volume_type": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      }
-    },
-    "openstack_blockstorage_volume_v2": {
+    "opentelekomcloud_blockstorage_volume_v2": {
       "attachment": {
         "Type": "TypeSet",
         "Computed": true,
@@ -461,6 +262,12 @@
         "Default": {},
         "Elem": {}
       },
+      "tags": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "volume_type": {
         "Type": "TypeString",
         "Optional": true,
@@ -469,64 +276,218 @@
         "Elem": {}
       }
     },
-    "openstack_compute_flavor_v2": {
-      "disk": {
-        "Type": "TypeInt",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "ephemeral": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "is_public": {
+    "opentelekomcloud_ces_alarmrule": {
+      "alarm_action_enabled": {
         "Type": "TypeBool",
         "Optional": true,
         "Default": {},
         "Elem": {}
       },
-      "name": {
+      "alarm_actions": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "notification_list": {
+              "Type": "TypeList",
+              "Required": true,
+              "MaxItems": 5,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "alarm_description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "alarm_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "alarm_name": {
         "Type": "TypeString",
         "Required": true,
         "Default": {},
         "Elem": {}
       },
-      "ram": {
-        "Type": "TypeInt",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
+      "alarm_state": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
         "Default": {},
         "Elem": {}
       },
-      "rx_tx_factor": {
-        "Type": "TypeFloat",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "swap": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "vcpus": {
-        "Type": "TypeInt",
+      "condition": {
+        "Type": "TypeList",
         "Required": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "comparison_operator": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "count": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "filter": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "period": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "unit": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "value": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "insufficientdata_actions": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "notification_list": {
+              "Type": "TypeList",
+              "Required": true,
+              "MaxItems": 5,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "metric": {
+        "Type": "TypeList",
+        "Required": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "dimensions": {
+              "Type": "TypeList",
+              "Required": true,
+              "MaxItems": 3,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "value": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "metric_name": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "namespace": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "ok_actions": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "notification_list": {
+              "Type": "TypeList",
+              "Required": true,
+              "MaxItems": 5,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "update_time": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }
     },
-    "openstack_compute_floatingip_associate_v2": {
+    "opentelekomcloud_compute_floatingip_associate_v2": {
       "fixed_ip": {
         "Type": "TypeString",
         "Optional": true,
@@ -553,7 +514,7 @@
         "Elem": {}
       }
     },
-    "openstack_compute_floatingip_v2": {
+    "opentelekomcloud_compute_floatingip_v2": {
       "address": {
         "Type": "TypeString",
         "Computed": true,
@@ -586,7 +547,7 @@
         "Elem": {}
       }
     },
-    "openstack_compute_instance_v2": {
+    "opentelekomcloud_compute_instance_v2": {
       "access_ip_v4": {
         "Type": "TypeString",
         "Optional": true,
@@ -695,13 +656,7 @@
       "floating_ip": {
         "Type": "TypeString",
         "Optional": true,
-        "Removed": "Use the openstack_compute_floatingip_associate_v2 resource instead",
-        "Default": {},
-        "Elem": {}
-      },
-      "force_delete": {
-        "Type": "TypeBool",
-        "Optional": true,
+        "Removed": "Use the opentelekomcloud_compute_floatingip_associate_v2 resource instead",
         "Default": {},
         "Elem": {}
       },
@@ -769,7 +724,7 @@
               "Type": "TypeString",
               "Optional": true,
               "Computed": true,
-              "Removed": "Use the openstack_compute_floatingip_associate_v2 resource instead",
+              "Removed": "Use the opentelekomcloud_compute_floatingip_associate_v2 resource instead",
               "Default": {},
               "Elem": {}
             },
@@ -903,6 +858,15 @@
         "Default": {},
         "Elem": {}
       },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
       "user_data": {
         "Type": "TypeString",
         "Optional": true,
@@ -912,7 +876,7 @@
       "volume": {
         "Type": "TypeSet",
         "Optional": true,
-        "Removed": "Use block_device or openstack_compute_volume_attach_v2 instead",
+        "Removed": "Use block_device or opentelekomcloud_compute_volume_attach_v2 instead",
         "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
@@ -941,7 +905,7 @@
         }
       }
     },
-    "openstack_compute_keypair_v2": {
+    "opentelekomcloud_compute_keypair_v2": {
       "name": {
         "Type": "TypeString",
         "Required": true,
@@ -968,7 +932,7 @@
         "Elem": {}
       }
     },
-    "openstack_compute_secgroup_v2": {
+    "opentelekomcloud_compute_secgroup_v2": {
       "description": {
         "Type": "TypeString",
         "Required": true,
@@ -1042,7 +1006,7 @@
         }
       }
     },
-    "openstack_compute_servergroup_v2": {
+    "opentelekomcloud_compute_servergroup_v2": {
       "members": {
         "Type": "TypeList",
         "Computed": true,
@@ -1081,7 +1045,7 @@
         "Elem": {}
       }
     },
-    "openstack_compute_volume_attach_v2": {
+    "opentelekomcloud_compute_volume_attach_v2": {
       "device": {
         "Type": "TypeString",
         "Optional": true,
@@ -1109,291 +1073,7 @@
         "Elem": {}
       }
     },
-    "openstack_db_configuration_v1": {
-      "configuration": {
-        "Type": "TypeList",
-        "Optional": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "name": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "value": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
-      "datastore": {
-        "Type": "TypeList",
-        "Required": true,
-        "MaxItems": 1,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "type": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "version": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
-      "description": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "name": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {
-          "Type": "string"
-        },
-        "Elem": {}
-      }
-    },
-    "openstack_db_database_v1": {
-      "instance_id": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "name": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {
-          "Type": "string"
-        },
-        "Elem": {}
-      }
-    },
-    "openstack_db_instance_v1": {
-      "database": {
-        "Type": "TypeList",
-        "Optional": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "charset": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "collate": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "name": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
-      "datastore": {
-        "Type": "TypeList",
-        "Required": true,
-        "MaxItems": 1,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "type": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "version": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
-      "flavor_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "name": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "network": {
-        "Type": "TypeList",
-        "Optional": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "fixed_ip_v4": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "fixed_ip_v6": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "port": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "uuid": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
-      "region": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {
-          "Type": "string"
-        },
-        "Elem": {}
-      },
-      "size": {
-        "Type": "TypeInt",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "user": {
-        "Type": "TypeList",
-        "Optional": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "databases": {
-              "Type": "TypeSet",
-              "Optional": true,
-              "Default": {},
-              "Elem": {
-                "Type": "SchemaElements",
-                "ElementsType": "TypeString"
-              }
-            },
-            "host": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "name": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "password": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      }
-    },
-    "openstack_db_user_v1": {
-      "databases": {
-        "Type": "TypeSet",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      },
-      "host": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "instance_id": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "name": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "password": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {
-          "Type": "string"
-        },
-        "Elem": {}
-      }
-    },
-    "openstack_dns_recordset_v2": {
+    "opentelekomcloud_dns_recordset_v2": {
       "description": {
         "Type": "TypeString",
         "Optional": true,
@@ -1449,7 +1129,7 @@
         "Elem": {}
       }
     },
-    "openstack_dns_zone_v2": {
+    "opentelekomcloud_dns_zone_v2": {
       "attributes": {
         "Type": "TypeMap",
         "Optional": true,
@@ -1511,25 +1191,235 @@
         "Elem": {}
       }
     },
-    "openstack_fw_firewall_v1": {
+    "opentelekomcloud_elb_backend": {
+      "address": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "listener_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "server_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "opentelekomcloud_elb_health": {
+      "healthcheck_connect_port": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "healthcheck_interval": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "healthcheck_protocol": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "healthcheck_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "healthcheck_uri": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "healthy_threshold": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "listener_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "unhealthy_threshold": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "opentelekomcloud_elb_listener": {
+      "backend_port": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "backend_protocol": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "certificate_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "certificates": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "cookie_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "lb_algorithm": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "loadbalancer_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "protocol": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "protocol_port": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "session_sticky": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "session_sticky_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ssl_ciphers": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ssl_protocols": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tcp_draining": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tcp_draining_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tcp_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "udp_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "opentelekomcloud_elb_loadbalancer": {
       "admin_state_up": {
         "Type": "TypeBool",
         "Optional": true,
         "Default": {},
         "Elem": {}
       },
-      "associated_routers": {
-        "Type": "TypeSet",
+      "az": {
+        "Type": "TypeString",
         "Optional": true,
-        "Computed": true,
-        "ConflictsWith": [
-          "no_routers"
-        ],
         "Default": {},
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
+        "Elem": {}
+      },
+      "bandwidth": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
       },
       "description": {
         "Type": "TypeString",
@@ -1543,20 +1433,86 @@
         "Default": {},
         "Elem": {}
       },
-      "no_routers": {
-        "Type": "TypeBool",
+      "region": {
+        "Type": "TypeString",
         "Optional": true,
-        "ConflictsWith": [
-          "associated_routers"
-        ],
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
-      "policy_id": {
+      "security_group_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
         "Type": "TypeString",
         "Required": true,
         "Default": {},
         "Elem": {}
+      },
+      "vip_address": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vip_subnet_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vpc_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "opentelekomcloud_fw_firewall_group_v2": {
+      "admin_state_up": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "egress_policy_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ingress_policy_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ports": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
       },
       "region": {
         "Type": "TypeString",
@@ -1579,7 +1535,7 @@
         "Elem": {}
       }
     },
-    "openstack_fw_policy_v1": {
+    "opentelekomcloud_fw_policy_v2": {
       "audited": {
         "Type": "TypeBool",
         "Optional": true,
@@ -1634,7 +1590,7 @@
         "Elem": {}
       }
     },
-    "openstack_fw_rule_v1": {
+    "opentelekomcloud_fw_rule_v2": {
       "action": {
         "Type": "TypeString",
         "Required": true,
@@ -1715,151 +1671,7 @@
         "Elem": {}
       }
     },
-    "openstack_identity_project_v3": {
-      "description": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "domain_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "enabled": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "is_domain": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "name": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "parent_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      }
-    },
-    "openstack_identity_user_v3": {
-      "default_project_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "description": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "domain_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "enabled": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "extra": {
-        "Type": "TypeMap",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "ignore_change_password_upon_first_use": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "ignore_lockout_failure_attempts": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "ignore_password_expiry": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "multi_factor_auth_enabled": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "multi_factor_auth_rule": {
-        "Type": "TypeList",
-        "Optional": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "rule": {
-              "Type": "TypeList",
-              "Required": true,
-              "MinItems": 1,
-              "Default": {},
-              "Elem": {
-                "Type": "SchemaElements",
-                "ElementsType": "TypeString"
-              }
-            }
-          }
-        }
-      },
-      "name": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "password": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      }
-    },
-    "openstack_images_image_v2": {
+    "opentelekomcloud_images_image_v2": {
       "checksum": {
         "Type": "TypeString",
         "Computed": true,
@@ -1944,13 +1756,6 @@
         "Default": {},
         "Elem": {}
       },
-      "properties": {
-        "Type": "TypeMap",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
       "protected": {
         "Type": "TypeBool",
         "Optional": true,
@@ -2004,17 +1809,10 @@
         "Elem": {}
       }
     },
-    "openstack_lb_listener_v2": {
+    "opentelekomcloud_lb_listener_v2": {
       "admin_state_up": {
         "Type": "TypeBool",
         "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "connection_limit": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -2034,6 +1832,13 @@
       "description": {
         "Type": "TypeString",
         "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -2086,7 +1891,7 @@
         "Elem": {}
       }
     },
-    "openstack_lb_loadbalancer_v2": {
+    "opentelekomcloud_lb_loadbalancer_v2": {
       "admin_state_up": {
         "Type": "TypeBool",
         "Optional": true,
@@ -2162,7 +1967,7 @@
         "Elem": {}
       }
     },
-    "openstack_lb_member_v1": {
+    "opentelekomcloud_lb_member_v2": {
       "address": {
         "Type": "TypeString",
         "Required": true,
@@ -2172,53 +1977,13 @@
       "admin_state_up": {
         "Type": "TypeBool",
         "Optional": true,
-        "Computed": true,
         "Default": {},
         "Elem": {}
       },
-      "pool_id": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "port": {
-        "Type": "TypeInt",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
+      "id": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "tenant_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "weight": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      }
-    },
-    "openstack_lb_member_v2": {
-      "address": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "admin_state_up": {
-        "Type": "TypeBool",
-        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -2249,7 +2014,7 @@
       },
       "subnet_id": {
         "Type": "TypeString",
-        "Optional": true,
+        "Required": true,
         "Default": {},
         "Elem": {}
       },
@@ -2268,72 +2033,7 @@
         "Elem": {}
       }
     },
-    "openstack_lb_monitor_v1": {
-      "admin_state_up": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "delay": {
-        "Type": "TypeInt",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "expected_codes": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "http_method": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "max_retries": {
-        "Type": "TypeInt",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "tenant_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "timeout": {
-        "Type": "TypeInt",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "type": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "url_path": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      }
-    },
-    "openstack_lb_monitor_v2": {
+    "opentelekomcloud_lb_monitor_v2": {
       "admin_state_up": {
         "Type": "TypeBool",
         "Optional": true,
@@ -2354,6 +2054,13 @@
         "Elem": {}
       },
       "http_method": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "id": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
@@ -2412,73 +2119,7 @@
         "Elem": {}
       }
     },
-    "openstack_lb_pool_v1": {
-      "lb_method": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "lb_provider": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "member": {
-        "Type": "TypeSet",
-        "Optional": true,
-        "Removed": "Use openstack_lb_member_v1 instead.",
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      },
-      "monitor_ids": {
-        "Type": "TypeSet",
-        "Optional": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      },
-      "name": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "protocol": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "subnet_id": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "tenant_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      }
-    },
-    "openstack_lb_pool_v2": {
+    "opentelekomcloud_lb_pool_v2": {
       "admin_state_up": {
         "Type": "TypeBool",
         "Optional": true,
@@ -2488,6 +2129,13 @@
       "description": {
         "Type": "TypeString",
         "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -2558,99 +2206,7 @@
         "Elem": {}
       }
     },
-    "openstack_lb_vip_v1": {
-      "address": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "admin_state_up": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "conn_limit": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "description": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "floating_ip": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "name": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "persistence": {
-        "Type": "TypeMap",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "pool_id": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "port": {
-        "Type": "TypeInt",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "port_id": {
-        "Type": "TypeString",
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "protocol": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "subnet_id": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "tenant_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      }
-    },
-    "openstack_networking_floatingip_v2": {
+    "opentelekomcloud_networking_floatingip_v2": {
       "address": {
         "Type": "TypeString",
         "Computed": true,
@@ -2698,23 +2254,13 @@
         "Elem": {}
       }
     },
-    "openstack_networking_network_v2": {
+    "opentelekomcloud_networking_network_v2": {
       "admin_state_up": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
         "Default": {},
         "Elem": {}
-      },
-      "availability_zone_hints": {
-        "Type": "TypeList",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
       },
       "name": {
         "Type": "TypeString",
@@ -2778,7 +2324,7 @@
         "Elem": {}
       }
     },
-    "openstack_networking_port_v2": {
+    "opentelekomcloud_networking_port_v2": {
       "admin_state_up": {
         "Type": "TypeBool",
         "Optional": true,
@@ -2795,18 +2341,10 @@
           "ElementsType": "TypeString"
         }
       },
-      "all_security_group_ids": {
-        "Type": "TypeSet",
-        "Computed": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      },
       "allowed_address_pairs": {
         "Type": "TypeSet",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
@@ -2882,12 +2420,6 @@
         "Default": {},
         "Elem": {}
       },
-      "no_security_groups": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
       "region": {
         "Type": "TypeString",
         "Optional": true,
@@ -2898,6 +2430,7 @@
       "security_group_ids": {
         "Type": "TypeSet",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -2918,11 +2451,10 @@
         "Elem": {}
       }
     },
-    "openstack_networking_router_interface_v2": {
+    "opentelekomcloud_networking_router_interface_v2": {
       "port_id": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -2942,12 +2474,11 @@
       "subnet_id": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true,
         "Default": {},
         "Elem": {}
       }
     },
-    "openstack_networking_router_route_v2": {
+    "opentelekomcloud_networking_router_route_v2": {
       "destination_cidr": {
         "Type": "TypeString",
         "Required": true,
@@ -2974,23 +2505,13 @@
         "Elem": {}
       }
     },
-    "openstack_networking_router_v2": {
+    "opentelekomcloud_networking_router_v2": {
       "admin_state_up": {
         "Type": "TypeBool",
         "Optional": true,
         "Computed": true,
         "Default": {},
         "Elem": {}
-      },
-      "availability_zone_hints": {
-        "Type": "TypeList",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
       },
       "distributed": {
         "Type": "TypeBool",
@@ -2999,54 +2520,9 @@
         "Default": {},
         "Elem": {}
       },
-      "enable_snat": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "external_fixed_ip": {
-        "Type": "TypeList",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "ip_address": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "subnet_id": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
       "external_gateway": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true,
-        "ConflictsWith": [
-          "external_network_id"
-        ],
-        "Deprecated": "use external_network_id instead",
-        "Default": {},
-        "Elem": {}
-      },
-      "external_network_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "ConflictsWith": [
-          "external_gateway"
-        ],
         "Default": {},
         "Elem": {}
       },
@@ -3058,9 +2534,10 @@
       },
       "region": {
         "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
+        "Required": true,
+        "Default": {
+          "Type": "string"
+        },
         "Elem": {}
       },
       "tenant_id": {
@@ -3077,7 +2554,7 @@
         "Elem": {}
       }
     },
-    "openstack_networking_secgroup_rule_v2": {
+    "opentelekomcloud_networking_secgroup_rule_v2": {
       "direction": {
         "Type": "TypeString",
         "Required": true,
@@ -3146,7 +2623,7 @@
         "Elem": {}
       }
     },
-    "openstack_networking_secgroup_v2": {
+    "opentelekomcloud_networking_secgroup_v2": {
       "delete_default_rules": {
         "Type": "TypeBool",
         "Optional": true,
@@ -3181,7 +2658,7 @@
         "Elem": {}
       }
     },
-    "openstack_networking_subnet_v2": {
+    "opentelekomcloud_networking_subnet_v2": {
       "allocation_pools": {
         "Type": "TypeList",
         "Optional": true,
@@ -3230,9 +2707,6 @@
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
-        "ConflictsWith": [
-          "no_gateway"
-        ],
         "Default": {},
         "Elem": {}
       },
@@ -3264,20 +2738,6 @@
         "Default": {},
         "Elem": {}
       },
-      "ipv6_address_mode": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "ipv6_ra_mode": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
       "name": {
         "Type": "TypeString",
         "Optional": true,
@@ -3293,9 +2753,6 @@
       "no_gateway": {
         "Type": "TypeBool",
         "Optional": true,
-        "ConflictsWith": [
-          "gateway_ip"
-        ],
         "Default": {},
         "Elem": {}
       },
@@ -3320,46 +2777,211 @@
         "Elem": {}
       }
     },
-    "openstack_objectstorage_container_v1": {
-      "container_read": {
+    "opentelekomcloud_s3_bucket": {
+      "acl": {
         "Type": "TypeString",
         "Optional": true,
         "Default": {},
         "Elem": {}
       },
-      "container_sync_key": {
+      "arn": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "bucket": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "bucket_prefix"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "bucket_domain_name": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "bucket_prefix": {
         "Type": "TypeString",
         "Optional": true,
         "Default": {},
         "Elem": {}
       },
-      "container_sync_to": {
-        "Type": "TypeString",
+      "cors_rule": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_headers": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "allowed_methods": {
+              "Type": "TypeList",
+              "Required": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "allowed_origins": {
+              "Type": "TypeList",
+              "Required": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "expose_headers": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "max_age_seconds": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "force_destroy": {
+        "Type": "TypeBool",
         "Optional": true,
         "Default": {},
         "Elem": {}
       },
-      "container_write": {
+      "hosted_zone_id": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
-      "content_type": {
-        "Type": "TypeString",
+      "lifecycle_rule": {
+        "Type": "TypeList",
         "Optional": true,
         "Default": {},
-        "Elem": {}
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "abort_incomplete_multipart_upload_days": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "enabled": {
+              "Type": "TypeBool",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "expiration": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "date": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "days": {
+                    "Type": "TypeInt",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "expired_object_delete_marker": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "id": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "noncurrent_version_expiration": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "days": {
+                    "Type": "TypeInt",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "prefix": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       },
-      "metadata": {
-        "Type": "TypeMap",
+      "logging": {
+        "Type": "TypeSet",
         "Optional": true,
         "Default": {},
-        "Elem": {}
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "target_bucket": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "target_prefix": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       },
-      "name": {
+      "policy": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -3369,12 +2991,107 @@
         "Computed": true,
         "Default": {},
         "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "versioning": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "mfa_delete": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "website": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "error_document": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "index_document": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "redirect_all_requests_to": {
+              "Type": "TypeString",
+              "Optional": true,
+              "ConflictsWith": [
+                "website.0.index_document",
+                "website.0.error_document",
+                "website.0.routing_rules"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "routing_rules": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "website_domain": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "website_endpoint": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
       }
     },
-    "openstack_objectstorage_object_v1": {
-      "container_name": {
+    "opentelekomcloud_s3_bucket_object": {
+      "acl": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "bucket": {
         "Type": "TypeString",
         "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "cache_control": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -3382,9 +3099,7 @@
         "Type": "TypeString",
         "Optional": true,
         "ConflictsWith": [
-          "source",
-          "copy_from",
-          "object_manifest"
+          "source"
         ],
         "Default": {},
         "Elem": {}
@@ -3392,26 +3107,18 @@
       "content_disposition": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true,
-        "ConflictsWith": [
-          "copy_from"
-        ],
         "Default": {},
         "Elem": {}
       },
       "content_encoding": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true,
-        "ConflictsWith": [
-          "copy_from"
-        ],
         "Default": {},
         "Elem": {}
       },
-      "content_length": {
-        "Type": "TypeInt",
-        "Computed": true,
+      "content_language": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -3419,45 +3126,6 @@
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
-        "ConflictsWith": [
-          "copy_from"
-        ],
-        "Default": {},
-        "Elem": {}
-      },
-      "copy_from": {
-        "Type": "TypeString",
-        "Optional": true,
-        "ConflictsWith": [
-          "content",
-          "source",
-          "object_manifest"
-        ],
-        "Default": {},
-        "Elem": {}
-      },
-      "date": {
-        "Type": "TypeString",
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "delete_after": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "delete_at": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "detect_content_type": {
-        "Type": "TypeBool",
-        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -3468,37 +3136,13 @@
         "Default": {},
         "Elem": {}
       },
-      "last_modified": {
-        "Type": "TypeString",
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "metadata": {
-        "Type": "TypeMap",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "name": {
+      "key": {
         "Type": "TypeString",
         "Required": true,
         "Default": {},
         "Elem": {}
       },
-      "object_manifest": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "ConflictsWith": [
-          "copy_from",
-          "source",
-          "content"
-        ],
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
+      "server_side_encryption": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
@@ -3509,15 +3153,122 @@
         "Type": "TypeString",
         "Optional": true,
         "ConflictsWith": [
-          "content",
-          "copy_from",
-          "object_manifest"
+          "content"
         ],
         "Default": {},
         "Elem": {}
       },
-      "trans_id": {
+      "version_id": {
         "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "website_redirect": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "opentelekomcloud_s3_bucket_policy": {
+      "bucket": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "opentelekomcloud_smn_subscription_v2": {
+      "endpoint": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "owner": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "protocol": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "remark": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "subscription_urn": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "topic_urn": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "opentelekomcloud_smn_topic_v2": {
+      "create_time": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "display_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "push_policy": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "topic_urn": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "update_time": {
+        "Type": "TypeString",
+        "Optional": true,
         "Computed": true,
         "Default": {},
         "Elem": {}
@@ -3525,181 +3276,7 @@
     }
   },
   "data-sources": {
-    "openstack_compute_flavor_v2": {
-      "disk": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "is_public": {
-        "Type": "TypeBool",
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "min_disk": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "min_ram": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "name": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "ram": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "rx_tx_factor": {
-        "Type": "TypeFloat",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "swap": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "vcpus": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      }
-    },
-    "openstack_dns_zone_v2": {
-      "attributes": {
-        "Type": "TypeMap",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "created_at": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "description": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "email": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "masters": {
-        "Type": "TypeSet",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      },
-      "name": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "pool_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "project_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "serial": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "status": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "transferred_at": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "ttl": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "type": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "updated_at": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "version": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      }
-    },
-    "openstack_images_image_v2": {
+    "opentelekomcloud_images_image_v2": {
       "checksum": {
         "Type": "TypeString",
         "Computed": true,
@@ -3756,12 +3333,6 @@
       },
       "owner": {
         "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "properties": {
-        "Type": "TypeMap",
         "Optional": true,
         "Default": {},
         "Elem": {}
@@ -3834,21 +3405,12 @@
         "Elem": {}
       }
     },
-    "openstack_networking_network_v2": {
+    "opentelekomcloud_networking_network_v2": {
       "admin_state_up": {
         "Type": "TypeString",
         "Computed": true,
         "Default": {},
         "Elem": {}
-      },
-      "availability_zone_hints": {
-        "Type": "TypeList",
-        "Computed": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
       },
       "matching_subnet_cidr": {
         "Type": "TypeString",
@@ -3881,12 +3443,6 @@
         "Default": {},
         "Elem": {}
       },
-      "status": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
       "tenant_id": {
         "Type": "TypeString",
         "Optional": true,
@@ -3897,7 +3453,7 @@
         "Elem": {}
       }
     },
-    "openstack_networking_secgroup_v2": {
+    "opentelekomcloud_networking_secgroup_v2": {
       "name": {
         "Type": "TypeString",
         "Optional": true,
@@ -3925,155 +3481,120 @@
         "Elem": {}
       }
     },
-    "openstack_networking_subnet_v2": {
-      "allocation_pools": {
-        "Type": "TypeList",
-        "Computed": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "end": {
-              "Type": "TypeString",
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "start": {
-              "Type": "TypeString",
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
-      "cidr": {
+    "opentelekomcloud_s3_bucket_object": {
+      "body": {
         "Type": "TypeString",
-        "Optional": true,
         "Computed": true,
         "Default": {},
         "Elem": {}
       },
-      "dhcp_disabled": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "ConflictsWith": [
-          "dhcp_enabled"
-        ],
-        "Default": {},
-        "Elem": {}
-      },
-      "dhcp_enabled": {
-        "Type": "TypeBool",
-        "Optional": true,
-        "ConflictsWith": [
-          "dhcp_disabled"
-        ],
-        "Default": {},
-        "Elem": {}
-      },
-      "dns_nameservers": {
-        "Type": "TypeSet",
-        "Computed": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      },
-      "enable_dhcp": {
-        "Type": "TypeBool",
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "gateway_ip": {
+      "bucket": {
         "Type": "TypeString",
-        "Optional": true,
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "cache_control": {
+        "Type": "TypeString",
         "Computed": true,
         "Default": {},
         "Elem": {}
       },
-      "host_routes": {
-        "Type": "TypeList",
+      "content_disposition": {
+        "Type": "TypeString",
         "Computed": true,
         "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "destination_cidr": {
-              "Type": "TypeString",
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "next_hop": {
-              "Type": "TypeString",
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
+        "Elem": {}
       },
-      "ip_version": {
+      "content_encoding": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "content_language": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "content_length": {
         "Type": "TypeInt",
-        "Optional": true,
         "Computed": true,
         "Default": {},
         "Elem": {}
       },
-      "ipv6_address_mode": {
+      "content_type": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "expiration": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "expires": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "last_modified": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "metadata": {
+        "Type": "TypeMap",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "range": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "server_side_encryption": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sse_kms_key_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "version_id": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
         "Default": {},
         "Elem": {}
       },
-      "ipv6_ra_mode": {
+      "website_redirect_location": {
         "Type": "TypeString",
-        "Optional": true,
         "Computed": true,
         "Default": {},
-        "Elem": {}
-      },
-      "name": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "network_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "subnet_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
-        "Default": {},
-        "Elem": {}
-      },
-      "tenant_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
-        "Computed": true,
-        "Default": {
-          "Type": "string"
-        },
         "Elem": {}
       }
     }
