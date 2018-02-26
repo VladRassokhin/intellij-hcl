@@ -1,7 +1,7 @@
 {
   "name": "nomad",
   "type": "provider",
-  "version": "v1.1.0-1-g5816592",
+  "version": "v1.1.0-20-g102517d",
   "provider": {
     "address": {
       "Type": "TypeString",
@@ -57,6 +57,76 @@
     }
   },
   "resources": {
+    "nomad_acl_policy": {
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Description for this policy.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Unique name for this policy.",
+        "Default": {},
+        "Elem": {}
+      },
+      "rules_hcl": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "HCL or JSON representation of the rules to enforce on this policy. Use file() to specify a file as input.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "nomad_acl_token": {
+      "accessor_id": {
+        "Type": "TypeString",
+        "Description": "Nomad-generated ID for this token.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "global": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Whether the token should be replicated to all regions or not.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Human-readable name for this token.",
+        "Default": {},
+        "Elem": {}
+      },
+      "policies": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "The ACL policies to associate with the token, if it's a 'client' type.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "secret_id": {
+        "Type": "TypeString",
+        "Description": "The value that grants access to Nomad.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The type of token to create, 'client' or 'management'.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "nomad_job": {
       "deregister_on_destroy": {
         "Type": "TypeBool",
@@ -76,6 +146,64 @@
         "Type": "TypeString",
         "Required": true,
         "Description": "Job specification. If you want to point to a file use the file() function.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "nomad_quota_specification": {
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Description for this quota specification.",
+        "Default": {},
+        "Elem": {}
+      },
+      "limits": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Description": "Limits encapsulated by this quota specification.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "region": {
+              "Type": "TypeString",
+              "Required": true,
+              "Description": "Region in which this limit has affect.",
+              "Default": {},
+              "Elem": {}
+            },
+            "region_limit": {
+              "Type": "TypeSet",
+              "Required": true,
+              "Description": "The limit applied to this region.",
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "cpu": {
+                    "Type": "TypeInt",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "memory_mb": {
+                    "Type": "TypeInt",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Unique name for this quota specification.",
         "Default": {},
         "Elem": {}
       }

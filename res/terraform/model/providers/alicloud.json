@@ -1,7 +1,7 @@
 {
   "name": "alicloud",
   "type": "provider",
-  "version": "v0.1.0-186-g6c46760",
+  "version": "v1.7.2-1-g5ecd94d",
   "provider": {
     "access_key": {
       "Type": "TypeString",
@@ -425,6 +425,7 @@
       "db_names": {
         "Type": "TypeSet",
         "Required": true,
+        "MinItems": 1,
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -660,6 +661,12 @@
         "Elem": {}
       },
       "instance_charge_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instance_name": {
         "Type": "TypeString",
         "Optional": true,
         "Default": {},
@@ -1064,6 +1071,12 @@
           "ElementsType": "TypeString"
         }
       },
+      "instance_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "instance_type": {
         "Type": "TypeString",
         "Required": true,
@@ -1073,7 +1086,6 @@
       "internet_charge_type": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -1162,9 +1174,10 @@
     },
     "alicloud_ess_scaling_group": {
       "db_instance_ids": {
-        "Type": "TypeList",
+        "Type": "TypeSet",
         "Optional": true,
-        "MaxItems": 3,
+        "MaxItems": 8,
+        "MinItems": 1,
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -1178,8 +1191,10 @@
         "Elem": {}
       },
       "loadbalancer_ids": {
-        "Type": "TypeList",
+        "Type": "TypeSet",
         "Optional": true,
+        "MaxItems": 5,
+        "MinItems": 1,
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -1199,9 +1214,10 @@
         "Elem": {}
       },
       "removal_policies": {
-        "Type": "TypeList",
+        "Type": "TypeSet",
         "Optional": true,
         "MaxItems": 2,
+        "MinItems": 1,
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -1217,8 +1233,20 @@
       "vswitch_id": {
         "Type": "TypeString",
         "Optional": true,
+        "Deprecated": "Field 'vswitch_id' has been deprecated from provider version 1.7.1, and new field 'vswitch_ids' can replace it.",
         "Default": {},
         "Elem": {}
+      },
+      "vswitch_ids": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "MaxItems": 5,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
       }
     },
     "alicloud_ess_scaling_rule": {
@@ -1362,6 +1390,7 @@
       "allocate_public_ip": {
         "Type": "TypeBool",
         "Optional": true,
+        "Deprecated": "Field 'allocate_public_ip' has been deprecated from provider version 1.6.1. Setting 'internet_max_bandwidth_out' larger than 0 will allocate public ip for instance.",
         "Default": {},
         "Elem": {}
       },
@@ -1424,13 +1453,13 @@
       "internet_charge_type": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true,
         "Default": {},
         "Elem": {}
       },
       "internet_max_bandwidth_in": {
-        "Type": "TypeString",
+        "Type": "TypeInt",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -1619,6 +1648,38 @@
         "Elem": {}
       }
     },
+    "alicloud_kms_key": {
+      "arn": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "deletion_window_in_days": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "is_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_usage": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "alicloud_nat_gateway": {
       "bandwidth_package_ids": {
         "Type": "TypeString",
@@ -1628,8 +1689,8 @@
       },
       "bandwidth_packages": {
         "Type": "TypeList",
-        "Required": true,
-        "MaxItems": 4,
+        "Optional": true,
+        "Deprecated": "Field 'bandwidth_packages' has been deprecated from provider version 1.7.1. Resource 'alicloud_eip_association' can bind several elastic IPs for one Nat Gateway.",
         "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
@@ -1689,7 +1750,14 @@
       },
       "spec": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
+        "Deprecated": "Field 'spec' has been deprecated from provider version 1.7.1, and new field 'specification' can replace it.",
+        "Default": {},
+        "Elem": {}
+      },
+      "specification": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -2537,6 +2605,12 @@
         "Default": {},
         "Elem": {}
       },
+      "inner_access": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "name": {
         "Type": "TypeString",
         "Optional": true,
@@ -2578,7 +2652,7 @@
       },
       "port_range": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -2817,6 +2891,12 @@
         "Default": {},
         "Elem": {}
       },
+      "specification": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "vswitch_id": {
         "Type": "TypeString",
         "Optional": true,
@@ -2862,7 +2942,7 @@
       "slb_id": {
         "Type": "TypeString",
         "Optional": true,
-        "Deprecated": "Field 'instances' has been deprecated from provider version 1.6.0. New field 'load_balancer_id' replaces it.",
+        "Deprecated": "Field 'slb_id' has been deprecated from provider version 1.6.0. New field 'load_balancer_id' replaces it.",
         "Default": {},
         "Elem": {}
       },
@@ -3658,6 +3738,98 @@
         "Elem": {}
       }
     },
+    "alicloud_eips": {
+      "eips": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "bandwidth": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "creation_time": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "instance_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "instance_type": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "internet_charge_type": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ip_address": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "status": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "ids": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "in_use": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_addresses": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "alicloud_images": {
       "images": {
         "Type": "TypeList",
@@ -3926,6 +4098,239 @@
         "Elem": {}
       }
     },
+    "alicloud_instances": {
+      "availability_zone": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ids": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "image_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "instances": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "availability_zone": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "creation_time": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "description": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "disk_device_mappings": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "category": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "device": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "size": {
+                    "Type": "TypeInt",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "type": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "eip": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "image_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "instance_charge_type": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "instance_type": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "internet_charge_type": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "internet_max_bandwidth_out": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "key_name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "private_ip": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "public_ip": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "region_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "security_groups": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "spot_strategy": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "status": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "tags": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "vpc_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "vswitch_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "name_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vpc_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vswitch_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "alicloud_key_pairs": {
       "finger_print": {
         "Type": "TypeBool",
@@ -4051,6 +4456,88 @@
         "Elem": {}
       },
       "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_kms_keys": {
+      "description_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ids": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "keys": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "arn": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "creation_date": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "creator": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "delete_date": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "description": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "status": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status": {
         "Type": "TypeString",
         "Optional": true,
         "Default": {},
@@ -4546,6 +5033,111 @@
         }
       },
       "vswitch_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "alicloud_vswitches": {
+      "cidr_block": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "is_default": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name_regex": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "output_file": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vpc_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vswitches": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cidr_block": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "creation_time": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "description": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "instance_ids": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "is_default": {
+              "Type": "TypeBool",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "vpc_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "zone_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "zone_id": {
         "Type": "TypeString",
         "Optional": true,
         "Default": {},

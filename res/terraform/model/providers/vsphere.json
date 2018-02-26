@@ -1,7 +1,7 @@
 {
   "name": "vsphere",
   "type": "provider",
-  "version": "v1.2.0-28-ga5a9544",
+  "version": "v1.3.2-20-ga608a55",
   "provider": {
     "allow_unverified_ssl": {
       "Type": "TypeBool",
@@ -2537,10 +2537,26 @@
               "Default": {},
               "Elem": {}
             },
+            "label": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "A unique label for this disk.",
+              "Default": {},
+              "Elem": {}
+            },
             "name": {
               "Type": "TypeString",
-              "Required": true,
+              "Optional": true,
               "Description": "The file name of the disk. This can be either a name or path relative to the root of the datastore. If simply a name, the disk is located with the virtual machine.",
+              "Deprecated": "\nThe name attribute for virtual disks will be removed in favor of \"label\" in\nfuture releases. To transition existing disks, rename the \"name\" attribute to\n\"label\". When doing so, ensure the value of the attribute stays the same.\n\nNote that \"label\" does not control the name of a VMDK and does not need to bear\nthe name of one on new disks or virtual machines. For more information, see the\ndocumentation for the label attribute at: \n\nhttps://www.terraform.io/docs/providers/vsphere/r/virtual_machine.html#label\n",
+              "Default": {},
+              "Elem": {}
+            },
+            "path": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The full path of the virtual disk. This can only be provided if attach is set to true, otherwise it is a read-only value.",
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
@@ -2562,6 +2578,13 @@
               "Type": "TypeInt",
               "Optional": true,
               "Description": "The unique device number for this disk. This number determines where on the SCSI bus this device will be attached.",
+              "Default": {},
+              "Elem": {}
+            },
+            "uuid": {
+              "Type": "TypeString",
+              "Description": "The UUID of the virtual disk.",
+              "Computed": true,
               "Default": {},
               "Elem": {}
             },
@@ -2717,6 +2740,13 @@
         "Type": "TypeInt",
         "Optional": true,
         "Description": "The amount of time, in minutes, to wait for a vMotion operation to complete before failing.",
+        "Default": {},
+        "Elem": {}
+      },
+      "moid": {
+        "Type": "TypeString",
+        "Description": "The machine object ID from VMWare",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },

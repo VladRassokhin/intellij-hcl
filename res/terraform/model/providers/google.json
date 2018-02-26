@@ -1,7 +1,7 @@
 {
   "name": "google",
   "type": "provider",
-  "version": "v1.4.0-98-gbc26697",
+  "version": "v1.6.0-38-ge533a54",
   "provider": {
     "credentials": {
       "Type": "TypeString",
@@ -441,6 +441,125 @@
         "Elem": {}
       }
     },
+    "google_cloudiot_registry": {
+      "credentials": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 10,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "public_key_certificate": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "certificate": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "format": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "event_notification_config": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "pubsub_topic_name": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "http_config": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "http_enabled_state": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "mqtt_config": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "mqtt_enabled_state": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "state_notification_config": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "pubsub_topic_name": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      }
+    },
     "google_compute_address": {
       "address": {
         "Type": "TypeString",
@@ -507,6 +626,7 @@
             "cpu_utilization": {
               "Type": "TypeList",
               "Optional": true,
+              "MaxItems": 1,
               "Default": {},
               "Elem": {
                 "Type": "SchemaInfo",
@@ -523,6 +643,7 @@
             "load_balancing_utilization": {
               "Type": "TypeList",
               "Optional": true,
+              "MaxItems": 1,
               "Default": {},
               "Elem": {
                 "Type": "SchemaInfo",
@@ -622,6 +743,12 @@
       "bucket_name": {
         "Type": "TypeString",
         "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "creation_timestamp": {
+        "Type": "TypeString",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -1645,6 +1772,7 @@
       "create_timeout": {
         "Type": "TypeInt",
         "Optional": true,
+        "Deprecated": "Use timeouts block instead. See https://www.terraform.io/docs/configuration/resources.html#timeouts.",
         "Default": {},
         "Elem": {}
       },
@@ -1731,6 +1859,12 @@
       }
     },
     "google_compute_instance": {
+      "allow_stopping_for_update": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "attached_disk": {
         "Type": "TypeList",
         "Optional": true,
@@ -1754,6 +1888,12 @@
             "disk_encryption_key_sha256": {
               "Type": "TypeString",
               "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "mode": {
+              "Type": "TypeString",
+              "Optional": true,
               "Default": {},
               "Elem": {}
             },
@@ -1802,6 +1942,7 @@
             "initialize_params": {
               "Type": "TypeList",
               "Optional": true,
+              "Computed": true,
               "MaxItems": 1,
               "Default": {},
               "Elem": {
@@ -1810,18 +1951,21 @@
                   "image": {
                     "Type": "TypeString",
                     "Optional": true,
+                    "Computed": true,
                     "Default": {},
                     "Elem": {}
                   },
                   "size": {
                     "Type": "TypeInt",
                     "Optional": true,
+                    "Computed": true,
                     "Default": {},
                     "Elem": {}
                   },
                   "type": {
                     "Type": "TypeString",
                     "Optional": true,
+                    "Computed": true,
                     "Default": {},
                     "Elem": {}
                   }
@@ -1934,6 +2078,7 @@
       "guest_accelerator": {
         "Type": "TypeList",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
@@ -2094,6 +2239,7 @@
             "alias_ip_range": {
               "Type": "TypeList",
               "Optional": true,
+              "MaxItems": 1,
               "Default": {},
               "Elem": {
                 "Type": "SchemaInfo",
@@ -2989,6 +3135,7 @@
             "cpu_utilization": {
               "Type": "TypeList",
               "Optional": true,
+              "MaxItems": 1,
               "Default": {},
               "Elem": {
                 "Type": "SchemaInfo",
@@ -3005,6 +3152,7 @@
             "load_balancing_utilization": {
               "Type": "TypeList",
               "Optional": true,
+              "MaxItems": 1,
               "Default": {},
               "Elem": {
                 "Type": "SchemaInfo",
@@ -3324,6 +3472,12 @@
       }
     },
     "google_compute_route": {
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "dest_range": {
         "Type": "TypeString",
         "Required": true,
@@ -3380,7 +3534,7 @@
       },
       "priority": {
         "Type": "TypeInt",
-        "Required": true,
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -4691,6 +4845,29 @@
               "Default": {},
               "Elem": {}
             },
+            "guest_accelerator": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "count": {
+                    "Type": "TypeInt",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "type": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
             "image_type": {
               "Type": "TypeString",
               "Optional": true,
@@ -4863,6 +5040,29 @@
                     "Default": {},
                     "Elem": {}
                   },
+                  "guest_accelerator": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "count": {
+                          "Type": "TypeInt",
+                          "Required": true,
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "type": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  },
                   "image_type": {
                     "Type": "TypeString",
                     "Optional": true,
@@ -4970,6 +5170,7 @@
       "subnetwork": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -5071,6 +5272,29 @@
               "Computed": true,
               "Default": {},
               "Elem": {}
+            },
+            "guest_accelerator": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "count": {
+                    "Type": "TypeInt",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "type": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
             },
             "image_type": {
               "Type": "TypeString",
@@ -5266,6 +5490,15 @@
                     "Optional": true,
                     "Default": {},
                     "Elem": {}
+                  },
+                  "metadata": {
+                    "Type": "TypeMap",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "schema.ValueType",
+                      "Value": "TypeString"
+                    }
                   },
                   "network": {
                     "Type": "TypeString",
@@ -6383,6 +6616,139 @@
         "Elem": {}
       }
     },
+    "google_endpoints_service": {
+      "apis": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "methods": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "request_type": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "response_type": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "syntax": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "syntax": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "version": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "config_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "dns_address": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "endpoints": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "grpc_config": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "openapi_config": {
+        "Type": "TypeString",
+        "Optional": true,
+        "ConflictsWith": [
+          "grpc_config",
+          "protoc_output"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "protoc_output": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "service_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_folder": {
       "create_time": {
         "Type": "TypeString",
@@ -6409,6 +6775,61 @@
         "Elem": {}
       },
       "parent": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_folder_iam_binding": {
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "folder": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "members": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "role": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_folder_iam_member": {
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "folder": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "member": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role": {
         "Type": "TypeString",
         "Required": true,
         "Default": {},
@@ -6871,6 +7292,7 @@
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -7348,6 +7770,12 @@
       }
     },
     "google_project_service": {
+      "disable_on_destroy": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "project": {
         "Type": "TypeString",
         "Optional": true,
@@ -7377,6 +7805,27 @@
           "Type": "SchemaElements",
           "ElementsType": "TypeString"
         }
+      }
+    },
+    "google_project_usage_export_bucket": {
+      "bucket_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "prefix": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
       }
     },
     "google_pubsub_subscription": {
@@ -8090,6 +8539,47 @@
         "Default": {},
         "Elem": {}
       },
+      "server_ca_cert": {
+        "Type": "TypeList",
+        "Computed": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cert": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "common_name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "create_time": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "expiration_time": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "sha1_fingerprint": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
       "settings": {
         "Type": "TypeList",
         "Required": true,
@@ -8113,6 +8603,13 @@
                 "Type": "SchemaElements",
                 "ElementsType": "TypeString"
               }
+            },
+            "availability_type": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
             },
             "backup_configuration": {
               "Type": "TypeList",
@@ -8331,7 +8828,7 @@
     "google_sql_user": {
       "host": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -8349,7 +8846,7 @@
       },
       "password": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -8506,6 +9003,30 @@
         "Optional": true,
         "Default": {},
         "Elem": {}
+      },
+      "logging": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "log_bucket": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "log_object_prefix": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       },
       "name": {
         "Type": "TypeString",
@@ -8770,6 +9291,74 @@
         "Elem": {}
       }
     },
+    "google_storage_default_object_acl": {
+      "bucket": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role_entity": {
+        "Type": "TypeList",
+        "Required": true,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    },
+    "google_storage_notification": {
+      "bucket": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "custom_attributes": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "event_types": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "object_name_prefix": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "payload_format": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "self_link": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "topic": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_storage_object_acl": {
       "bucket": {
         "Type": "TypeString",
@@ -8998,6 +9587,97 @@
         "Elem": {}
       },
       "status": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_compute_forwarding_rule": {
+      "backend_service": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_address": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_protocol": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "load_balancing_scheme": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "network": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "port_range": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ports": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "self_link": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "subnetwork": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "target": {
         "Type": "TypeString",
         "Computed": true,
         "Default": {},
@@ -9460,6 +10140,46 @@
         "Elem": {}
       }
     },
+    "google_compute_vpn_gateway": {
+      "description": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "network": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "self_link": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_compute_zones": {
       "names": {
         "Type": "TypeList",
@@ -9793,6 +10513,28 @@
               "Default": {},
               "Elem": {}
             },
+            "guest_accelerator": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "count": {
+                    "Type": "TypeInt",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "type": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
             "image_type": {
               "Type": "TypeString",
               "Computed": true,
@@ -9950,6 +10692,28 @@
                     "Default": {},
                     "Elem": {}
                   },
+                  "guest_accelerator": {
+                    "Type": "TypeList",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "count": {
+                          "Type": "TypeInt",
+                          "Computed": true,
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "type": {
+                          "Type": "TypeString",
+                          "Computed": true,
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  },
                   "image_type": {
                     "Type": "TypeString",
                     "Computed": true,
@@ -10099,6 +10863,66 @@
       "zone": {
         "Type": "TypeString",
         "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_container_registry_image": {
+      "digest": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "image_url": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tag": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_container_registry_repository": {
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "repository_url": {
+        "Type": "TypeString",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }
@@ -10294,6 +11118,7 @@
         "Default": {},
         "Elem": {}
       }
-    }
+    },
+    "google_storage_project_service_account": {}
   }
 }
