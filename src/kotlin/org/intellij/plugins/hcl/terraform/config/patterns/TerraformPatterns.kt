@@ -19,6 +19,7 @@ import com.intellij.patterns.*
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLFile
+import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.psi.getNameElementUnquoted
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
@@ -85,6 +86,16 @@ object TerraformPatterns {
       PlatformPatterns.psiElement(HCLBlock::class.java)
           .with(createBlockPattern("backend"))
           .withSuperParent(2, TerraformRootBlock)
+
+  val ModuleWithEmptySource: PsiElementPattern.Capture<HCLBlock> =
+      PlatformPatterns.psiElement(HCLBlock::class.java)
+          .and(ModuleRootBlock)
+          .with(object: PatternCondition<HCLBlock?>("ModuleWithEmptySource") {
+            override fun accepts(t: HCLBlock, context: ProcessingContext?): Boolean {
+              val source = t.`object`?.findProperty("source")?.value as? HCLStringLiteral ?: return true
+              return source.value.trim().isEmpty()
+            }
+          })
 
   private fun createBlockPattern(type: String): PatternCondition<HCLBlock?> {
     return object : PatternCondition<HCLBlock?>("HCLBlock($type)") {

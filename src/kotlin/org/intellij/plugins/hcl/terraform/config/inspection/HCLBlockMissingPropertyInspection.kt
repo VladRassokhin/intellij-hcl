@@ -32,6 +32,7 @@ import org.intellij.plugins.hcl.terraform.config.codeinsight.ResourcePropertyIns
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.ModuleWithEmptySource
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
 import java.util.*
 
@@ -55,6 +56,8 @@ class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
       ProgressIndicatorProvider.checkCanceled()
       block.getNameElementUnquoted(0) ?: return
       val obj = block.`object` ?: return
+      // TODO: Generify
+      if(ModuleWithEmptySource.accepts(block)) return
       val properties = ModelHelper.getBlockProperties(block)
       doCheck(block, holder, properties)
       if (recursive) {
