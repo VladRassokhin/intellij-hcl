@@ -18,6 +18,7 @@ package org.intellij.plugins.hcl.terraform.config.codeinsight
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementPresentation
 import com.intellij.codeInsight.lookup.LookupElementRenderer
+import com.intellij.openapi.util.text.StringUtil
 import org.intellij.plugins.hcl.Icons
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
 import org.intellij.plugins.hcl.terraform.config.model.Type
@@ -33,15 +34,20 @@ class TerraformLookupElementRenderer : LookupElementRenderer<LookupElement>() {
         presentation.icon = Icons.Property
         presentation.isItemTextBold = obj.property.required
         presentation.isStrikeout = obj.property.deprecated != null
-        presentation.tailText = obj.property.description
+        presentation.setTailText(trimDescription(obj.property.description), true)
         presentation.setTypeText(obj.property.type.name, getTypeIcon(obj.property.type))
       } else if (obj.block != null) {
         presentation.icon = Icons.Object
         presentation.isItemTextBold = obj.block.required
         presentation.isStrikeout = obj.block.deprecated != null
-        presentation.tailText = obj.block.description
+        presentation.setTailText(trimDescription(obj.block.description), true)
       }
     }
+  }
+
+  private fun trimDescription(description: String?): String? {
+    if (description == null) return null
+    return " " + StringUtil.shortenTextWithEllipsis(description, 55, 0, true)
   }
 
   @Suppress("UNUSED_PARAMETER")
