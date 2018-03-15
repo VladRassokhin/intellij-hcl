@@ -197,6 +197,10 @@ public class HILParserTest extends ParsingTestCase {
     doCodeTest("${x(\"}\")}");
   }
 
+  public void testEscapedQuotes() throws Exception {
+    doCodeTest("${\"\\\"x\\\"\"}");
+  }
+
   protected void doCodeTest(@NotNull final String code, @NotNull final String expected) throws IOException {
     myFile = createPsiFile("a", code);
     ensureParsed(myFile);

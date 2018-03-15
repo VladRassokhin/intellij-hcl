@@ -16,6 +16,7 @@
 package org.intellij.plugins.hcl;
 
 import com.intellij.testFramework.TestDataPath;
+import org.intellij.plugins.TestFor;
 import org.intellij.plugins.hcl.terraform.config.TerraformParserDefinition;
 
 @TestDataPath("$CONTENT_ROOT/test-data/psi/")
@@ -54,6 +55,11 @@ public class TerraformConfigParserTest extends HCLParserTest {
   }
 
   public void testClosingBraceInInterpolationStringLiteral() throws Exception {
+    setTerraformExtension();
+    doTest();
+  }
+
+  public void testEscapedQuotesInInterpolation() {
     setTerraformExtension();
     doTest();
   }

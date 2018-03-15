@@ -206,4 +206,10 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "] (']')" +
         "");
   }
+
+  public void testEscapedQuoteInInterpolation() throws Exception {
+    doTest("\"${\"\\\"x\\\"\"}\"\n",
+        "DOUBLE_QUOTED_STRING ('\"${\"\\\"x\\\"\"}\"')\n" +
+        "WHITE_SPACE ('\\n')\n");
+  }
 }
