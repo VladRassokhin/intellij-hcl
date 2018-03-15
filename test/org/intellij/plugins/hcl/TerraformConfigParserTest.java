@@ -16,7 +16,6 @@
 package org.intellij.plugins.hcl;
 
 import com.intellij.testFramework.TestDataPath;
-import org.intellij.plugins.TestFor;
 import org.intellij.plugins.hcl.terraform.config.TerraformParserDefinition;
 
 @TestDataPath("$CONTENT_ROOT/test-data/psi/")
