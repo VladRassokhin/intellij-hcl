@@ -20,8 +20,10 @@ import com.intellij.openapi.application.Result
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.TokenType
+import com.intellij.psi.util.PsiTreeUtil
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElement
 import org.intellij.plugins.hcl.psi.HCLElementVisitor
@@ -49,6 +51,10 @@ class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
     }
 
     return MyEV(holder, recursive)
+  }
+
+  override fun getBatchSuppressActions(element: PsiElement?): Array<SuppressQuickFix> {
+    return super.getBatchSuppressActions(PsiTreeUtil.getParentOfType(element, HCLBlock::class.java, false))
   }
 
   inner class MyEV(val holder: ProblemsHolder, val recursive: Boolean) : HCLElementVisitor() {

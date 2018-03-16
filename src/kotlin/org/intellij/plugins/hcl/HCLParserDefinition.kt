@@ -71,7 +71,10 @@ open class HCLParserDefinition : ParserDefinition {
     return HCLFileImpl(fileViewProvider, HCLLanguage)
   }
 
-  override fun spaceExistanceTypeBetweenTokens(left: ASTNode, right: ASTNode) = ParserDefinition.SpaceRequirements.MAY
+  override fun spaceExistanceTypeBetweenTokens(left: ASTNode, right: ASTNode): ParserDefinition.SpaceRequirements {
+    if (left.elementType == LINE_COMMENT) return ParserDefinition.SpaceRequirements.MUST_LINE_BREAK
+    return ParserDefinition.SpaceRequirements.MAY
+  }
 
   companion object {
     val WHITE_SPACES: TokenSet = TokenSet.create(TokenType.WHITE_SPACE)
