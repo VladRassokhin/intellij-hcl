@@ -17,8 +17,6 @@ package org.intellij.plugins.hcl.terraform.config.model
 
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
-import com.beust.klaxon.boolean
-import com.beust.klaxon.string
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
