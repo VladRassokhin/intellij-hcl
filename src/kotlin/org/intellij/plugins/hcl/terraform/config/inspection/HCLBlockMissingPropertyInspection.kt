@@ -53,6 +53,10 @@ class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
     return MyEV(holder, recursive)
   }
 
+  override fun getID(): String {
+    return "MissingProperty"
+  }
+
   override fun getBatchSuppressActions(element: PsiElement?): Array<SuppressQuickFix> {
     return super.getBatchSuppressActions(PsiTreeUtil.getParentOfType(element, HCLBlock::class.java, false))
   }
