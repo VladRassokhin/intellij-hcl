@@ -78,17 +78,16 @@ class HILCompletionContributor : CompletionContributor() {
       }
     }
 
-    private val PATH_REFERENCES = sortedSetOf("root", "module", "cwd")
-    private val SCOPE_PROVIDERS = mapOf(
-        Pair("data", DataSourceCompletionProvider),
-        Pair("var", VariableCompletionProvider),
-        Pair("self", SelfCompletionProvider),
-        Pair("path", PathCompletionProvider),
-        Pair("count", CountCompletionProvider),
-        Pair("terraform", TerraformCompletionProvider),
-        Pair("local", LocalsCompletionProvider),
-        Pair("module", ModuleCompletionProvider)
-    )
+    private val SCOPE_PROVIDERS = listOf(
+        DataSourceCompletionProvider,
+        VariableCompletionProvider,
+        SelfCompletionProvider,
+        PathCompletionProvider,
+        CountCompletionProvider,
+        TerraformCompletionProvider,
+        LocalsCompletionProvider,
+        ModuleCompletionProvider
+    ).map { it.scope to it }.toMap()
     val SCOPES = SCOPE_PROVIDERS.keys
 
     private val METHOD_POSITION = PlatformPatterns.psiElement().withLanguage(HILLanguage)
@@ -216,6 +215,8 @@ class HILCompletionContributor : CompletionContributor() {
   }
 
   private object PathCompletionProvider : SelectFromScopeCompletionProvider("path") {
+    private val PATH_REFERENCES = sortedSetOf("root", "module", "cwd")
+
     override fun doAddCompletions(variable: ILVariable, parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
       result.addAllElements(PATH_REFERENCES.map { create(it) })
     }
