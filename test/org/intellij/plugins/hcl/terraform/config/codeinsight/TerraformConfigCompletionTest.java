@@ -43,9 +43,10 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
     for (ResourceType resource : TypeModelProvider.Companion.getModel(getProject()).getResources()) {
       set.add(resource.getType());
     }
-    doBasicCompletionTest("resource <caret>", set);
-    doBasicCompletionTest("resource <caret> {}", set);
-    doBasicCompletionTest("resource <caret> \"aaa\" {}", set);
+    final BooleanFunction<Collection<String>> matcher = getPartialMatcher(new ArrayList<String>(set).subList(0, 500));
+    doBasicCompletionTest("resource <caret>", matcher);
+    doBasicCompletionTest("resource <caret> {}", matcher);
+    doBasicCompletionTest("resource <caret> \"aaa\" {}", matcher);
   }
 
   public void testResourceQuotedTypeCompletion() throws Exception {
@@ -53,12 +54,13 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
     for (ResourceType resource : TypeModelProvider.Companion.getModel(getProject()).getResources()) {
       set.add(resource.getType());
     }
-    doBasicCompletionTest("resource \"<caret>", set);
-    doBasicCompletionTest("resource \'<caret>", set);
-    doBasicCompletionTest("resource \"<caret>\n{}", set);
-    doBasicCompletionTest("resource \'<caret>\n{}", set);
-    doBasicCompletionTest("resource \"<caret>\" {}", set);
-    doBasicCompletionTest("resource \"<caret>\" \"aaa\" {}", set);
+    final BooleanFunction<Collection<String>> matcher = getPartialMatcher(new ArrayList<String>(set).subList(0, 500));
+    doBasicCompletionTest("resource \"<caret>", matcher);
+    doBasicCompletionTest("resource \'<caret>", matcher);
+    doBasicCompletionTest("resource \"<caret>\n{}", matcher);
+    doBasicCompletionTest("resource \'<caret>\n{}", matcher);
+    doBasicCompletionTest("resource \"<caret>\" {}", matcher);
+    doBasicCompletionTest("resource \"<caret>\" \"aaa\" {}", matcher);
   }
 
   public void testResourceCommonPropertyCompletion() throws Exception {
