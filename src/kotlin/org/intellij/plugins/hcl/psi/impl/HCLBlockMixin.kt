@@ -16,6 +16,7 @@
 package org.intellij.plugins.hcl.psi.impl
 
 import com.intellij.lang.ASTNode
+import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.IncorrectOperationException
@@ -25,7 +26,9 @@ import org.intellij.plugins.hcl.terraform.config.model.getTerraformSearchScope
 
 abstract class HCLBlockMixin(node: ASTNode) : HCLElementImpl(node), HCLBlock {
 
-  abstract override fun getName(): String
+  override fun getName(): String {
+    return HCLPsiImplUtils.getName(this)
+  }
 
   override fun getNameIdentifier(): PsiElement {
     return nameElements.last()!! // Block always have at least one nameElement
@@ -44,5 +47,9 @@ abstract class HCLBlockMixin(node: ASTNode) : HCLElementImpl(node), HCLBlock {
 
   override fun isEquivalentTo(another: PsiElement?): Boolean {
     return this === another || another === nameIdentifier
+  }
+
+  override fun getPresentation(): ItemPresentation? {
+    return HCLPsiImplUtils.getPresentation(this);
   }
 }

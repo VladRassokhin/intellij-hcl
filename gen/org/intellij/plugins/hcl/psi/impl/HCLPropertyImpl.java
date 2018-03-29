@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
-import com.intellij.navigation.ItemPresentation;
 
 public class HCLPropertyImpl extends HCLPropertyMixin implements HCLProperty {
 
@@ -27,11 +26,6 @@ public class HCLPropertyImpl extends HCLPropertyMixin implements HCLProperty {
   }
 
   @NotNull
-  public String getName() {
-    return HCLPsiImplUtilJ.getName(this);
-  }
-
-  @NotNull
   public HCLValue getNameElement() {
     return HCLPsiImplUtilJ.getNameElement(this);
   }
@@ -39,11 +33,6 @@ public class HCLPropertyImpl extends HCLPropertyMixin implements HCLProperty {
   @Nullable
   public HCLValue getValue() {
     return HCLPsiImplUtilJ.getValue(this);
-  }
-
-  @Nullable
-  public ItemPresentation getPresentation() {
-    return HCLPsiImplUtilJ.getPresentation(this);
   }
 
 }

@@ -26,16 +26,6 @@ import java.util.List;
 
 public class HCLPsiImplUtilJ {
   @NotNull
-  public static String getName(@NotNull HCLProperty property) {
-    return HCLPsiImplUtils.INSTANCE.getName(property);
-  }
-
-  @NotNull
-  public static String getName(@NotNull HCLBlock block) {
-    return HCLPsiImplUtils.INSTANCE.getName(block);
-  }
-
-  @NotNull
   public static String getFullName(@NotNull HCLBlock block) {
     return HCLPsiImplUtils.INSTANCE.getFullName(block);
   }
