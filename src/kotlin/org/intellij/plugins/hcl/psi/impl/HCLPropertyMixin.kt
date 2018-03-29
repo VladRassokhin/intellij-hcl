@@ -16,7 +16,6 @@
 package org.intellij.plugins.hcl.psi.impl
 
 import com.intellij.lang.ASTNode
-import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.IncorrectOperationException
@@ -27,9 +26,7 @@ import org.jetbrains.annotations.NonNls
 
 abstract class HCLPropertyMixin(node: ASTNode) : HCLElementImpl(node), HCLProperty {
 
-  override fun getName(): String {
-    return HCLPsiImplUtils.getName(this)
-  }
+  abstract override fun getName(): String
 
   @Throws(IncorrectOperationException::class)
   override fun setName(@NonNls name: String): PsiElement {
@@ -47,9 +44,5 @@ abstract class HCLPropertyMixin(node: ASTNode) : HCLElementImpl(node), HCLProper
 
   override fun isEquivalentTo(another: PsiElement?): Boolean {
     return this === another || another === nameIdentifier
-  }
-
-  override fun getPresentation(): ItemPresentation? {
-    return HCLPsiImplUtils.getPresentation(this);
   }
 }
