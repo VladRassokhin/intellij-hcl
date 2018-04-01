@@ -64,7 +64,7 @@ object PropertyObjectKeyCompletionProvider : TerraformConfigCompletionContributo
       val providers = module.getDefinedProviders()
           .map { it.second }
           .filter { !defined.contains(it) || (incomplete != null && it.contains(incomplete)) }
-      result.addAllElements(providers.map { TerraformConfigCompletionContributor.create(it) })
+      result.addAllElements(providers.map { TerraformConfigCompletionContributor.create(it).withInsertHandler(ResourcePropertyInsertHandler) })
       return
     }
   }
@@ -83,7 +83,7 @@ object PropertyObjectKeyCompletionProvider : TerraformConfigCompletionContributo
       val providers = module.getDefinedProviders()
           .map { it.second }
           .filter { !defined.contains(it) || (incomplete != null && it.contains(incomplete)) }
-      result.addAllElements(providers.map { TerraformConfigCompletionContributor.create(it) })
+      result.addAllElements(providers.map { TerraformConfigCompletionContributor.create(it).withInsertHandler(ResourcePropertyInsertHandler) })
       return
     }
   }

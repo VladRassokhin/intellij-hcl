@@ -23,6 +23,7 @@ import com.intellij.patterns.PsiElementPattern
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 
 fun HCLBlock.getNameElementUnquoted(i: Int): String? {
@@ -80,4 +81,9 @@ fun PsiElement.isInHCLFileWithInterpolations(): Boolean {
     file = InjectedLanguageManager.getInstance(project).getTopLevelFile(this)
   }
   return file is HCLFile && file.isInterpolationsAllowed()
+}
+
+fun <T : PsiElement> PsiElement?.getParent(aClass: Class<T>, strict: Boolean = true): T? {
+  if (this == null) return null
+  return PsiTreeUtil.getParentOfType(this, aClass, strict)
 }

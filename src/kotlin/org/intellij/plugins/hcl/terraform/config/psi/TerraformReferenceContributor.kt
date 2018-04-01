@@ -23,11 +23,13 @@ import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferen
 import com.intellij.psi.tree.TokenSet
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.HCLElementTypes
+import org.intellij.plugins.hcl.patterns.HCLPatterns
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformConfigFile
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformVariablesFile
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.propertyWithName
 import org.intellij.plugins.hil.psi.HCLElementLazyReference
 import org.intellij.plugins.hil.psi.HCLElementLazyReferenceBase
 
@@ -109,6 +111,21 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
             }))
             .withSuperParent(3, TerraformPatterns.ModuleRootBlock)
         , ModuleVariableReferenceProvider)
+
+    // 'module' providers key/value
+    registrar.registerReferenceProvider(
+        psiElement().and(HCLPatterns.IdentifierOrStringLiteral)
+            .inFile(TerraformConfigFile)
+            .withParent(HCLPatterns.Property)
+            .withSuperParent(2, HCLPatterns.Object)
+            .withSuperParent(3, psiElement().and(HCLPatterns.PropertyOrBlock).andOr(propertyWithName("providers"), psiElement(HCLBlock::class.java).with(object: PatternCondition<HCLBlock?>("HCLBlock(providers)") {
+              override fun accepts(t: HCLBlock, context: ProcessingContext?): Boolean {
+                return t.nameElements.size == 1 && t.name == "providers"
+              }
+            })))
+            .withSuperParent(4, HCLPatterns.Object)
+            .withSuperParent(5, TerraformPatterns.ModuleRootBlock)
+        , ModuleProvidersReferenceProvider)
   }
 }
 

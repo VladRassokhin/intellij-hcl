@@ -17,10 +17,7 @@ package org.intellij.plugins.hcl.terraform.config.patterns
 
 import com.intellij.patterns.*
 import com.intellij.util.ProcessingContext
-import org.intellij.plugins.hcl.psi.HCLBlock
-import org.intellij.plugins.hcl.psi.HCLFile
-import org.intellij.plugins.hcl.psi.HCLStringLiteral
-import org.intellij.plugins.hcl.psi.getNameElementUnquoted
+import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
 
@@ -103,5 +100,13 @@ object TerraformPatterns {
         return t.getNameElementUnquoted(0) == type
       }
     }
+  }
+
+  fun propertyWithName(name: String): PsiElementPattern.Capture<HCLProperty> {
+    return PlatformPatterns.psiElement(HCLProperty::class.java).with(object : PatternCondition<HCLProperty>("HCLProperty($name)") {
+      override fun accepts(t: HCLProperty, context: ProcessingContext?): Boolean {
+        return name == t.name
+      }
+    })
   }
 }
