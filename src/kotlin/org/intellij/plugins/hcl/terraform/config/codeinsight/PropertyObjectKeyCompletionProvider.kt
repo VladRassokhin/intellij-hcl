@@ -90,7 +90,7 @@ object PropertyObjectKeyCompletionProvider : TerraformConfigCompletionContributo
 
   private fun getIncomplete(parameters: CompletionParameters): String? {
     val position = parameters.position
-    val text = HCLPsiUtil.stripQuotes(position.text)
+    val text = TerraformConfigCompletionContributor.getClearTextValue(position) ?: position.text
     if (text == CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED) return null
     return text.replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "").nullIfEmpty()
   }

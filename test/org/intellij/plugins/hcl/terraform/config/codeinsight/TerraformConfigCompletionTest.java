@@ -32,6 +32,16 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
 
     doBasicCompletionTest("<caret> ", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
     doBasicCompletionTest("a=1\n<caret> ", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
+
+    doBasicCompletionTest("\"<caret>\" {}", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
+    doBasicCompletionTest("\"<caret> {}", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
+    doBasicCompletionTest("a=1\n\"<caret>\" {}", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
+    doBasicCompletionTest("a=1\n\"<caret> {}", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
+
+    doBasicCompletionTest("\"<caret>\" ", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
+    doBasicCompletionTest("\"<caret> ", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
+    doBasicCompletionTest("a=1\n\"<caret>\" ", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
+    doBasicCompletionTest("a=1\n\"<caret> ", TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS);
   }
 
   public void testNoBlockKeywordCompletion() throws Exception {
@@ -48,6 +58,9 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
     doBasicCompletionTest("resource <caret>", matcher);
     doBasicCompletionTest("resource <caret> {}", matcher);
     doBasicCompletionTest("resource <caret> \"aaa\" {}", matcher);
+    doBasicCompletionTest("\"resource\" <caret>", matcher);
+    doBasicCompletionTest("\"resource\" <caret> {}", matcher);
+    doBasicCompletionTest("\"resource\" <caret> \"aaa\" {}", matcher);
   }
 
   public void testResourceQuotedTypeCompletion() throws Exception {
@@ -62,6 +75,12 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
     doBasicCompletionTest("resource \'<caret>\n{}", matcher);
     doBasicCompletionTest("resource \"<caret>\" {}", matcher);
     doBasicCompletionTest("resource \"<caret>\" \"aaa\" {}", matcher);
+    doBasicCompletionTest("\"resource\" \"<caret>", matcher);
+    doBasicCompletionTest("\"resource\" \'<caret>", matcher);
+    doBasicCompletionTest("\"resource\" \"<caret>\n{}", matcher);
+    doBasicCompletionTest("\"resource\" \'<caret>\n{}", matcher);
+    doBasicCompletionTest("\"resource\" \"<caret>\" {}", matcher);
+    doBasicCompletionTest("\"resource\" \"<caret>\" \"aaa\" {}", matcher);
   }
 
   public void testResourceCommonPropertyCompletion() throws Exception {
@@ -84,6 +103,11 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
     doBasicCompletionTest("resource aws_instance x {\n<caret> = \"name\"\n}", "provider", "ami");
     doBasicCompletionTest("resource aws_instance x {\n<caret> = true\n}", "ebs_optimized", "monitoring");
     doBasicCompletionTest("resource aws_instance x {\n<caret> {}\n}", "lifecycle");
+
+    doBasicCompletionTest("resource aws_instance x {\n\"<caret>\"\n}", base);
+    doBasicCompletionTest("resource aws_instance x {\n\"<caret>\" = \"name\"\n}", "provider", "ami");
+    doBasicCompletionTest("resource aws_instance x {\n\"<caret>\" = true\n}", "ebs_optimized", "monitoring");
+    doBasicCompletionTest("resource aws_instance x {\n\"<caret>\" {}\n}", "lifecycle");
 
     // Should understand interpolation result
     doBasicCompletionTest("resource aws_instance x {\n<caret> = \"${true}\"\n}", new BooleanFunction<Collection<String>>() {

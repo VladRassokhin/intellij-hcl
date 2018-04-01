@@ -23,6 +23,7 @@ import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
+import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.patterns.StandardPatterns
 import com.intellij.psi.PsiElement
@@ -52,7 +53,6 @@ import java.util.*
 class TerraformConfigCompletionContributor : HCLCompletionContributor() {
   init {
     val WhiteSpace = psiElement(PsiWhiteSpace::class.java)
-    val ID = psiElement(HCLElementTypes.ID)
 
     val Identifier = psiElement(HCLIdentifier::class.java)
     val Literal = psiElement(HCLStringLiteral::class.java)
@@ -66,62 +66,52 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     val Nothing = StandardPatterns.alwaysFalse<PsiElement>()
 
     val IdentifierOrStringLiteral = or(Identifier, Literal)
+    val IdentifierOrStringLiteralOrSimple: ElementPattern<PsiElement> = or(IdentifierOrStringLiteral, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS))
+    val FileOrBlock = or(File, Block)
+    val PropertyOrBlock = or(Property, Block)
 
     // Block first word
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
         .inFile(TerraformConfigFile)
         .withParent(File)
-        .andNot(psiElement().afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))),
+        .andNot(psiElement().afterSiblingSkipping2(WhiteSpace, IdentifierOrStringLiteralOrSimple)),
         BlockKeywordCompletionProvider)
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
         .inFile(TerraformConfigFile)
-        .withParent(Identifier)
+        .withParent(IdentifierOrStringLiteral)
         .withSuperParent(2, Block)
         .withSuperParent(3, File)
-        .withParent(not(psiElement(HCLIdentifier::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))),
+        .withParent(not(psiElement().and(IdentifierOrStringLiteral).afterSiblingSkipping2(WhiteSpace, IdentifierOrStringLiteralOrSimple))),
         BlockKeywordCompletionProvider)
 
-    // TODO: Provide data from all resources in folder (?)
-
     // Block type or name
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
         .inFile(TerraformConfigFile)
-        .withParent(not(Identifier))
-        .andOr(psiElement().withSuperParent(1, File), psiElement().withSuperParent(1, Block))
-        .afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))
+        .withParent(FileOrBlock)
+        .afterSiblingSkipping2(WhiteSpace, IdentifierOrStringLiteralOrSimple)
         , BlockTypeOrNameCompletionProvider)
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
         .inFile(TerraformConfigFile)
-        .withParent(psiElement(HCLIdentifier::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
-        .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
-        , BlockTypeOrNameCompletionProvider)
-    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
-        .inFile(TerraformConfigFile)
-        .withParent(psiElement(HCLStringLiteral::class.java).afterSiblingSkipping2(WhiteSpace, or(ID, Identifier)))
-        .andOr(psiElement().withSuperParent(2, File), psiElement().withSuperParent(2, Block))
-        , BlockTypeOrNameCompletionProvider)
-    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
-        .inFile(TerraformConfigFile)
-        .andOr(psiElement().withParent(File), psiElement().withParent(Block))
-        .afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))
+        .withParent(psiElement().and(IdentifierOrStringLiteral).afterSiblingSkipping2(WhiteSpace, IdentifierOrStringLiteralOrSimple))
+        .withSuperParent(2, FileOrBlock)
         , BlockTypeOrNameCompletionProvider)
 
     //region InBlock Property key
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
         .inFile(TerraformConfigFile)
         .withParent(Object)
         .withSuperParent(2, Block)
         , BlockPropertiesCompletionProvider)
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
         .inFile(TerraformConfigFile)
-        .withParent(Identifier)
+        .withParent(IdentifierOrStringLiteral)
         .withSuperParent(2, Property)
         .withSuperParent(3, Object)
         .withSuperParent(4, Block)
         , BlockPropertiesCompletionProvider)
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
         .inFile(TerraformConfigFile)
-        .withParent(Identifier)
+        .withParent(IdentifierOrStringLiteral)
         .withSuperParent(2, Block)
         .withSuperParent(3, Object)
         .withSuperParent(4, Block)
@@ -144,24 +134,17 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     //endregion
 
     //region InBlock Property value
-    extend(null, psiElement(HCLElementTypes.ID)
+    extend(null, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
         .inFile(TerraformConfigFile)
-        .withParent(Identifier)
-        .withSuperParent(2, Property)
-        .withSuperParent(3, Object)
-        .withSuperParent(4, Block)
-        , PropertyValueCompletionProvider)
-    extend(null, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
-        .inFile(TerraformConfigFile)
-        .withParent(Literal)
+        .withParent(IdentifierOrStringLiteral)
         .withSuperParent(2, Property)
         .withSuperParent(3, Object)
         .withSuperParent(4, Block)
         , PropertyValueCompletionProvider)
     // depends_on completion
-    extend(null, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
+    extend(null, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
         .inFile(TerraformConfigFile)
-        .withParent(Literal)
+        .withParent(IdentifierOrStringLiteral)
         .withSuperParent(2, Array)
         .withSuperParent(3, Property)
         .withSuperParent(4, Object)
@@ -172,33 +155,17 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     //region InBlock PropertyWithObjectValue Key
     // property = { <caret> }
     // property = { "<caret>" }
-    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
-        .inFile(TerraformConfigFile)
-        .withParent(Object)
-        .withSuperParent(2, Property)
-        .withSuperParent(3, Object)
-        .withSuperParent(4, Block)
-        , PropertyObjectKeyCompletionProvider)
-    // property = { <caret>a="" }
-    // property = { "<caret>a"="" }
-    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
-        .inFile(TerraformConfigFile)
-        .withParent(IdentifierOrStringLiteral)
-        .withSuperParent(2, Property)
-        .withSuperParent(3, Object)
-        .withSuperParent(4, Property)
-        .withSuperParent(5, Object)
-        .withSuperParent(6, Block)
-        , PropertyObjectKeyCompletionProvider)
     // property { <caret> }
     // property { "<caret>" }
     extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
         .inFile(TerraformConfigFile)
         .withParent(Object)
-        .withSuperParent(2, Block)
+        .withSuperParent(2, PropertyOrBlock)
         .withSuperParent(3, Object)
         .withSuperParent(4, Block)
         , PropertyObjectKeyCompletionProvider)
+    // property = { <caret>a="" }
+    // property = { "<caret>a"="" }
     // property { <caret>="" }
     // property { "<caret>"="" }
     extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
@@ -206,7 +173,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         .withParent(IdentifierOrStringLiteral)
         .withSuperParent(2, Property)
         .withSuperParent(3, Object)
-        .withSuperParent(4, Block)
+        .withSuperParent(4, PropertyOrBlock)
         .withSuperParent(5, Object)
         .withSuperParent(6, Block)
         , PropertyObjectKeyCompletionProvider)
@@ -214,45 +181,21 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
 
     //region .tfvars
     // Variables in .tvars files
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
         .inFile(TerraformVariablesFile)
         .andOr(
             psiElement()
                 .withParent(File),
             psiElement()
-                .withParent(Identifier)
+                .withParent(IdentifierOrStringLiteral)
                 .withSuperParent(2, Property)
                 .withSuperParent(3, File)
         ), VariableNameTFVARSCompletionProvider)
-    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
         .inFile(TerraformVariablesFile)
         .andOr(
             psiElement()
-                .withParent(File),
-            psiElement()
-                .withParent(Literal)
-                .withSuperParent(2, Property)
-                .withSuperParent(3, File)
-        ), VariableNameTFVARSCompletionProvider)
-    extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
-        .inFile(TerraformVariablesFile)
-        .andOr(
-            psiElement()
-                .withSuperParent(1, Identifier)
-                .withSuperParent(2, Property)
-                .withSuperParent(3, Object)
-                .withSuperParent(4, Property)
-                .withSuperParent(5, File),
-            psiElement()
-                .withSuperParent(1, Object)
-                .withSuperParent(2, Property)
-                .withSuperParent(3, File)
-        ), MappedVariableTFVARSCompletionProvider)
-    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.STRING_LITERALS)
-        .inFile(TerraformVariablesFile)
-        .andOr(
-            psiElement()
-                .withSuperParent(1, Literal)
+                .withSuperParent(1, IdentifierOrStringLiteral)
                 .withSuperParent(2, Property)
                 .withSuperParent(3, Object)
                 .withSuperParent(4, Property)
@@ -312,6 +255,17 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       val originalObject = parameters.originalFile.findElementAt(obj.textRange.startOffset)?.parent
       return originalObject as? HCLObject ?: obj
     }
+
+    fun getClearTextValue(element: PsiElement?): String? {
+      return when {
+        element == null -> null
+        element is HCLIdentifier -> element.id
+        element is HCLStringLiteral -> element.value
+        element.node?.elementType == HCLElementTypes.ID -> element.text
+        HCLParserDefinition.STRING_LITERALS.contains(element.node?.elementType) -> HCLPsiUtil.stripQuotes(element.text)
+        else -> return null
+      }
+    }
   }
 
   private object PreferRequiredProperty : LookupElementWeigher("hcl.required.property") {
@@ -348,9 +302,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       val parent = position.parent
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
       LOG.debug { "TF.BlockKeywordCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}" }
-      if (leftNWS is HCLIdentifier || leftNWS?.node?.elementType == HCLElementTypes.ID) {
-        return assert(false, DumpPsiFileModel(position))
-      }
+      assert(getClearTextValue(leftNWS) == null, DumpPsiFileModel(position))
       result.addAllElements(ROOT_BLOCKS_SORTED.map { create(it) })
     }
   }
@@ -370,17 +322,13 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       val obj = when {
         parent is HCLIdentifier -> parent
         parent is HCLStringLiteral -> parent
-      // Next line for the case of two IDs (not Identifiers) nearby (start of block in empty file) TODO: check that
+        // Next line for the case of two IDs (not Identifiers) nearby (start of block in empty file)
         HCLParserDefinition.IDENTIFYING_LITERALS.contains(position.node.elementType) -> position
         else -> return failIfInUnitTestsMode(position)
       }
       val leftNWS = obj.getPrevSiblingNonWhiteSpace()
       LOG.debug { "TF.BlockTypeOrNameCompletionProvider{position=$position, parent=$parent, obj=$obj, lnws=$leftNWS}" }
-      val type: String = when {
-        leftNWS is HCLIdentifier -> leftNWS.id
-        leftNWS?.node?.elementType == HCLElementTypes.ID -> leftNWS!!.text
-        else -> return failIfInUnitTestsMode(position)
-      }
+      val type = getClearTextValue(leftNWS) ?: return failIfInUnitTestsMode(position)
       val cache = HashMap<String, Boolean>()
       val project = position.project
       when (type) {
@@ -435,10 +383,11 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         LOG.debug { "Origin is '{' inside Object, O.P.P = ${original_parent.parent}" }
         if (original_parent.parent is HCLBlock) return
       }
-      if (_parent is HCLIdentifier) {
+      if (_parent is HCLIdentifier || _parent is HCLStringLiteral) {
         val pob = _parent.parent // Property or Block
         if (pob is HCLProperty) {
           val value = pob.value
+          if (value === _parent) return
           right = value.getValueType()
           if (right == Types.String && value is PsiLanguageInjectionHost) {
             // Check for Injection
@@ -685,6 +634,7 @@ object ModelHelper {
     return backendType.properties.toList().toTypedArray()
   }
 
+  @Suppress("UNUSED_PARAMETER")
   fun getTerraformProperties(block: HCLBlock): Array<PropertyOrBlockType> {
     val base: Array<out PropertyOrBlockType> = TypeModel.Terraform.properties
     return (base.toList() + TypeModel.AbstractBackend.toPOBT()).toTypedArray()
