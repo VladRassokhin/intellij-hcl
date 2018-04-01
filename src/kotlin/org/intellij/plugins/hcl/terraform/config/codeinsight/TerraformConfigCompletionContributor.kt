@@ -23,9 +23,8 @@ import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
-import com.intellij.patterns.ElementPattern
-import com.intellij.patterns.PlatformPatterns.*
-import com.intellij.patterns.StandardPatterns
+import com.intellij.patterns.PlatformPatterns.not
+import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiLanguageInjectionHost
@@ -38,6 +37,18 @@ import org.intellij.plugins.debug
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.codeinsight.HCLCompletionContributor
+import org.intellij.plugins.hcl.patterns.HCLPatterns.Array
+import org.intellij.plugins.hcl.patterns.HCLPatterns.AtLeastOneEOL
+import org.intellij.plugins.hcl.patterns.HCLPatterns.Block
+import org.intellij.plugins.hcl.patterns.HCLPatterns.File
+import org.intellij.plugins.hcl.patterns.HCLPatterns.FileOrBlock
+import org.intellij.plugins.hcl.patterns.HCLPatterns.IdentifierOrStringLiteral
+import org.intellij.plugins.hcl.patterns.HCLPatterns.IdentifierOrStringLiteralOrSimple
+import org.intellij.plugins.hcl.patterns.HCLPatterns.Nothing
+import org.intellij.plugins.hcl.patterns.HCLPatterns.Object
+import org.intellij.plugins.hcl.patterns.HCLPatterns.Property
+import org.intellij.plugins.hcl.patterns.HCLPatterns.PropertyOrBlock
+import org.intellij.plugins.hcl.patterns.HCLPatterns.WhiteSpace
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.Constants
 import org.intellij.plugins.hcl.terraform.config.model.*
@@ -53,23 +64,6 @@ import java.util.*
 
 class TerraformConfigCompletionContributor : HCLCompletionContributor() {
   init {
-    val WhiteSpace = psiElement(PsiWhiteSpace::class.java)
-
-    val Identifier = psiElement(HCLIdentifier::class.java)
-    val Literal = psiElement(HCLStringLiteral::class.java)
-    val File = psiElement(HCLFile::class.java)
-    val Block = psiElement(HCLBlock::class.java)
-    val Property = psiElement(HCLProperty::class.java)
-    val Object = psiElement(HCLObject::class.java)
-    val Array = psiElement(HCLArray::class.java)
-
-    val AtLeastOneEOL = psiElement(PsiWhiteSpace::class.java).withText(StandardPatterns.string().contains("\n"))
-    val Nothing = StandardPatterns.alwaysFalse<PsiElement>()
-
-    val IdentifierOrStringLiteral = or(Identifier, Literal)
-    val IdentifierOrStringLiteralOrSimple: ElementPattern<PsiElement> = or(IdentifierOrStringLiteral, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS))
-    val FileOrBlock = or(File, Block)
-    val PropertyOrBlock = or(Property, Block)
 
     // Block first word
     extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
