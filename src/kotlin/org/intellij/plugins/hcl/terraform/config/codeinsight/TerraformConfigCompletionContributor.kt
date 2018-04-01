@@ -426,11 +426,11 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       val block = use.parent
       if (block is HCLBlock) {
         val props = ModelHelper.getBlockProperties(block)
-        doAddCompletion(isBlock, isProperty, use, result, right, parameters, props, original)
+        doAddCompletion(isBlock, isProperty, use, result, right, parameters, props)
       }
     }
 
-    private fun doAddCompletion(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?, parameters: CompletionParameters, properties: Array<out PropertyOrBlockType>, original: PsiElement) {
+    private fun doAddCompletion(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?, parameters: CompletionParameters, properties: Array<out PropertyOrBlockType>) {
       if (properties.isEmpty()) return
       val incomplete = getIncomplete(parameters)
       if (incomplete != null) {

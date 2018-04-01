@@ -33,9 +33,8 @@ object PropertyObjectKeyCompletionProvider : TerraformConfigCompletionContributo
     val position = parameters.position // DQS, SQS or ID
     val parent = position.parent // Literal or Identifier or Object
     if (parent is HCLStringLiteral || parent is HCLIdentifier) {
-      val pp = parent.parent
       // Do not complete values
-      if (pp is HCLProperty && pp.nameElement !== parent) return
+      if (HCLPsiUtil.isPropertyValue(parent)) return
     }
     val obj = PsiTreeUtil.getParentOfType(parent, HCLObject::class.java, false) ?: return
     LOG.debug { "TF.PropertyObjectKeyCompletionProvider{position=$position, parent=$parent, obj=$obj}" }
@@ -58,13 +57,7 @@ object PropertyObjectKeyCompletionProvider : TerraformConfigCompletionContributo
     val type = block.getNameElementUnquoted(0)
     // TODO: Replace with 'ReferenceHint'
     if (property.name == "providers" && type == "module") {
-      val module = Module.getAsModuleBlock(block) ?: return
-      val incomplete: String? = getIncomplete(parameters)
-      val defined = TerraformConfigCompletionContributor.getOriginalObject(parameters, obj).propertyList.map { it.name }
-      val providers = module.getDefinedProviders()
-          .map { it.second }
-          .filter { !defined.contains(it) || (incomplete != null && it.contains(incomplete)) }
-      result.addAllElements(providers.map { TerraformConfigCompletionContributor.create(it).withInsertHandler(ResourcePropertyInsertHandler) })
+      handleModuleProvidersMapping(block, parameters, obj, result)
       return
     }
   }
@@ -77,14 +70,19 @@ object PropertyObjectKeyCompletionProvider : TerraformConfigCompletionContributo
     val type = block.getNameElementUnquoted(0)
     // TODO: Replace with 'ReferenceHint'
     if (innerBlock.name == "providers" && type == "module") {
-      val module = Module.getAsModuleBlock(block) ?: return
-      val incomplete: String? = getIncomplete(parameters)
-      val defined = TerraformConfigCompletionContributor.getOriginalObject(parameters, obj).propertyList.map { it.name }
-      val providers = module.getDefinedProviders()
-          .map { it.second }
-          .filter { !defined.contains(it) || (incomplete != null && it.contains(incomplete)) }
-      result.addAllElements(providers.map { TerraformConfigCompletionContributor.create(it).withInsertHandler(ResourcePropertyInsertHandler) })
+      handleModuleProvidersMapping(block, parameters, obj, result)
       return
     }
+  }
+
+  private fun handleModuleProvidersMapping(block: HCLBlock, parameters: CompletionParameters, obj: HCLObject, result: CompletionResultSet) {
+    val module = Module.getAsModuleBlock(block) ?: return
+    val incomplete: String? = getIncomplete(parameters)
+    val defined = TerraformConfigCompletionContributor.getOriginalObject(parameters, obj).propertyList.map { it.name }
+    val providers = module.getDefinedProviders()
+        .map { it.second }
+        .filter { !defined.contains(it) || (incomplete != null && it.contains(incomplete)) }
+    result.addAllElements(providers.map { TerraformConfigCompletionContributor.create(it).withInsertHandler(ResourcePropertyInsertHandler) })
+    return
   }
 }
