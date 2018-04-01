@@ -23,9 +23,16 @@ class TypeModel(
     val backends: MutableList<BackendType> = arrayListOf(),
     val functions: List<Function> = arrayListOf()
 ) {
+  @Suppress("MemberVisibilityCanBePrivate")
   companion object {
+    private val VersionProperty = PropertyType("version", Types.String, hint = SimpleHint("VersionRange"), injectionAllowed = false)
+
     val Atlas: BlockType = BlockType("atlas", 0, properties = PropertyType("name", Types.String, injectionAllowed = false, required = true).toPOBT())
-    val Module: BlockType = BlockType("module", 1, properties = PropertyType("source", Types.String, hint = SimpleHint("Url"), required = true).toPOBT())
+    val Module: BlockType = BlockType("module", 1, properties = *arrayOf(
+        PropertyType("source", Types.String, hint = SimpleHint("Url"), required = true).toPOBT(),
+        VersionProperty.toPOBT(),
+        PropertyType("providers", Types.Object).toPOBT()
+    ))
     val Output: BlockType = BlockType("output", 1, properties = *arrayOf(
         PropertyType("value", Types.String, hint = InterpolationHint("Any"), required = true).toPOBT(),
         PropertyType("sensitive", Types.Boolean).toPOBT()
@@ -98,8 +105,9 @@ class TypeModel(
         PropertyType("provider", Types.String, hint = ReferenceHint("provider.#type", "provider.#alias")).toPOBT()
     ))
     val AbstractProvider: BlockType = BlockType("provider", 1, required = false, properties = *arrayOf(
-        PropertyType("alias", Types.String, injectionAllowed = false).toPOBT())
-    )
+        PropertyType("alias", Types.String, injectionAllowed = false).toPOBT(),
+        VersionProperty.toPOBT()
+    ))
     val AbstractBackend: BlockType = BlockType("backend", 1)
     val Terraform: BlockType = BlockType("terraform", properties = *arrayOf(
         PropertyType("required_version", Types.String, injectionAllowed = false).toPOBT()
