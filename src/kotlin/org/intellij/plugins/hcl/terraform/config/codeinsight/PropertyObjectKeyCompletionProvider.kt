@@ -18,25 +18,28 @@ package org.intellij.plugins.hcl.terraform.config.codeinsight
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.debug
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor.Companion.getIncomplete
 import org.intellij.plugins.hcl.terraform.config.model.Module
+import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 
-// Similar to BlockPropertiesCompletionProvider
 object PropertyObjectKeyCompletionProvider : TerraformConfigCompletionContributor.OurCompletionProvider() {
   private val LOG = Logger.getInstance(PropertyObjectKeyCompletionProvider::class.java)
 
   override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
     val position = parameters.position // DQS, SQS or ID
     val parent = position.parent // Literal or Identifier or Object
+    val obj = PsiTreeUtil.getParentOfType(parent, HCLObject::class.java, false) ?: return
     if (parent is HCLStringLiteral || parent is HCLIdentifier) {
       // Do not complete values
-      if (HCLPsiUtil.isPropertyValue(parent)) return
+      if (HCLPsiUtil.isPropertyValue(parent)) {
+        return addPropertyValueCompletions(parameters, result, obj)
+      }
     }
-    val obj = PsiTreeUtil.getParentOfType(parent, HCLObject::class.java, false) ?: return
     LOG.debug { "TF.PropertyObjectKeyCompletionProvider{position=$position, parent=$parent, obj=$obj}" }
     when (obj.parent) {
       is HCLProperty -> {
@@ -46,6 +49,28 @@ object PropertyObjectKeyCompletionProvider : TerraformConfigCompletionContributo
         return addInnerBlockCompletions(parameters, result, obj)
       }
       else -> return
+    }
+  }
+
+  private fun getLeftmostName(element: PsiElement): String? {
+    if (element is HCLProperty) return element.name
+    if (element is HCLBlock) return element.getNameElementUnquoted(0)
+    return null
+  }
+
+  private fun addPropertyValueCompletions(parameters: CompletionParameters, result: CompletionResultSet, obj: HCLObject) {
+    val inner = obj.parent ?: return
+    val block = inner.getParent(HCLBlock::class.java, true) ?: return
+    LOG.debug { "TF.PropertyObjectKeyCompletionProvider.InSomethingValue{block=$block, inner=$inner}" }
+
+    val name: String = getLeftmostName(inner) ?: return
+    val type = block.getNameElementUnquoted(0)
+
+    if (name == "providers" && type == "module") {
+      val module = block.getTerraformModule()
+      val providers = module.getDefinedProviders().map { it.second }
+      result.addAllElements(providers.map { TerraformConfigCompletionContributor.create(it) })
+      return
     }
   }
 

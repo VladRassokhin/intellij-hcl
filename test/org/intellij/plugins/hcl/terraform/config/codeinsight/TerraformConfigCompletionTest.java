@@ -473,4 +473,30 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
         "  }\n" +
         "}", 0);
   }
+
+  public void testModuleProvidersValueCompletion() {
+    myFixture.addFileToProject("module/a.tf", "provider aws {}\nprovider aws {alias=\"second\"}");
+    // via PropertyObjectKeyCompletionProvider
+    doBasicCompletionTest("provider aws {}" +
+        "module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers = {\n" +
+        "    aws=<caret> \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws"));
+    doBasicCompletionTest("provider aws {alias=\"first\"}" +
+        "module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers {\n" +
+        "    aws=<caret> \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws.first"));
+    doBasicCompletionTest("provider aws {alias=\"first\"}" +
+        "module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers {\n" +
+        "    aws=\"<caret>\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws.first"));
+  }
 }
