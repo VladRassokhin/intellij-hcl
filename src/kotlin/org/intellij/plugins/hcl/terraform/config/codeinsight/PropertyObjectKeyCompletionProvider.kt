@@ -17,12 +17,12 @@ package org.intellij.plugins.hcl.terraform.config.codeinsight
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.debug
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor.Companion.getIncomplete
 import org.intellij.plugins.hcl.terraform.config.model.Module
 
 // Similar to BlockPropertiesCompletionProvider
@@ -87,15 +87,4 @@ object PropertyObjectKeyCompletionProvider : TerraformConfigCompletionContributo
       return
     }
   }
-
-  private fun getIncomplete(parameters: CompletionParameters): String? {
-    val position = parameters.position
-    val text = TerraformConfigCompletionContributor.getClearTextValue(position) ?: position.text
-    if (text == CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED) return null
-    return text.replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "").nullIfEmpty()
-  }
-}
-
-private fun String.nullIfEmpty(): String? {
-  return if (this.isNotEmpty()) this else null
 }

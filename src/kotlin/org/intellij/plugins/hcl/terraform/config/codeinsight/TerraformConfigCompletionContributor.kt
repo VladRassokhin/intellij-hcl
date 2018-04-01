@@ -48,6 +48,7 @@ import org.intellij.plugins.hil.HILFileType
 import org.intellij.plugins.hil.codeinsight.ReferenceCompletionHelper.findByFQNRef
 import org.intellij.plugins.hil.psi.ILExpression
 import org.intellij.plugins.hil.psi.TypeCachedValueProvider
+import org.intellij.plugins.nullize
 import java.util.*
 
 class TerraformConfigCompletionContributor : HCLCompletionContributor() {
@@ -208,10 +209,6 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     //endregion
   }
 
-  override fun beforeCompletion(context: CompletionInitializationContext) {
-    context.dummyIdentifier = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
-  }
-
   companion object {
     @JvmField val ROOT_BLOCK_KEYWORDS: SortedSet<String> = TypeModel.RootBlocks.map(BlockType::literal).toSortedSet()
     val ROOT_BLOCKS_SORTED: List<PropertyOrBlockType> = TypeModel.RootBlocks.map { it.toPOBT() }.sortedBy { it.name }
@@ -265,6 +262,13 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         HCLParserDefinition.STRING_LITERALS.contains(element.node?.elementType) -> HCLPsiUtil.stripQuotes(element.text)
         else -> return null
       }
+    }
+
+    fun getIncomplete(parameters: CompletionParameters): String? {
+      val position = parameters.position
+      val text = TerraformConfigCompletionContributor.getClearTextValue(position) ?: position.text
+      if (text == CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED) return null
+      return text.replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "").nullize(true)
     }
   }
 
@@ -434,9 +438,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
 
     private fun doAddCompletion(isBlock: Boolean, isProperty: Boolean, parent: HCLObject, result: CompletionResultSet, right: Type?, parameters: CompletionParameters, properties: Array<out PropertyOrBlockType>, original: PsiElement) {
       if (properties.isEmpty()) return
-      val incomplete = if (original is HCLIdentifier || original.node.elementType === HCLElementTypes.ID) {
-        original.text
-      } else null
+      val incomplete = getIncomplete(parameters)
       if (incomplete != null) {
         LOG.debug { "Including properties which contains incomplete result: $incomplete" }
       }

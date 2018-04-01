@@ -65,6 +65,9 @@ class HILCompletionContributor : CompletionContributor() {
         , SelectCompletionProvider)
   }
 
+  override fun beforeCompletion(context: CompletionInitializationContext) {
+    context.dummyIdentifier = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
+  }
 
   companion object {
     @JvmField val GLOBAL_SCOPES: SortedSet<String> = sortedSetOf("var", "path", "data", "module", "local")

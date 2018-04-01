@@ -36,6 +36,10 @@ open class HCLCompletionContributor : CompletionContributor() {
     extend(CompletionType.BASIC, AFTER_COMMA_OR_BRACKET_IN_ARRAY, MyKeywordsCompletionProvider)
   }
 
+  override fun beforeCompletion(context: CompletionInitializationContext) {
+    context.dummyIdentifier = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
+  }
+
   private object MyKeywordsCompletionProvider : CompletionProvider<CompletionParameters>() {
     private val KEYWORDS = arrayOf("null", "true", "false")
 

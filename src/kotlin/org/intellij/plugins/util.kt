@@ -16,9 +16,14 @@
 package org.intellij.plugins
 
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.util.text.StringUtil
 
 
 inline fun Logger.debug(message: () -> String) {
   @Suppress("DEPRECATION")
   if (this.isDebugEnabled) this.debug(message())
+}
+
+fun String.nullize(nullizeSpaces:Boolean = false): String? {
+  return StringUtil.nullize(this, nullizeSpaces)
 }
