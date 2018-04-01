@@ -104,7 +104,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         .afterSiblingSkipping2(WhiteSpace, or(ID, Identifier))
         , BlockTypeOrNameCompletionProvider)
 
-    // Block property
+    //region InBlock Property key
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
         .withParent(Object)
@@ -139,8 +139,9 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         .withSuperParent(3, Object)
         .withSuperParent(4, Block)
         , BlockPropertiesCompletionProvider)
+    //endregion
 
-    // Property value
+    //region InBlock Property value
     extend(null, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
         .withParent(Identifier)
@@ -164,8 +165,10 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         .withSuperParent(4, Object)
         .withSuperParent(5, Block)
         , PropertyValueCompletionProvider)
+    //endregion
 
 
+    //region .tfvars
     // Variables in .tvars files
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
         .inFile(TerraformVariablesFile)
@@ -215,6 +218,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
                 .withSuperParent(2, Property)
                 .withSuperParent(3, File)
         ), MappedVariableTFVARSCompletionProvider)
+    //endregion
   }
 
   companion object {
