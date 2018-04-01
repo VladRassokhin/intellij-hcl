@@ -23,7 +23,7 @@ import java.util.*;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.intellij.plugins.hcl.CompletionTestCase.Matcher.*;
 
-@SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
+@SuppressWarnings({"ArraysAsListWithZeroOrOneArgument", "RedundantThrows"})
 public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
 
   public void testBlockKeywordCompletion() throws Exception {
@@ -90,6 +90,11 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
     doBasicCompletionTest("resource \"x\" {\nid='a'\n<caret>\n}", set);
     doBasicCompletionTest("resource abc {\n<caret> = true\n}", Collections.<String>emptySet());
     doBasicCompletionTest("resource abc {\n<caret> {}\n}", Arrays.asList("lifecycle", "connection", "provisioner"));
+    doBasicCompletionTest("resource abc {\n<caret>count = 2\n}", 1, "count");
+    doBasicCompletionTest("resource abc {\n\"<caret>count\" = 2\n}", 1, "count");
+    // TODO: Fix mixed id-string and uncomment next line
+    //doBasicCompletionTest("resource abc {\n<caret>\"count\" = 2\n}", 1, "count");
+    doBasicCompletionTest("resource abc {\n<caret>lifecycle {}\n}", Arrays.asList("lifecycle", "connection", "provisioner"));
   }
 
   public void testResourceCommonPropertyCompletionFromModel() throws Exception {
