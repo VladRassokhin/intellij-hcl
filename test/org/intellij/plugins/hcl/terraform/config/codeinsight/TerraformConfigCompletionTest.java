@@ -23,6 +23,7 @@ import java.util.*;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.intellij.plugins.hcl.CompletionTestCase.Matcher.*;
 
+@SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
 public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
 
   public void testBlockKeywordCompletion() throws Exception {
@@ -293,5 +294,154 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
         return true;
       }
     });
+  }
+
+  public void testModuleProvidersPropertyCompletion() {
+    myFixture.addFileToProject("module/a.tf", "provider aws {}\nprovider aws {alias=\"second\"}");
+    // via PropertyObjectKeyCompletionProvider
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers = {\n" +
+        "    <caret> \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers = {\n" +
+        "    \"<caret>\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers = {\n" +
+        "    a<caret> \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers = {\n" +
+        "    \"a<caret>\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers = {\n" +
+        "    <caret>aws = \"aws\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers = {\n" +
+        "    \"<caret>aws\" = \"aws\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers = {\n" +
+        "    <caret> = \"aws\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers = {\n" +
+        "    \"<caret>\" = \"aws\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers = {\n" +
+        "    aws = \"aws\"\n" +
+        "    <caret>\n" +
+        "  }\n" +
+        "}", Arrays.asList("aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers = {\n" +
+        "    <caret>\n" +
+        "    aws = \"aws\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws.second"));
+
+
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers = {\n" +
+        "    aws = <caret> \n" +
+        "  }\n" +
+        "}", 0);
+  }
+
+  public void testModuleProvidersBlockCompletion() {
+    myFixture.addFileToProject("module/a.tf", "provider aws {}\nprovider aws {alias=\"second\"}");
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers {\n" +
+        "    <caret> \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers {\n" +
+        "    \"<caret>\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers {\n" +
+        "    a<caret> \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers {\n" +
+        "    \"a<caret>\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers {\n" +
+        "    <caret>aws = \"aws\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers {\n" +
+        "    \"<caret>aws\" = \"aws\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers {\n" +
+        "    <caret> = \"aws\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers {\n" +
+        "    \"<caret>\" = \"aws\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws", "aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers {\n" +
+        "    aws = \"aws\"\n" +
+        "    <caret>\n" +
+        "  }\n" +
+        "}", Arrays.asList("aws.second"));
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers {\n" +
+        "    <caret>\n" +
+        "    aws = \"aws\" \n" +
+        "  }\n" +
+        "}", Arrays.asList("aws.second"));
+
+
+    doBasicCompletionTest("module x {\n" +
+        "  source = \"./module/\"\n" +
+        "  providers {\n" +
+        "    aws = <caret> \n" +
+        "  }\n" +
+        "}", 0);
   }
 }

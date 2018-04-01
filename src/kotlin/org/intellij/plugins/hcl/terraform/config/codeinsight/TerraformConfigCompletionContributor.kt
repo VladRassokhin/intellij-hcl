@@ -65,6 +65,8 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     val AtLeastOneEOL = psiElement(PsiWhiteSpace::class.java).withText(StandardPatterns.string().contains("\n"))
     val Nothing = StandardPatterns.alwaysFalse<PsiElement>()
 
+    val IdentifierOrStringLiteral = or(Identifier, Literal)
+
     // Block first word
     extend(CompletionType.BASIC, psiElement(HCLElementTypes.ID)
         .inFile(TerraformConfigFile)
@@ -167,6 +169,48 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         , PropertyValueCompletionProvider)
     //endregion
 
+    //region InBlock PropertyWithObjectValue Key
+    // property = { <caret> }
+    // property = { "<caret>" }
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
+        .inFile(TerraformConfigFile)
+        .withParent(Object)
+        .withSuperParent(2, Property)
+        .withSuperParent(3, Object)
+        .withSuperParent(4, Block)
+        , PropertyObjectKeyCompletionProvider)
+    // property = { <caret>a="" }
+    // property = { "<caret>a"="" }
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
+        .inFile(TerraformConfigFile)
+        .withParent(IdentifierOrStringLiteral)
+        .withSuperParent(2, Property)
+        .withSuperParent(3, Object)
+        .withSuperParent(4, Property)
+        .withSuperParent(5, Object)
+        .withSuperParent(6, Block)
+        , PropertyObjectKeyCompletionProvider)
+    // property { <caret> }
+    // property { "<caret>" }
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
+        .inFile(TerraformConfigFile)
+        .withParent(Object)
+        .withSuperParent(2, Block)
+        .withSuperParent(3, Object)
+        .withSuperParent(4, Block)
+        , PropertyObjectKeyCompletionProvider)
+    // property { <caret>="" }
+    // property { "<caret>"="" }
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
+        .inFile(TerraformConfigFile)
+        .withParent(IdentifierOrStringLiteral)
+        .withSuperParent(2, Property)
+        .withSuperParent(3, Object)
+        .withSuperParent(4, Block)
+        .withSuperParent(5, Object)
+        .withSuperParent(6, Block)
+        , PropertyObjectKeyCompletionProvider)
+    //endregion
 
     //region .tfvars
     // Variables in .tvars files
@@ -221,6 +265,10 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     //endregion
   }
 
+  override fun beforeCompletion(context: CompletionInitializationContext) {
+    context.dummyIdentifier = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
+  }
+
   companion object {
     @JvmField val ROOT_BLOCK_KEYWORDS: SortedSet<String> = TypeModel.RootBlocks.map(BlockType::literal).toSortedSet()
     val ROOT_BLOCKS_SORTED: List<PropertyOrBlockType> = TypeModel.RootBlocks.map { it.toPOBT() }.sortedBy { it.name }
@@ -258,6 +306,11 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         ret += " Position: $position\nFile: " + DumpPsiFileModel(position)()
         ret
       })
+    }
+
+    fun getOriginalObject(parameters: CompletionParameters, obj: HCLObject): HCLObject {
+      val originalObject = parameters.originalFile.findElementAt(obj.textRange.startOffset)?.parent
+      return originalObject as? HCLObject ?: obj
     }
   }
 
@@ -422,8 +475,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         LOG.debug { "TF.BlockPropertiesCompletionProvider{position=$position, parent=$_parent, original=$original, no right part}" }
       }
       val parent: HCLObject = _parent as? HCLObject ?: return failIfInUnitTestsMode(position, "Parent should be HCLObject")
-      val original_object = parameters.originalFile.findElementAt(parent.textRange.startOffset)?.parent
-      val use = if (original_object is HCLObject) original_object else parent
+      val use = getOriginalObject(parameters, parent)
       val block = use.parent
       if (block is HCLBlock) {
         val props = ModelHelper.getBlockProperties(block)

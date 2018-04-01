@@ -50,6 +50,7 @@ class Module private constructor(val item: PsiFileSystemItem) {
 
       // Prefer local file paths over loaded modules.
       // TODO: Consider removing that
+      // Used in tests
       var dir: PsiDirectory? = findRelativeModule(directory, moduleBlock, source)
       if (dir != null) {
         return Module(dir)
