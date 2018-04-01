@@ -92,11 +92,7 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
     registrar.registerReferenceProvider(
         psiElement(HCLStringLiteral::class.java)
             .inFile(TerraformConfigFile)
-            .withParent(psiElement(HCLProperty::class.java).with(object : PatternCondition<HCLProperty?>("HCLProperty(source)") {
-              override fun accepts(t: HCLProperty, context: ProcessingContext?): Boolean {
-                return "source" == t.name
-              }
-            }))
+            .withParent(propertyWithName("source"))
             .withSuperParent(3, TerraformPatterns.ModuleRootBlock)
         , ModuleSourceReferenceProvider)
 
@@ -217,7 +213,7 @@ object VariableReferenceProvider : PsiReferenceProvider() {
       @Suppress("NAME_SHADOWING")
       val element = this.element
       if (incomplete) {
-        element.getTerraformModule().getAllVariables().map { it.second.nameIdentifier as HCLElement }.filterNotNull()
+        element.getTerraformModule().getAllVariables().map { it.second.nameIdentifier as HCLElement }
       } else {
         @Suppress("NAME_SHADOWING")
         val value = element.id
