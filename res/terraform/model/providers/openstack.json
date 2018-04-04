@@ -1,7 +1,7 @@
 {
   "name": "openstack",
   "type": "provider",
-  "version": "v1.2.0-12-ge69e586",
+  "version": "v1.3.0-15-g82db8e3",
   "provider": {
     "auth_url": {
       "Type": "TypeString",
@@ -479,6 +479,13 @@
       "ephemeral": {
         "Type": "TypeInt",
         "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "extra_specs": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -1787,6 +1794,28 @@
         "Elem": {}
       }
     },
+    "openstack_identity_role_v3": {
+      "domain_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "openstack_identity_user_v3": {
       "default_project_id": {
         "Type": "TypeString",
@@ -2709,6 +2738,12 @@
         "Default": {},
         "Elem": {}
       },
+      "subnet_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "tenant_id": {
         "Type": "TypeString",
         "Optional": true,
@@ -2845,7 +2880,6 @@
             "mac_address": {
               "Type": "TypeString",
               "Optional": true,
-              "Computed": true,
               "Default": {},
               "Elem": {}
             }
@@ -3100,6 +3134,24 @@
         "Optional": true,
         "Default": {},
         "Elem": {}
+      },
+      "vendor_options": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "MaxItems": 1,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "set_router_gateway_after_create": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       }
     },
     "openstack_networking_secgroup_rule_v2": {
@@ -3331,9 +3383,128 @@
         "Default": {},
         "Elem": {}
       },
+      "subnetpool_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "tenant_id": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "value_specs": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "openstack_networking_subnetpool_v2": {
+      "address_scope_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "created_at": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "default_prefixlen": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "default_quota": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_version": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "is_default": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "max_prefixlen": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "min_prefixlen": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "prefixes": {
+        "Type": "TypeList",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "project_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "revision_number": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "shared": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "updated_at": {
+        "Type": "TypeString",
         "Computed": true,
         "Default": {},
         "Elem": {}
@@ -3372,6 +3543,12 @@
       },
       "content_type": {
         "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "force_destroy": {
+        "Type": "TypeBool",
         "Optional": true,
         "Default": {},
         "Elem": {}
@@ -3724,6 +3901,74 @@
         "Elem": {}
       }
     },
+    "openstack_identity_project_v3": {
+      "description": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "domain_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "is_domain": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "parent_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "openstack_identity_role_v3": {
+      "domain_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "openstack_images_image_v2": {
       "checksum": {
         "Type": "TypeString",
@@ -3746,6 +3991,12 @@
       "file": {
         "Type": "TypeString",
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "member_status": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -3916,9 +4167,7 @@
         "Type": "TypeString",
         "Optional": true,
         "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
-        "Default": {
-          "Type": "string"
-        },
+        "Default": {},
         "Elem": {}
       }
     },
@@ -4091,14 +4340,132 @@
         "Default": {},
         "Elem": {}
       },
+      "subnetpool_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "tenant_id": {
         "Type": "TypeString",
         "Optional": true,
         "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
         "Computed": true,
-        "Default": {
-          "Type": "string"
-        },
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "openstack_networking_subnetpool_v2": {
+      "address_scope_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "created_at": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "default_prefixlen": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "default_quota": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_version": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "is_default": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "max_prefixlen": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "min_prefixlen": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "prefixes": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "project_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "revision_number": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "shared": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "updated_at": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
         "Elem": {}
       }
     }

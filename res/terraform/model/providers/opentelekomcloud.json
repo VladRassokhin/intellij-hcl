@@ -1,7 +1,7 @@
 {
   "name": "opentelekomcloud",
   "type": "provider",
-  "version": "v1.0.0-28-g4f5589f",
+  "version": "v1.0.0-68-gca1847f",
   "provider": {
     "access_key": {
       "Type": "TypeString",
@@ -574,6 +574,13 @@
         "Default": {},
         "Elem": {}
       },
+      "auto_recovery": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "availability_zone": {
         "Type": "TypeString",
         "Optional": true,
@@ -1088,7 +1095,8 @@
       },
       "records": {
         "Type": "TypeList",
-        "Optional": true,
+        "Required": true,
+        "MinItems": 1,
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -1105,14 +1113,12 @@
       "ttl": {
         "Type": "TypeInt",
         "Optional": true,
-        "Computed": true,
         "Default": {},
         "Elem": {}
       },
       "type": {
         "Type": "TypeString",
-        "Optional": true,
-        "Computed": true,
+        "Required": true,
         "Default": {},
         "Elem": {}
       },
@@ -1130,12 +1136,6 @@
       }
     },
     "opentelekomcloud_dns_zone_v2": {
-      "attributes": {
-        "Type": "TypeMap",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      },
       "description": {
         "Type": "TypeString",
         "Optional": true,
@@ -1150,7 +1150,7 @@
       },
       "masters": {
         "Type": "TypeSet",
-        "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -1170,17 +1170,37 @@
         "Default": {},
         "Elem": {}
       },
+      "router": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "router_id": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "router_region": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
       "ttl": {
         "Type": "TypeInt",
         "Optional": true,
-        "Computed": true,
         "Default": {},
         "Elem": {}
       },
       "type": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -1805,6 +1825,75 @@
       "visibility": {
         "Type": "TypeString",
         "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "opentelekomcloud_kms_key_v1": {
+      "creation_date": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "default_key_flag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "domain_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "expiration_time": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "is_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_alias": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "origin": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "pending_days": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "realm": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "scheduled_deletion_date": {
+        "Type": "TypeString",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }
@@ -2534,10 +2623,9 @@
       },
       "region": {
         "Type": "TypeString",
-        "Required": true,
-        "Default": {
-          "Type": "string"
-        },
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
         "Elem": {}
       },
       "tenant_id": {
@@ -2773,6 +2861,208 @@
       "value_specs": {
         "Type": "TypeMap",
         "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "opentelekomcloud_rds_instance_v1": {
+      "availabilityzone": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "backupstrategy": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "keepdays": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "starttime": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "created": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "datastore": {
+        "Type": "TypeList",
+        "Required": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "version": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "dbport": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "dbrtpd": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "flavorref": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ha": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enable": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "replicationmode": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "hostname": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "nics": {
+        "Type": "TypeList",
+        "Required": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "subnetid": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "securitygroup": {
+        "Type": "TypeList",
+        "Required": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "status": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "updated": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "volume": {
+        "Type": "TypeList",
+        "Required": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "size": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "vpc": {
+        "Type": "TypeString",
+        "Required": true,
         "Default": {},
         "Elem": {}
       }
@@ -3158,6 +3448,13 @@
         "Default": {},
         "Elem": {}
       },
+      "sse_kms_key_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "version_id": {
         "Type": "TypeString",
         "Computed": true,
@@ -3405,6 +3702,105 @@
         "Elem": {}
       }
     },
+    "opentelekomcloud_kms_data_key_v1": {
+      "cipher_text": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "datakey_length": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "encryption_context": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "plain_text": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "opentelekomcloud_kms_key_v1": {
+      "creation_date": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "default_key_flag": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "domain_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_alias": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "key_state": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "origin": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "realm": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "scheduled_deletion_date": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "opentelekomcloud_networking_network_v2": {
       "admin_state_up": {
         "Type": "TypeString",
@@ -3474,6 +3870,46 @@
         "Elem": {}
       },
       "tenant_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "opentelekomcloud_rds_flavors_v1": {
+      "datastore_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "datastore_version": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ram": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "speccode": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,

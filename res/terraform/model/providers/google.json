@@ -1,7 +1,7 @@
 {
   "name": "google",
   "type": "provider",
-  "version": "v1.6.0-38-ge533a54",
+  "version": "v1.8.0-64-gf8efd63",
   "provider": {
     "credentials": {
       "Type": "TypeString",
@@ -214,6 +214,12 @@
           "Info": {
             "expiration_ms": {
               "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "field": {
+              "Type": "TypeString",
               "Optional": true,
               "Default": {},
               "Elem": {}
@@ -837,6 +843,71 @@
           }
         }
       },
+      "cdn_policy": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cache_key_policy": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "include_host": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "include_protocol": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "include_query_string": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "query_string_blacklist": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "ConflictsWith": [
+                      "cdn_policy.0.cache_key_policy.query_string_whitelist"
+                    ],
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  },
+                  "query_string_whitelist": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "ConflictsWith": [
+                      "cdn_policy.0.cache_key_policy.query_string_blacklist"
+                    ],
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "connection_draining_timeout_sec": {
         "Type": "TypeInt",
         "Optional": true,
@@ -926,6 +997,12 @@
         "Type": "TypeString",
         "Optional": true,
         "Removed": "region has been removed as it was never used. For internal load balancing, use google_compute_region_backend_service",
+        "Default": {},
+        "Elem": {}
+      },
+      "security_policy": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -1637,6 +1714,12 @@
         "Default": {},
         "Elem": {}
       },
+      "creation_timestamp": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "description": {
         "Type": "TypeString",
         "Optional": true,
@@ -1703,6 +1786,12 @@
       "check_interval_sec": {
         "Type": "TypeInt",
         "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "creation_timestamp": {
+        "Type": "TypeString",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -2001,6 +2090,12 @@
         "Type": "TypeInt",
         "Optional": true,
         "Deprecated": "Use timeouts block instead.",
+        "Default": {},
+        "Elem": {}
+      },
+      "deletion_protection": {
+        "Type": "TypeBool",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -2575,6 +2670,71 @@
         "Default": {},
         "Elem": {}
       },
+      "rolling_update_policy": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "max_surge_fixed": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "ConflictsWith": [
+                "rolling_update_policy.0.max_surge_percent"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "max_surge_percent": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "ConflictsWith": [
+                "rolling_update_policy.0.max_surge_fixed"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "max_unavailable_fixed": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "ConflictsWith": [
+                "rolling_update_policy.0.max_unavailable_percent"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "max_unavailable_percent": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "ConflictsWith": [
+                "rolling_update_policy.0.max_unavailable_fixed"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "min_ready_sec": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "minimal_action": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
       "self_link": {
         "Type": "TypeString",
         "Computed": true,
@@ -2599,6 +2759,12 @@
       },
       "update_strategy": {
         "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "wait_for_instances": {
+        "Type": "TypeBool",
         "Optional": true,
         "Default": {},
         "Elem": {}
@@ -2793,6 +2959,8 @@
       "name_prefix": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
+        "Deprecated": "Use the random provider instead. See migration instructions at https://github.com/terraform-providers/terraform-provider-google/issues/1054#issuecomment-377390209",
         "Default": {},
         "Elem": {}
       },
@@ -3383,6 +3551,16 @@
         "Default": {},
         "Elem": {}
       },
+      "distribution_policy_zones": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
       "fingerprint": {
         "Type": "TypeString",
         "Computed": true,
@@ -3442,6 +3620,71 @@
         "Default": {},
         "Elem": {}
       },
+      "rolling_update_policy": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "max_surge_fixed": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "ConflictsWith": [
+                "rolling_update_policy.0.max_surge_percent"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "max_surge_percent": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "ConflictsWith": [
+                "rolling_update_policy.0.max_surge_fixed"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "max_unavailable_fixed": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "ConflictsWith": [
+                "rolling_update_policy.0.max_unavailable_percent"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "max_unavailable_percent": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "ConflictsWith": [
+                "rolling_update_policy.0.max_unavailable_fixed"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "min_ready_sec": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "minimal_action": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
       "self_link": {
         "Type": "TypeString",
         "Computed": true,
@@ -3461,6 +3704,12 @@
         "Type": "TypeInt",
         "Optional": true,
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "update_strategy": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -3716,6 +3965,113 @@
         "Elem": {}
       }
     },
+    "google_compute_security_policy": {
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "fingerprint": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "rule": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "description": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "match": {
+              "Type": "TypeList",
+              "Required": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "config": {
+                    "Type": "TypeList",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "src_ip_ranges": {
+                          "Type": "TypeSet",
+                          "Required": true,
+                          "MaxItems": 5,
+                          "MinItems": 1,
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "TypeString"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "versioned_expr": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "preview": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "priority": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "self_link": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_compute_shared_vpc_host_project": {
       "project": {
         "Type": "TypeString",
@@ -3849,12 +4205,77 @@
       "name_prefix": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
+        "Deprecated": "Use the random provider instead. See migration instructions at https://github.com/terraform-providers/terraform-provider-google/issues/1054#issuecomment-377390209",
         "Default": {},
         "Elem": {}
       },
       "private_key": {
         "Type": "TypeString",
         "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "self_link": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_compute_ssl_policy": {
+      "custom_features": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "enabled_features": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "fingerprint": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "min_tls_version": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "profile": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -4583,6 +5004,24 @@
                   }
                 }
               }
+            },
+            "network_policy_config": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Computed": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "disabled": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
             }
           }
         }
@@ -4774,6 +5213,12 @@
           }
         }
       },
+      "master_ipv4_cidr_block": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "master_version": {
         "Type": "TypeString",
         "Computed": true,
@@ -4944,6 +5389,51 @@
                 "Type": "SchemaElements",
                 "ElementsType": "TypeString"
               }
+            },
+            "taint": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "effect": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "key": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "value": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "workload_metadata_config": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "node_metadata": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
             }
           }
         }
@@ -4983,9 +5473,17 @@
               "Type": "TypeInt",
               "Optional": true,
               "Computed": true,
-              "Deprecated": "Use node_count instead",
               "Default": {},
               "Elem": {}
+            },
+            "instance_group_urls": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
             },
             "management": {
               "Type": "TypeList",
@@ -5021,6 +5519,8 @@
             "name_prefix": {
               "Type": "TypeString",
               "Optional": true,
+              "Computed": true,
+              "Deprecated": "Use the random provider instead. See migration instructions at https://github.com/terraform-providers/terraform-provider-google/issues/1054#issuecomment-377390209",
               "Default": {},
               "Elem": {}
             },
@@ -5139,12 +5639,64 @@
                       "Type": "SchemaElements",
                       "ElementsType": "TypeString"
                     }
+                  },
+                  "taint": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "effect": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "key": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "value": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  },
+                  "workload_metadata_config": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "MaxItems": 1,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "node_metadata": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
                   }
                 }
               }
             },
             "node_count": {
               "Type": "TypeInt",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "version": {
+              "Type": "TypeString",
               "Optional": true,
               "Computed": true,
               "Default": {},
@@ -5160,10 +5712,39 @@
         "Default": {},
         "Elem": {}
       },
+      "pod_security_policy_config": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "TypeBool",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "private_cluster": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "project": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "remove_default_node_pool": {
+        "Type": "TypeBool",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       },
@@ -5216,9 +5797,17 @@
         "Type": "TypeInt",
         "Optional": true,
         "Computed": true,
-        "Deprecated": "Use node_count instead",
         "Default": {},
         "Elem": {}
+      },
+      "instance_group_urls": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
       },
       "management": {
         "Type": "TypeList",
@@ -5254,6 +5843,8 @@
       "name_prefix": {
         "Type": "TypeString",
         "Optional": true,
+        "Computed": true,
+        "Deprecated": "Use the random provider instead. See migration instructions at https://github.com/terraform-providers/terraform-provider-google/issues/1054#issuecomment-377390209",
         "Default": {},
         "Elem": {}
       },
@@ -5372,6 +5963,51 @@
                 "Type": "SchemaElements",
                 "ElementsType": "TypeString"
               }
+            },
+            "taint": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "effect": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "key": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "value": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "workload_metadata_config": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "node_metadata": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
             }
           }
         }
@@ -5384,6 +6020,13 @@
         "Elem": {}
       },
       "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "version": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
@@ -5473,6 +6116,7 @@
             "delete_autogen_bucket": {
               "Type": "TypeBool",
               "Optional": true,
+              "Deprecated": "autogenerated buckets are shared by all clusters in the same region, so deleting this bucket could adversely harm other dataproc clusters. If you need a bucket that can be deleted, please create a new one and set the `staging_bucket` field",
               "Default": {},
               "Elem": {}
             },
@@ -7412,6 +8056,26 @@
         "Elem": {}
       }
     },
+    "google_organization_iam_policy": {
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "org_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_data": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_organization_policy": {
       "boolean_policy": {
         "Type": "TypeList",
@@ -7769,6 +8433,141 @@
         "Elem": {}
       }
     },
+    "google_project_organization_policy": {
+      "boolean_policy": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "list_policy"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enforced": {
+              "Type": "TypeBool",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "constraint": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "list_policy": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "boolean_policy"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allow": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "ConflictsWith": [
+                "list_policy.0.deny"
+              ],
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "all": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "ConflictsWith": [
+                      "list_policy.0.allow.0.values"
+                    ],
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "values": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            },
+            "deny": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "all": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "ConflictsWith": [
+                      "list_policy.0.deny.0.values"
+                    ],
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "values": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            },
+            "suggested_value": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "project": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "update_time": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "version": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_project_service": {
       "disable_on_destroy": {
         "Type": "TypeBool",
@@ -7888,6 +8687,102 @@
         "Elem": {}
       }
     },
+    "google_pubsub_subscription_iam_binding": {
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "members": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "subscription": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_pubsub_subscription_iam_member": {
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "member": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "role": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "subscription": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_pubsub_subscription_iam_policy": {
+      "etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_data": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "subscription": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_pubsub_topic": {
       "name": {
         "Type": "TypeString",
@@ -7919,6 +8814,13 @@
           "ElementsType": "TypeString"
         }
       },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "role": {
         "Type": "TypeString",
         "Required": true,
@@ -7945,6 +8847,13 @@
         "Default": {},
         "Elem": {}
       },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "role": {
         "Type": "TypeString",
         "Required": true,
@@ -7968,6 +8877,13 @@
       "policy_data": {
         "Type": "TypeString",
         "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -8402,6 +9318,12 @@
       "database_version": {
         "Type": "TypeString",
         "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "first_ip_address": {
+        "Type": "TypeString",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -9454,6 +10376,12 @@
       }
     },
     "google_client_config": {
+      "access_token": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "project": {
         "Type": "TypeString",
         "Computed": true,
@@ -9589,6 +10517,239 @@
       "status": {
         "Type": "TypeString",
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_compute_backend_service": {
+      "backend": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "balancing_mode": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "capacity_scaler": {
+              "Type": "TypeFloat",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "description": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "group": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "max_rate": {
+              "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "max_rate_per_instance": {
+              "Type": "TypeFloat",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "max_utilization": {
+              "Type": "TypeFloat",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "cdn_policy": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cache_key_policy": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "include_host": {
+                    "Type": "TypeBool",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "include_protocol": {
+                    "Type": "TypeBool",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "include_query_string": {
+                    "Type": "TypeBool",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "query_string_blacklist": {
+                    "Type": "TypeSet",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  },
+                  "query_string_whitelist": {
+                    "Type": "TypeSet",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "connection_draining_timeout_sec": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "enable_cdn": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "fingerprint": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "health_checks": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "iap": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "oauth2_client_id": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "oauth2_client_secret": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "port_name": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "protocol": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "security_policy": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "self_link": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "session_affinity": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "timeout_sec": {
+        "Type": "TypeInt",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_compute_default_service_account": {
+      "email": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       }
@@ -9860,7 +11021,10 @@
       },
       "name": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
+        "ConflictsWith": [
+          "self_link"
+        ],
         "Default": {},
         "Elem": {}
       },
@@ -9901,7 +11065,12 @@
       },
       "self_link": {
         "Type": "TypeString",
+        "Optional": true,
         "Computed": true,
+        "ConflictsWith": [
+          "name",
+          "zone"
+        ],
         "Default": {},
         "Elem": {}
       },
@@ -9915,6 +11084,9 @@
         "Type": "TypeString",
         "Optional": true,
         "Computed": true,
+        "ConflictsWith": [
+          "self_link"
+        ],
         "Default": {},
         "Elem": {}
       }
@@ -10060,6 +11232,68 @@
         "Elem": {}
       }
     },
+    "google_compute_ssl_policy": {
+      "custom_features": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "description": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "enabled_features": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "fingerprint": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "min_tls_version": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "profile": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "self_link": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "google_compute_subnetwork": {
       "description": {
         "Type": "TypeString",
@@ -10190,6 +11424,13 @@
           "ElementsType": "TypeString"
         }
       },
+      "project": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "region": {
         "Type": "TypeString",
         "Optional": true,
@@ -10253,6 +11494,22 @@
               }
             },
             "kubernetes_dashboard": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "disabled": {
+                    "Type": "TypeBool",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "network_policy_config": {
               "Type": "TypeList",
               "Computed": true,
               "Default": {},
@@ -10448,6 +11705,12 @@
           }
         }
       },
+      "master_ipv4_cidr_block": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "master_version": {
         "Type": "TypeString",
         "Computed": true,
@@ -10606,6 +11869,50 @@
                 "Type": "SchemaElements",
                 "ElementsType": "TypeString"
               }
+            },
+            "taint": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "effect": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "key": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "value": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "workload_metadata_config": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "node_metadata": {
+                    "Type": "TypeString",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
             }
           }
         }
@@ -10644,6 +11951,15 @@
               "Computed": true,
               "Default": {},
               "Elem": {}
+            },
+            "instance_group_urls": {
+              "Type": "TypeList",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
             },
             "management": {
               "Type": "TypeList",
@@ -10785,12 +12101,62 @@
                       "Type": "SchemaElements",
                       "ElementsType": "TypeString"
                     }
+                  },
+                  "taint": {
+                    "Type": "TypeList",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "effect": {
+                          "Type": "TypeString",
+                          "Computed": true,
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "key": {
+                          "Type": "TypeString",
+                          "Computed": true,
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "value": {
+                          "Type": "TypeString",
+                          "Computed": true,
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  },
+                  "workload_metadata_config": {
+                    "Type": "TypeList",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "node_metadata": {
+                          "Type": "TypeString",
+                          "Computed": true,
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
                   }
                 }
               }
             },
             "node_count": {
               "Type": "TypeInt",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "version": {
+              "Type": "TypeString",
               "Computed": true,
               "Default": {},
               "Elem": {}
@@ -10804,9 +12170,37 @@
         "Default": {},
         "Elem": {}
       },
+      "pod_security_policy_config": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "TypeBool",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "private_cluster": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "project": {
         "Type": "TypeString",
         "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "remove_default_node_pool": {
+        "Type": "TypeBool",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -11056,6 +12450,71 @@
         "ConflictsWith": [
           "domain"
         ],
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "google_project": {
+      "billing_account": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "folder_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "labels": {
+        "Type": "TypeMap",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "number": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "org_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_data": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "policy_etag": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "skip_delete": {
+        "Type": "TypeBool",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }

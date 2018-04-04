@@ -1,7 +1,7 @@
 {
   "name": "triton",
   "type": "provider",
-  "version": "v0.4.2-3-g77ece3b",
+  "version": "v0.4.2-19-gcc21020",
   "provider": {
     "account": {
       "Type": "TypeString",
@@ -80,7 +80,6 @@
         "Type": "TypeBool",
         "Optional": true,
         "Description": "Whether or not a NAT zone is provisioned at the Gateway IP address",
-        "Computed": true,
         "Default": {},
         "Elem": {}
       },
@@ -268,6 +267,13 @@
         "Default": {},
         "Elem": {}
       },
+      "deletion_protection_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Whether to enable deletion protection for this machine",
+        "Default": {},
+        "Elem": {}
+      },
       "disk": {
         "Type": "TypeInt",
         "Description": "Amount of disk allocated to the machine (in Gb)",
@@ -314,6 +320,7 @@
         "Optional": true,
         "Description": "UUID based locality hints for assisting placement behavior",
         "MaxItems": 1,
+        "Deprecated": "`locality` was replaced by `affinity` in the underlying Triton API.",
         "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
@@ -543,6 +550,18 @@
         "Computed": true,
         "Default": {},
         "Elem": {}
+      },
+      "email": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "login": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
       }
     },
     "triton_datacenter": {
@@ -555,6 +574,106 @@
       "name": {
         "Type": "TypeString",
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "triton_fabric_network": {
+      "description": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "fabric": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "gateway": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "internet_nat": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "provision_end_ip": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "provision_start_ip": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "public": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "resolvers": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "routes": {
+        "Type": "TypeMap",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "subnet": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vlan_id": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "triton_fabric_vlan": {
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vlan_id": {
+        "Type": "TypeInt",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       }
@@ -610,9 +729,21 @@
       }
     },
     "triton_network": {
+      "fabric": {
+        "Type": "TypeBool",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
       "name": {
         "Type": "TypeString",
-        "Optional": true,
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "public": {
+        "Type": "TypeBool",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }

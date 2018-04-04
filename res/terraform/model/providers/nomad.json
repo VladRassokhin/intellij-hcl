@@ -1,7 +1,7 @@
 {
   "name": "nomad",
   "type": "provider",
-  "version": "v1.1.0-20-g102517d",
+  "version": "v1.2.0-1-ge076fbb",
   "provider": {
     "address": {
       "Type": "TypeString",
@@ -50,6 +50,15 @@
       "Type": "TypeString",
       "Optional": true,
       "Description": "ACL token secret for API requests.",
+      "Default": {
+        "Type": "string"
+      },
+      "Elem": {}
+    },
+    "vault_token": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "Vault token if policies are specified in the job file.",
       "Default": {
         "Type": "string"
       },
@@ -148,6 +157,36 @@
         "Description": "Job specification. If you want to point to a file use the file() function.",
         "Default": {},
         "Elem": {}
+      },
+      "policy_override": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Override any soft-mandatory Sentinel policies that fail.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "nomad_namespace": {
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Description for this namespace.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Unique name for this namespace.",
+        "Default": {},
+        "Elem": {}
+      },
+      "quota": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Quota to set for this namespace.",
+        "Default": {},
+        "Elem": {}
       }
     },
     "nomad_quota_specification": {
@@ -207,7 +246,56 @@
         "Default": {},
         "Elem": {}
       }
+    },
+    "nomad_sentinel_policy": {
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Description for this policy.",
+        "Default": {},
+        "Elem": {}
+      },
+      "enforcement_level": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Specifies the enforcement level of the policy.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Unique name for this policy.",
+        "Default": {},
+        "Elem": {}
+      },
+      "policy": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The Sentinel policy.",
+        "Default": {},
+        "Elem": {}
+      },
+      "scope": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Specifies the scope for this policy. Only 'submit-job' is currently supported.",
+        "Default": {},
+        "Elem": {}
+      }
     }
   },
-  "data-sources": {}
+  "data-sources": {
+    "nomad_regions": {
+      "regions": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    }
+  }
 }

@@ -1,7 +1,7 @@
 {
   "name": "vsphere",
   "type": "provider",
-  "version": "v1.3.2-20-ga608a55",
+  "version": "v1.3.3-96-gd3d9b0d",
   "provider": {
     "allow_unverified_ssl": {
       "Type": "TypeBool",
@@ -48,6 +48,26 @@
       "Default": {},
       "Elem": {}
     },
+    "persist_session": {
+      "Type": "TypeBool",
+      "Optional": true,
+      "Description": "Persist vSphere client sessions to disk",
+      "Default": {
+        "Type": "bool",
+        "Value": "false"
+      },
+      "Elem": {}
+    },
+    "rest_session_path": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "The directory to save vSphere REST API sessions to",
+      "Default": {
+        "Type": "string",
+        "Value": "/home/vlad/.govmomi/rest_sessions"
+      },
+      "Elem": {}
+    },
     "user": {
       "Type": "TypeString",
       "Required": true,
@@ -60,6 +80,16 @@
       "Optional": true,
       "Deprecated": "This field has been renamed to vsphere_server.",
       "Default": {},
+      "Elem": {}
+    },
+    "vim_session_path": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "The directory to save vSphere SOAP API sessions to",
+      "Default": {
+        "Type": "string",
+        "Value": "/home/vlad/.govmomi/sessions"
+      },
       "Elem": {}
     },
     "vsphere_server": {
@@ -104,6 +134,186 @@
       "name": {
         "Type": "TypeString",
         "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "A list of tag IDs to apply to this object.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    },
+    "vsphere_datastore_cluster": {
+      "custom_attributes": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "A list of custom attributes to set on this resource.",
+        "Default": {},
+        "Elem": {}
+      },
+      "datacenter_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the datacenter to put the datastore cluster in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "folder": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The name of the folder to locate the datastore cluster in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Name for the new storage pod.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_advanced_options": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "Advanced configuration options for storage DRS.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_automation_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The default automation level for all virtual machines in this storage cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_default_intra_vm_affinity": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "When true, storage DRS keeps VMDKs for individual VMs on the same datastore by default.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable storage DRS for this datastore cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_free_space_threshold": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The threshold, in GB, that storage DRS uses to make decisions to migrate VMs out of a datastore.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_free_space_threshold_mode": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The free space threshold to use. When set to utilization, drs_space_utilization_threshold is used, and when set to freeSpace, drs_free_space_threshold is used.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_free_space_utilization_difference": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The threshold, in percent, of difference between space utilization in datastores before storage DRS makes decisions to balance the space.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_io_balance_automation_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Overrides the default automation settings when correcting I/O load imbalances.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_io_latency_threshold": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The I/O latency threshold, in milliseconds, that storage DRS uses to make recommendations to move disks from this datastore.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_io_load_balance_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable I/O load balancing for this datastore cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_io_load_imbalance_threshold": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The difference between load in datastores in the cluster before storage DRS makes recommendations to balance the load.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_io_reservable_iops_threshold": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The threshold of reservable IOPS of all virtual machines on the datastore before storage DRS makes recommendations to move VMs off of a datastore.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_io_reservable_percent_threshold": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The threshold, in percent, of actual estimated performance of the datastore (in IOPS) that storage DRS uses to make recommendations to move VMs off of a datastore when the total reservable IOPS exceeds the threshold.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_io_reservable_threshold_mode": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The reservable IOPS threshold to use, percent in the event of automatic, or manual threshold in the event of manual.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_load_balance_interval": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The storage DRS poll interval, in minutes.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_policy_enforcement_automation_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Overrides the default automation settings when correcting storage and VM policy violations.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_rule_enforcement_automation_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Overrides the default automation settings when correcting affinity rule violations.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_space_balance_automation_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Overrides the default automation settings when correcting disk space imbalances.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_space_utilization_threshold": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The threshold, in percent of used space, that storage DRS uses to make decisions to migrate VMs out of a datastore.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_vm_evacuation_automation_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Overrides the default automation settings when generating recommendations for datastore evacuation.",
         "Default": {},
         "Elem": {}
       },
@@ -1765,10 +1975,23 @@
         "Default": {},
         "Elem": {}
       },
+      "datastore_cluster_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The managed object ID of the datastore cluster to place the datastore in.",
+        "ConflictsWith": [
+          "folder"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
       "folder": {
         "Type": "TypeString",
         "Optional": true,
         "Description": "The path to the datastore folder to put the datastore in.",
+        "ConflictsWith": [
+          "datastore_cluster_id"
+        ],
         "Default": {},
         "Elem": {}
       },
@@ -2015,9 +2238,16 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "client_device": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "Indicates whether the device should be mapped to a remote client device",
+              "Default": {},
+              "Elem": {}
+            },
             "datastore_id": {
               "Type": "TypeString",
-              "Required": true,
+              "Optional": true,
               "Description": "The datastore ID the ISO is located on.",
               "Default": {},
               "Elem": {}
@@ -2038,7 +2268,7 @@
             },
             "path": {
               "Type": "TypeString",
-              "Required": true,
+              "Optional": true,
               "Description": "The path to the ISO file on the datastore.",
               "Default": {},
               "Elem": {}
@@ -2985,6 +3215,16 @@
           }
         }
       },
+      "vapp_transport": {
+        "Type": "TypeList",
+        "Description": "vApp transport methods supported by virtual machine.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
       "vmware_tools_status": {
         "Type": "TypeString",
         "Description": "The state of VMware tools in the guest. This will determine the proper course of action for some device operations.",
@@ -3073,6 +3313,16 @@
         "Default": {},
         "Elem": {}
       },
+      "datastore_cluster_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The managed object ID of the datastore cluster to place the datastore in.",
+        "ConflictsWith": [
+          "folder"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
       "disks": {
         "Type": "TypeList",
         "Required": true,
@@ -3088,6 +3338,9 @@
         "Type": "TypeString",
         "Optional": true,
         "Description": "The path to the datastore folder to put the datastore in.",
+        "ConflictsWith": [
+          "datastore_cluster_id"
+        ],
         "Default": {},
         "Elem": {}
       },
@@ -3190,6 +3443,22 @@
         "Type": "TypeString",
         "Required": true,
         "Description": "The name or path of the datastore.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "vsphere_datastore_cluster": {
+      "datacenter_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The managed object ID of the datacenter the cluster is located in. Not required if using an absolute path.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The name or absolute path to the datastore cluster.",
         "Default": {},
         "Elem": {}
       }
