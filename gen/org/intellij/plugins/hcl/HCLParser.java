@@ -237,11 +237,11 @@ public class HCLParser implements PsiParser, LightPsiParser {
   // HD_LINE HD_EOL
   static boolean heredoc_line(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "heredoc_line")) return false;
-    if (!nextTokenIs(b, HD_LINE)) return false;
+    if (!nextTokenIs(b, "<heredoc content>", HD_LINE)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, null, "<heredoc content>");
     r = consumeTokens(b, 0, HD_LINE, HD_EOL);
-    exit_section_(b, m, null, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -261,11 +261,11 @@ public class HCLParser implements PsiParser, LightPsiParser {
   // HD_MARKER
   public static boolean heredoc_marker(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "heredoc_marker")) return false;
-    if (!nextTokenIs(b, HD_MARKER)) return false;
+    if (!nextTokenIs(b, "<heredoc anchor>", HD_MARKER)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, HEREDOC_MARKER, "<heredoc anchor>");
     r = consumeToken(b, HD_MARKER);
-    exit_section_(b, m, HEREDOC_MARKER, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
