@@ -17,4 +17,5 @@ package org.intellij.plugins.hcl.terraform.config
 
 object Constants {
   val HAS_DYNAMIC_ATTRIBUTES = "__has_dynamic_attributes"
+  val TIMEOUTS = "__timeouts__"
 }

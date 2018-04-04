@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"time"
 )
 
 // ExportSchema should be called to export the structure
@@ -21,16 +22,69 @@ func Export(p *schema.Provider) *ResourceProviderSchema {
 	result.Type = "provider"
 	result.Version = "__REVISION__"
 	result.Provider = schemaMap(p.Schema).Export()
-	result.Resources = make(map[string]SchemaInfo)
-	result.DataSources = make(map[string]SchemaInfo)
+	result.Resources = make(map[string]SchemaInfoWithTimeouts)
+	result.DataSources = make(map[string]SchemaInfoWithTimeouts)
 
 	for k, r := range p.ResourcesMap {
-		result.Resources[k] = ExportResource(r)
+		result.Resources[k] = ExportResourceWithTimeouts(r)
 	}
 	for k, ds := range p.DataSourcesMap {
-		result.DataSources[k] = ExportResource(ds)
+		result.DataSources[k] = ExportResourceWithTimeouts(ds)
 	}
 
+	return result
+}
+
+const (
+	TimeoutCreate  = "create"
+	TimeoutRead    = "read"
+	TimeoutUpdate  = "update"
+	TimeoutDelete  = "delete"
+	TimeoutDefault = "default"
+)
+
+func timeoutKeys() []string {
+	return []string{
+		TimeoutCreate,
+		TimeoutRead,
+		TimeoutUpdate,
+		TimeoutDelete,
+		TimeoutDefault,
+	}
+}
+
+func ExportResourceWithTimeouts(r *schema.Resource) SchemaInfoWithTimeouts {
+	var timeouts []string
+	t := r.Timeouts
+	if t != nil {
+		for _, key := range timeoutKeys() {
+			var timeout *time.Duration
+			switch key {
+			case TimeoutCreate:
+				timeout = t.Create
+			case TimeoutUpdate:
+				timeout = t.Update
+			case TimeoutRead:
+				timeout = t.Read
+			case TimeoutDelete:
+				timeout = t.Delete
+			case TimeoutDefault:
+				timeout = t.Default
+			default:
+				panic("Unsupported timeout key, update switch statement!")
+			}
+			if timeout != nil {
+				timeouts = append(timeouts, key)
+			}
+		}
+	}
+	result := make(SchemaInfoWithTimeouts)
+	for nk, nv := range ExportResource(r) {
+		result[nk] = nv
+	}
+	if len(timeouts) > 0 {
+		result["__timeouts__"] = timeouts
+	}
 	return result
 }
 
@@ -155,6 +209,11 @@ type SchemaDefinition struct {
 }
 
 type SchemaInfo map[string]SchemaDefinition
+type SchemaInfoWithTimeouts map[string]interface{}
+//{
+//	SchemaInfo `json:""`
+//	Timeouts []string `json:"__timeouts__,omitempty"`
+//}
 
 // ResourceProviderSchema
 type ResourceProviderSchema struct {
@@ -162,8 +221,8 @@ type ResourceProviderSchema struct {
 	Type        string                `json:"type"`
 	Version     string                `json:"version"`
 	Provider    SchemaInfo            `json:"provider"`
-	Resources   map[string]SchemaInfo `json:"resources"`
-	DataSources map[string]SchemaInfo `json:"data-sources"`
+	Resources   map[string]SchemaInfoWithTimeouts `json:"resources"`
+	DataSources map[string]SchemaInfoWithTimeouts `json:"data-sources"`
 }
 
 func main() {

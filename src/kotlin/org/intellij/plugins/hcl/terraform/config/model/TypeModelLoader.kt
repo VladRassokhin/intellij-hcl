@@ -21,6 +21,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.SystemProperties
+import org.intellij.plugins.hcl.terraform.config.Constants
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
@@ -259,14 +260,32 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     val name = entry.key
     assert(entry.value is JsonObject, { "Right part of resource should be object" })
     val obj = entry.value as JsonObject
-    return ResourceType(name, info, *obj.map { parseSchemaElement(it, name) }.toTypedArray())
+    val timeouts = getTimeoutsBlock(obj)
+    return ResourceType(name, info, *obj.map { parseSchemaElement(it, name) }.plus(timeouts).filterNotNull().toTypedArray())
   }
 
   private fun parseDataSourceInfo(entry: Map.Entry<String, Any?>, info: ProviderType): DataSourceType {
     val name = entry.key
     assert(entry.value is JsonObject, { "Right part of data-source should be object" })
     val obj = entry.value as JsonObject
-    return DataSourceType(name, info, *obj.map { parseSchemaElement(it, name) }.toTypedArray())
+    val timeouts = getTimeoutsBlock(obj)
+    return DataSourceType(name, info, *obj.map { parseSchemaElement(it, name) }.plus(timeouts).filterNotNull().toTypedArray())
+  }
+
+  private fun getTimeoutsBlock(obj: JsonObject): PropertyOrBlockType? {
+    val value = obj.remove(Constants.TIMEOUTS) ?: return null
+    assert(value is JsonArray<*>, {"${Constants.TIMEOUTS} should be an array"})
+    val array = value as? JsonArray<*> ?: return null
+    for (element in array) {
+      assert(element is String, {"${Constants.TIMEOUTS} array elements should be string, got ${element?.javaClass?.name}"})
+    }
+    val timeouts = array.map { it.toString() }
+    if (timeouts.isEmpty()) return null
+    return BlockType("timeouts", 0,
+        description = "Amount of time a specific operation is allowed to take before being considered an error", // TODO: Improve description
+        properties = *timeouts.map { PropertyType(it, Types.String).toPOBT() }.toTypedArray()
+        // TODO: ^ Check type, should be Time? (allowed suffixes are s, m, h)
+    ).toPOBT()
   }
 
   private fun parseSchemaElement(entry: Map.Entry<String, Any?>, providerName: String): PropertyOrBlockType {
@@ -284,6 +303,10 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     var hint: Hint? = null
 
     var isBlock = false
+
+    if (name == Constants.TIMEOUTS) {
+      throw IllegalStateException(Constants.TIMEOUTS + " not expected here")
+    }
 
     val type = parseType(value.string("Type"))
     val elem = value.obj("Elem")
