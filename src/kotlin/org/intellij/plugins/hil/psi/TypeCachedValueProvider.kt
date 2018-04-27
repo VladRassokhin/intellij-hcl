@@ -110,7 +110,10 @@ class TypeCachedValueProvider private constructor(private val e: ILExpression) :
 
     // TODO: Implement via resolving/model :
       is ILVariable -> null
-      is ILSelectExpression -> null
+      is ILSelectExpression -> {
+        // For now return 'Any' to fix HILOperationTypesMismatchInspection
+        return CachedValueProvider.Result.create(Types.Any, e)
+      }
       is ILMethodCallExpression -> {
         val method = e.method?.name
         if (method != null && e.callee === e.method) {

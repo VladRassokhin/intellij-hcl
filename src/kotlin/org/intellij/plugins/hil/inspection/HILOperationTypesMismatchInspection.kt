@@ -55,20 +55,20 @@ class HILOperationTypesMismatchInspection : LocalInspectionTool() {
 
       val elementType = operation.node.elementType
       if (elementType in ILBinaryNumericOnlyOperations) {
-        if (leftType != null && leftType != Types.Number) {
+        if (leftType != null && leftType != Types.Number && leftType != Types.Any) {
           holder.registerProblem(left, "Expected to be number, actual type is ${leftType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         }
-        if (rightType != null && rightType != Types.Number) {
+        if (rightType != null && rightType != Types.Number && rightType != Types.Any) {
           holder.registerProblem(right, "Expected to be number, actual type is ${rightType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         }
         return
       } else if (elementType == IL_BINARY_EQUALITY_EXPRESSION) {
         return // could compare anything with implicit 'toString' conversion. TODO: Add warning?
       } else if (elementType in ILBinaryBooleanOnlyOperations) {
-        if (leftType != null && leftType != Types.Boolean) {
+        if (leftType != null && leftType != Types.Boolean && leftType != Types.Any) {
           holder.registerProblem(left, "Expected to be boolean, actual type is ${leftType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         }
-        if (rightType != null && rightType != Types.Boolean) {
+        if (rightType != null && rightType != Types.Boolean && rightType != Types.Any) {
           holder.registerProblem(right, "Expected to be boolean, actual type is ${rightType.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         }
         return
@@ -89,12 +89,12 @@ class HILOperationTypesMismatchInspection : LocalInspectionTool() {
 
 
       if (sign == HILElementTypes.OP_PLUS || sign == HILElementTypes.OP_MINUS) {
-        if (type != Types.Number) {
+        if (type != Types.Number && type != Types.Any) {
           holder.registerProblem(operand, "Expected to be number, actual type is ${type.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         }
         return
       } else if (sign == HILElementTypes.OP_NOT) {
-        if (type != Types.Boolean) {
+        if (type != Types.Boolean && type != Types.Any) {
           holder.registerProblem(operand, "Expected to be boolean, actual type is ${type.name}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         }
         return
@@ -119,7 +119,7 @@ class HILOperationTypesMismatchInspection : LocalInspectionTool() {
             holder.registerProblem(condition, "Condition should be boolean or string with boolean value", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
           }
         }
-      } else {
+      } else if (type != Types.Any) {
         holder.registerProblem(condition, "Condition should be boolean or string with boolean value", ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
       }
 

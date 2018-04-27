@@ -16,3 +16,6 @@ a = "${true?1:false}" // BAD: else type
 // Unfinished
 a = "${true?"true":}" // OK
 a = "${true?:true}" // OK
+
+// Variable
+a = "${var.count ? 1 : 0}"
