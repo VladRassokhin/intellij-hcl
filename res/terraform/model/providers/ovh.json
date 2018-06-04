@@ -1,7 +1,7 @@
 {
   "name": "ovh",
   "type": "provider",
-  "version": "v0.2.0-15-gb6be9bb",
+  "version": "v0.2.0-37-g4631eb4",
   "provider": {
     "application_key": {
       "Type": "TypeString",
@@ -39,16 +39,223 @@
     }
   },
   "resources": {
-    "ovh_domain_zone_record": {
-      "fieldtype": {
+    "ovh_cloud_network_private": {
+      "name": {
         "Type": "TypeString",
         "Required": true,
         "Default": {},
         "Elem": {}
       },
-      "id": {
-        "Type": "TypeInt",
+      "project_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "regions": {
+        "Type": "TypeSet",
+        "Optional": true,
         "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "regions_status": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "region": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "status": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "status": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vlan_id": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "ovh_cloud_network_private_subnet": {
+      "cidr": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "dhcp": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "end": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "gateway_ip": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ip_pools": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "dhcp": {
+              "Type": "TypeBool",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "end": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "network": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "region": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "start": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "network": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "network_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "no_gateway": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {
+          "Type": "string"
+        },
+        "Elem": {}
+      },
+      "region": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "start": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "ovh_cloud_user": {
+      "creation_date": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "openstack_rc": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "password": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "username": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "ovh_domain_zone_record": {
+      "fieldtype": {
+        "Type": "TypeString",
+        "Required": true,
         "Default": {},
         "Elem": {}
       },
@@ -73,6 +280,238 @@
       "zone": {
         "Type": "TypeString",
         "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "ovh_domain_zone_redirection": {
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "keyword": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "subdomain": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "target": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "title": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "zone": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "ovh_iploadbalancing_tcp_farm": {
+      "balance": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "display_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "port": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "probe": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "force_ssl": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "interval": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "match": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "method": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "negate": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "pattern": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "port": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "url": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "service_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "stickiness": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vrack_network_id": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "zone": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "ovh_iploadbalancing_tcp_farm_server": {
+      "address": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "backup": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "chain": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "cookie": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "display_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "farm_id": {
+        "Type": "TypeInt",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "port": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "probe": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "proxy_protocol_version": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "service_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "ssl": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "status": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "weight": {
+        "Type": "TypeInt",
+        "Optional": true,
         "Default": {},
         "Elem": {}
       }
@@ -290,6 +729,24 @@
         "Elem": {}
       }
     },
+    "ovh_vrack_cloudproject": {
+      "project_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {
+          "Type": "string"
+        },
+        "Elem": {}
+      },
+      "vrack_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {
+          "Type": "string"
+        },
+        "Elem": {}
+      }
+    },
     "ovh_vrack_publiccloud_attachment": {
       "project_id": {
         "Type": "TypeString",
@@ -310,6 +767,85 @@
     }
   },
   "data-sources": {
+    "ovh_cloud_region": {
+      "continentCode": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Deprecated": "Deprecated, use continent_code instead.",
+        "Default": {},
+        "Elem": {}
+      },
+      "continent_code": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "datacenterLocation": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Deprecated": "Deprecated, use datacenter_location instead.",
+        "Default": {},
+        "Elem": {}
+      },
+      "datacenter_location": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "project_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "services": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "status": {
+              "Type": "TypeString",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      }
+    },
+    "ovh_cloud_regions": {
+      "names": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "project_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "ovh_publiccloud_region": {
       "continentCode": {
         "Type": "TypeString",

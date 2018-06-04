@@ -1,7 +1,7 @@
 {
   "name": "vsphere",
   "type": "provider",
-  "version": "v1.3.3-96-gd3d9b0d",
+  "version": "v1.6.0-1-g662fa62",
   "provider": {
     "allow_unverified_ssl": {
       "Type": "TypeBool",
@@ -101,6 +101,628 @@
     }
   },
   "resources": {
+    "vsphere_compute_cluster": {
+      "custom_attributes": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "A list of custom attributes to set on this resource.",
+        "Default": {},
+        "Elem": {}
+      },
+      "datacenter_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the datacenter to put the cluster in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "dpm_automation_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The automation level for host power operations in this cluster. Can be one of manual or automated.",
+        "Default": {},
+        "Elem": {}
+      },
+      "dpm_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable DPM support for DRS. This allows you to dynamically control the power of hosts depending on the needs of virtual machines in the cluster. Requires that DRS be enabled.",
+        "Default": {},
+        "Elem": {}
+      },
+      "dpm_threshold": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "A value between 1 and 5 indicating the threshold of load within the cluster that influences host power operations. This affects both power on and power off operations - a lower setting will tolerate more of a surplus/deficit than a higher setting.",
+        "Default": {},
+        "Elem": {}
+      },
+      "drs_advanced_options": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "Advanced configuration options for DRS and DPM.",
+        "Default": {},
+        "Elem": {}
+      },
+      "drs_automation_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The default automation level for all virtual machines in this cluster. Can be one of manual, partiallyAutomated, or fullyAutomated.",
+        "Default": {},
+        "Elem": {}
+      },
+      "drs_enable_predictive_drs": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "When true, enables DRS to use data from vRealize Operations Manager to make proactive DRS recommendations.",
+        "Default": {},
+        "Elem": {}
+      },
+      "drs_enable_vm_overrides": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "When true, allows individual VM overrides within this cluster to be set.",
+        "Default": {},
+        "Elem": {}
+      },
+      "drs_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable DRS for this cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "drs_migration_threshold": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "A value between 1 and 5 indicating the threshold of imbalance tolerated between hosts. A lower setting will tolerate more imbalance while a higher setting will tolerate less.",
+        "Default": {},
+        "Elem": {}
+      },
+      "folder": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The name of the folder to locate the cluster in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "force_evacuate_on_destroy": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Force removal of all hosts in the cluster during destroy and make them standalone hosts. Use of this flag mainly exists for testing and is not recommended in normal use.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_admission_control_failover_host_system_ids": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "When ha_admission_control_policy is failoverHosts, this defines the managed object IDs of hosts to use as dedicated failover hosts. These hosts are kept as available as possible - admission control will block access to the host, and DRS will ignore the host when making recommendations.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "ha_admission_control_host_failure_tolerance": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The maximum number of failed hosts that admission control tolerates when making decisions on whether to permit virtual machine operations. The maximum is one less than the number of hosts in the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_admission_control_performance_tolerance": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The percentage of resource reduction that a cluster of VMs can tolerate in case of a failover. A value of 0 produces warnings only, whereas a value of 100 disables the setting.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_admission_control_policy": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The type of admission control policy to use with vSphere HA, which controls whether or not specific VM operations are permitted in the cluster in order to protect the reliability of the cluster. Can be one of resourcePercentage, slotPolicy, failoverHosts, or disabled. Note that disabling admission control is not recommended and can lead to service issues.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_admission_control_resource_percentage_auto_compute": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "When ha_admission_control_policy is resourcePercentage, automatically determine available resource percentages by subtracting the average number of host resources represented by the ha_admission_control_host_failure_tolerance setting from the total amount of resources in the cluster. Disable to supply user-defined values.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_admission_control_resource_percentage_cpu": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "When ha_admission_control_policy is resourcePercentage, this controls the user-defined percentage of CPU resources in the cluster to reserve for failover.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_admission_control_resource_percentage_memory": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "When ha_admission_control_policy is resourcePercentage, this controls the user-defined percentage of memory resources in the cluster to reserve for failover.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_admission_control_slot_policy_explicit_cpu": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "When ha_admission_control_policy is slotPolicy, this controls the user-defined CPU slot size, in MHz.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_admission_control_slot_policy_explicit_memory": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "When ha_admission_control_policy is slotPolicy, this controls the user-defined memory slot size, in MB.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_admission_control_slot_policy_use_explicit_size": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "When ha_admission_control_policy is slotPolicy, this setting controls whether or not you wish to supply explicit values to CPU and memory slot sizes. The default is to gather a automatic average based on all powered-on virtual machines currently in the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_advanced_options": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "Advanced configuration options for vSphere HA.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_datastore_apd_recovery_action": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "When ha_vm_component_protection is enabled, controls the action to take on virtual machines if an APD status on an affected datastore clears in the middle of an APD event. Can be one of none or reset.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_datastore_apd_response": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "When ha_vm_component_protection is enabled, controls the action to take on virtual machines when the cluster has detected loss to all paths to a relevant datastore. Can be one of disabled, warning, restartConservative, or restartAggressive.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_datastore_apd_response_delay": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "When ha_vm_component_protection is enabled, controls the delay in minutes to wait after an APD timeout event to execute the response action defined in ha_datastore_apd_response.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_datastore_pdl_response": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "When ha_vm_component_protection is enabled, controls the action to take on virtual machines when the cluster has detected a permanent device loss to a relevant datastore. Can be one of disabled, warning, or restartAggressive.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable vSphere HA for this cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_heartbeat_datastore_ids": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "The list of managed object IDs for preferred datastores to use for HA heartbeating. This setting is only useful when ha_heartbeat_datastore_policy is set to either userSelectedDs or allFeasibleDsWithUserPreference.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "ha_heartbeat_datastore_policy": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The selection policy for HA heartbeat datastores. Can be one of allFeasibleDs, userSelectedDs, or allFeasibleDsWithUserPreference.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_host_isolation_response": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The action to take on virtual machines when a host has detected that it has been isolated from the rest of the cluster. Can be one of none, powerOff, or shutdown.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_host_monitoring": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Global setting that controls whether vSphere HA remediates VMs on host failure. Can be one of enabled or disabled.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_component_protection": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Controls vSphere VM component protection for virtual machines in this cluster. This allows vSphere HA to react to failures between hosts and specific virtual machine components, such as datastores. Can be one of enabled or disabled.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_dependency_restart_condition": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The condition used to determine whether or not VMs in a certain restart priority class are online, allowing HA to move on to restarting VMs on the next priority. Can be one of none, poweredOn, guestHbStatusGreen, or appHbStatusGreen.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_failure_interval": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "If a heartbeat from a virtual machine is not received within this configured interval, the virtual machine is marked as failed. The value is in seconds.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_maximum_failure_window": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The length of the reset window in which ha_vm_maximum_resets can operate. When this window expires, no more resets are attempted regardless of the setting configured in ha_vm_maximum_resets. -1 means no window, meaning an unlimited reset time is allotted.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_maximum_resets": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The maximum number of resets that HA will perform to a virtual machine when responding to a failure event.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_minimum_uptime": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The time, in seconds, that HA waits after powering on a virtual machine before monitoring for heartbeats.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_monitoring": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The type of virtual machine monitoring to use when HA is enabled in the cluster. Can be one of vmMonitoringDisabled, vmMonitoringOnly, or vmAndAppMonitoring.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_restart_additional_delay": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "Additional delay in seconds after ready condition is met. A VM is considered ready at this point.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_restart_priority": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The default restart priority for affected VMs when vSphere detects a host failure. Can be one of lowest, low, medium, high, or highest.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_restart_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The maximum time, in seconds, that vSphere HA will wait for virtual machines in one priority to be ready before proceeding with the next priority.",
+        "Default": {},
+        "Elem": {}
+      },
+      "host_cluster_exit_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The timeout for each host maintenance mode operation when removing hosts from a cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "host_system_ids": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "The managed object IDs of the hosts to put in the cluster.",
+        "MaxItems": 64,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Name for the new cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "proactive_ha_automation_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The DRS behavior for proactive HA recommendations. Can be one of Automated or Manual.",
+        "Default": {},
+        "Elem": {}
+      },
+      "proactive_ha_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enables proactive HA, allowing for vSphere to get HA data from external providers and use DRS to perform remediation.",
+        "Default": {},
+        "Elem": {}
+      },
+      "proactive_ha_moderate_remediation": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The configured remediation for moderately degraded hosts. Can be one of MaintenanceMode or QuarantineMode. Note that this cannot be set to MaintenanceMode when proactive_ha_severe_remediation is set to QuarantineMode.",
+        "Default": {},
+        "Elem": {}
+      },
+      "proactive_ha_provider_ids": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "The list of IDs for health update providers configured for this cluster.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "proactive_ha_severe_remediation": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The configured remediation for severely degraded hosts. Can be one of MaintenanceMode or QuarantineMode. Note that this cannot be set to QuarantineMode when proactive_ha_moderate_remediation is set to MaintenanceMode.",
+        "Default": {},
+        "Elem": {}
+      },
+      "resource_pool_id": {
+        "Type": "TypeString",
+        "Description": "The managed object ID of the cluster's root resource pool.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "A list of tag IDs to apply to this object.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    },
+    "vsphere_compute_cluster_host_group": {
+      "compute_cluster_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "host_system_ids": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "The managed object IDs of the hosts.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The unique name of the virtual machine group in the cluster.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "vsphere_compute_cluster_vm_affinity_rule": {
+      "compute_cluster_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable this rule in the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "mandatory": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "When true, prevents any virtual machine operations that may violate this rule.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The unique name of the virtual machine group in the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "virtual_machine_ids": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Description": "The UUIDs of the virtual machines to run on the same host together.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    },
+    "vsphere_compute_cluster_vm_anti_affinity_rule": {
+      "compute_cluster_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable this rule in the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "mandatory": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "When true, prevents any virtual machine operations that may violate this rule.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The unique name of the virtual machine group in the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "virtual_machine_ids": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Description": "The UUIDs of the virtual machines to run on hosts different from each other.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    },
+    "vsphere_compute_cluster_vm_dependency_rule": {
+      "compute_cluster_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "dependency_vm_group_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The name of the VM group that this rule depends on. The VMs defined in the group specified by vm_group_name will not be started until the VMs in this group are started.",
+        "Default": {},
+        "Elem": {}
+      },
+      "enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable this rule in the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "mandatory": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "When true, prevents any virtual machine operations that may violate this rule.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The unique name of the virtual machine group in the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "vm_group_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The name of the VM group that is the subject of this rule. The VMs defined in this group will not be started until the VMs in the group specified by dependency_vm_group_name are started.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "vsphere_compute_cluster_vm_group": {
+      "compute_cluster_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The unique name of the virtual machine group in the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "virtual_machine_ids": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "The UUIDs of the virtual machines in this group.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    },
+    "vsphere_compute_cluster_vm_host_rule": {
+      "affinity_host_group_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "When this field is used, virtual machines defined in vm_group_name will be run on the hosts defined in this host group.",
+        "ConflictsWith": [
+          "anti_affinity_host_group_name"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "anti_affinity_host_group_name": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "When this field is used, virtual machines defined in vm_group_name will not be run on the hosts defined in this host group.",
+        "ConflictsWith": [
+          "affinity_host_group_name"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "compute_cluster_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable this rule in the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "mandatory": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "When true, prevents any virtual machine operations that may violate this rule.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The unique name of the virtual machine group in the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "vm_group_name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The name of the virtual machine group to use with this rule.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "vsphere_custom_attribute": {
       "managed_object_type": {
         "Type": "TypeString",
@@ -321,6 +943,46 @@
         "Type": "TypeSet",
         "Optional": true,
         "Description": "A list of tag IDs to apply to this object.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    },
+    "vsphere_datastore_cluster_vm_anti_affinity_rule": {
+      "datastore_cluster_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the datastore cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable this rule in the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "mandatory": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "When true, prevents any virtual machine operations that may violate this rule.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The unique name of the virtual machine group in the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "virtual_machine_ids": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Description": "The UUIDs of the virtual machines to run on different datastores from each other.",
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -1489,6 +2151,66 @@
         "Elem": {}
       }
     },
+    "vsphere_dpm_host_override": {
+      "compute_cluster_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "dpm_automation_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The automation level for power operations on this host. Can be one of manual or automated.",
+        "Default": {},
+        "Elem": {}
+      },
+      "dpm_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable DPM for this host.",
+        "Default": {},
+        "Elem": {}
+      },
+      "host_system_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the host.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "vsphere_drs_vm_override": {
+      "compute_cluster_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "drs_automation_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The automation level for this virtual machine in the cluster. Can be one of manual, partiallyAutomated, or fullyAutomated.",
+        "Default": {},
+        "Elem": {}
+      },
+      "drs_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Enable DRS for this virtual machine.",
+        "Default": {},
+        "Elem": {}
+      },
+      "virtual_machine_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the virtual machine.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "vsphere_file": {
       "create_directories": {
         "Type": "TypeBool",
@@ -1569,6 +2291,113 @@
         "Type": "TypeString",
         "Required": true,
         "Description": "The type of the folder.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "vsphere_ha_vm_override": {
+      "compute_cluster_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_datastore_apd_recovery_action": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Controls the action to take on this virtual machine if an APD status on an affected datastore clears in the middle of an APD event. Can be one of useClusterDefault, none or reset.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_datastore_apd_response": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Controls the action to take on this virtual machine when the cluster has detected loss to all paths to a relevant datastore. Can be one of clusterDefault, disabled, warning, restartConservative, or restartAggressive.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_datastore_apd_response_delay": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "Controls the delay in minutes to wait after an APD timeout event to execute the response action defined in ha_datastore_apd_response. Specify -1 to use the cluster setting.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_datastore_pdl_response": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Controls the action to take on this virtual machine when the cluster has detected a permanent device loss to a relevant datastore. Can be one of clusterDefault, disabled, warning, or restartAggressive.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_host_isolation_response": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The action to take on this virtual machine when a host is isolated from the rest of the cluster. Can be one of clusterIsolationResponse, none, powerOff, or shutdown.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_failure_interval": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "If a heartbeat from this virtual machine is not received within this configured interval, the virtual machine is marked as failed. The value is in seconds.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_maximum_failure_window": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The length of the reset window in which ha_vm_maximum_resets can operate. When this window expires, no more resets are attempted regardless of the setting configured in ha_vm_maximum_resets. -1 means no window, meaning an unlimited reset time is allotted.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_maximum_resets": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The maximum number of resets that HA will perform to this virtual machine when responding to a failure event.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_minimum_uptime": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The time, in seconds, that HA waits after powering on this virtual machine before monitoring for heartbeats.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_monitoring": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The type of virtual machine monitoring to use for this virtual machine. Can be one of vmMonitoringDisabled, vmMonitoringOnly, or vmAndAppMonitoring.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_monitoring_use_cluster_defaults": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Determines whether or not the cluster's default settings or the VM override settings specified in this resource are used for virtual machine monitoring. The default is true (use cluster defaults) - set to false to have overrides take effect.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_restart_priority": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The restart priority for this virtual machine when vSphere detects a host failure. Can be one of clusterRestartPriority, lowest, low, medium, high, or highest.",
+        "Default": {},
+        "Elem": {}
+      },
+      "ha_vm_restart_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The maximum time, in seconds, that vSphere HA will wait for the virtual machine to be ready. Use -1 to use the cluster default.",
+        "Default": {},
+        "Elem": {}
+      },
+      "virtual_machine_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the virtual machine.",
         "Default": {},
         "Elem": {}
       }
@@ -2098,6 +2927,148 @@
         "Elem": {}
       }
     },
+    "vsphere_resource_pool": {
+      "cpu_expandable": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Determines if the reservation on a resource pool can grow beyond the specified value, if the parent resource pool has unreserved resources.",
+        "Default": {},
+        "Elem": {}
+      },
+      "cpu_limit": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The utilization of a resource pool will not exceed this limit, even if there are available resources. Set to -1 for unlimited.",
+        "Default": {},
+        "Elem": {}
+      },
+      "cpu_reservation": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "Amount of CPU (MHz) that is guaranteed available to the resource pool.",
+        "Default": {},
+        "Elem": {}
+      },
+      "cpu_share_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The allocation level. The level is a simplified view of shares. Levels map to a pre-determined set of numeric values for shares. Can be one of low, normal, high, or custom.",
+        "Default": {},
+        "Elem": {}
+      },
+      "cpu_shares": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The number of shares allocated. Used to determine resource allocation in case of resource contention. If this is set, cpu_share_level must be custom.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "custom_attributes": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "A list of custom attributes to set on this resource.",
+        "Default": {},
+        "Elem": {}
+      },
+      "memory_expandable": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Determines if the reservation on a resource pool can grow beyond the specified value, if the parent resource pool has unreserved resources.",
+        "Default": {},
+        "Elem": {}
+      },
+      "memory_limit": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The utilization of a resource pool will not exceed this limit, even if there are available resources. Set to -1 for unlimited.",
+        "Default": {},
+        "Elem": {}
+      },
+      "memory_reservation": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "Amount of memory (MB) that is guaranteed available to the resource pool.",
+        "Default": {},
+        "Elem": {}
+      },
+      "memory_share_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The allocation level. The level is a simplified view of shares. Levels map to a pre-determined set of numeric values for shares. Can be one of low, normal, high, or custom.",
+        "Default": {},
+        "Elem": {}
+      },
+      "memory_shares": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Description": "The number of shares allocated. Used to determine resource allocation in case of resource contention. If this is set, memory_share_level must be custom.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Name of resource pool.",
+        "Default": {},
+        "Elem": {}
+      },
+      "parent_resource_pool_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The ID of the root resource pool of the compute resource the resource pool is in.",
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "A list of tag IDs to apply to this object.",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    },
+    "vsphere_storage_drs_vm_override": {
+      "datastore_cluster_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the datastore cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_automation_level": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Overrides any Storage DRS automation levels for this virtual machine.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_enabled": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Overrides the default Storage DRS setting for this virtual machine.",
+        "Default": {},
+        "Elem": {}
+      },
+      "sdrs_intra_vm_affinity": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Overrides the intra-VM affinity setting for this virtual machine.",
+        "Default": {},
+        "Elem": {}
+      },
+      "virtual_machine_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The managed object ID of the virtual machine.",
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "vsphere_tag": {
       "category_id": {
         "Type": "TypeString",
@@ -2162,6 +3133,12 @@
         "Default": {},
         "Elem": {}
       },
+      "create_directories": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
       "datacenter": {
         "Type": "TypeString",
         "Optional": true,
@@ -2170,7 +3147,7 @@
       },
       "datastore": {
         "Type": "TypeString",
-        "Optional": true,
+        "Required": true,
         "Default": {},
         "Elem": {}
       },
@@ -2659,10 +3636,24 @@
         "Default": {},
         "Elem": {}
       },
+      "datastore_cluster_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The ID of a datastore cluster to put the virtual machine in.",
+        "ConflictsWith": [
+          "datastore_id"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
       "datastore_id": {
         "Type": "TypeString",
-        "Required": true,
+        "Optional": true,
         "Description": "The ID of the virtual machine's datastore. The virtual machine configuration is placed here, along with any virtual disks that are created without datastores.",
+        "Computed": true,
+        "ConflictsWith": [
+          "datastore_cluster_id"
+        ],
         "Default": {},
         "Elem": {}
       },
@@ -2687,6 +3678,9 @@
               "Type": "TypeBool",
               "Optional": true,
               "Description": "If this is true, the disk is attached instead of created. Implies keep_on_remove.",
+              "ConflictsWith": [
+                "datastore_cluster_id"
+              ],
               "Default": {},
               "Elem": {}
             },
@@ -2694,6 +3688,9 @@
               "Type": "TypeString",
               "Optional": true,
               "Description": "The datastore ID for this virtual disk, if different than the virtual machine.",
+              "ConflictsWith": [
+                "datastore_cluster_id"
+              ],
               "Default": {},
               "Elem": {}
             },
@@ -2787,6 +3784,9 @@
               "Optional": true,
               "Description": "The full path of the virtual disk. This can only be provided if attach is set to true, otherwise it is a read-only value.",
               "Computed": true,
+              "ConflictsWith": [
+                "datastore_cluster_id"
+              ],
               "Default": {},
               "Elem": {}
             },
@@ -2918,8 +3918,15 @@
       },
       "imported": {
         "Type": "TypeBool",
-        "Description": "A flag internal to Terraform that indicates that this resource was either imported or came from a earlier major version of this resource.",
+        "Description": "A flag internal to Terraform that indicates that this resource was either imported or came from a earlier major version of this resource. Reset after the first post-import or post-upgrade apply.",
         "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "latency_sensitivity": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Controls the scheduling delay of the virtual machine. Use a higher sensitivity for applications that require lower latency, such as VOIP, media player applications, or applications that require frequent access to mouse or keyboard devices. Can be one of low, normal, medium, or high.",
         "Default": {},
         "Elem": {}
       },
@@ -3239,10 +4246,17 @@
         "Default": {},
         "Elem": {}
       },
+      "wait_for_guest_net_routable": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Description": "Controls whether or not the guest network waiter waits for a routable address. When false, the waiter does not wait for a default gateway, nor are IP addresses checked against any discovered default gateways as part of its success criteria.",
+        "Default": {},
+        "Elem": {}
+      },
       "wait_for_guest_net_timeout": {
         "Type": "TypeInt",
         "Optional": true,
-        "Description": "The amount of time, in minutes, to wait for a routeable IP address on this virtual machine. A value less than 1 disables the waiter.",
+        "Description": "The amount of time, in minutes, to wait for an available IP address on this virtual machine. A value less than 1 disables the waiter.",
         "Default": {},
         "Elem": {}
       }
@@ -3406,6 +4420,29 @@
     }
   },
   "data-sources": {
+    "vsphere_compute_cluster": {
+      "datacenter_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The managed object ID of the datacenter the cluster is located in. Not required if using an absolute path.",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The name or absolute path to the cluster.",
+        "Default": {},
+        "Elem": {}
+      },
+      "resource_pool_id": {
+        "Type": "TypeString",
+        "Description": "The managed object ID of the cluster's root resource pool.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "vsphere_custom_attribute": {
       "managed_object_type": {
         "Type": "TypeString",
@@ -3501,6 +4538,13 @@
         "Type": "TypeString",
         "Optional": true,
         "Description": "The name of the host. This can be a name or path.\tIf not provided, the default host is used.",
+        "Default": {},
+        "Elem": {}
+      },
+      "resource_pool_id": {
+        "Type": "TypeString",
+        "Description": "The managed object ID of the host's root resource pool.",
+        "Computed": true,
         "Default": {},
         "Elem": {}
       }
@@ -3643,6 +4687,13 @@
             }
           }
         }
+      },
+      "firmware": {
+        "Type": "TypeString",
+        "Description": "The firmware type for this virtual machine.",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
       },
       "guest_id": {
         "Type": "TypeString",

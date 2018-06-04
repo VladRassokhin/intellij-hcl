@@ -1,7 +1,7 @@
 {
   "name": "panos",
   "type": "provider",
-  "version": "v1.0.0-11-ga9a30ee",
+  "version": "v1.1.0-7-g1630715",
   "provider": {
     "api_key": {
       "Type": "TypeString",
@@ -12,8 +12,15 @@
     },
     "hostname": {
       "Type": "TypeString",
-      "Required": true,
+      "Optional": true,
       "Description": "Hostname/IP address of the Palo Alto Networks firewall to connect to",
+      "Default": {},
+      "Elem": {}
+    },
+    "json_config_file": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "Retrieve the provider configuration from this JSON file",
       "Default": {},
       "Elem": {}
     },
@@ -29,7 +36,7 @@
     },
     "password": {
       "Type": "TypeString",
-      "Required": true,
+      "Optional": true,
       "Description": "The password (not used if the ApiKey is set)",
       "Default": {},
       "Elem": {}
@@ -57,7 +64,7 @@
     },
     "username": {
       "Type": "TypeString",
-      "Required": true,
+      "Optional": true,
       "Description": "The username (not used if the ApiKey is set)",
       "Default": {},
       "Elem": {}
@@ -625,7 +632,9 @@
       "rulebase": {
         "Type": "TypeString",
         "Optional": true,
-        "Description": "The rulebase (default: rulebase, pre-rulebase, post-rulebase)",
+        "Description": "The Panorama rulebase",
+        "Computed": true,
+        "Deprecated": "This parameter is not really used in a firewall context.  Simply remove this setting from your plan file, as it will be removed later.",
         "Default": {},
         "Elem": {}
       },
@@ -763,6 +772,783 @@
         "Description": "The vsys to put this object in (default: vsys1)",
         "Default": {},
         "Elem": {}
+      }
+    },
+    "panos_panorama_address_group": {
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "device_group": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The device group to put this address object in",
+        "Default": {},
+        "Elem": {}
+      },
+      "dynamic_match": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Dynamic address group definition",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The address object's name",
+        "Default": {},
+        "Elem": {}
+      },
+      "static_addresses": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "Static address group entries",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "Administrative tags for the address object",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    },
+    "panos_panorama_address_object": {
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "device_group": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The address object's name",
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "Administrative tags for the address object",
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The type of address object (ip-netmask, ip-range, fqdn)",
+        "Default": {},
+        "Elem": {}
+      },
+      "value": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "panos_panorama_administrative_tag": {
+      "color": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "comment": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "device_group": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The device group to put this administrative tag object in",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The administrative tag's name",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "panos_panorama_device_group": {
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "device": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "serial": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "vsys_list": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "panos_panorama_device_group_entry": {
+      "device_group": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "serial": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "vsys_list": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    },
+    "panos_panorama_nat_policy": {
+      "dat_address": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "dat_port": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "destination_addresses": {
+        "Type": "TypeList",
+        "Required": true,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "destination_zone": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "device_group": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "disabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "negate_target": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "rulebase": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sat_address_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "interface-address or translated-address",
+        "Default": {},
+        "Elem": {}
+      },
+      "sat_fallback_interface": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sat_fallback_ip_address": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sat_fallback_ip_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sat_fallback_translated_addresses": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "sat_fallback_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sat_interface": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sat_ip_address": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sat_static_bi_directional": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sat_static_translated_address": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "sat_translated_addresses": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "sat_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "none (default), dynamic-ip-and-port, dynamic-ip, or static-ip",
+        "Default": {},
+        "Elem": {}
+      },
+      "service": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "source_addresses": {
+        "Type": "TypeList",
+        "Required": true,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "source_zones": {
+        "Type": "TypeList",
+        "Required": true,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "tags": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "target": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "serial": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "vsys_list": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            }
+          }
+        }
+      },
+      "to_interface": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "NAT type (ipv4 default, nat64, or nptv6)",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "panos_panorama_security_policies": {
+      "device_group": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "rule": {
+        "Type": "TypeList",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Action (default: allow, deny, drop, reset-client, reset-server, reset-both)",
+              "Default": {},
+              "Elem": {}
+            },
+            "applications": {
+              "Type": "TypeList",
+              "Required": true,
+              "MinItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "categories": {
+              "Type": "TypeList",
+              "Required": true,
+              "MinItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "data_filtering": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "description": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "destination_addresses": {
+              "Type": "TypeList",
+              "Required": true,
+              "MinItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "destination_zones": {
+              "Type": "TypeList",
+              "Required": true,
+              "MinItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "disable_server_response_inspection": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "disabled": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "file_blocking": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "group": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "hip_profiles": {
+              "Type": "TypeList",
+              "Required": true,
+              "MinItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "icmp_unreachable": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "log_end": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "log_setting": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Log forwarding profile",
+              "Default": {},
+              "Elem": {}
+            },
+            "log_start": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "negate_destination": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "negate_source": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "negate_target": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "schedule": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "services": {
+              "Type": "TypeList",
+              "Required": true,
+              "MinItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "source_addresses": {
+              "Type": "TypeList",
+              "Required": true,
+              "MinItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "source_users": {
+              "Type": "TypeList",
+              "Required": true,
+              "MinItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "source_zones": {
+              "Type": "TypeList",
+              "Required": true,
+              "MinItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "spyware": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "tags": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "target": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "serial": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "vsys_list": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            },
+            "type": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Security rule type (default: universal, interzone, intrazone)",
+              "Default": {},
+              "Elem": {}
+            },
+            "url_filtering": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "virus": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "vulnerability": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "wildfire_analysis": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "rulebase": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "panos_panorama_service_group": {
+      "device_group": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The device group to put this service group in",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The service group's name",
+        "Default": {},
+        "Elem": {}
+      },
+      "services": {
+        "Type": "TypeList",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "Administrative tags for the service group",
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      }
+    },
+    "panos_panorama_service_object": {
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "Object's description",
+        "Default": {},
+        "Elem": {}
+      },
+      "destination_port": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The destination port definition",
+        "Default": {},
+        "Elem": {}
+      },
+      "device_group": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The device group to put this service object in",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The service object's name",
+        "Default": {},
+        "Elem": {}
+      },
+      "protocol": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "The protocol (tcp or udp)",
+        "Default": {},
+        "Elem": {}
+      },
+      "source_port": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Description": "The source port definition",
+        "Default": {},
+        "Elem": {}
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Description": "Administrative tags for the service object",
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
       }
     },
     "panos_security_policies": {
@@ -1007,7 +1793,9 @@
       "rulebase": {
         "Type": "TypeString",
         "Optional": true,
-        "Description": "The rulebase (default: rulebase, pre-rulebase, post-rulebase)",
+        "Description": "The Panorama rulebase",
+        "Computed": true,
+        "Deprecated": "This parameter is not really used in a firewall context.  Simply remove this setting from your plan file, as it will be removed later.",
         "Default": {},
         "Elem": {}
       },

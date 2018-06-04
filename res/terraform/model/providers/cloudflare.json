@@ -1,13 +1,16 @@
 {
   "name": "cloudflare",
   "type": "provider",
-  "version": "v0.1.0-42-g0fcda8a",
+  "version": "v1.0.0-4-gb9647cf",
   "provider": {
     "api_client_logging": {
       "Type": "TypeBool",
       "Optional": true,
       "Description": "Whether to print logs from the API client (using the default log library logger)",
-      "Default": {},
+      "Default": {
+        "Type": "bool",
+        "Value": "false"
+      },
       "Elem": {}
     },
     "email": {
@@ -21,13 +24,26 @@
       "Type": "TypeInt",
       "Optional": true,
       "Description": "Maximum backoff period in seconds after failed API calls",
-      "Default": {},
+      "Default": {
+        "Type": "int",
+        "Value": "30"
+      },
       "Elem": {}
     },
     "min_backoff": {
       "Type": "TypeInt",
       "Optional": true,
       "Description": "Minimum backoff period in seconds after failed API calls",
+      "Default": {
+        "Type": "int",
+        "Value": "1"
+      },
+      "Elem": {}
+    },
+    "org_id": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "Configure API client to always use that organization. If set this will override 'user_owner_from_zone'",
       "Default": {},
       "Elem": {}
     },
@@ -35,14 +51,20 @@
       "Type": "TypeInt",
       "Optional": true,
       "Description": "Maximum number of retries to perform when an API request fails",
-      "Default": {},
+      "Default": {
+        "Type": "int",
+        "Value": "3"
+      },
       "Elem": {}
     },
     "rps": {
       "Type": "TypeInt",
       "Optional": true,
       "Description": "RPS limit to apply when making calls to the API",
-      "Default": {},
+      "Default": {
+        "Type": "int",
+        "Value": "4"
+      },
       "Elem": {}
     },
     "token": {
@@ -51,9 +73,141 @@
       "Description": "The token key for API operations.",
       "Default": {},
       "Elem": {}
+    },
+    "use_org_from_zone": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "If specified zone is owned by an organization, configure API client to always use that organization",
+      "Default": {},
+      "Elem": {}
     }
   },
   "resources": {
+    "cloudflare_load_balancer": {
+      "created_on": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "default_pool_ids": {
+        "Type": "TypeList",
+        "Required": true,
+        "MinItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "fallback_pool_id": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "modified_on": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "pop_pools": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "pool_ids": {
+              "Type": "TypeList",
+              "Required": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "pop": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "proxied": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "ConflictsWith": [
+          "ttl"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "region_pools": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "pool_ids": {
+              "Type": "TypeList",
+              "Required": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "region": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "ttl": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "proxied"
+        ],
+        "Default": {},
+        "Elem": {}
+      },
+      "zone": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "zone_id": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "cloudflare_load_balancer_monitor": {
       "created_on": {
         "Type": "TypeString",
@@ -145,6 +299,97 @@
         "Optional": true,
         "Default": {},
         "Elem": {}
+      }
+    },
+    "cloudflare_load_balancer_pool": {
+      "check_regions": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "created_on": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "minimum_origins": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "modified_on": {
+        "Type": "TypeString",
+        "Computed": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "monitor": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "notification_email": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Default": {},
+        "Elem": {}
+      },
+      "origins": {
+        "Type": "TypeSet",
+        "Required": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "enabled": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       }
     },
     "cloudflare_page_rule": {

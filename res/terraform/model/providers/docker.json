@@ -1,7 +1,7 @@
 {
   "name": "docker",
   "type": "provider",
-  "version": "v0.1.1-9-gda12722",
+  "version": "v0.1.1-33-ge372355",
   "provider": {
     "ca_material": {
       "Type": "TypeString",
@@ -106,6 +106,22 @@
     }
   },
   "resources": {
+    "docker_config": {
+      "data": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Base64-url-safe-encoded config data",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "User-defined name of the config",
+        "Default": {},
+        "Elem": {}
+      }
+    },
     "docker_container": {
       "bridge": {
         "Type": "TypeString",
@@ -162,6 +178,34 @@
         "Optional": true,
         "Default": {},
         "Elem": {}
+      },
+      "devices": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "container_path": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "host_path": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "permissions": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       },
       "dns": {
         "Type": "TypeSet",
@@ -275,6 +319,7 @@
       "links": {
         "Type": "TypeSet",
         "Optional": true,
+        "Deprecated": "The --link flag is a legacy feature of Docker. It may eventually be removed.",
         "Default": {},
         "Elem": {
           "Type": "SchemaElements",
@@ -399,6 +444,34 @@
         "Default": {},
         "Elem": {}
       },
+      "ulimit": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "hard": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "name": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "soft": {
+              "Type": "TypeInt",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
       "upload": {
         "Type": "TypeSet",
         "Optional": true,
@@ -409,6 +482,12 @@
             "content": {
               "Type": "TypeString",
               "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "executable": {
+              "Type": "TypeBool",
+              "Optional": true,
               "Default": {},
               "Elem": {}
             },
@@ -589,6 +668,1134 @@
         "Computed": true,
         "Default": {},
         "Elem": {}
+      }
+    },
+    "docker_secret": {
+      "data": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "User-defined name of the secret",
+        "Default": {},
+        "Elem": {}
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "User-defined name of the secret",
+        "Default": {},
+        "Elem": {}
+      }
+    },
+    "docker_service": {
+      "auth": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "password": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {
+                "Type": "string"
+              },
+              "Elem": {}
+            },
+            "server_address": {
+              "Type": "TypeString",
+              "Required": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "username": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Default": {
+                "Type": "string"
+              },
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "converge_config": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "A configuration to ensure that a service converges aka reaches the desired that of all task up and running",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "mode.0.global"
+        ],
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "delay": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The interval to check if the desired state is reached (ms|s). Default: 7s",
+              "Default": {},
+              "Elem": {}
+            },
+            "timeout": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The timeout of the service to reach the desired state (s|m). Default: 3m",
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "endpoint_spec": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "Properties that can be configured to access and load balance a service",
+        "Computed": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "mode": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "The mode of resolution to use for internal load balancing between tasks",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "ports": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Description": "List of exposed ports that this service is accessible on from the outside. Ports can only be provided if 'vip' resolution mode is used.",
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "A random name for the port",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "protocol": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Rrepresents the protocol of a port: 'tcp', 'udp' or 'sctp'",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "publish_mode": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Represents the mode in which the port is to be published: 'ingress' or 'host'",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "published_port": {
+                    "Type": "TypeInt",
+                    "Optional": true,
+                    "Description": "The port on the swarm hosts.",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "target_port": {
+                    "Type": "TypeInt",
+                    "Required": true,
+                    "Description": "The port inside the container",
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "labels": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Description": "User-defined key/value metadata",
+        "Computed": true,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "mode": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "Scheduling mode for the service",
+        "Computed": true,
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "global": {
+              "Type": "TypeBool",
+              "Optional": true,
+              "Description": "The global service mode",
+              "ConflictsWith": [
+                "mode.0.replicated",
+                "converge_config"
+              ],
+              "Default": {},
+              "Elem": {}
+            },
+            "replicated": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "The replicated service mode",
+              "Computed": true,
+              "MaxItems": 1,
+              "ConflictsWith": [
+                "mode.0.global"
+              ],
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "replicas": {
+                    "Type": "TypeInt",
+                    "Optional": true,
+                    "Description": "The amount of replicas of the service",
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true,
+        "Description": "Name of the service",
+        "Default": {},
+        "Elem": {}
+      },
+      "rollback_config": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "Specification for the rollback strategy of the service",
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "delay": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Delay between task rollbacks (ns|us|ms|s|m|h)",
+              "Default": {},
+              "Elem": {}
+            },
+            "failure_action": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Action on rollback failure: pause | continue",
+              "Default": {},
+              "Elem": {}
+            },
+            "max_failure_ratio": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Failure rate to tolerate during a rollback",
+              "Default": {},
+              "Elem": {}
+            },
+            "monitor": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Duration after each task rollback to monitor for failure (ns|us|ms|s|m|h)",
+              "Default": {},
+              "Elem": {}
+            },
+            "order": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Rollback order: either 'stop-first' or 'start-first'",
+              "Default": {},
+              "Elem": {}
+            },
+            "parallelism": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Description": "Maximum number of tasks to be rollbacked in one iteration",
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "task_spec": {
+        "Type": "TypeList",
+        "Required": true,
+        "Description": "User modifiable task configuration",
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "container_spec": {
+              "Type": "TypeList",
+              "Required": true,
+              "Description": "The spec for each container",
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "args": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "Arguments to the command",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  },
+                  "command": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "The command to be run in the image",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  },
+                  "configs": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "Description": "References to zero or more configs that will be exposed to the service",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "config_id": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Description": "ID of the specific config that we're referencing",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "config_name": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "Name of the config that this references, but this is just provided for lookup/display purposes. The config in the reference will be identified by its ID",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "file_name": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Description": "Represents the final filename in the filesystem",
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  },
+                  "dir": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "The working directory for commands to run in",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "dns_config": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "Specification for DNS related configurations in resolver configuration file (resolv.conf)",
+                    "Computed": true,
+                    "MaxItems": 1,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "nameservers": {
+                          "Type": "TypeList",
+                          "Required": true,
+                          "Description": "The IP addresses of the name servers",
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "TypeString"
+                          }
+                        },
+                        "options": {
+                          "Type": "TypeList",
+                          "Optional": true,
+                          "Description": "A list of internal resolver variables to be modified (e.g., debug, ndots:3, etc.)",
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "TypeString"
+                          }
+                        },
+                        "search": {
+                          "Type": "TypeList",
+                          "Optional": true,
+                          "Description": "A search list for host-name lookup",
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "TypeString"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "env": {
+                    "Type": "TypeMap",
+                    "Optional": true,
+                    "Description": "A list of environment variables in the form VAR=\"value\"",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  },
+                  "groups": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "A list of additional groups that the container process will run as",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  },
+                  "healthcheck": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "A test to perform to check that the container is healthy",
+                    "Computed": true,
+                    "MaxItems": 1,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "interval": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "Time between running the check (ms|s|m|h)",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "retries": {
+                          "Type": "TypeInt",
+                          "Optional": true,
+                          "Description": "Consecutive failures needed to report unhealthy",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "start_period": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "test": {
+                          "Type": "TypeList",
+                          "Required": true,
+                          "Description": "The test to perform as list",
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "TypeString"
+                          }
+                        },
+                        "timeout": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "Maximum time to allow one check to run (ms|s|m|h)",
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  },
+                  "hostname": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "The hostname to use for the container, as a valid RFC 1123 hostname",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "hosts": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "Description": "A list of hostname/IP mappings to add to the container's hosts file.",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "host": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "ip": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  },
+                  "image": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Description": "The image name to use for the containers of the service",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "isolation": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Isolation technology of the containers running the service. (Windows only)",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "labels": {
+                    "Type": "TypeMap",
+                    "Optional": true,
+                    "Description": "User-defined key/value metadata",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  },
+                  "mounts": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "Description": "Specification for mounts to be added to containers created as part of the service",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "bind_options": {
+                          "Type": "TypeList",
+                          "Optional": true,
+                          "Description": "Optional configuration for the bind type",
+                          "MaxItems": 1,
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "propagation": {
+                                "Type": "TypeString",
+                                "Optional": true,
+                                "Description": "A propagation mode with the value",
+                                "Default": {},
+                                "Elem": {}
+                              }
+                            }
+                          }
+                        },
+                        "read_only": {
+                          "Type": "TypeBool",
+                          "Optional": true,
+                          "Description": "Whether the mount should be read-only",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "source": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Description": "Mount source (e.g. a volume name, a host path)",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "target": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Description": "Container path",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "tmpfs_options": {
+                          "Type": "TypeList",
+                          "Optional": true,
+                          "Description": "Optional configuration for the tmpfs type",
+                          "MaxItems": 1,
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "mode": {
+                                "Type": "TypeInt",
+                                "Optional": true,
+                                "Description": "The permission mode for the tmpfs mount in an integer",
+                                "Default": {},
+                                "Elem": {}
+                              },
+                              "size_bytes": {
+                                "Type": "TypeInt",
+                                "Optional": true,
+                                "Description": "The size for the tmpfs mount in bytes",
+                                "Default": {},
+                                "Elem": {}
+                              }
+                            }
+                          }
+                        },
+                        "type": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Description": "The mount type",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "volume_options": {
+                          "Type": "TypeList",
+                          "Optional": true,
+                          "Description": "Optional configuration for the volume type",
+                          "MaxItems": 1,
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "driver_name": {
+                                "Type": "TypeString",
+                                "Optional": true,
+                                "Description": "Name of the driver to use to create the volume.",
+                                "Default": {},
+                                "Elem": {}
+                              },
+                              "driver_options": {
+                                "Type": "TypeMap",
+                                "Optional": true,
+                                "Description": "key/value map of driver specific options",
+                                "Default": {},
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "TypeString"
+                                }
+                              },
+                              "labels": {
+                                "Type": "TypeMap",
+                                "Optional": true,
+                                "Description": "User-defined key/value metadata",
+                                "Default": {},
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "TypeString"
+                                }
+                              },
+                              "no_copy": {
+                                "Type": "TypeBool",
+                                "Optional": true,
+                                "Description": "Populate volume with data from the target",
+                                "Default": {},
+                                "Elem": {}
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "privileges": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "Security options for the container",
+                    "MaxItems": 1,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "credential_spec": {
+                          "Type": "TypeList",
+                          "Optional": true,
+                          "Description": "CredentialSpec for managed service account (Windows only)",
+                          "MaxItems": 1,
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "file": {
+                                "Type": "TypeString",
+                                "Optional": true,
+                                "Description": "Load credential spec from this file",
+                                "Default": {},
+                                "Elem": {}
+                              },
+                              "registry": {
+                                "Type": "TypeString",
+                                "Optional": true,
+                                "Description": "Load credential spec from this value in the Windows registry",
+                                "Default": {},
+                                "Elem": {}
+                              }
+                            }
+                          }
+                        },
+                        "se_linux_context": {
+                          "Type": "TypeList",
+                          "Optional": true,
+                          "Description": "SELinux labels of the container",
+                          "MaxItems": 1,
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "disable": {
+                                "Type": "TypeBool",
+                                "Optional": true,
+                                "Description": "Disable SELinux",
+                                "Default": {},
+                                "Elem": {}
+                              },
+                              "level": {
+                                "Type": "TypeString",
+                                "Optional": true,
+                                "Description": "SELinux level label",
+                                "Default": {},
+                                "Elem": {}
+                              },
+                              "role": {
+                                "Type": "TypeString",
+                                "Optional": true,
+                                "Description": "SELinux role label",
+                                "Default": {},
+                                "Elem": {}
+                              },
+                              "type": {
+                                "Type": "TypeString",
+                                "Optional": true,
+                                "Description": "SELinux type label",
+                                "Default": {},
+                                "Elem": {}
+                              },
+                              "user": {
+                                "Type": "TypeString",
+                                "Optional": true,
+                                "Description": "SELinux user label",
+                                "Default": {},
+                                "Elem": {}
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "read_only": {
+                    "Type": "TypeBool",
+                    "Optional": true,
+                    "Description": "Mount the container's root filesystem as read only",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "secrets": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "Description": "References to zero or more secrets that will be exposed to the service",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "file_name": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Description": "Represents the final filename in the filesystem",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "secret_id": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Description": "ID of the specific secret that we're referencing",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "secret_name": {
+                          "Type": "TypeString",
+                          "Optional": true,
+                          "Description": "Name of the secret that this references, but this is just provided for lookup/display purposes. The config in the reference will be identified by its ID",
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  },
+                  "stop_grace_period": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Amount of time to wait for the container to terminate before forcefully removing it (ms|s|m|h)",
+                    "Computed": true,
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "stop_signal": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Signal to stop the container",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "user": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "The user inside the container",
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "force_update": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Description": "A counter that triggers an update even if no relevant parameters have been changed. See https://github.com/docker/swarmkit/blob/master/api/specs.proto#L126",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            },
+            "log_driver": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "Specifies the log driver to use for tasks created from this spec. If not present, the default one for the swarm will be used, finally falling back to the engine default if not specified",
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "TypeString",
+                    "Required": true,
+                    "Description": "The logging driver to use: one of none|json-file|syslog|journald|gelf|fluentd|awslogs|splunk|etwlogs|gcplogs",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "options": {
+                    "Type": "TypeMap",
+                    "Optional": true,
+                    "Description": "The options for the logging driver",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            },
+            "networks": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Description": "Ids of the networks in which the  container will be put in.",
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "placement": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "The placement preferences",
+              "Computed": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "constraints": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "Description": "An array of constraints. e.g.: node.role==manager",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  },
+                  "platforms": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "Description": "Platforms stores all the platforms that the service's image can run on",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "architecture": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Description": "The architecture, e.g. amd64",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "os": {
+                          "Type": "TypeString",
+                          "Required": true,
+                          "Description": "The operation system, e.g. linux",
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  },
+                  "prefs": {
+                    "Type": "TypeSet",
+                    "Optional": true,
+                    "Description": "Preferences provide a way to make the scheduler aware of factors such as topology. They are provided in order from highest to lowest precedence, e.g.: spread=node.role.manager",
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "TypeString"
+                    }
+                  }
+                }
+              }
+            },
+            "resources": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Description": "Resource requirements which apply to each individual container created as part of the service",
+              "Computed": true,
+              "MaxItems": 1,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "limits": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "Describes the resources which can be advertised by a node and requested by a task",
+                    "MaxItems": 1,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "generic_resources": {
+                          "Type": "TypeList",
+                          "Optional": true,
+                          "Description": "User-defined resources can be either Integer resources (e.g, SSD=3) or String resources (e.g, GPU=UUID1)",
+                          "MaxItems": 1,
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "discrete_resources_spec": {
+                                "Type": "TypeSet",
+                                "Optional": true,
+                                "Description": "The Integer resources",
+                                "Default": {},
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "TypeString"
+                                }
+                              },
+                              "named_resources_spec": {
+                                "Type": "TypeSet",
+                                "Optional": true,
+                                "Description": "The String resources",
+                                "Default": {},
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "TypeString"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "memory_bytes": {
+                          "Type": "TypeInt",
+                          "Optional": true,
+                          "Description": "The amounf of memory in bytes the container allocates",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "nano_cpus": {
+                          "Type": "TypeInt",
+                          "Optional": true,
+                          "Description": "CPU shares in units of 1/1e9 (or 10^-9) of the CPU. Should be at least 1000000",
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  },
+                  "reservation": {
+                    "Type": "TypeList",
+                    "Optional": true,
+                    "Description": "An object describing the resources which can be advertised by a node and requested by a task",
+                    "MaxItems": 1,
+                    "Default": {},
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "generic_resources": {
+                          "Type": "TypeList",
+                          "Optional": true,
+                          "Description": "User-defined resources can be either Integer resources (e.g, SSD=3) or String resources (e.g, GPU=UUID1)",
+                          "MaxItems": 1,
+                          "Default": {},
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "discrete_resources_spec": {
+                                "Type": "TypeSet",
+                                "Optional": true,
+                                "Description": "The Integer resources",
+                                "Default": {},
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "TypeString"
+                                }
+                              },
+                              "named_resources_spec": {
+                                "Type": "TypeSet",
+                                "Optional": true,
+                                "Description": "The String resources",
+                                "Default": {},
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "TypeString"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "memory_bytes": {
+                          "Type": "TypeInt",
+                          "Optional": true,
+                          "Description": "The amounf of memory in bytes the container allocates",
+                          "Default": {},
+                          "Elem": {}
+                        },
+                        "nano_cpus": {
+                          "Type": "TypeInt",
+                          "Optional": true,
+                          "Description": "CPU shares in units of 1/1e9 (or 10^-9) of the CPU. Should be at least 1000000",
+                          "Default": {},
+                          "Elem": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "restart_policy": {
+              "Type": "TypeMap",
+              "Optional": true,
+              "Description": "Specification for the restart policy which applies to containers created as part of this service.",
+              "Computed": true,
+              "Default": {},
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "condition": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Condition for restart",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "delay": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "Delay between restart attempts (ms|s|m|h)",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "max_attempts": {
+                    "Type": "TypeInt",
+                    "Optional": true,
+                    "Description": "Maximum attempts to restart a given container before giving up (default value is 0, which is ignored)",
+                    "Default": {},
+                    "Elem": {}
+                  },
+                  "window": {
+                    "Type": "TypeString",
+                    "Optional": true,
+                    "Description": "The time window used to evaluate the restart policy (default value is 0, which is unbounded) (ms|s|m|h)",
+                    "Default": {},
+                    "Elem": {}
+                  }
+                }
+              }
+            },
+            "runtime": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Runtime is the type of runtime specified for the task executor. See https://github.com/moby/moby/blob/master/api/types/swarm/runtime.go",
+              "Computed": true,
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
+      },
+      "update_config": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Description": "Specification for the update strategy of the service",
+        "MaxItems": 1,
+        "Default": {},
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "delay": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Delay between task updates (ns|us|ms|s|m|h)",
+              "Default": {},
+              "Elem": {}
+            },
+            "failure_action": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Action on update failure: pause | continue | rollback",
+              "Default": {},
+              "Elem": {}
+            },
+            "max_failure_ratio": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Failure rate to tolerate during an update",
+              "Default": {},
+              "Elem": {}
+            },
+            "monitor": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Duration after each task update to monitor for failure (ns|us|ms|s|m|h)",
+              "Default": {},
+              "Elem": {}
+            },
+            "order": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Description": "Update order: either 'stop-first' or 'start-first'",
+              "Default": {},
+              "Elem": {}
+            },
+            "parallelism": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Description": "Maximum number of tasks to be updated in one iteration",
+              "Default": {},
+              "Elem": {}
+            }
+          }
+        }
       }
     },
     "docker_volume": {
