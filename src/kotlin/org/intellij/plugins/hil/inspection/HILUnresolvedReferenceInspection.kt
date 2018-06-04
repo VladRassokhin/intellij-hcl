@@ -80,6 +80,8 @@ class HILUnresolvedReferenceInspection : LocalInspectionTool() {
     private fun doCheckRefs(value: PsiElement, references: Array<PsiReference>) {
       for (reference in references) {
         ProgressManager.checkCanceled()
+        // In case of 'a.*.b' '*' bypasses references from 'a'
+        if (reference.element !== value) continue
         if (isUrlReference(reference)) continue
         if (!hasBadResolve(reference, false)) {
           continue
