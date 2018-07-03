@@ -19,7 +19,6 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileSystemItem
-import com.intellij.psi.PsiManager
 import com.intellij.psi.search.PsiElementProcessor
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformLanguage
@@ -41,46 +40,7 @@ class Module private constructor(val item: PsiFileSystemItem) {
     }
 
     fun getAsModuleBlock(moduleBlock: HCLBlock): Module? {
-      val name = moduleBlock.getNameElementUnquoted(1) ?: return null
-      val sourceVal = moduleBlock.`object`?.findProperty("source")?.value as? HCLStringLiteral ?: return null
-      val source = sourceVal.value
-
-      val file = moduleBlock.containingFile.originalFile
-      val directory = file.containingDirectory ?: return null
-
-      // Prefer local file paths over loaded modules.
-      // TODO: Consider removing that
-      // Used in tests
-      var dir: PsiDirectory? = findRelativeModule(directory, moduleBlock, source)
-      if (dir != null) {
-        return Module(dir)
-      }
-
-      // Hopefully user already executed `terraform get`
-      dir = doFindModule(name, source, directory)
-      if (dir == null) {
-        Module.LOG.warn("Terraform Module '$name' with source '$source' directory not found locally under '$directory', use `terraform get` to fetch modules.")
-        return null
-      }
-      return Module(dir)
-    }
-
-    internal fun findRelativeModule(directory: PsiDirectory, moduleBlock: HCLBlock, source: String): PsiDirectory? {
-      val relative = directory.virtualFile.findFileByRelativePath(source) ?: return null
-      if (!relative.exists() || !relative.isDirectory) return null
-      return PsiManager.getInstance(moduleBlock.project).findDirectory(relative)
-    }
-
-    internal fun doFindModule(nameElementUnquoted: String, source: String, directory: PsiDirectory): PsiDirectory? {
-      val md5 = ModuleDetectionUtil.computeModuleStorageName(nameElementUnquoted, source)
-      val dir = directory.findSubdirectory(".terraform")?.findSubdirectory("modules")?.findSubdirectory(md5)
-      if (dir != null) {
-        val additional = ModuleDetectionUtil.getModuleSourceAdditionalPath(source)
-        if (additional != null) {
-          return dir.virtualFile.findFileByRelativePath(additional)?.let { dir.manager.findDirectory(it) }
-        }
-      }
-      return dir
+      return ModuleDetectionUtil.getAsModuleBlock(moduleBlock);
     }
 
     private class CollectVariablesVisitor : HCLElementVisitor() {

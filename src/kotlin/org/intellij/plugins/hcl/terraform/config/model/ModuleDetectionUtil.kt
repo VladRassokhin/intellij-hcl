@@ -15,183 +15,204 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
-import org.apache.commons.codec.digest.DigestUtils
-import org.apache.http.client.utils.URIBuilder
-import java.net.URI
-import java.net.URISyntaxException
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
+import com.beust.klaxon.array
+import com.beust.klaxon.string
+import com.intellij.openapi.application.Application
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.vfs.VfsUtilCore
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiManager
+import org.intellij.plugins.hcl.psi.HCLBlock
+import org.intellij.plugins.hcl.psi.HCLStringLiteral
+import org.intellij.plugins.hcl.psi.getNameElementUnquoted
 
 object ModuleDetectionUtil {
-  fun computeModuleStorageName(name: String, source: String): String {
-    // TODO: Improve path calculation
-    val path = listOf(name).joinToString(".") { it }
-    val md5 = DigestUtils.md5Hex("root.$path-$source")!!
-    return md5
+  private val LOG = Logger.getInstance(ModuleDetectionUtil::class.java)
+
+  data class ModulesManifest(val context: VirtualFile, val modules: List<ModuleManifest>)
+
+  data class ModuleManifest(val source: String, val key: String, val version: String, val dir: String, val root: String) {
+    val full
+      get() = dir + if (root.isNotEmpty()) "/$root" else ""
   }
 
-  fun getModuleSourceAdditionalPath(source: String): String? {
-    val detected = detect(source) ?: return null
-    val (_, unforced) = getForcedGetter(detected)
-    val (_, subdir) = getSourceDirSubdir(unforced)
-    return if (subdir.isNullOrEmpty()) null else subdir
-  }
+  fun getAsModuleBlock(moduleBlock: HCLBlock): Module? {
+    val name = moduleBlock.getNameElementUnquoted(1) ?: return null
+    val sourceVal = moduleBlock.`object`?.findProperty("source")?.value as? HCLStringLiteral ?: return null
+    val source = sourceVal.value
 
-  interface Detector {
-    fun detect(source: String): String?
-  }
+    val file = moduleBlock.containingFile.originalFile
+    val directory = file.containingDirectory ?: return null
 
-  object GitHubDetector : Detector {
-    override fun detect(source: String): String? {
-      if (source.startsWith("github.com/")) {
-        return detectHTTP(source)
-      }
-      if (source.startsWith("git@github.com:")) {
-        return detectSSH(source)
-      }
-      return null
-    }
+    val dotTerraform = ModuleDetectionUtil.getTerraformDirSomewhere(directory)
+    if (dotTerraform != null) {
+      LOG.debug("Found .terraform directory: $dotTerraform")
+      val manifest = ModuleDetectionUtil.getTerraformModulesManifest(file)
+      val keyPrefix: String
+      if (manifest != null) {
+        LOG.debug("All modules from modules.json: ${manifest.modules}")
+        keyPrefix = getKeyPrefix(directory, dotTerraform, manifest, name, source) ?: return findRelativeModule(directory, moduleBlock, source)
 
-    private fun detectHTTP(source: String): String? {
-      val parts = source.split('/')
-      if (parts.size < 3) return null
+        LOG.debug("Searching for module with source '$source' and keyPrefix '$keyPrefix'")
+        val module = manifest.modules.find {
+          it.source == source && it.key.startsWith(keyPrefix) && !it.key.removePrefix(keyPrefix).contains('|')
+        }
 
-      val urlStr = "https://" + parts.subList(0, 3).joinToString("/")
-      val uri: URIBuilder
-      try {
-        uri = URIBuilder(urlStr)
-      } catch(e: URISyntaxException) {
-        return null
-      }
-      if (!uri.path.endsWith(".git")) uri.path += ".git"
-
-      if (parts.size > 3) {
-        uri.path += "//" + parts.subList(3, parts.lastIndex + 1).joinToString("/")
-      }
-
-      return "git::" + uri.toString()
-    }
-
-    private fun detectSSH(source: String): String? {
-      val idx = source.indexOf(":")
-      var qidx = source.indexOf("?")
-      if (qidx == -1) qidx = source.length
-
-      val u = URIBuilder()
-      u.scheme = "ssh"
-      u.userInfo = "git"
-      u.host = "github.com"
-      u.path = source.substring(idx + 1, qidx)
-      if (qidx < source.length) {
-        u.setCustomQuery(source.substring(qidx))
-      }
-      return "git::" + u.toString()
-    }
-  }
-
-  object BitBucketDetector : Detector {
-    override fun detect(source: String): String? {
-      if (source.startsWith("bitbucket.org/")) {
-        return detectHTTP(source)
-      }
-      return null
-    }
-
-    private fun detectHTTP(source: String): String? {
-      // Simple fast git-only detector
-      try {
-        return "git::" + URI("https://" + source).toString()
-      } catch(e: URISyntaxException) {
-        return null
-      }
-    }
-  }
-
-
-  val Detectors = listOf<Detector>(GitHubDetector, BitBucketDetector)
-
-  fun getForcedGetter(src: String): Pair<String, String> {
-    val result = "^([A-Za-z0-9]+)::(.+)\$".toRegex().find(src)
-    if (result != null) {
-      return result.groupValues[1] to result.groupValues[2]
-    }
-    return "" to src
-  }
-
-  fun getSourceDirSubdir(source: String): Pair<String, String> {
-    var src = source
-    var offset: Int = 0
-
-    // Calculate an offset to avoid accidentally marking the scheme
-    // as the dir.
-    var idx = src.indexOf("://", offset)
-    if (idx > -1) offset = idx + 3
-
-    // First see if we even have an explicit subdir
-    idx = src.indexOf("//", offset)
-    if (idx == -1) return src to ""
-
-    var subdir = src.substring(idx + 2)
-    src = src.substring(0, idx)
-
-    idx = subdir.indexOf('?')
-    if (idx > -1) {
-      val query = subdir.substring(idx)
-      subdir = subdir.substring(0, idx)
-      src += query
-    }
-
-    return src to subdir
-  }
-
-  fun detect(src: String): String? {
-    var (getForce, getSrc) = getForcedGetter(src)
-
-    // Separate out the subdir if there is one, we don't pass that to detect
-    val pair = getSourceDirSubdir(getSrc)
-    getSrc = pair.first
-    var subDir = pair.second
-    try {
-      if (!URI(getSrc).scheme.isNullOrEmpty()) return src
-    } catch(ignored: URISyntaxException) {
-    }
-    for (detector in Detectors) {
-      var result: String = detector.detect(getSrc) ?: continue
-      var detectForce: String = ""
-      if (true) {
-        val pair = getForcedGetter(result)
-        detectForce = pair.first
-        result = pair.second
-      }
-
-      var detectSubdir: String = ""
-      if (true) {
-        val pair = getSourceDirSubdir(result)
-        result = pair.first
-        detectSubdir = pair.second
-      }
-
-      // If we have a subdir from the detection, then prepend it to our
-      // requested subdir.
-      if (detectSubdir != "") {
-        if (subDir != "") {
-          subDir = detectSubdir + "/" + subDir
-        } else {
-          subDir = detectSubdir
+        if (module != null) {
+          LOG.debug("Found module $module")
+          val path = module.full
+          val relative = manifest.context.findFileByRelativePath(path)
+          if (relative != null) {
+            LOG.debug("Absolute module dir: $relative")
+            val dir = PsiManager.getInstance(moduleBlock.project).findDirectory(relative)
+            if (dir != null) {
+              LOG.debug("Module search succeed, directory is $dir")
+              return Module(dir)
+            } else {
+              LOG.debug("Can't find PsiDirectory for $relative")
+            }
+          } else {
+            LOG.debug("Can't find relative dir '$path' in '${manifest.context}'")
+          }
         }
       }
-      if (subDir != "") {
-        val builder = URIBuilder(result)
-        builder.path += "//" + subDir
-        result = builder.toString()
+    } else {
+      LOG.warn("No .terraform found under project directory, please run `terraform get` in appropriate place")
+      return findRelativeModule(directory, moduleBlock, source)
+    }
+
+    findRelativeModule(directory, moduleBlock, source)
+
+    LOG.warn("Terraform Module '$name' with source '$source' directory not found locally, use `terraform get` to fetch modules.")
+    return null
+  }
+
+
+  private val TerraformModulesManifestKey = Key<ModulesManifest>("TerraformModulesManifest")
+  private val TerraformModulesManifestFileUrlKey = Key<String>("TerraformModulesManifestFileUrl")
+
+  fun getTerraformModulesManifest(file: PsiFile): ModulesManifest? {
+    val directory = file.containingDirectory ?: return null
+
+    var url = directory.getUserData(TerraformModulesManifestFileUrlKey)
+    var manifestFile: VirtualFile? = null
+
+    if (url != null) {
+      manifestFile = VirtualFileManager.getInstance().findFileByUrl(url)
+      if (manifestFile == null) {
+        directory.putUserData(TerraformModulesManifestFileUrlKey, null)
       }
-      // Preserve the forced getter if it exists. We try to use the
-      // original set force first, followed by any force set by the
-      // detector.
-      if (getForce != "") {
-        result = String.format("%s::%s", getForce, result)
-      } else if (detectForce != "") {
-        result = String.format("%s::%s", detectForce, result)
+    }
+
+    if (manifestFile == null) {
+      val dotTerraformDir = getTerraformDirSomewhere(directory) ?: return null
+      manifestFile = dotTerraformDir.findFileByRelativePath("modules/modules.json") ?: return null
+      if (!manifestFile.exists() || manifestFile.isDirectory) return null
+
+      url = manifestFile.url
+      directory.putUserData(TerraformModulesManifestFileUrlKey, url)
+    }
+
+    manifestFile.getUserData(TerraformModulesManifestKey)?.let { return it }
+    val parsed = parseManifest(manifestFile)
+    manifestFile.putUserData(TerraformModulesManifestKey, parsed)
+    return parsed
+  }
+
+  private fun parseManifest(file: VirtualFile): ModulesManifest? {
+    val stream = file.inputStream ?: return null
+    val context = file.parent.parent.parent ?: return null
+    val application = ApplicationManager.getApplication()
+    val json: JsonObject?
+    try {
+      json = stream.use {
+        val parser = Parser()
+        parser.parse(stream) as JsonObject?
       }
-      return result
+      if (json == null) {
+        logErrorAndFailInInternalMode(application, "In file '$file' no JSON found")
+        return null
+      }
+    } catch (e: Exception) {
+      logErrorAndFailInInternalMode(application, "Failed to load json data from file '$file'", e)
+      return null
+    }
+    try {
+      return ModulesManifest(context, json.array<JsonObject>("Modules")?.map {
+        ModuleManifest(
+            source = it.string("Source") ?: "",
+            key = it.string("Key") ?: "",
+            version = it.string("Version") ?: "",
+            dir = it.string("Dir") ?: "",
+            root = it.string("Root") ?: ""
+        )
+      } ?: emptyList())
+    } catch (e: Throwable) {
+      logErrorAndFailInInternalMode(application, "Failed to parse file '$file'", e)
+    }
+    return null
+  }
+
+  private fun logErrorAndFailInInternalMode(application: Application, msg: String, e: Throwable? = null) {
+    val msg2 = if (e == null) msg else "$msg: ${e.message}"
+    if (e == null) ModuleDetectionUtil.LOG.error(msg2) else LOG.error(msg2, e)
+    if (application.isInternal) {
+      throw AssertionError(msg2, e)
+    }
+  }
+
+
+  private fun findRelativeModule(directory: PsiDirectory, moduleBlock: HCLBlock, source: String): Module? {
+    // Prefer local file paths over loaded modules.
+    // TODO: Consider removing that
+    // Used in tests
+
+    val relative = directory.virtualFile.findFileByRelativePath(source) ?: return null
+    if (!relative.exists() || !relative.isDirectory) return null
+    return PsiManager.getInstance(moduleBlock.project).findDirectory(relative)?.let { Module(it) }
+  }
+
+  private fun getKeyPrefix(directory: PsiDirectory, dotTerraform: VirtualFile, manifest: ModuleDetectionUtil.ModulesManifest, name: String, source: String): String? {
+    // Check whether current dir is a module itself
+    val relative = VfsUtilCore.getRelativePath(directory.virtualFile, dotTerraform)
+    if (relative != null) {
+      val currentModule = manifest.modules.find { it.full == ".terraform/$relative" }
+      if (currentModule != null) {
+        return currentModule.key + '|'
+      } else {
+        LOG.info("Path '.terraform/$relative' not found among modules, either `terraform get` should be run or we're in non-referenced module, e.g. subdir of some module")
+        return null
+      }
+    } else {
+      // Module referenced from root key would be '1.$NAME;$SOURCE' or '1.$NAME;$SOURCE.$VERSION'
+      return "1.$name;$source"
+    }
+  }
+
+  private fun getTerraformDirSomewhere(file: PsiDirectory): VirtualFile? {
+    val base = file.project.baseDir ?: return null
+    val start = file.virtualFile
+    if (!VfsUtilCore.isAncestor(base, start, false)) {
+      LOG.warn("File $file is not under project root")
+      return null
+    }
+    var parent: VirtualFile? = start
+    while (true) {
+      if (parent == null) return null
+      if (parent == base) break
+
+      val child = parent.findChild(".terraform")
+      if (child != null && child.isDirectory) {
+        return child
+      }
+      parent = parent.parent
     }
     return null
   }
