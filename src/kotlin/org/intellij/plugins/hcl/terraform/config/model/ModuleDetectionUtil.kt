@@ -27,8 +27,9 @@ import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.psi.getNameElementUnquoted
@@ -44,6 +45,16 @@ object ModuleDetectionUtil {
   }
 
   fun getAsModuleBlock(moduleBlock: HCLBlock): Module? {
+    return CachedValuesManager.getCachedValue(moduleBlock, ModuleCachedValueProvider(moduleBlock))
+  }
+
+  class ModuleCachedValueProvider(private val block: HCLBlock) : CachedValueProvider<Module?> {
+    override fun compute(): CachedValueProvider.Result<Module?>? {
+      return doGetAsModuleBlock(block)?.let { return CachedValueProvider.Result(it, block) }
+    }
+  }
+
+  private fun doGetAsModuleBlock(moduleBlock: HCLBlock): Module? {
     val name = moduleBlock.getNameElementUnquoted(1) ?: return null
     val sourceVal = moduleBlock.`object`?.findProperty("source")?.value as? HCLStringLiteral ?: return null
     val source = sourceVal.value
@@ -54,7 +65,7 @@ object ModuleDetectionUtil {
     val dotTerraform = ModuleDetectionUtil.getTerraformDirSomewhere(directory)
     if (dotTerraform != null) {
       LOG.debug("Found .terraform directory: $dotTerraform")
-      val manifest = ModuleDetectionUtil.getTerraformModulesManifest(file)
+      val manifest = ModuleDetectionUtil.getTerraformModulesManifest(directory)
       val keyPrefix: String
       if (manifest != null) {
         LOG.debug("All modules from modules.json: ${manifest.modules}")
@@ -95,18 +106,16 @@ object ModuleDetectionUtil {
   }
 
 
-  private val TerraformModulesManifestKey = Key<ModulesManifest>("TerraformModulesManifest")
   private val TerraformModulesManifestFileUrlKey = Key<String>("TerraformModulesManifestFileUrl")
 
-  fun getTerraformModulesManifest(file: PsiFile): ModulesManifest? {
-    val directory = file.containingDirectory ?: return null
-
+  fun getTerraformModulesManifest(directory: PsiDirectory): ModulesManifest? {
     var url = directory.getUserData(TerraformModulesManifestFileUrlKey)
     var manifestFile: VirtualFile? = null
 
     if (url != null) {
       manifestFile = VirtualFileManager.getInstance().findFileByUrl(url)
-      if (manifestFile == null) {
+      if (manifestFile == null || !manifestFile.isValid) {
+        manifestFile = null
         directory.putUserData(TerraformModulesManifestFileUrlKey, null)
       }
     }
@@ -120,19 +129,23 @@ object ModuleDetectionUtil {
       directory.putUserData(TerraformModulesManifestFileUrlKey, url)
     }
 
-    manifestFile.getUserData(TerraformModulesManifestKey)?.let { return it }
-    val parsed = parseManifest(manifestFile)
-    manifestFile.putUserData(TerraformModulesManifestKey, parsed)
-    return parsed
+    return CachedValuesManager.getCachedValue(directory, ManifestCachedValueProvider(manifestFile))
+  }
+
+  class ManifestCachedValueProvider(private val file: VirtualFile) : CachedValueProvider<ModulesManifest> {
+    override fun compute(): CachedValueProvider.Result<ModulesManifest>? {
+      val parsed = parseManifest(file)
+      return CachedValueProvider.Result(parsed, file)
+    }
   }
 
   private fun parseManifest(file: VirtualFile): ModulesManifest? {
+    LOG.debug("Parsing manifest file $file")
     val stream = file.inputStream ?: return null
     val context = file.parent.parent.parent ?: return null
     val application = ApplicationManager.getApplication()
-    val json: JsonObject?
     try {
-      json = stream.use {
+      val json: JsonObject? = stream.use {
         val parser = Parser()
         parser.parse(stream) as JsonObject?
       }
@@ -140,11 +153,6 @@ object ModuleDetectionUtil {
         logErrorAndFailInInternalMode(application, "In file '$file' no JSON found")
         return null
       }
-    } catch (e: Exception) {
-      logErrorAndFailInInternalMode(application, "Failed to load json data from file '$file'", e)
-      return null
-    }
-    try {
       return ModulesManifest(context, json.array<JsonObject>("Modules")?.map {
         ModuleManifest(
             source = it.string("Source") ?: "",
