@@ -1,20 +1,22 @@
 {
-  "name": "flexibleengine",
+  "name": "telefonicaopencloud",
   "type": "provider",
-  "version": "v1.0.1-12-geb97bc8",
+  "version": "v1.0.0-1-g6b11022",
   "provider": {
     "access_key": {
       "Type": "TypeString",
       "Optional": true,
-      "Description": "The access key for API operations. You can retrieve this\nfrom the 'My Credential' section of the console.",
       "Default": {
         "Type": "string"
       }
     },
     "auth_url": {
       "Type": "TypeString",
-      "Required": true,
-      "Description": "The Identity authentication URL."
+      "Optional": true,
+      "Description": "The Identity authentication URL.",
+      "Default": {
+        "Type": "string"
+      }
     },
     "cacert_file": {
       "Type": "TypeString",
@@ -28,6 +30,14 @@
       "Type": "TypeString",
       "Optional": true,
       "Description": "A client certificate to authenticate with.",
+      "Default": {
+        "Type": "string"
+      }
+    },
+    "cloud": {
+      "Type": "TypeString",
+      "Optional": true,
+      "Description": "An entry in a `clouds.yaml` file to use.",
       "Default": {
         "Type": "string"
       }
@@ -82,7 +92,7 @@
     "region": {
       "Type": "TypeString",
       "Optional": true,
-      "Description": "The FlexibleEngine region to connect to.",
+      "Description": "The TelefonicaOpenCloud region to connect to.",
       "Default": {
         "Type": "string"
       }
@@ -90,7 +100,6 @@
     "secret_key": {
       "Type": "TypeString",
       "Optional": true,
-      "Description": "The secret key for API operations. You can retrieve this\nfrom the 'My Credential' section of the console.",
       "Default": {
         "Type": "string"
       }
@@ -127,6 +136,14 @@
         "Type": "string"
       }
     },
+    "use_octavia": {
+      "Type": "TypeBool",
+      "Optional": true,
+      "Description": "If set to `true`, API requests will go the Load Balancer\nservice (Octavia) instead of the Networking service (Neutron).",
+      "Default": {
+        "Type": "string"
+      }
+    },
     "user_id": {
       "Type": "TypeString",
       "Optional": true,
@@ -145,7 +162,7 @@
     }
   },
   "resources": {
-    "flexibleengine_as_configuration_v1": {
+    "telefonicaopencloud_as_configuration_v1": {
       "instance_config": {
         "Type": "TypeList",
         "Required": true,
@@ -275,7 +292,7 @@
         "Required": true
       }
     },
-    "flexibleengine_as_group_v1": {
+    "telefonicaopencloud_as_group_v1": {
       "__timeouts__": [
         "create",
         "delete"
@@ -395,7 +412,7 @@
         "Required": true
       }
     },
-    "flexibleengine_as_policy_v1": {
+    "telefonicaopencloud_as_policy_v1": {
       "alarm_id": {
         "Type": "TypeString",
         "Optional": true
@@ -470,7 +487,7 @@
         }
       }
     },
-    "flexibleengine_blockstorage_volume_v2": {
+    "telefonicaopencloud_blockstorage_volume_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -549,7 +566,176 @@
         "Computed": true
       }
     },
-    "flexibleengine_compute_floatingip_associate_v2": {
+    "telefonicaopencloud_ces_alarmrule": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "alarm_action_enabled": {
+        "Type": "TypeBool",
+        "Optional": true
+      },
+      "alarm_actions": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "notification_list": {
+              "Type": "TypeList",
+              "Required": true,
+              "MaxItems": 5,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true
+            }
+          }
+        }
+      },
+      "alarm_description": {
+        "Type": "TypeString",
+        "Optional": true
+      },
+      "alarm_enabled": {
+        "Type": "TypeBool",
+        "Optional": true
+      },
+      "alarm_name": {
+        "Type": "TypeString",
+        "Required": true
+      },
+      "alarm_state": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true
+      },
+      "condition": {
+        "Type": "TypeList",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "comparison_operator": {
+              "Type": "TypeString",
+              "Required": true
+            },
+            "count": {
+              "Type": "TypeInt",
+              "Required": true
+            },
+            "filter": {
+              "Type": "TypeString",
+              "Required": true
+            },
+            "period": {
+              "Type": "TypeInt",
+              "Required": true
+            },
+            "unit": {
+              "Type": "TypeString",
+              "Optional": true
+            },
+            "value": {
+              "Type": "TypeInt",
+              "Required": true
+            }
+          }
+        }
+      },
+      "insufficientdata_actions": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "notification_list": {
+              "Type": "TypeList",
+              "Required": true,
+              "MaxItems": 5,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true
+            }
+          }
+        }
+      },
+      "metric": {
+        "Type": "TypeList",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "dimensions": {
+              "Type": "TypeList",
+              "Required": true,
+              "MaxItems": 3,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "TypeString",
+                    "Required": true
+                  },
+                  "value": {
+                    "Type": "TypeString",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "metric_name": {
+              "Type": "TypeString",
+              "Required": true
+            },
+            "namespace": {
+              "Type": "TypeString",
+              "Required": true
+            }
+          }
+        }
+      },
+      "ok_actions": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "notification_list": {
+              "Type": "TypeList",
+              "Required": true,
+              "MaxItems": 5,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true
+            }
+          }
+        }
+      },
+      "update_time": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "telefonicaopencloud_compute_floatingip_associate_v2": {
       "fixed_ip": {
         "Type": "TypeString",
         "Optional": true
@@ -568,7 +754,7 @@
         "Computed": true
       }
     },
-    "flexibleengine_compute_floatingip_v2": {
+    "telefonicaopencloud_compute_floatingip_v2": {
       "address": {
         "Type": "TypeString",
         "Computed": true
@@ -591,7 +777,7 @@
         "Computed": true
       }
     },
-    "flexibleengine_compute_instance_v2": {
+    "telefonicaopencloud_compute_instance_v2": {
       "__timeouts__": [
         "create",
         "update",
@@ -674,7 +860,7 @@
       "floating_ip": {
         "Type": "TypeString",
         "Optional": true,
-        "Removed": "Use the flexibleengine_compute_floatingip_associate_v2 resource instead"
+        "Removed": "Use the telefonicaopencloud_compute_floatingip_associate_v2 resource instead"
       },
       "image_id": {
         "Type": "TypeString",
@@ -723,7 +909,7 @@
               "Type": "TypeString",
               "Optional": true,
               "Computed": true,
-              "Removed": "Use the flexibleengine_compute_floatingip_associate_v2 resource instead"
+              "Removed": "Use the telefonicaopencloud_compute_floatingip_associate_v2 resource instead"
             },
             "mac": {
               "Type": "TypeString",
@@ -834,7 +1020,7 @@
       "volume": {
         "Type": "TypeSet",
         "Optional": true,
-        "Removed": "Use block_device or flexibleengine_compute_volume_attach_v2 instead",
+        "Removed": "Use block_device or telefonicaopencloud_compute_volume_attach_v2 instead",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -856,7 +1042,7 @@
         }
       }
     },
-    "flexibleengine_compute_keypair_v2": {
+    "telefonicaopencloud_compute_keypair_v2": {
       "name": {
         "Type": "TypeString",
         "Required": true
@@ -875,7 +1061,63 @@
         "Optional": true
       }
     },
-    "flexibleengine_compute_servergroup_v2": {
+    "telefonicaopencloud_compute_secgroup_v2": {
+      "__timeouts__": [
+        "delete"
+      ],
+      "description": {
+        "Type": "TypeString",
+        "Required": true
+      },
+      "name": {
+        "Type": "TypeString",
+        "Required": true
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true
+      },
+      "rule": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cidr": {
+              "Type": "TypeString",
+              "Optional": true
+            },
+            "from_group_id": {
+              "Type": "TypeString",
+              "Optional": true
+            },
+            "from_port": {
+              "Type": "TypeInt",
+              "Required": true
+            },
+            "id": {
+              "Type": "TypeString",
+              "Computed": true
+            },
+            "ip_protocol": {
+              "Type": "TypeString",
+              "Required": true
+            },
+            "self": {
+              "Type": "TypeBool",
+              "Optional": true
+            },
+            "to_port": {
+              "Type": "TypeInt",
+              "Required": true
+            }
+          }
+        }
+      }
+    },
+    "telefonicaopencloud_compute_servergroup_v2": {
       "members": {
         "Type": "TypeList",
         "Computed": true,
@@ -906,7 +1148,7 @@
         "Optional": true
       }
     },
-    "flexibleengine_compute_volume_attach_v2": {
+    "telefonicaopencloud_compute_volume_attach_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -930,7 +1172,7 @@
         "Required": true
       }
     },
-    "flexibleengine_dns_recordset_v2": {
+    "telefonicaopencloud_dns_recordset_v2": {
       "__timeouts__": [
         "create",
         "update",
@@ -976,7 +1218,7 @@
         "Required": true
       }
     },
-    "flexibleengine_dns_zone_v2": {
+    "telefonicaopencloud_dns_zone_v2": {
       "__timeouts__": [
         "create",
         "update",
@@ -1026,187 +1268,126 @@
         "Optional": true
       }
     },
-    "flexibleengine_drs_replication_v2": {
-      "created_at": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "description": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "failure_detail": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "fault_level": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "name": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "priority_station": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "progress": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "record_metadata": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "replication_consistency_group_id": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "replication_model": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "replication_status": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "status": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "updated_at": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "volume_ids": {
-        "Type": "TypeList",
-        "Required": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      }
-    },
-    "flexibleengine_drs_replicationconsistencygroup_v2": {
-      "created_at": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "description": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "failure_detail": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "fault_level": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "name": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "priority_station": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "replication_ids": {
-        "Type": "TypeSet",
-        "Required": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      },
-      "replication_model": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "replication_status": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "status": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "updated_at": {
-        "Type": "TypeString",
-        "Computed": true
-      }
-    },
-    "flexibleengine_elb_backend": {
-      "__timeouts__": [
-        "create",
-        "delete"
-      ],
-      "address": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "listener_id": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "server_id": {
-        "Type": "TypeString",
-        "Required": true
-      }
-    },
-    "flexibleengine_elb_health": {
+    "telefonicaopencloud_elb_backendecs": {
       "__timeouts__": [
         "create",
         "update",
         "delete"
       ],
-      "healthcheck_connect_port": {
-        "Type": "TypeInt",
-        "Optional": true
-      },
-      "healthcheck_interval": {
-        "Type": "TypeInt",
-        "Optional": true
-      },
-      "healthcheck_protocol": {
+      "create_time": {
         "Type": "TypeString",
-        "Optional": true
+        "Computed": true
       },
-      "healthcheck_timeout": {
-        "Type": "TypeInt",
-        "Optional": true
-      },
-      "healthcheck_uri": {
+      "health_status": {
         "Type": "TypeString",
-        "Optional": true
-      },
-      "healthy_threshold": {
-        "Type": "TypeInt",
-        "Optional": true
+        "Computed": true
       },
       "listener_id": {
         "Type": "TypeString",
         "Required": true
       },
-      "region": {
+      "listeners": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "TypeString",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "private_address": {
+        "Type": "TypeString",
+        "Required": true
+      },
+      "public_address": {
+        "Type": "TypeString",
+        "Computed": true
+      },
+      "server_id": {
+        "Type": "TypeString",
+        "Required": true
+      },
+      "server_name": {
+        "Type": "TypeString",
+        "Computed": true
+      },
+      "status": {
+        "Type": "TypeString",
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "TypeString",
+        "Computed": true
+      }
+    },
+    "telefonicaopencloud_elb_healthcheck": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "create_time": {
+        "Type": "TypeString",
+        "Computed": true
+      },
+      "healthcheck_connect_port": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true
+      },
+      "healthcheck_interval": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true
+      },
+      "healthcheck_protocol": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true
+      },
+      "healthcheck_timeout": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true
+      },
+      "healthcheck_uri": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true
+      },
+      "healthy_threshold": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true
+      },
+      "listener_id": {
+        "Type": "TypeString",
+        "Required": true
       },
       "unhealthy_threshold": {
         "Type": "TypeInt",
         "Optional": true,
         "Computed": true
+      },
+      "update_time": {
+        "Type": "TypeString",
+        "Computed": true
       }
     },
-    "flexibleengine_elb_listener": {
+    "telefonicaopencloud_elb_listener": {
       "__timeouts__": [
         "create",
         "update",
         "delete"
       ],
+      "admin_state_up": {
+        "Type": "TypeBool",
+        "Computed": true
+      },
       "backend_port": {
         "Type": "TypeInt",
         "Required": true
@@ -1217,15 +1398,35 @@
       },
       "certificate_id": {
         "Type": "TypeString",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
+      },
+      "certificates": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
       },
       "cookie_timeout": {
         "Type": "TypeInt",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
+      },
+      "create_time": {
+        "Type": "TypeString",
+        "Computed": true
       },
       "description": {
         "Type": "TypeString",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
+      },
+      "healthcheck_id": {
+        "Type": "TypeString",
+        "Computed": true
       },
       "lb_algorithm": {
         "Type": "TypeString",
@@ -1235,47 +1436,54 @@
         "Type": "TypeString",
         "Required": true
       },
+      "member_number": {
+        "Type": "TypeInt",
+        "Computed": true
+      },
       "name": {
         "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
+        "Required": true
+      },
+      "port": {
+        "Type": "TypeInt",
+        "Required": true
       },
       "protocol": {
         "Type": "TypeString",
         "Required": true
       },
-      "protocol_port": {
-        "Type": "TypeInt",
-        "Required": true
-      },
-      "region": {
-        "Type": "TypeString",
+      "session_sticky": {
+        "Type": "TypeBool",
         "Optional": true,
         "Computed": true
       },
-      "session_sticky": {
-        "Type": "TypeBool",
-        "Optional": true
-      },
-      "session_sticky_type": {
-        "Type": "TypeString",
-        "Optional": true
-      },
       "ssl_ciphers": {
         "Type": "TypeString",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "ssl_protocols": {
         "Type": "TypeString",
         "Optional": true
       },
+      "status": {
+        "Type": "TypeString",
+        "Computed": true
+      },
+      "sticky_session_type": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true
+      },
       "tcp_draining": {
         "Type": "TypeBool",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "tcp_draining_timeout": {
         "Type": "TypeInt",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "tcp_timeout": {
         "Type": "TypeInt",
@@ -1284,18 +1492,23 @@
       },
       "udp_timeout": {
         "Type": "TypeInt",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "TypeString",
+        "Computed": true
       }
     },
-    "flexibleengine_elb_loadbalancer": {
+    "telefonicaopencloud_elb_loadbalancer": {
       "__timeouts__": [
         "create",
         "update",
         "delete"
       ],
       "admin_state_up": {
-        "Type": "TypeBool",
-        "Optional": true
+        "Type": "TypeInt",
+        "Required": true
       },
       "az": {
         "Type": "TypeString",
@@ -1303,34 +1516,50 @@
       },
       "bandwidth": {
         "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true
+      },
+      "charge_mode": {
+        "Type": "TypeString",
         "Optional": true
       },
+      "create_time": {
+        "Type": "TypeString",
+        "Computed": true
+      },
       "description": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true
+      },
+      "eip_type": {
         "Type": "TypeString",
         "Optional": true
       },
       "name": {
         "Type": "TypeString",
-        "Optional": true
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
+        "Required": true
       },
       "security_group_id": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true
       },
+      "status": {
+        "Type": "TypeString",
+        "Computed": true
+      },
       "tenantid": {
         "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
+        "Optional": true
       },
       "type": {
         "Type": "TypeString",
         "Required": true
+      },
+      "update_time": {
+        "Type": "TypeString",
+        "Computed": true
       },
       "vip_address": {
         "Type": "TypeString",
@@ -1339,14 +1568,15 @@
       },
       "vip_subnet_id": {
         "Type": "TypeString",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "vpc_id": {
         "Type": "TypeString",
         "Required": true
       }
     },
-    "flexibleengine_networking_floatingip_v2": {
+    "telefonicaopencloud_networking_floatingip_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -1384,7 +1614,7 @@
         "Optional": true
       }
     },
-    "flexibleengine_networking_network_v2": {
+    "telefonicaopencloud_networking_network_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -1439,7 +1669,7 @@
         "Optional": true
       }
     },
-    "flexibleengine_networking_port_v2": {
+    "telefonicaopencloud_networking_port_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -1457,10 +1687,17 @@
           "ElementsType": "TypeString"
         }
       },
+      "all_security_group_ids": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
       "allowed_address_pairs": {
         "Type": "TypeSet",
         "Optional": true,
-        "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -1516,6 +1753,10 @@
         "Type": "TypeString",
         "Required": true
       },
+      "no_security_groups": {
+        "Type": "TypeBool",
+        "Optional": true
+      },
       "region": {
         "Type": "TypeString",
         "Optional": true,
@@ -1524,7 +1765,6 @@
       "security_group_ids": {
         "Type": "TypeSet",
         "Optional": true,
-        "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "TypeString"
@@ -1540,14 +1780,15 @@
         "Optional": true
       }
     },
-    "flexibleengine_networking_router_interface_v2": {
+    "telefonicaopencloud_networking_router_interface_v2": {
       "__timeouts__": [
         "create",
         "delete"
       ],
       "port_id": {
         "Type": "TypeString",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "region": {
         "Type": "TypeString",
@@ -1560,10 +1801,11 @@
       },
       "subnet_id": {
         "Type": "TypeString",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       }
     },
-    "flexibleengine_networking_router_route_v2": {
+    "telefonicaopencloud_networking_router_route_v2": {
       "destination_cidr": {
         "Type": "TypeString",
         "Required": true
@@ -1582,7 +1824,7 @@
         "Required": true
       }
     },
-    "flexibleengine_networking_router_v2": {
+    "telefonicaopencloud_networking_router_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -1597,9 +1839,45 @@
         "Optional": true,
         "Computed": true
       },
+      "enable_snat": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "Computed": true
+      },
+      "external_fixed_ip": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_address": {
+              "Type": "TypeString",
+              "Optional": true
+            },
+            "subnet_id": {
+              "Type": "TypeString",
+              "Optional": true
+            }
+          }
+        }
+      },
       "external_gateway": {
         "Type": "TypeString",
-        "Optional": true
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "external_network_id"
+        ],
+        "Deprecated": "use external_network_id instead"
+      },
+      "external_network_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "external_gateway"
+        ]
       },
       "name": {
         "Type": "TypeString",
@@ -1620,7 +1898,7 @@
         "Optional": true
       }
     },
-    "flexibleengine_networking_secgroup_rule_v2": {
+    "telefonicaopencloud_networking_secgroup_rule_v2": {
       "__timeouts__": [
         "delete"
       ],
@@ -1672,7 +1950,7 @@
         "Computed": true
       }
     },
-    "flexibleengine_networking_secgroup_v2": {
+    "telefonicaopencloud_networking_secgroup_v2": {
       "__timeouts__": [
         "delete"
       ],
@@ -1700,7 +1978,7 @@
         "Computed": true
       }
     },
-    "flexibleengine_networking_subnet_v2": {
+    "telefonicaopencloud_networking_subnet_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -1742,7 +2020,10 @@
       "gateway_ip": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "ConflictsWith": [
+          "no_gateway"
+        ]
       },
       "host_routes": {
         "Type": "TypeList",
@@ -1775,7 +2056,10 @@
       },
       "no_gateway": {
         "Type": "TypeBool",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "gateway_ip"
+        ]
       },
       "region": {
         "Type": "TypeString",
@@ -1792,226 +2076,7 @@
         "Optional": true
       }
     },
-    "flexibleengine_networking_vip_associate_v2": {
-      "port_ids": {
-        "Type": "TypeSet",
-        "Required": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      },
-      "vip_id": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "vip_ip_address": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "vip_subnet_id": {
-        "Type": "TypeString",
-        "Computed": true
-      }
-    },
-    "flexibleengine_networking_vip_v2": {
-      "device_owner": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "id": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "ip_address": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "name": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "network_id": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "status": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "subnet_id": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "tenant_id": {
-        "Type": "TypeString",
-        "Computed": true
-      }
-    },
-    "flexibleengine_rds_instance_v1": {
-      "__timeouts__": [
-        "create",
-        "delete"
-      ],
-      "availabilityzone": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "backupstrategy": {
-        "Type": "TypeList",
-        "Optional": true,
-        "MaxItems": 1,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "keepdays": {
-              "Type": "TypeInt",
-              "Optional": true
-            },
-            "starttime": {
-              "Type": "TypeString",
-              "Optional": true
-            }
-          }
-        }
-      },
-      "created": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "datastore": {
-        "Type": "TypeList",
-        "Required": true,
-        "MaxItems": 1,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "type": {
-              "Type": "TypeString",
-              "Required": true
-            },
-            "version": {
-              "Type": "TypeString",
-              "Required": true
-            }
-          }
-        }
-      },
-      "dbport": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "dbrtpd": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "flavorref": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "ha": {
-        "Type": "TypeList",
-        "Optional": true,
-        "MaxItems": 1,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "enable": {
-              "Type": "TypeBool",
-              "Optional": true
-            },
-            "replicationmode": {
-              "Type": "TypeString",
-              "Optional": true
-            }
-          }
-        }
-      },
-      "hostname": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "name": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "nics": {
-        "Type": "TypeList",
-        "Required": true,
-        "MaxItems": 1,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "subnetid": {
-              "Type": "TypeString",
-              "Required": true
-            }
-          }
-        }
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "securitygroup": {
-        "Type": "TypeList",
-        "Required": true,
-        "MaxItems": 1,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "id": {
-              "Type": "TypeString",
-              "Required": true
-            }
-          }
-        }
-      },
-      "status": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "type": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "updated": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "volume": {
-        "Type": "TypeList",
-        "Required": true,
-        "MaxItems": 1,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "size": {
-              "Type": "TypeInt",
-              "Required": true
-            },
-            "type": {
-              "Type": "TypeString",
-              "Required": true
-            }
-          }
-        }
-      },
-      "vpc": {
-        "Type": "TypeString",
-        "Required": true
-      }
-    },
-    "flexibleengine_s3_bucket": {
+    "telefonicaopencloud_s3_bucket": {
       "acl": {
         "Type": "TypeString",
         "Optional": true
@@ -2177,6 +2242,10 @@
         "Optional": true,
         "Computed": true
       },
+      "tags": {
+        "Type": "TypeMap",
+        "Optional": true
+      },
       "versioning": {
         "Type": "TypeList",
         "Optional": true,
@@ -2237,7 +2306,7 @@
         "Computed": true
       }
     },
-    "flexibleengine_s3_bucket_object": {
+    "telefonicaopencloud_s3_bucket_object": {
       "acl": {
         "Type": "TypeString",
         "Optional": true
@@ -2295,6 +2364,11 @@
           "content"
         ]
       },
+      "sse_kms_key_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true
+      },
       "version_id": {
         "Type": "TypeString",
         "Computed": true
@@ -2304,7 +2378,7 @@
         "Optional": true
       }
     },
-    "flexibleengine_s3_bucket_policy": {
+    "telefonicaopencloud_s3_bucket_policy": {
       "bucket": {
         "Type": "TypeString",
         "Required": true
@@ -2314,7 +2388,7 @@
         "Required": true
       }
     },
-    "flexibleengine_smn_subscription_v2": {
+    "telefonicaopencloud_smn_subscription_v2": {
       "endpoint": {
         "Type": "TypeString",
         "Required": true
@@ -2347,7 +2421,7 @@
         "Required": true
       }
     },
-    "flexibleengine_smn_topic_v2": {
+    "telefonicaopencloud_smn_topic_v2": {
       "create_time": {
         "Type": "TypeString",
         "Optional": true,
@@ -2377,132 +2451,92 @@
         "Computed": true
       }
     },
-    "flexibleengine_vpc_peering_connection_accepter_v2": {
+    "telefonicaopencloud_vpc_eip_v1": {
       "__timeouts__": [
         "create",
         "delete"
       ],
-      "accept": {
-        "Type": "TypeBool",
+      "bandwidth": {
+        "Type": "TypeList",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "charge_mode": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true
+            },
+            "name": {
+              "Type": "TypeString",
+              "Required": true
+            },
+            "share_type": {
+              "Type": "TypeString",
+              "Required": true
+            },
+            "size": {
+              "Type": "TypeInt",
+              "Required": true
+            }
+          }
+        }
+      },
+      "publicip": {
+        "Type": "TypeList",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_address": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true
+            },
+            "port_id": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true
+            },
+            "type": {
+              "Type": "TypeString",
+              "Required": true
+            }
+          }
+        }
+      },
+      "region": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true
+      },
+      "value_specs": {
+        "Type": "TypeMap",
+        "Optional": true
+      }
+    }
+  },
+  "data-sources": {
+    "telefonicaopencloud_dns_zone_v2": {
+      "attributes": {
+        "Type": "TypeMap",
+        "Optional": true,
+        "Computed": true
+      },
+      "created_at": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true
+      },
+      "description": {
+        "Type": "TypeString",
         "Optional": true
       },
-      "name": {
+      "email": {
         "Type": "TypeString",
-        "Computed": true
-      },
-      "peer_tenant_id": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "peer_vpc_id": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "status": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "vpc_id": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "vpc_peering_connection_id": {
-        "Type": "TypeString",
-        "Required": true
-      }
-    },
-    "flexibleengine_vpc_peering_connection_v2": {
-      "__timeouts__": [
-        "create",
-        "delete"
-      ],
-      "id": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "name": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "peer_tenant_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "peer_vpc_id": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "status": {
-        "Type": "TypeString",
-        "Computed": true
-      },
-      "vpc_id": {
-        "Type": "TypeString",
-        "Required": true
-      }
-    },
-    "flexibleengine_vpc_route_v2": {
-      "__timeouts__": [
-        "create",
-        "delete"
-      ],
-      "destination": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "nexthop": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "tenant_id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "type": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "vpc_id": {
-        "Type": "TypeString",
-        "Required": true
-      }
-    },
-    "flexibleengine_vpc_subnet_v1": {
-      "__timeouts__": [
-        "create",
-        "delete"
-      ],
-      "availability_zone": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "cidr": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "dhcp_enable": {
-        "Type": "TypeBool",
         "Optional": true
       },
-      "dns_list": {
+      "masters": {
         "Type": "TypeSet",
         "Optional": true,
         "Computed": true,
@@ -2511,15 +2545,16 @@
           "ElementsType": "TypeString"
         }
       },
-      "gateway_ip": {
-        "Type": "TypeString",
-        "Required": true
-      },
       "name": {
         "Type": "TypeString",
-        "Required": true
+        "Optional": true
       },
-      "primary_dns": {
+      "pool_id": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true
+      },
+      "project_id": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true
@@ -2529,46 +2564,40 @@
         "Optional": true,
         "Computed": true
       },
-      "secondary_dns": {
-        "Type": "TypeString",
+      "serial": {
+        "Type": "TypeInt",
         "Optional": true,
-        "Computed": true
-      },
-      "vpc_id": {
-        "Type": "TypeString",
-        "Required": true
-      }
-    },
-    "flexibleengine_vpc_v1": {
-      "__timeouts__": [
-        "create",
-        "delete"
-      ],
-      "cidr": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "name": {
-        "Type": "TypeString",
-        "Required": true
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "shared": {
-        "Type": "TypeBool",
         "Computed": true
       },
       "status": {
         "Type": "TypeString",
+        "Optional": true
+      },
+      "transferred_at": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true
+      },
+      "ttl": {
+        "Type": "TypeInt",
+        "Optional": true
+      },
+      "type": {
+        "Type": "TypeString",
+        "Optional": true
+      },
+      "updated_at": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true
+      },
+      "version": {
+        "Type": "TypeInt",
+        "Optional": true,
         "Computed": true
       }
-    }
-  },
-  "data-sources": {
-    "flexibleengine_networking_network_v2": {
+    },
+    "telefonicaopencloud_networking_network_v2": {
       "admin_state_up": {
         "Type": "TypeString",
         "Computed": true
@@ -2594,6 +2623,10 @@
         "Type": "TypeString",
         "Computed": true
       },
+      "status": {
+        "Type": "TypeString",
+        "Optional": true
+      },
       "tenant_id": {
         "Type": "TypeString",
         "Optional": true,
@@ -2603,7 +2636,7 @@
         }
       }
     },
-    "flexibleengine_networking_secgroup_v2": {
+    "telefonicaopencloud_networking_secgroup_v2": {
       "name": {
         "Type": "TypeString",
         "Optional": true
@@ -2623,42 +2656,106 @@
         "Computed": true
       }
     },
-    "flexibleengine_rds_flavors_v1": {
-      "datastore_name": {
-        "Type": "TypeString",
-        "Required": true
+    "telefonicaopencloud_networking_subnet_v2": {
+      "allocation_pools": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "end": {
+              "Type": "TypeString",
+              "Computed": true
+            },
+            "start": {
+              "Type": "TypeString",
+              "Computed": true
+            }
+          }
+        }
       },
-      "datastore_version": {
+      "cidr": {
         "Type": "TypeString",
-        "Required": true
+        "Optional": true
       },
-      "id": {
-        "Type": "TypeString",
+      "dhcp_disabled": {
+        "Type": "TypeBool",
         "Optional": true,
+        "ConflictsWith": [
+          "dhcp_enabled"
+        ]
+      },
+      "dhcp_enabled": {
+        "Type": "TypeBool",
+        "Optional": true,
+        "ConflictsWith": [
+          "dhcp_disabled"
+        ]
+      },
+      "dns_nameservers": {
+        "Type": "TypeSet",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "enable_dhcp": {
+        "Type": "TypeBool",
         "Computed": true
+      },
+      "gateway_ip": {
+        "Type": "TypeString",
+        "Optional": true
+      },
+      "host_routes": {
+        "Type": "TypeList",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "destination_cidr": {
+              "Type": "TypeString",
+              "Computed": true
+            },
+            "next_hop": {
+              "Type": "TypeString",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "ip_version": {
+        "Type": "TypeInt",
+        "Optional": true
       },
       "name": {
         "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
+        "Optional": true
       },
-      "ram": {
-        "Type": "TypeInt",
-        "Optional": true,
-        "Computed": true
+      "network_id": {
+        "Type": "TypeString",
+        "Optional": true
       },
       "region": {
         "Type": "TypeString",
         "Optional": true,
         "Computed": true
       },
-      "speccode": {
+      "subnet_id": {
+        "Type": "TypeString",
+        "Optional": true
+      },
+      "tenant_id": {
         "Type": "TypeString",
         "Optional": true,
-        "Computed": true
+        "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
+        "Default": {
+          "Type": "string"
+        }
       }
     },
-    "flexibleengine_s3_bucket_object": {
+    "telefonicaopencloud_s3_bucket_object": {
       "body": {
         "Type": "TypeString",
         "Computed": true
@@ -2735,206 +2832,6 @@
       "website_redirect_location": {
         "Type": "TypeString",
         "Computed": true
-      }
-    },
-    "flexibleengine_vpc_peering_connection_v2": {
-      "id": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "name": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "peer_tenant_id": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "peer_vpc_id": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "status": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "vpc_id": {
-        "Type": "TypeString",
-        "Optional": true
-      }
-    },
-    "flexibleengine_vpc_route_ids_v2": {
-      "ids": {
-        "Type": "TypeSet",
-        "Computed": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "vpc_id": {
-        "Type": "TypeString",
-        "Required": true
-      }
-    },
-    "flexibleengine_vpc_route_v2": {
-      "destination": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "id": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "nexthop": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "tenant_id": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "type": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "vpc_id": {
-        "Type": "TypeString",
-        "Optional": true
-      }
-    },
-    "flexibleengine_vpc_subnet_ids_v1": {
-      "ids": {
-        "Type": "TypeSet",
-        "Computed": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "vpc_id": {
-        "Type": "TypeString",
-        "Required": true
-      }
-    },
-    "flexibleengine_vpc_subnet_v1": {
-      "availability_zone": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "cidr": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "dhcp_enable": {
-        "Type": "TypeBool",
-        "Computed": true
-      },
-      "dns_list": {
-        "Type": "TypeSet",
-        "Computed": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "TypeString"
-        }
-      },
-      "gateway_ip": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "id": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "name": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "primary_dns": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "secondary_dns": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "status": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "vpc_id": {
-        "Type": "TypeString",
-        "Optional": true
-      }
-    },
-    "flexibleengine_vpc_v1": {
-      "cidr": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "id": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "name": {
-        "Type": "TypeString",
-        "Optional": true
-      },
-      "region": {
-        "Type": "TypeString",
-        "Optional": true,
-        "Computed": true
-      },
-      "routes": {
-        "Type": "TypeList",
-        "Computed": true,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "destination": {
-              "Type": "TypeString",
-              "Computed": true
-            },
-            "nexthop": {
-              "Type": "TypeString",
-              "Computed": true
-            }
-          }
-        }
-      },
-      "shared": {
-        "Type": "TypeBool",
-        "Optional": true
-      },
-      "status": {
-        "Type": "TypeString",
-        "Optional": true
       }
     }
   }

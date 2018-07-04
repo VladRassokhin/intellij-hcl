@@ -1,43 +1,15 @@
 {
   "name": "spotinst",
   "type": "provider",
-  "version": "v0.1.0-20-ge9189ab",
+  "version": "v1.1.0-1-g39708a7",
   "provider": {
-    "client_id": {
+    "account": {
       "Type": "TypeString",
       "Optional": true,
-      "Description": "Spotinst OAuth Client ID",
+      "Description": "Spotinst Account ID",
       "Default": {
         "Type": "string"
-      },
-      "Elem": {}
-    },
-    "client_secret": {
-      "Type": "TypeString",
-      "Optional": true,
-      "Description": "Spotinst OAuth Client Secret",
-      "Default": {
-        "Type": "string"
-      },
-      "Elem": {}
-    },
-    "email": {
-      "Type": "TypeString",
-      "Optional": true,
-      "Description": "Spotinst Email",
-      "Default": {
-        "Type": "string"
-      },
-      "Elem": {}
-    },
-    "password": {
-      "Type": "TypeString",
-      "Optional": true,
-      "Description": "Spotinst Password",
-      "Default": {
-        "Type": "string"
-      },
-      "Elem": {}
+      }
     },
     "token": {
       "Type": "TypeString",
@@ -45,531 +17,645 @@
       "Description": "Spotinst Personal API Access Token",
       "Default": {
         "Type": "string"
-      },
-      "Elem": {}
+      }
     }
   },
   "resources": {
-    "spotinst_aws_group": {
-      "availability_zone": {
-        "Type": "TypeSet",
-        "Optional": true,
-        "ConflictsWith": [
-          "availability_zones"
-        ],
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "name": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "subnet_id": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
+    "spotinst_elastigroup_aws": {
       "availability_zones": {
         "Type": "TypeList",
         "Optional": true,
-        "ConflictsWith": [
-          "availability_zone"
-        ],
-        "Default": {},
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "TypeString"
         }
       },
-      "capacity": {
-        "Type": "TypeSet",
-        "Required": true,
-        "MaxItems": 1,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "maximum": {
-              "Type": "TypeInt",
-              "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "minimum": {
-              "Type": "TypeInt",
-              "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "target": {
-              "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "unit": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
+      "block_devices_mode": {
+        "Type": "TypeString",
+        "Optional": true
+      },
+      "capacity_unit": {
+        "Type": "TypeString",
+        "Optional": true,
+        "Computed": true
       },
       "description": {
         "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
+        "Required": true
+      },
+      "desired_capacity": {
+        "Type": "TypeInt",
+        "Optional": true
+      },
+      "draining_timeout": {
+        "Type": "TypeInt",
+        "Optional": true
       },
       "ebs_block_device": {
         "Type": "TypeSet",
         "Optional": true,
-        "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "delete_on_termination": {
               "Type": "TypeBool",
               "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
+              "Computed": true
             },
             "device_name": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
             "encrypted": {
               "Type": "TypeBool",
               "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
+              "Computed": true
             },
             "iops": {
               "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             },
             "snapshot_id": {
               "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             },
             "volume_size": {
               "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             },
             "volume_type": {
               "Type": "TypeString",
               "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
+              "Computed": true
             }
           }
         }
       },
-      "ec2_container_service_integration": {
-        "Type": "TypeSet",
+      "ebs_optimized": {
+        "Type": "TypeBool",
         "Optional": true,
-        "MaxItems": 1,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "cluster_name": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
-      "elastic_beanstalk_integration": {
-        "Type": "TypeSet",
-        "Optional": true,
-        "MaxItems": 1,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "environment_id": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
+        "Computed": true
       },
       "elastic_ips": {
         "Type": "TypeList",
         "Optional": true,
-        "Default": {},
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "TypeString"
         }
       },
+      "elastic_load_balancers": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "enable_monitoring": {
+        "Type": "TypeBool",
+        "Optional": true
+      },
       "ephemeral_block_device": {
         "Type": "TypeSet",
         "Optional": true,
-        "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "device_name": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
             "virtual_name": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             }
           }
         }
       },
-      "hot_ebs_volume": {
-        "Type": "TypeSet",
-        "Optional": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "device_name": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "volume_ids": {
-              "Type": "TypeList",
-              "Required": true,
-              "Default": {},
-              "Elem": {
-                "Type": "SchemaElements",
-                "ElementsType": "TypeString"
-              }
-            }
-          }
-        }
+      "fallback_to_ondemand": {
+        "Type": "TypeBool",
+        "Required": true
+      },
+      "health_check_grace_period": {
+        "Type": "TypeInt",
+        "Optional": true
+      },
+      "health_check_type": {
+        "Type": "TypeString",
+        "Optional": true
+      },
+      "health_check_unhealthy_duration_before_replacement": {
+        "Type": "TypeInt",
+        "Optional": true
+      },
+      "iam_instance_profile": {
+        "Type": "TypeString",
+        "Optional": true
       },
       "image_id": {
         "Type": "TypeString",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
+        "Optional": true
       },
-      "instance_types": {
-        "Type": "TypeSet",
+      "instance_types_ondemand": {
+        "Type": "TypeString",
+        "Required": true
+      },
+      "instance_types_spot": {
+        "Type": "TypeList",
         "Required": true,
-        "MaxItems": 1,
-        "Default": {},
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "instance_types_weights": {
+        "Type": "TypeSet",
+        "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "ondemand": {
+            "instance_type": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
-            "spot": {
-              "Type": "TypeList",
+            "weight": {
+              "Type": "TypeInt",
+              "Required": true
+            }
+          }
+        }
+      },
+      "integration_codedeploy": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cleanup_on_failure": {
+              "Type": "TypeBool",
+              "Required": true
+            },
+            "deployment_groups": {
+              "Type": "TypeSet",
               "Required": true,
-              "Default": {},
               "Elem": {
-                "Type": "SchemaElements",
-                "ElementsType": "TypeString"
+                "Type": "SchemaInfo",
+                "Info": {
+                  "application_name": {
+                    "Type": "TypeString",
+                    "Required": true
+                  },
+                  "deployment_group_name": {
+                    "Type": "TypeString",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "terminate_instance_on_failure": {
+              "Type": "TypeBool",
+              "Required": true
+            }
+          }
+        }
+      },
+      "integration_ecs": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "autoscale_cooldown": {
+              "Type": "TypeInt",
+              "Optional": true
+            },
+            "autoscale_down": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "evaluation_periods": {
+                    "Type": "TypeInt",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "autoscale_headroom": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "cpu_per_unit": {
+                    "Type": "TypeInt",
+                    "Optional": true
+                  },
+                  "memory_per_unit": {
+                    "Type": "TypeInt",
+                    "Optional": true
+                  },
+                  "num_of_units": {
+                    "Type": "TypeInt",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "autoscale_is_enabled": {
+              "Type": "TypeBool",
+              "Optional": true
+            },
+            "cluster_name": {
+              "Type": "TypeString",
+              "Required": true
+            }
+          }
+        }
+      },
+      "integration_gitlab": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "runner": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "is_enabled": {
+                    "Type": "TypeBool",
+                    "Optional": true
+                  }
+                }
               }
             }
           }
         }
       },
-      "kubernetes_integration": {
-        "Type": "TypeSet",
+      "integration_kubernetes": {
+        "Type": "TypeList",
         "Optional": true,
         "MaxItems": 1,
-        "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "api_server": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
+            },
+            "autoscale_cooldown": {
+              "Type": "TypeInt",
+              "Optional": true
+            },
+            "autoscale_down": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "evaluation_periods": {
+                    "Type": "TypeInt",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "autoscale_headroom": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "cpu_per_unit": {
+                    "Type": "TypeInt",
+                    "Optional": true
+                  },
+                  "memory_per_unit": {
+                    "Type": "TypeInt",
+                    "Optional": true
+                  },
+                  "num_of_units": {
+                    "Type": "TypeInt",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "autoscale_is_auto_config": {
+              "Type": "TypeBool",
+              "Optional": true
+            },
+            "autoscale_is_enabled": {
+              "Type": "TypeBool",
+              "Optional": true
+            },
+            "cluster_identifier": {
+              "Type": "TypeString",
+              "Optional": true
+            },
+            "integration_mode": {
+              "Type": "TypeString",
+              "Optional": true
             },
             "token": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             }
           }
         }
       },
-      "launch_specification": {
-        "Type": "TypeSet",
-        "Required": true,
-        "MaxItems": 1,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "ebs_optimized": {
-              "Type": "TypeBool",
-              "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "health_check_grace_period": {
-              "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "health_check_type": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "iam_instance_profile": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "iam_role": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Deprecated": "Attribute iam_role is deprecated. Use iam_instance_profile instead",
-              "Default": {},
-              "Elem": {}
-            },
-            "image_id": {
-              "Type": "TypeString",
-              "Optional": true,
-              "ConflictsWith": [
-                "image_id"
-              ],
-              "Default": {},
-              "Elem": {}
-            },
-            "key_pair": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "load_balancer_names": {
-              "Type": "TypeList",
-              "Optional": true,
-              "Default": {},
-              "Elem": {
-                "Type": "SchemaElements",
-                "ElementsType": "TypeString"
-              }
-            },
-            "monitoring": {
-              "Type": "TypeBool",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "security_group_ids": {
-              "Type": "TypeList",
-              "Required": true,
-              "Default": {},
-              "Elem": {
-                "Type": "SchemaElements",
-                "ElementsType": "TypeString"
-              }
-            },
-            "user_data": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
-      "load_balancer": {
-        "Type": "TypeSet",
-        "Optional": true,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "arn": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "name": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "type": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
-      "mesosphere_integration": {
-        "Type": "TypeSet",
+      "integration_mesosphere": {
+        "Type": "TypeList",
         "Optional": true,
         "MaxItems": 1,
-        "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "api_server": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
+            }
+          }
+        }
+      },
+      "integration_multai_runtime": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "deployment_id": {
+              "Type": "TypeString",
+              "Required": true
+            }
+          }
+        }
+      },
+      "integration_nomad": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "acl_token": {
+              "Type": "TypeString",
+              "Optional": true
+            },
+            "autoscale_constraints": {
+              "Type": "TypeSet",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "key": {
+                    "Type": "TypeString",
+                    "Required": true
+                  },
+                  "value": {
+                    "Type": "TypeString",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "autoscale_cooldown": {
+              "Type": "TypeInt",
+              "Optional": true
+            },
+            "autoscale_down": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "evaluation_periods": {
+                    "Type": "TypeInt",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "autoscale_headroom": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "cpu_per_unit": {
+                    "Type": "TypeInt",
+                    "Optional": true
+                  },
+                  "memory_per_unit": {
+                    "Type": "TypeInt",
+                    "Optional": true
+                  },
+                  "num_of_units": {
+                    "Type": "TypeInt",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "autoscale_is_enabled": {
+              "Type": "TypeBool",
+              "Optional": true
+            },
+            "master_host": {
+              "Type": "TypeString",
+              "Required": true
+            },
+            "master_port": {
+              "Type": "TypeInt",
+              "Required": true
+            }
+          }
+        }
+      },
+      "integration_rancher": {
+        "Type": "TypeList",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "access_key": {
+              "Type": "TypeString",
+              "Required": true
+            },
+            "master_host": {
+              "Type": "TypeString",
+              "Required": true
+            },
+            "secret_key": {
+              "Type": "TypeString",
+              "Required": true
+            }
+          }
+        }
+      },
+      "key_name": {
+        "Type": "TypeString",
+        "Optional": true
+      },
+      "lifetime_period": {
+        "Type": "TypeString",
+        "Optional": true
+      },
+      "max_size": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true
+      },
+      "min_size": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "Computed": true
+      },
+      "multai_target_sets": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "balancer_id": {
+              "Type": "TypeString",
+              "Required": true
+            },
+            "target_set_id": {
+              "Type": "TypeString",
+              "Required": true
             }
           }
         }
       },
       "name": {
         "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
+        "Required": true
       },
       "network_interface": {
         "Type": "TypeSet",
         "Optional": true,
-        "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "associate_public_ip_address": {
               "Type": "TypeBool",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             },
             "delete_on_termination": {
               "Type": "TypeBool",
               "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
+              "Computed": true
             },
             "description": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
             "device_index": {
               "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
             "network_interface_id": {
               "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             },
             "private_ip_address": {
               "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             },
             "secondary_private_ip_address_count": {
               "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "security_group_ids": {
-              "Type": "TypeList",
-              "Optional": true,
-              "Default": {},
-              "Elem": {
-                "Type": "SchemaElements",
-                "ElementsType": "TypeString"
-              }
-            },
-            "subnet_id": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             }
           }
         }
       },
+      "ondemand_count": {
+        "Type": "TypeInt",
+        "Optional": true,
+        "ConflictsWith": [
+          "spot_percentage"
+        ]
+      },
+      "orientation": {
+        "Type": "TypeString",
+        "Required": true
+      },
+      "persist_block_devices": {
+        "Type": "TypeBool",
+        "Optional": true
+      },
+      "persist_private_ip": {
+        "Type": "TypeBool",
+        "Optional": true
+      },
+      "persist_root_device": {
+        "Type": "TypeBool",
+        "Optional": true
+      },
+      "placement_tenancy": {
+        "Type": "TypeString",
+        "Optional": true
+      },
+      "preferred_availability_zones": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "private_ips": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
       "product": {
         "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
+        "Required": true
       },
-      "rancher_integration": {
-        "Type": "TypeSet",
+      "region": {
+        "Type": "TypeString",
+        "Optional": true
+      },
+      "revert_to_spot": {
+        "Type": "TypeList",
         "Optional": true,
         "MaxItems": 1,
-        "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "access_key": {
+            "perform_at": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
-            "master_host": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "secret_key": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+            "time_windows": {
+              "Type": "TypeList",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "TypeString"
+              }
             }
           }
         }
@@ -577,94 +663,138 @@
       "scaling_down_policy": {
         "Type": "TypeSet",
         "Optional": true,
-        "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "action_type": {
+              "Type": "TypeString",
+              "Optional": true
+            },
             "adjustment": {
-              "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Type": "TypeString",
+              "Optional": true
             },
             "cooldown": {
               "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true,
+              "Computed": true
             },
             "dimensions": {
               "Type": "TypeMap",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             },
             "evaluation_periods": {
               "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true,
+              "Computed": true
             },
             "max_target_capacity": {
-              "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Type": "TypeString",
+              "Optional": true
+            },
+            "maximum": {
+              "Type": "TypeString",
+              "Optional": true
             },
             "metric_name": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
             "min_target_capacity": {
-              "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Type": "TypeString",
+              "Optional": true
+            },
+            "minimum": {
+              "Type": "TypeString",
+              "Optional": true
             },
             "namespace": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
             "operator": {
               "Type": "TypeString",
               "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
+              "Computed": true
             },
             "period": {
               "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true,
+              "Computed": true
             },
             "policy_name": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
+            },
+            "source": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true
             },
             "statistic": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true,
+              "Computed": true
+            },
+            "target": {
+              "Type": "TypeString",
+              "Optional": true
             },
             "threshold": {
               "Type": "TypeFloat",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
             "unit": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
+            }
+          }
+        }
+      },
+      "scaling_target_policy": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cooldown": {
+              "Type": "TypeInt",
+              "Optional": true,
+              "Computed": true
+            },
+            "dimensions": {
+              "Type": "TypeMap",
+              "Optional": true
+            },
+            "metric_name": {
+              "Type": "TypeString",
+              "Required": true
+            },
+            "namespace": {
+              "Type": "TypeString",
+              "Required": true
+            },
+            "policy_name": {
+              "Type": "TypeString",
+              "Required": true
+            },
+            "source": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true
+            },
+            "statistic": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true
+            },
+            "target": {
+              "Type": "TypeFloat",
+              "Required": true
+            },
+            "unit": {
+              "Type": "TypeString",
+              "Required": true
             }
           }
         }
@@ -672,94 +802,90 @@
       "scaling_up_policy": {
         "Type": "TypeSet",
         "Optional": true,
-        "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "action_type": {
+              "Type": "TypeString",
+              "Optional": true
+            },
             "adjustment": {
-              "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Type": "TypeString",
+              "Optional": true
             },
             "cooldown": {
               "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true,
+              "Computed": true
             },
             "dimensions": {
               "Type": "TypeMap",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             },
             "evaluation_periods": {
               "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true,
+              "Computed": true
             },
             "max_target_capacity": {
-              "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Type": "TypeString",
+              "Optional": true
+            },
+            "maximum": {
+              "Type": "TypeString",
+              "Optional": true
             },
             "metric_name": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
             "min_target_capacity": {
-              "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Type": "TypeString",
+              "Optional": true
+            },
+            "minimum": {
+              "Type": "TypeString",
+              "Optional": true
             },
             "namespace": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
             "operator": {
               "Type": "TypeString",
               "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
+              "Computed": true
             },
             "period": {
               "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true,
+              "Computed": true
             },
             "policy_name": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
+            },
+            "source": {
+              "Type": "TypeString",
+              "Optional": true,
+              "Computed": true
             },
             "statistic": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true,
+              "Computed": true
+            },
+            "target": {
+              "Type": "TypeString",
+              "Optional": true
             },
             "threshold": {
               "Type": "TypeFloat",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
             "unit": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             }
           }
         }
@@ -767,254 +893,227 @@
       "scheduled_task": {
         "Type": "TypeSet",
         "Optional": true,
-        "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "batch_size_percentage": {
+              "Type": "TypeInt",
+              "Optional": true
+            },
             "cron_expression": {
               "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             },
             "frequency": {
               "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
+            },
+            "grace_period": {
+              "Type": "TypeInt",
+              "Optional": true
+            },
+            "is_enabled": {
+              "Type": "TypeBool",
+              "Optional": true
+            },
+            "max_capacity": {
+              "Type": "TypeInt",
+              "Optional": true
+            },
+            "min_capacity": {
+              "Type": "TypeInt",
+              "Optional": true
             },
             "scale_max_capacity": {
               "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             },
             "scale_min_capacity": {
               "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             },
             "scale_target_capacity": {
               "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
+            },
+            "start_time": {
+              "Type": "TypeString",
+              "Optional": true
+            },
+            "target_capacity": {
+              "Type": "TypeInt",
+              "Optional": true
             },
             "task_type": {
               "Type": "TypeString",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             }
           }
+        }
+      },
+      "security_groups": {
+        "Type": "TypeList",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
         }
       },
       "signal": {
         "Type": "TypeSet",
         "Optional": true,
-        "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "name": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
-      "strategy": {
-        "Type": "TypeSet",
-        "Required": true,
-        "MaxItems": 1,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "availability_vs_cost": {
-              "Type": "TypeString",
-              "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "draining_timeout": {
-              "Type": "TypeInt",
-              "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "fallback_to_ondemand": {
-              "Type": "TypeBool",
-              "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "ondemand_count": {
-              "Type": "TypeInt",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "risk": {
-              "Type": "TypeFloat",
-              "Optional": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "utilize_reserved_instances": {
-              "Type": "TypeBool",
-              "Optional": true,
-              "Computed": true,
-              "Default": {},
-              "Elem": {}
-            }
-          }
-        }
-      },
-      "tags": {
-        "Type": "TypeMap",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
-      }
-    },
-    "spotinst_healthcheck": {
-      "check": {
-        "Type": "TypeSet",
-        "Required": true,
-        "MaxItems": 1,
-        "Default": {},
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "endpoint": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "interval": {
-              "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "port": {
-              "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
-            },
-            "protocol": {
-              "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
             "timeout": {
               "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Optional": true
             }
           }
         }
       },
-      "name": {
-        "Type": "TypeString",
+      "spot_percentage": {
+        "Type": "TypeFloat",
         "Optional": true,
-        "Default": {},
-        "Elem": {}
+        "ConflictsWith": [
+          "ondemand_count"
+        ]
       },
-      "proxy": {
-        "Type": "TypeSet",
-        "Required": true,
+      "stateful_deallocation": {
+        "Type": "TypeList",
+        "Optional": true,
         "MaxItems": 1,
-        "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "addr": {
+            "should_delete_images": {
+              "Type": "TypeBool",
+              "Optional": true
+            },
+            "should_delete_network_interfaces": {
+              "Type": "TypeBool",
+              "Optional": true
+            },
+            "should_delete_snapshots": {
+              "Type": "TypeBool",
+              "Optional": true
+            },
+            "should_delete_volumes": {
+              "Type": "TypeBool",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "subnet_ids": {
+        "Type": "TypeList",
+        "Optional": true,
+        "ConflictsWith": [
+          "availability_zones"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
+      },
+      "tags": {
+        "Type": "TypeSet",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "key": {
               "Type": "TypeString",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+              "Required": true
             },
-            "port": {
-              "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+            "value": {
+              "Type": "TypeString",
+              "Required": true
             }
           }
         }
       },
-      "resource_id": {
-        "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
+      "target_group_arns": {
+        "Type": "TypeList",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "TypeString"
+        }
       },
-      "threshold": {
-        "Type": "TypeSet",
-        "Required": true,
+      "update_policy": {
+        "Type": "TypeList",
+        "Optional": true,
         "MaxItems": 1,
-        "Default": {},
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "healthy": {
-              "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+            "roll_config": {
+              "Type": "TypeList",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "batch_size_percentage": {
+                    "Type": "TypeInt",
+                    "Required": true
+                  },
+                  "grace_period": {
+                    "Type": "TypeInt",
+                    "Optional": true
+                  },
+                  "health_check_type": {
+                    "Type": "TypeString",
+                    "Optional": true
+                  }
+                }
+              }
             },
-            "unhealthy": {
-              "Type": "TypeInt",
-              "Required": true,
-              "Default": {},
-              "Elem": {}
+            "should_resume_stateful": {
+              "Type": "TypeBool",
+              "Required": true
+            },
+            "should_roll": {
+              "Type": "TypeBool",
+              "Required": true
             }
           }
         }
+      },
+      "user_data": {
+        "Type": "TypeString",
+        "Optional": true
+      },
+      "utilize_reserved_instances": {
+        "Type": "TypeBool",
+        "Optional": true
       }
     },
     "spotinst_subscription": {
       "endpoint": {
         "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
+        "Required": true
       },
       "event_type": {
         "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
+        "Required": true
       },
       "format": {
         "Type": "TypeMap",
-        "Optional": true,
-        "Default": {},
-        "Elem": {}
+        "Optional": true
       },
       "protocol": {
         "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
+        "Required": true
       },
       "resource_id": {
         "Type": "TypeString",
-        "Required": true,
-        "Default": {},
-        "Elem": {}
+        "Required": true
       }
     }
   },
