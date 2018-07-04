@@ -1,5 +1,8 @@
 default: build
 
+clean:
+	rm -f providers.list.full providers.list
+
 build: schemas
 
 schemas: providers.list.full

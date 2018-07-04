@@ -133,16 +133,16 @@ func export(v *schema.Schema) SchemaDefinition {
 	return item
 }
 
-func exportValue(value interface{}, t string) SchemaElement {
+func exportValue(value interface{}, t string) *SchemaElement {
 	s2, ok := value.(*schema.Schema)
 	if ok {
-		return SchemaElement{Type: "SchemaElements", ElementsType: fmt.Sprintf("%s", s2.Type)}
+		return &SchemaElement{Type: "SchemaElements", ElementsType: fmt.Sprintf("%s", s2.Type)}
 	}
 	r2, ok := value.(*schema.Resource)
 	if ok {
-		return SchemaElement{Type: "SchemaInfo", Info: ExportResource(r2)}
+		return &SchemaElement{Type: "SchemaInfo", Info: ExportResource(r2)}
 	}
-	return SchemaElement{Type: t, Value: fmt.Sprintf("%v", value)}
+	return &SchemaElement{Type: t, Value: fmt.Sprintf("%v", value)}
 }
 
 func Generate(provider *schema.Provider, name string, outputPath string) {
@@ -204,8 +204,8 @@ type SchemaDefinition struct {
 	Deprecated string `json:",omitempty"`
 	Removed    string `json:",omitempty"`
 
-	Default SchemaElement `json:",omitempty"`
-	Elem    SchemaElement `json:",omitempty"`
+	Default *SchemaElement `json:",omitempty"`
+	Elem    *SchemaElement `json:",omitempty"`
 }
 
 type SchemaInfo map[string]SchemaDefinition
