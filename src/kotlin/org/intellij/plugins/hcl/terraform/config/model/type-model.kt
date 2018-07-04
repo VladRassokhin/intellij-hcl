@@ -71,14 +71,13 @@ open class BlockType(val literal: String, val args: Int = 0,
 }
 
 class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
-  val name: String = property?.name ?: block!!.literal
-  val required: Boolean = property?.required ?: block!!.required
-  val deprecated: String? = if (property != null) property.deprecated else block!!.deprecated
-  val computed: Boolean
-    get() = property?.computed ?: block!!.computed
+  val name: String get() = property?.name ?: block!!.literal
+  val required: Boolean get() = property?.required ?: block!!.required
+  val deprecated: String? get() = if (property != null) property.deprecated else block!!.deprecated
+  val computed: Boolean get() = property?.computed ?: block!!.computed
 
   init {
-    assert(property != null || block != null, { "Either property or block expected" })
+    assert(property != null || block != null) { "Either property or block expected" }
   }
 
   constructor(property: PropertyType) : this(property, null)
