@@ -15,7 +15,7 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
-import java.util.Arrays
+import java.util.*
 
 // Model for element types
 
@@ -25,7 +25,12 @@ open class Type(val name: String) {
   }
 }
 
-open class BaseModelType(val description: String? = null, val required: Boolean = false, val deprecated: String? = null)
+open class BaseModelType(val description: String? = null,
+                         val required: Boolean = false,
+                         val deprecated: String? = null,
+                         val computed: Boolean = false,
+                         val conflictsWith: List<String> = emptyList()
+)
 
 interface Hint
 open class SimpleHint(vararg val hint: String) : Hint
@@ -41,9 +46,25 @@ open class InterpolationHint(hint: String) : SimpleHint(hint)
 open class SimpleValueHint(vararg hint: String) : SimpleHint(*hint)
 
 // TODO: Support 'default' values for certain types
-open class PropertyType(val name: String, val type: Type, val hint: Hint? = null, val injectionAllowed: Boolean = true, description: String? = null, required: Boolean = false, deprecated: String? = null, val has_default: Boolean = false, val computed: Boolean = false) : BaseModelType(description = description, required = required, deprecated = deprecated)
+open class PropertyType(val name: String, val type: Type,
+                        val hint: Hint? = null,
+                        val injectionAllowed: Boolean = true,
+                        description: String? = null,
+                        required: Boolean = false, deprecated: String? = null, computed: Boolean = false,
+                        conflictsWith: List<String> = emptyList(),
+                        val has_default: Boolean = false
+) : BaseModelType(description = description, required = required, deprecated = deprecated, computed = computed, conflictsWith = conflictsWith) {
+  override fun toString(): String {
+    return "PropertyType(name='$name', type='$type')"
+  }
+}
 
-open class BlockType(val literal: String, val args: Int = 0, description: String? = null, required: Boolean = false, deprecated: String? = null, val computed: Boolean = false, vararg val properties: PropertyOrBlockType = arrayOf()) : BaseModelType(description = description, required = required, deprecated = deprecated) {
+open class BlockType(val literal: String, val args: Int = 0,
+                     description: String? = null,
+                     required: Boolean = false, deprecated: String? = null, computed: Boolean = false,
+                     conflictsWith: List<String> = emptyList(),
+                     vararg val properties: PropertyOrBlockType = arrayOf()
+) : BaseModelType(description = description, required = required, deprecated = deprecated, computed = computed, conflictsWith = conflictsWith) {
   override fun toString(): String {
     return "BlockType(literal='$literal', args=$args, properties=${Arrays.toString(properties)})"
   }

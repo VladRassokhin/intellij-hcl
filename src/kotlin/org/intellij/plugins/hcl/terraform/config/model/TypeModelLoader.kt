@@ -332,6 +332,8 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       // ?? return BlockType(name).toPOBT()
     }
 
+    val conflicts: List<String> = value.array<String>("ConflictsWith")?.map { it } ?: emptyList()
+
     val deprecated = value.string("Deprecated")
     val has_default: Boolean = value.obj("Default")?.isNotEmpty() ?: false
     // || m["InputDefault"]?.string("value") != null // Not sure about this property TODO: Investigate how it works in terraform
@@ -359,6 +361,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
           deprecated = deprecated,
           computed = computed,
           description = description,
+          conflictsWith = conflicts,
           properties = *bh).toPOBT()
     }
     return PropertyType(name, type, hint = additional.hint ?: hint,
@@ -366,6 +369,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
         required = required,
         deprecated = deprecated,
         computed = computed,
+        conflictsWith = conflicts,
         has_default = has_default).toPOBT()
   }
 
