@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2000-2018 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,6 +114,36 @@ public class HCLFormatterTest extends LightPlatformCodeInsightFixtureTestCase {
     doSimpleTest("a=<<E\n inner\nE", "a = <<E\n inner\nE");
     doSimpleTest("a=<<E\n inner\n  E", "a = <<E\n inner\n  E");
     doSimpleTest("a=<<E\n inner\n\tE", "a = <<E\n inner\n\tE");
+  }
+
+  @Test
+  public void testFormatAfterHeredoc() throws Exception {
+    doSimpleTest("a_local = [\n" +
+        "  <<DATA\n" +
+        "This is some data string\n" +
+        "DATA\n" +
+        ",\n" +
+        "  \"some other data\",\n" +
+        "]", "a_local = [\n" +
+        "  <<DATA\n" +
+        "This is some data string\n" +
+        "DATA\n" +
+        ",\n" +
+        "  \"some other data\",\n" +
+        "]");
+    doSimpleTest("a_local = [\n" +
+        "  <<DATA\n" +
+        "This is some data string\n" +
+        "DATA\n" +
+        "," +
+        "  \"some other data\",\n" +
+        "]", "a_local = [\n" +
+        "  <<DATA\n" +
+        "This is some data string\n" +
+        "DATA\n" +
+        ",\n" +
+        "  \"some other data\",\n" +
+        "]");
   }
 
   public void doSimpleTest(String input, String expected) throws Exception {

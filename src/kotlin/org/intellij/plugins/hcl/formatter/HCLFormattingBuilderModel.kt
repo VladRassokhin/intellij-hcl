@@ -40,6 +40,7 @@ open class HCLFormattingBuilderModel(val language: Language = HCLLanguage) : For
     val spacesAroundAssignment = if (commonSettings.SPACE_AROUND_ASSIGNMENT_OPERATORS) 1 else 0
 
     return SpacingBuilder(settings, language)
+        .after(HEREDOC_LITERAL).lineBreakInCode()
         .before(EQUALS).spacing(spacesAroundAssignment, spacesAroundAssignment, 0, false, 0)
         .after(EQUALS).spacing(spacesAroundAssignment, spacesAroundAssignment, 0, false, 0)
         .afterInside(IDENTIFIER, BLOCK).spaces(1)
