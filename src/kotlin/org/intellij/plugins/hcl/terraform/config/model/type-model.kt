@@ -75,6 +75,7 @@ class PropertyOrBlockType private constructor(val property: PropertyType? = null
   val required: Boolean get() = property?.required ?: block!!.required
   val deprecated: String? get() = if (property != null) property.deprecated else block!!.deprecated
   val computed: Boolean get() = property?.computed ?: block!!.computed
+  val conflictsWith: List<String> get() = property?.conflictsWith ?: block!!.conflictsWith
 
   init {
     assert(property != null || block != null) { "Either property or block expected" }

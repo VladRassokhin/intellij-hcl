@@ -82,6 +82,10 @@ public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
     doTest("missing_properties", new HCLBlockMissingPropertyInspection());
   }
 
+  public void testConflictingBlockProperty() throws Exception {
+    doTest("conflicting_properties", new HCLBlockConflictingPropertiesInspection());
+  }
+
   public void testMissingSelfInContext() throws Exception {
     doTest("reference_to_self", new HILMissingSelfInContextInspection());
   }
