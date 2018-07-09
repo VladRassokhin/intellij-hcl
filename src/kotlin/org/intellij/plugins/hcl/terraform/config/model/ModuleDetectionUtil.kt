@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 JetBrains s.r.o.
+ * Copyright 2000-2018 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,22 +45,28 @@ object ModuleDetectionUtil {
   }
 
   fun getAsModuleBlock(moduleBlock: HCLBlock): Module? {
+    return CachedValuesManager.getCachedValue(moduleBlock, ModuleCachedValueProvider(moduleBlock))?.first
+  }
+
+  fun getAsModuleBlockOrError(moduleBlock: HCLBlock): Pair<Module?, String?> {
     return CachedValuesManager.getCachedValue(moduleBlock, ModuleCachedValueProvider(moduleBlock))
   }
 
-  class ModuleCachedValueProvider(private val block: HCLBlock) : CachedValueProvider<Module?> {
-    override fun compute(): CachedValueProvider.Result<Module?>? {
-      return doGetAsModuleBlock(block)?.let { return CachedValueProvider.Result(it, block) }
+  class ModuleCachedValueProvider(private val block: HCLBlock) : CachedValueProvider<Pair<Module?, String?>> {
+    override fun compute(): CachedValueProvider.Result<Pair<Module?, String?>>? {
+      return doGetAsModuleBlock(block)
     }
   }
 
-  private fun doGetAsModuleBlock(moduleBlock: HCLBlock): Module? {
-    val name = moduleBlock.getNameElementUnquoted(1) ?: return null
-    val sourceVal = moduleBlock.`object`?.findProperty("source")?.value as? HCLStringLiteral ?: return null
+  private fun doGetAsModuleBlock(moduleBlock: HCLBlock): CachedValueProvider.Result<Pair<Module?, String?>> {
+    val name = moduleBlock.getNameElementUnquoted(1) ?: return CachedValueProvider.Result(null to null, moduleBlock)
+    val sourceVal = moduleBlock.`object`?.findProperty("source")?.value as? HCLStringLiteral
+        ?: return CachedValueProvider.Result(null to "No 'source' property", moduleBlock)
     val source = sourceVal.value
 
     val file = moduleBlock.containingFile.originalFile
-    val directory = file.containingDirectory ?: return null
+    val directory = file.containingDirectory ?: return CachedValueProvider.Result(null to null, moduleBlock)
+    var err: String? = null
 
     val dotTerraform = ModuleDetectionUtil.getTerraformDirSomewhere(directory)
     if (dotTerraform != null) {
@@ -69,7 +75,12 @@ object ModuleDetectionUtil {
       val keyPrefix: String
       if (manifest != null) {
         LOG.debug("All modules from modules.json: ${manifest.modules}")
-        keyPrefix = getKeyPrefix(directory, dotTerraform, manifest, name, source) ?: return findRelativeModule(directory, moduleBlock, source)
+        val pair = getKeyPrefix(directory, dotTerraform, manifest, name, source)
+        if (pair.first == null) {
+          return CachedValueProvider.Result(findRelativeModule(directory, moduleBlock, source) to (pair.second
+              ?: "Can't determine key prefix"), moduleBlock, directory, dotTerraform)
+        }
+        keyPrefix = pair.first!!
 
         LOG.debug("Searching for module with source '$source' and keyPrefix '$keyPrefix'")
         val module = manifest.modules.find {
@@ -85,24 +96,28 @@ object ModuleDetectionUtil {
             val dir = PsiManager.getInstance(moduleBlock.project).findDirectory(relative)
             if (dir != null) {
               LOG.debug("Module search succeed, directory is $dir")
-              return Module(dir)
+              return CachedValueProvider.Result(Module(dir) to null, moduleBlock, directory, dotTerraform, relative, dir)
             } else {
-              LOG.debug("Can't find PsiDirectory for $relative")
+              err = "Can't find PsiDirectory for $relative"
+              LOG.debug(err)
             }
           } else {
-            LOG.debug("Can't find relative dir '$path' in '${manifest.context}'")
+            err = "Can't find relative dir '$path' in '${manifest.context}'"
+            LOG.debug(err)
           }
         }
       }
     } else {
-      LOG.warn("No .terraform found under project directory, please run `terraform get` in appropriate place")
-      return findRelativeModule(directory, moduleBlock, source)
+      err = "No .terraform found under project directory, please run `terraform get` in appropriate place"
+      LOG.warn(err)
+      return CachedValueProvider.Result(findRelativeModule(directory, moduleBlock, source) to err, moduleBlock, directory)
     }
 
-    findRelativeModule(directory, moduleBlock, source)
-
-    LOG.warn("Terraform Module '$name' with source '$source' directory not found locally, use `terraform get` to fetch modules.")
-    return null
+    if (err != null) {
+      err = "Terraform Module '$name' with source '$source' directory not found locally, use `terraform get` to fetch modules."
+      LOG.warn(err)
+    }
+    return CachedValueProvider.Result(findRelativeModule(directory, moduleBlock, source) to err, moduleBlock, directory)
   }
 
 
@@ -187,20 +202,21 @@ object ModuleDetectionUtil {
     return PsiManager.getInstance(moduleBlock.project).findDirectory(relative)?.let { Module(it) }
   }
 
-  private fun getKeyPrefix(directory: PsiDirectory, dotTerraform: VirtualFile, manifest: ModuleDetectionUtil.ModulesManifest, name: String, source: String): String? {
+  private fun getKeyPrefix(directory: PsiDirectory, dotTerraform: VirtualFile, manifest: ModuleDetectionUtil.ModulesManifest, name: String, source: String): Pair<String?, String?> {
     // Check whether current dir is a module itself
     val relative = VfsUtilCore.getRelativePath(directory.virtualFile, dotTerraform)
     if (relative != null) {
       val currentModule = manifest.modules.find { it.full == ".terraform/$relative" }
       if (currentModule != null) {
-        return currentModule.key + '|'
+        return currentModule.key + '|' to null
       } else {
-        LOG.info("Path '.terraform/$relative' not found among modules, either `terraform get` should be run or we're in non-referenced module, e.g. subdir of some module")
-        return null
+        val err = "Path '.terraform/$relative' not found among modules, either `terraform get` should be run or we're in non-referenced module, e.g. subdir of some module"
+        LOG.info(err)
+        return null to err
       }
     } else {
       // Module referenced from root key would be '1.$NAME;$SOURCE' or '1.$NAME;$SOURCE.$VERSION'
-      return "1.$name;$source"
+      return "1.$name;$source" to null
     }
   }
 
