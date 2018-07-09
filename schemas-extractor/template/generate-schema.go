@@ -108,7 +108,7 @@ func (m schemaMap) Export() SchemaInfo {
 func export(v *schema.Schema) SchemaDefinition {
 	item := SchemaDefinition{}
 
-	item.Type = fmt.Sprintf("%s", v.Type)
+	item.Type = shortenType(fmt.Sprintf("%s", v.Type))
 	item.Optional = v.Optional
 	item.Required = v.Required
 	item.Description = v.Description
@@ -133,15 +133,27 @@ func export(v *schema.Schema) SchemaDefinition {
 	return item
 }
 
+func shortenType(value string) string {
+  if (len(value) > 4 && value[0:4] == "Type") {
+    return value[4:]
+  }
+  return value
+}
+
 func exportValue(value interface{}, t string) *SchemaElement {
 	s2, ok := value.(*schema.Schema)
 	if ok {
-		return &SchemaElement{Type: "SchemaElements", ElementsType: fmt.Sprintf("%s", s2.Type)}
+		return &SchemaElement{Type: "SchemaElements", ElementsType: shortenType(fmt.Sprintf("%s", s2.Type))}
 	}
 	r2, ok := value.(*schema.Resource)
 	if ok {
 		return &SchemaElement{Type: "SchemaInfo", Info: ExportResource(r2)}
 	}
+	vt, ok := value.(schema.ValueType)
+	if ok {
+	  return &SchemaElement{Value: shortenType(fmt.Sprintf("%v", vt))}
+	}
+	// Unknown case
 	return &SchemaElement{Type: t, Value: fmt.Sprintf("%v", value)}
 }
 
@@ -177,7 +189,7 @@ func DoGenerate(provider *schema.Provider, providerName string, outputFilePath s
 }
 
 type SchemaElement struct {
-	// One of ValueType or "SchemaElements" or "SchemaInfo"
+	// One of "schema.ValueType" or "SchemaElements" or "SchemaInfo"
 	Type string `json:",omitempty"`
 	// Set for simple types (from ValueType)
 	Value string `json:",omitempty"`

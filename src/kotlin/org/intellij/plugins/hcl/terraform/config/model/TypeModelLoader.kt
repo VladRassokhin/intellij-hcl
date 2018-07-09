@@ -388,16 +388,16 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
             typeObject
     )
     */
-    return when (string) {
-      "TypeInvalid" -> Types.Invalid
-      "TypeBool" -> Types.Boolean
-      "TypeInt" -> Types.Number
-      "TypeFloat" -> Types.Number
-      "TypeString" -> Types.String
-      "TypeList" -> Types.Array
-      "TypeSet" -> Types.Array
-      "TypeMap" -> Types.Object
-      "TypeAny" -> Types.Any
+    return when (string?.removePrefix("Type")) {
+      "Invalid" -> Types.Invalid
+      "Bool" -> Types.Boolean
+      "Int" -> Types.Number
+      "Float" -> Types.Number
+      "String" -> Types.String
+      "List" -> Types.Array
+      "Set" -> Types.Array
+      "Map" -> Types.Object
+      "Any" -> Types.Any
       else -> Types.Invalid
     }
   }
