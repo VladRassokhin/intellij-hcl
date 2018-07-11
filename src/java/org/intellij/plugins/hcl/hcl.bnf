@@ -67,6 +67,10 @@
     "org.intellij.plugins.hcl.psi.HCLElement"
     'com.intellij.psi.PsiNameIdentifierOwner'
   ]
+
+  extends("Binary.+Expression")=BinaryExpression
+
+  extends(".*Expression|.*Variable|ExpressionHolder")=Expression
 }
 
 root ::= root_element*
@@ -151,20 +155,27 @@ Attribute  ::= Identifier "=" Expression Newline;
 Block      ::= Identifier (StringLit|Identifier)* "{" Newline Body "}" Newline;
 
 
-Expression ::= ExprTerm | Operation | Conditional
-
-ExprTerm ::= (
+Expression ::= (
+    Operation |
+    Conditional |
     LiteralValue |
     CollectionValue |
     TemplateExpr |
     VariableExpr |
     FunctionCall |
     ForExpr |
-    ExprTerm Index |
-    ExprTerm GetAttr |
-    ExprTerm Splat |
-    "(" Expression ")"
-);
+    Expression Index |
+    Expression GetAttr |
+    Expression Splat |
+    ParenthesizedExpression
+) {
+  name="expression"
+  methods = [
+  ]
+}
+
+ParenthesizedExpression ::= '(' <<push 0>> Expression ')' <<pop>>
+
 
 LiteralValue ::= (
   NumericLit |
@@ -215,8 +226,8 @@ fullSplat ::= "[" "*" "]" (GetAttr | Index)*;
 
 // TODO: Priorities
 Operation ::= unaryOp | binaryOp;
-unaryOp ::= ("-" | "!") ExprTerm;
-binaryOp ::= ExprTerm binaryOperator ExprTerm;
+unaryOp ::= ("-" | "!") Expression;
+binaryOp ::= Expression binaryOperator Expression;
 binaryOperator ::= compareOperator | arithmeticOperator | logicOperator;
 compareOperator ::= "==" | "!=" | "<" | ">" | "<=" | ">=";
 arithmeticOperator ::= "+" | "-" | "*" | "/" | "%";
