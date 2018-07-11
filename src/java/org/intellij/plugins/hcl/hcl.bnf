@@ -260,7 +260,7 @@ StringLit ::= DOUBLE_QUOTED_STRING
 MethodCallExpression ::= Expression ParameterList
 {
   methods=[
-    Callee="Identifier"
+    Callee="Expression"
     ParameterList="ParameterList"
     getQualifier
     getMethod
@@ -300,6 +300,16 @@ UnaryExpression ::= unaryOp Expression
 {
   methods = [
     operand="Expression"
+    getOperationSign
+  ]
+}
+
+fake BinaryExpression ::= Expression+ {
+  mixin="org.intellij.plugins.hcl.psi.impl.BinaryExpressionMixin"
+  methods = [
+    Expression=""
+    LOperand="Expression[0]"
+    ROperand="Expression[1]"
     getOperationSign
   ]
 }
