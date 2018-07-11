@@ -179,6 +179,7 @@ Expression ::= (
     | ForExpr
     | Expression Splat
 
+    | Variable
     | UnaryExpression
     | LiteralExpression
 ) {
@@ -202,6 +203,12 @@ IndexSelectExpression ::= Expression ('[' Expression ']') {
 }
 
 ParenthesizedExpression ::= '(' <<push 0>> Expression ')' <<pop>>
+
+Variable ::= identifier | '*' {
+  name="Identifier"
+  implements="com.intellij.psi.PsiNamedElement"
+  mixin="org.intellij.plugins.hcl.psi.impl.VariableMixin"
+}
 
 
 LiteralExpression ::= (
