@@ -169,11 +169,12 @@ Expression ::= (
     | BinaryAdditionExpression
     | BinaryMultiplyExpression
 
+    | MethodCallExpression
+
     | LiteralValue
     | CollectionValue
     | TemplateExpr
     | VariableExpr
-    | FunctionCall
     | ForExpr
     | Expression Index
     | Expression GetAttr
@@ -213,11 +214,22 @@ heredocTemplate ::= (
 StringLit ::= '"' (quoted literals as defined in prose above) '"';
 VariableExpr ::= Identifier;
 
-FunctionCall ::= Identifier "(" Arguments ")";
-Arguments ::= (
-    () ||
-    (Expression ("," Expression)* ("," | "...")?)
-);
+MethodCallExpression ::= Identifier ParameterList
+{
+  methods=[
+    Callee="Identifier"
+    ParameterList="ParameterList"
+    getQualifier
+    getMethod
+  ]
+}
+ParameterList ::= '(' (Expression? (',' Expression)* (',' | '...')?)? ')' {
+  pin(".*")=1
+  methods=[
+    Expression=""
+    Parameters="Expression"
+  ]
+}
 
 
 ForExpr ::= forTupleExpr | forObjectExpr;
