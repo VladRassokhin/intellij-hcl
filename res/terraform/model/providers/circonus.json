@@ -4,17 +4,17 @@
   "version": "v0.1.0-24-g3054a7a",
   "provider": {
     "api_url": {
-      "Type": "TypeString",
+      "Type": "String",
       "Optional": true,
       "Description": "URL of the Circonus API"
     },
     "auto_tag": {
-      "Type": "TypeBool",
+      "Type": "Bool",
       "Optional": true,
       "Description": "Signals that the provider should automatically add a tag to all API calls denoting that the resource was created by Terraform"
     },
     "key": {
-      "Type": "TypeString",
+      "Type": "String",
       "Required": true,
       "Description": "API token used to authenticate with the Circonus API"
     }
@@ -22,12 +22,12 @@
   "resources": {
     "circonus_check": {
       "active": {
-        "Type": "TypeBool",
+        "Type": "Bool",
         "Optional": true,
         "Description": "If the check is activate or disabled"
       },
       "caql": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "CAQL check configuration",
         "MaxItems": 1,
@@ -36,7 +36,7 @@
           "Type": "SchemaInfo",
           "Info": {
             "query": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The query definition"
             }
@@ -44,27 +44,27 @@
         }
       },
       "check_by_collector": {
-        "Type": "TypeMap",
+        "Type": "Map",
         "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "TypeString"
+          "ElementsType": "String"
         }
       },
       "check_id": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "checks": {
-        "Type": "TypeList",
+        "Type": "List",
         "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "TypeString"
+          "ElementsType": "String"
         }
       },
       "cloudwatch": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "CloudWatch check configuration",
         "MaxItems": 1,
@@ -73,7 +73,7 @@
           "Type": "SchemaInfo",
           "Info": {
             "api_key": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The AWS API Key",
               "Default": {
@@ -81,7 +81,7 @@
               }
             },
             "api_secret": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The AWS API Secret",
               "Default": {
@@ -89,36 +89,35 @@
               }
             },
             "dimmensions": {
-              "Type": "TypeMap",
+              "Type": "Map",
               "Required": true,
               "Description": "The dimensions to query for the metric",
               "Elem": {
-                "Type": "schema.ValueType",
-                "Value": "TypeString"
+                "Value": "String"
               }
             },
             "metric": {
-              "Type": "TypeSet",
+              "Type": "Set",
               "Required": true,
               "Description": "One or more CloudWatch Metric attributes",
               "MinItems": 1,
               "Elem": {
                 "Type": "SchemaElements",
-                "ElementsType": "TypeString"
+                "ElementsType": "String"
               }
             },
             "namespace": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The namespace to pull telemetry from"
             },
             "url": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The URL including schema and hostname for the Cloudwatch monitoring server. This value will be used to specify the region - for example, to pull from us-east-1, the URL would be https://monitoring.us-east-1.amazonaws.com."
             },
             "version": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The version of the Cloudwatch API to use."
             }
@@ -126,7 +125,7 @@
         }
       },
       "collector": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "The collector(s) that are responsible for gathering the metrics",
         "MinItems": 1,
@@ -134,7 +133,7 @@
           "Type": "SchemaInfo",
           "Info": {
             "id": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The ID of the collector"
             }
@@ -142,7 +141,7 @@
         }
       },
       "consul": {
-        "Type": "TypeList",
+        "Type": "List",
         "Optional": true,
         "Description": "Consul check configuration",
         "MaxItems": 1,
@@ -150,65 +149,64 @@
           "Type": "SchemaInfo",
           "Info": {
             "acl_token": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A Consul ACL token"
             },
             "allow_stale": {
-              "Type": "TypeBool",
+              "Type": "Bool",
               "Optional": true,
               "Description": "Allow Consul to read from a non-leader system"
             },
             "ca_chain": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A path to a file containing all the certificate authorities that should be loaded to validate the remote certificate (for TLS checks)"
             },
             "certificate_file": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A path to a file containing the client certificate that will be presented to the remote server (for TLS-enabled checks)"
             },
             "check_blacklist": {
-              "Type": "TypeList",
+              "Type": "List",
               "Optional": true,
               "Description": "A blacklist of check names to exclude from metric results",
               "Elem": {
                 "Type": "SchemaElements",
-                "ElementsType": "TypeString"
+                "ElementsType": "String"
               }
             },
             "ciphers": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A list of ciphers to be used in the TLS protocol (for HTTPS checks)"
             },
             "dc": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The Consul datacenter to extract health information from"
             },
             "headers": {
-              "Type": "TypeMap",
+              "Type": "Map",
               "Optional": true,
               "Description": "Map of HTTP Headers to send along with HTTP Requests",
               "Elem": {
-                "Type": "schema.ValueType",
-                "Value": "TypeString"
+                "Value": "String"
               }
             },
             "http_addr": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The HTTP Address of a Consul agent to query"
             },
             "key_file": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A path to a file containing key to be used in conjunction with the cilent certificate (for TLS checks)"
             },
             "node": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "Node Name or NodeID of a Consul agent",
               "ConflictsWith": [
@@ -217,16 +215,16 @@
               ]
             },
             "node_blacklist": {
-              "Type": "TypeList",
+              "Type": "List",
               "Optional": true,
               "Description": "A blacklist of node names or IDs to exclude from metric results",
               "Elem": {
                 "Type": "SchemaElements",
-                "ElementsType": "TypeString"
+                "ElementsType": "String"
               }
             },
             "service": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "Name of the Consul service to check",
               "ConflictsWith": [
@@ -235,16 +233,16 @@
               ]
             },
             "service_blacklist": {
-              "Type": "TypeList",
+              "Type": "List",
               "Optional": true,
               "Description": "A blacklist of service names to exclude from metric results",
               "Elem": {
                 "Type": "SchemaElements",
-                "ElementsType": "TypeString"
+                "ElementsType": "String"
               }
             },
             "state": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "Check for Consul services in this particular state",
               "ConflictsWith": [
@@ -256,11 +254,11 @@
         }
       },
       "created": {
-        "Type": "TypeInt",
+        "Type": "Int",
         "Computed": true
       },
       "http": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "HTTP check configuration",
         "MaxItems": 1,
@@ -269,86 +267,85 @@
           "Type": "SchemaInfo",
           "Info": {
             "auth_method": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The HTTP Authentication method"
             },
             "auth_password": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The HTTP Authentication user password"
             },
             "auth_user": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The HTTP Authentication user name"
             },
             "body_regexp": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "This regular expression is matched against the body of the response. If a match is not found, the check will be marked as \"bad."
             },
             "ca_chain": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A path to a file containing all the certificate authorities that should be loaded to validate the remote certificate (for TLS checks)"
             },
             "certificate_file": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A path to a file containing the client certificate that will be presented to the remote server (for TLS-enabled checks)"
             },
             "ciphers": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A list of ciphers to be used in the TLS protocol (for HTTPS checks)"
             },
             "code": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The HTTP code that is expected. If the code received does not match this regular expression, the check is marked as \"bad.\""
             },
             "extract": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "This regular expression is matched against the body of the response globally. The first capturing match is the key and the second capturing match is the value. Each key/value extracted is registered as a metric for the check."
             },
             "headers": {
-              "Type": "TypeMap",
+              "Type": "Map",
               "Optional": true,
               "Description": "Map of HTTP Headers to send along with HTTP Requests",
               "Elem": {
-                "Type": "schema.ValueType",
-                "Value": "TypeString"
+                "Value": "String"
               }
             },
             "key_file": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A path to a file containing key to be used in conjunction with the cilent certificate (for TLS checks)"
             },
             "method": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The HTTP method to use"
             },
             "payload": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The information transferred as the payload of an HTTP request"
             },
             "read_limit": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Optional": true,
               "Description": "Sets an approximate limit on the data read (0 means no limit)"
             },
             "url": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The URL to use as the target of the check"
             },
             "version": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "Sets the HTTP version for the check to use"
             }
@@ -356,7 +353,7 @@
         }
       },
       "httptrap": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "HTTP Trap check configuration",
         "MaxItems": 1,
@@ -365,19 +362,19 @@
           "Type": "SchemaInfo",
           "Info": {
             "async_metrics": {
-              "Type": "TypeBool",
+              "Type": "Bool",
               "Optional": true,
               "Description": "Specify whether httptrap metrics are logged immediately or held until the status message is emitted"
             },
             "secret": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             }
           }
         }
       },
       "icmp_ping": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "ICMP ping check configuration",
         "MaxItems": 1,
@@ -386,17 +383,17 @@
           "Type": "SchemaInfo",
           "Info": {
             "availability": {
-              "Type": "TypeFloat",
+              "Type": "Float",
               "Optional": true,
               "Description": "The percentage of ICMP available required for the check to be considered \"good.\""
             },
             "count": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Optional": true,
               "Description": "The number of ICMP requests to send during a single check."
             },
             "interval": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The number of milliseconds between ICMP requests."
             }
@@ -404,7 +401,7 @@
         }
       },
       "json": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "JSON check configuration",
         "MaxItems": 1,
@@ -413,76 +410,75 @@
           "Type": "SchemaInfo",
           "Info": {
             "auth_method": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The HTTP Authentication method"
             },
             "auth_password": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The HTTP Authentication user password"
             },
             "auth_user": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The HTTP Authentication user name"
             },
             "ca_chain": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A path to a file containing all the certificate authorities that should be loaded to validate the remote certificate (for TLS checks)"
             },
             "certificate_file": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A path to a file containing the client certificate that will be presented to the remote server (for TLS-enabled checks)"
             },
             "ciphers": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A list of ciphers to be used in the TLS protocol (for HTTPS checks)"
             },
             "headers": {
-              "Type": "TypeMap",
+              "Type": "Map",
               "Optional": true,
               "Description": "Map of HTTP Headers to send along with HTTP Requests",
               "Elem": {
-                "Type": "schema.ValueType",
-                "Value": "TypeString"
+                "Value": "String"
               }
             },
             "key_file": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A path to a file containing key to be used in conjunction with the cilent certificate (for TLS checks)"
             },
             "method": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The HTTP method to use"
             },
             "payload": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The information transferred as the payload of an HTTP request"
             },
             "port": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Optional": true,
               "Description": "Specifies the port on which the management interface can be reached"
             },
             "read_limit": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Optional": true,
               "Description": "Sets an approximate limit on the data read (0 means no limit)"
             },
             "url": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The URL to use as the target of the check"
             },
             "version": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "Sets the HTTP version for the check to use"
             }
@@ -490,15 +486,15 @@
         }
       },
       "last_modified": {
-        "Type": "TypeInt",
+        "Type": "Int",
         "Computed": true
       },
       "last_modified_by": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "metric": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "Configuration for a stream of metrics",
         "MinItems": 1,
@@ -506,31 +502,31 @@
           "Type": "SchemaInfo",
           "Info": {
             "active": {
-              "Type": "TypeBool",
+              "Type": "Bool",
               "Optional": true,
               "Description": "Enables or disables the metric"
             },
             "name": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "Name of the metric"
             },
             "tags": {
-              "Type": "TypeSet",
+              "Type": "Set",
               "Optional": true,
               "Description": "Tags assigned to the metric",
               "Elem": {
                 "Type": "SchemaElements",
-                "ElementsType": "TypeString"
+                "ElementsType": "String"
               }
             },
             "type": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "Type of metric (e.g. numeric, histogram, text)"
             },
             "unit": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "The unit of measurement for a metric"
             }
@@ -538,13 +534,13 @@
         }
       },
       "metric_limit": {
-        "Type": "TypeInt",
+        "Type": "Int",
         "Optional": true,
         "Description": "Setting a metric_limit will enable all (-1), disable (0), or allow up to the specified limit of metrics for this check (\"N+\", where N is a positive integer)",
         "Computed": true
       },
       "mysql": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "MySQL check configuration",
         "MaxItems": 1,
@@ -553,12 +549,12 @@
           "Type": "SchemaInfo",
           "Info": {
             "dsn": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The connect DSN for the MySQL instance"
             },
             "query": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The SQL to use as the query"
             }
@@ -566,25 +562,25 @@
         }
       },
       "name": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Description": "The name of the check bundle that will be displayed in the web interface",
         "Computed": true
       },
       "notes": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Description": "Notes about this check bundle",
         "Computed": true
       },
       "period": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Description": "The period between each time the check is made",
         "Computed": true
       },
       "postgresql": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "PostgreSQL check configuration",
         "MaxItems": 1,
@@ -593,12 +589,12 @@
           "Type": "SchemaInfo",
           "Info": {
             "dsn": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The connect DSN for the PostgreSQL instance"
             },
             "query": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The SQL to use as the query"
             }
@@ -606,15 +602,15 @@
         }
       },
       "reverse_connect_urls": {
-        "Type": "TypeList",
+        "Type": "List",
         "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "TypeString"
+          "ElementsType": "String"
         }
       },
       "statsd": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "statsd check configuration",
         "MaxItems": 1,
@@ -623,7 +619,7 @@
           "Type": "SchemaInfo",
           "Info": {
             "source_ip": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The source IP of the statsd metrics stream"
             }
@@ -631,22 +627,22 @@
         }
       },
       "tags": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "A list of tags assigned to the check",
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "TypeString"
+          "ElementsType": "String"
         }
       },
       "target": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Description": "The target of the check (e.g. hostname, URL, IP, etc)",
         "Computed": true
       },
       "tcp": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "TCP check configuration",
         "MaxItems": 1,
@@ -655,42 +651,42 @@
           "Type": "SchemaInfo",
           "Info": {
             "banner_regexp": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "This regular expression is matched against the response banner. If a match is not found, the check will be marked as bad."
             },
             "ca_chain": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A path to a file containing all the certificate authorities that should be loaded to validate the remote certificate (for TLS checks)."
             },
             "certificate_file": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A path to a file containing the client certificate that will be presented to the remote server (for TLS checks)."
             },
             "ciphers": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A list of ciphers to be used when establishing a TLS connection"
             },
             "host": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "Specifies the host name or IP address to connect to for this TCP check"
             },
             "key_file": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "A path to a file containing key to be used in conjunction with the cilent certificate (for TLS checks)"
             },
             "port": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Required": true,
               "Description": "Specifies the port on which the management interface can be reached."
             },
             "tls": {
-              "Type": "TypeBool",
+              "Type": "Bool",
               "Optional": true,
               "Description": "Upgrade TCP connection to use TLS."
             }
@@ -698,71 +694,71 @@
         }
       },
       "timeout": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Description": "The length of time in seconds (and fractions of a second) before the check will timeout if no response is returned to the collector",
         "Computed": true
       },
       "type": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Description": "The check type",
         "Computed": true
       },
       "uuids": {
-        "Type": "TypeList",
+        "Type": "List",
         "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "TypeString"
+          "ElementsType": "String"
         }
       }
     },
     "circonus_contact_group": {
       "aggregation_window": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true
       },
       "alert_option": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "escalate_after": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "escalate_to": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "reminder": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "severity": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Required": true
             }
           }
         }
       },
       "email": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "address": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "ConflictsWith": [
                 "email.user"
               ]
             },
             "user": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "ConflictsWith": [
                 "email.address"
@@ -772,116 +768,116 @@
         }
       },
       "http": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "address": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true
             },
             "format": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "method": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             }
           }
         }
       },
       "irc": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "user": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true
             }
           }
         }
       },
       "last_modified": {
-        "Type": "TypeInt",
+        "Type": "Int",
         "Computed": true
       },
       "last_modified_by": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "long_message": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true
       },
       "long_subject": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true
       },
       "long_summary": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true
       },
       "name": {
-        "Type": "TypeString",
+        "Type": "String",
         "Required": true
       },
       "pager_duty": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "contact_group_fallback": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "service_key": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true
             },
             "webhook_url": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true
             }
           }
         }
       },
       "short_message": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true
       },
       "short_summary": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true
       },
       "slack": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "buttons": {
-              "Type": "TypeBool",
+              "Type": "Bool",
               "Optional": true
             },
             "channel": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true
             },
             "contact_group_fallback": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "team": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true
             },
             "username": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Description": "Username Slackbot uses in Slack to deliver a notification"
             }
@@ -889,20 +885,20 @@
         }
       },
       "sms": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "address": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "ConflictsWith": [
                 "sms.user"
               ]
             },
             "user": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "ConflictsWith": [
                 "sms.address"
@@ -912,61 +908,61 @@
         }
       },
       "tags": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "TypeString"
+          "ElementsType": "String"
         }
       },
       "victorops": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "api_key": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true
             },
             "contact_group_fallback": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "critical": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Required": true
             },
             "info": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Required": true
             },
             "team": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true
             },
             "warning": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Required": true
             }
           }
         }
       },
       "xmpp": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "address": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "ConflictsWith": [
                 "xmpp.user"
               ]
             },
             "user": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "ConflictsWith": [
                 "xmpp.address"
@@ -978,47 +974,46 @@
     },
     "circonus_graph": {
       "description": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true
       },
       "graph_style": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true
       },
       "left": {
-        "Type": "TypeMap",
+        "Type": "Map",
         "Optional": true,
         "Elem": {
-          "Type": "schema.ValueType",
-          "Value": "TypeString"
+          "Value": "String"
         }
       },
       "line_style": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Description": "How the line should change between point. A string containing either 'stepped', 'interpolated' or null."
       },
       "metric": {
-        "Type": "TypeList",
+        "Type": "List",
         "Optional": true,
         "MinItems": 1,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "active": {
-              "Type": "TypeBool",
+              "Type": "Bool",
               "Optional": true
             },
             "alpha": {
-              "Type": "TypeFloat",
+              "Type": "Float",
               "Optional": true
             },
             "axis": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "caql": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "ConflictsWith": [
                 "metric.check",
@@ -1026,157 +1021,156 @@
               ]
             },
             "check": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "ConflictsWith": [
                 "metric.caql"
               ]
             },
             "color": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "formula": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "function": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true,
               "Computed": true
             },
             "legend_formula": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "metric_name": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "metric_type": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true
             },
             "name": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "stack": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             }
           }
         }
       },
       "metric_cluster": {
-        "Type": "TypeList",
+        "Type": "List",
         "Optional": true,
         "MinItems": 1,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "active": {
-              "Type": "TypeBool",
+              "Type": "Bool",
               "Optional": true
             },
             "aggregate": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "axis": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "color": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             },
             "name": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true
             },
             "query": {
-              "Type": "TypeString",
+              "Type": "String",
               "Optional": true
             }
           }
         }
       },
       "name": {
-        "Type": "TypeString",
+        "Type": "String",
         "Required": true
       },
       "notes": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true
       },
       "right": {
-        "Type": "TypeMap",
+        "Type": "Map",
         "Optional": true,
         "Elem": {
-          "Type": "schema.ValueType",
-          "Value": "TypeString"
+          "Value": "String"
         }
       },
       "tags": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "TypeString"
+          "ElementsType": "String"
         }
       }
     },
     "circonus_metric": {
       "active": {
-        "Type": "TypeBool",
+        "Type": "Bool",
         "Optional": true,
         "Description": "Enables or disables the metric"
       },
       "name": {
-        "Type": "TypeString",
+        "Type": "String",
         "Required": true,
         "Description": "Name of the metric"
       },
       "tags": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "Tags assigned to the metric",
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "TypeString"
+          "ElementsType": "String"
         }
       },
       "type": {
-        "Type": "TypeString",
+        "Type": "String",
         "Required": true,
         "Description": "Type of metric (e.g. numeric, histogram, text)"
       },
       "unit": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Description": "The unit of measurement for a metric"
       }
     },
     "circonus_metric_cluster": {
       "description": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Description": "A description of the metric cluster",
         "Computed": true
       },
       "id": {
-        "Type": "TypeString",
+        "Type": "String",
         "Description": "The ID of this metric cluster",
         "Computed": true
       },
       "name": {
-        "Type": "TypeString",
+        "Type": "String",
         "Required": true,
         "Description": "The name of the metric cluster"
       },
       "query": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "A metric cluster query definition",
         "MinItems": 1,
@@ -1184,12 +1178,12 @@
           "Type": "SchemaInfo",
           "Info": {
             "definition": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "A query to select a collection of metric streams"
             },
             "type": {
-              "Type": "TypeString",
+              "Type": "String",
               "Required": true,
               "Description": "The operation to perform on the matching metric streams"
             }
@@ -1197,23 +1191,23 @@
         }
       },
       "tags": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "A list of tags assigned to the metric cluster",
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "TypeString"
+          "ElementsType": "String"
         }
       }
     },
     "circonus_rule_set": {
       "check": {
-        "Type": "TypeString",
+        "Type": "String",
         "Required": true,
         "Description": "The CID of the check that contains the metric for this rule set"
       },
       "if": {
-        "Type": "TypeList",
+        "Type": "List",
         "Required": true,
         "Description": "A rule to execute for this rule set",
         "MinItems": 1,
@@ -1221,7 +1215,7 @@
           "Type": "SchemaInfo",
           "Info": {
             "then": {
-              "Type": "TypeSet",
+              "Type": "Set",
               "Optional": true,
               "Description": "Description of the action(s) to take when this rule set is active",
               "MaxItems": 1,
@@ -1229,22 +1223,22 @@
                 "Type": "SchemaInfo",
                 "Info": {
                   "after": {
-                    "Type": "TypeString",
+                    "Type": "String",
                     "Optional": true,
                     "Description": "The length of time we should wait before contacting the contact groups after this ruleset has faulted."
                   },
                   "notify": {
-                    "Type": "TypeList",
+                    "Type": "List",
                     "Optional": true,
                     "Description": "List of contact groups to notify at the following appropriate severity if this rule set is active.",
                     "MinItems": 1,
                     "Elem": {
                       "Type": "SchemaElements",
-                      "ElementsType": "TypeString"
+                      "ElementsType": "String"
                     }
                   },
                   "severity": {
-                    "Type": "TypeInt",
+                    "Type": "Int",
                     "Optional": true,
                     "Description": "Send a notification at this severity level."
                   }
@@ -1252,7 +1246,7 @@
               }
             },
             "value": {
-              "Type": "TypeSet",
+              "Type": "Set",
               "Optional": true,
               "Description": "Predicate that the rule set uses to evaluate a stream of metrics",
               "MaxItems": 1,
@@ -1260,7 +1254,7 @@
                 "Type": "SchemaInfo",
                 "Info": {
                   "absent": {
-                    "Type": "TypeString",
+                    "Type": "String",
                     "Optional": true,
                     "Description": "Fire the rule set if there has been no data for the given metric stream over the last duration",
                     "ConflictsWith": [
@@ -1275,7 +1269,7 @@
                     ]
                   },
                   "changed": {
-                    "Type": "TypeBool",
+                    "Type": "Bool",
                     "Optional": true,
                     "Description": "Boolean indicating the value has changed",
                     "ConflictsWith": [
@@ -1290,7 +1284,7 @@
                     ]
                   },
                   "contains": {
-                    "Type": "TypeString",
+                    "Type": "String",
                     "Optional": true,
                     "Description": "Fire the rule set if the text metric contain the following string",
                     "ConflictsWith": [
@@ -1305,7 +1299,7 @@
                     ]
                   },
                   "match": {
-                    "Type": "TypeString",
+                    "Type": "String",
                     "Optional": true,
                     "Description": "Fire the rule set if the text metric exactly match the following string",
                     "ConflictsWith": [
@@ -1320,7 +1314,7 @@
                     ]
                   },
                   "max_value": {
-                    "Type": "TypeString",
+                    "Type": "String",
                     "Optional": true,
                     "Description": "Fire the rule set if the numeric value is more than the specified value",
                     "ConflictsWith": [
@@ -1334,7 +1328,7 @@
                     ]
                   },
                   "min_value": {
-                    "Type": "TypeString",
+                    "Type": "String",
                     "Optional": true,
                     "Description": "Fire the rule set if the numeric value less than the specified value",
                     "ConflictsWith": [
@@ -1348,7 +1342,7 @@
                     ]
                   },
                   "not_contain": {
-                    "Type": "TypeString",
+                    "Type": "String",
                     "Optional": true,
                     "Description": "Fire the rule set if the text metric does not contain the following string",
                     "ConflictsWith": [
@@ -1363,7 +1357,7 @@
                     ]
                   },
                   "not_match": {
-                    "Type": "TypeString",
+                    "Type": "String",
                     "Optional": true,
                     "Description": "Fire the rule set if the text metric not match the following string",
                     "ConflictsWith": [
@@ -1378,7 +1372,7 @@
                     ]
                   },
                   "over": {
-                    "Type": "TypeSet",
+                    "Type": "Set",
                     "Optional": true,
                     "Description": "Use a derived value using a window",
                     "MaxItems": 1,
@@ -1394,12 +1388,12 @@
                       "Type": "SchemaInfo",
                       "Info": {
                         "last": {
-                          "Type": "TypeString",
+                          "Type": "String",
                           "Optional": true,
                           "Description": "Duration over which data from the last interval is examined"
                         },
                         "using": {
-                          "Type": "TypeString",
+                          "Type": "String",
                           "Optional": true,
                           "Description": "Define the window funciton to use over the last duration"
                         }
@@ -1413,40 +1407,40 @@
         }
       },
       "link": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Description": "URL to show users when this rule set is active (e.g. wiki)",
         "Computed": true
       },
       "metric_name": {
-        "Type": "TypeString",
+        "Type": "String",
         "Required": true,
         "Description": "The name of the metric stream within a check to register the rule set with"
       },
       "metric_type": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Description": "The type of data flowing through the specified metric stream"
       },
       "notes": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Description": "Notes describing this rule set",
         "Computed": true
       },
       "parent": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Description": "Parent CID that must be healthy for this rule set to be active",
         "Computed": true
       },
       "tags": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Description": "Tags associated with this rule set",
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "TypeString"
+          "ElementsType": "String"
         }
       }
     }
@@ -1454,36 +1448,36 @@
   "data-sources": {
     "circonus_account": {
       "address1": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "address2": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "cc_email": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "city": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "contact_groups": {
-        "Type": "TypeList",
+        "Type": "List",
         "Description": "Contact Groups in this account",
         "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "TypeString"
+          "ElementsType": "String"
         }
       },
       "country": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "current": {
-        "Type": "TypeBool",
+        "Type": "Bool",
         "Optional": true,
         "Computed": true,
         "ConflictsWith": [
@@ -1491,11 +1485,11 @@
         ]
       },
       "description": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "id": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Computed": true,
         "ConflictsWith": [
@@ -1503,78 +1497,78 @@
         ]
       },
       "invites": {
-        "Type": "TypeList",
+        "Type": "List",
         "Description": "Outstanding invites attached to the account",
         "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "email": {
-              "Type": "TypeString",
+              "Type": "String",
               "Computed": true
             },
             "role": {
-              "Type": "TypeString",
+              "Type": "String",
               "Computed": true
             }
           }
         }
       },
       "name": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "owner": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "state": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "timezone": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "ui_base_url": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "usage": {
-        "Type": "TypeList",
+        "Type": "List",
         "Description": "Account's usage limits",
         "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "limit": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Computed": true
             },
             "type": {
-              "Type": "TypeString",
+              "Type": "String",
               "Computed": true
             },
             "used": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Computed": true
             }
           }
         }
       },
       "users": {
-        "Type": "TypeList",
+        "Type": "List",
         "Description": "Users attached to this account",
         "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "id": {
-              "Type": "TypeString",
+              "Type": "String",
               "Computed": true
             },
             "role": {
-              "Type": "TypeString",
+              "Type": "String",
               "Computed": true
             }
           }
@@ -1583,86 +1577,86 @@
     },
     "circonus_collector": {
       "details": {
-        "Type": "TypeList",
+        "Type": "List",
         "Description": "Details associated with individual collectors (a.k.a. broker)",
         "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "cn": {
-              "Type": "TypeString",
+              "Type": "String",
               "Computed": true
             },
             "external_host": {
-              "Type": "TypeString",
+              "Type": "String",
               "Computed": true
             },
             "external_port": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Computed": true
             },
             "ip": {
-              "Type": "TypeString",
+              "Type": "String",
               "Computed": true
             },
             "min_version": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Computed": true
             },
             "modules": {
-              "Type": "TypeList",
+              "Type": "List",
               "Computed": true,
               "Elem": {
                 "Type": "SchemaElements",
-                "ElementsType": "TypeString"
+                "ElementsType": "String"
               }
             },
             "port": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Computed": true
             },
             "skew": {
-              "Type": "TypeString",
+              "Type": "String",
               "Computed": true
             },
             "status": {
-              "Type": "TypeString",
+              "Type": "String",
               "Computed": true
             },
             "version": {
-              "Type": "TypeInt",
+              "Type": "Int",
               "Computed": true
             }
           }
         }
       },
       "id": {
-        "Type": "TypeString",
+        "Type": "String",
         "Optional": true,
         "Computed": true
       },
       "latitude": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "longitude": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "name": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       },
       "tags": {
-        "Type": "TypeSet",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "TypeString"
+          "ElementsType": "String"
         }
       },
       "type": {
-        "Type": "TypeString",
+        "Type": "String",
         "Computed": true
       }
     }

@@ -1,20 +1,22 @@
 {
-  "name": "flexibleengine",
+  "name": "huaweicloud",
   "type": "provider",
-  "version": "v1.0.1-12-geb97bc8",
+  "version": "",
   "provider": {
     "access_key": {
       "Type": "String",
       "Optional": true,
-      "Description": "The access key for API operations. You can retrieve this\nfrom the 'My Credential' section of the console.",
       "Default": {
         "Type": "string"
       }
     },
     "auth_url": {
       "Type": "String",
-      "Required": true,
-      "Description": "The Identity authentication URL."
+      "Optional": true,
+      "Description": "The Identity authentication URL.",
+      "Default": {
+        "Type": "string"
+      }
     },
     "cacert_file": {
       "Type": "String",
@@ -28,6 +30,14 @@
       "Type": "String",
       "Optional": true,
       "Description": "A client certificate to authenticate with.",
+      "Default": {
+        "Type": "string"
+      }
+    },
+    "cloud": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "An entry in a `clouds.yaml` file to use.",
       "Default": {
         "Type": "string"
       }
@@ -82,7 +92,7 @@
     "region": {
       "Type": "String",
       "Optional": true,
-      "Description": "The FlexibleEngine region to connect to.",
+      "Description": "The HuaweiCloud region to connect to.",
       "Default": {
         "Type": "string"
       }
@@ -90,7 +100,6 @@
     "secret_key": {
       "Type": "String",
       "Optional": true,
-      "Description": "The secret key for API operations. You can retrieve this\nfrom the 'My Credential' section of the console.",
       "Default": {
         "Type": "string"
       }
@@ -127,6 +136,14 @@
         "Type": "string"
       }
     },
+    "use_octavia": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "If set to `true`, API requests will go the Load Balancer\nservice (Octavia) instead of the Networking service (Neutron).",
+      "Default": {
+        "Type": "string"
+      }
+    },
     "user_id": {
       "Type": "String",
       "Optional": true,
@@ -145,332 +162,7 @@
     }
   },
   "resources": {
-    "flexibleengine_as_configuration_v1": {
-      "instance_config": {
-        "Type": "List",
-        "Required": true,
-        "MaxItems": 1,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "disk": {
-              "Type": "List",
-              "Optional": true,
-              "Elem": {
-                "Type": "SchemaInfo",
-                "Info": {
-                  "disk_type": {
-                    "Type": "String",
-                    "Required": true
-                  },
-                  "size": {
-                    "Type": "Int",
-                    "Required": true
-                  },
-                  "volume_type": {
-                    "Type": "String",
-                    "Required": true
-                  }
-                }
-              }
-            },
-            "flavor": {
-              "Type": "String",
-              "Optional": true
-            },
-            "image": {
-              "Type": "String",
-              "Optional": true
-            },
-            "instance_id": {
-              "Type": "String",
-              "Optional": true
-            },
-            "key_name": {
-              "Type": "String",
-              "Required": true
-            },
-            "metadata": {
-              "Type": "Map",
-              "Optional": true
-            },
-            "personality": {
-              "Type": "List",
-              "Optional": true,
-              "MaxItems": 5,
-              "Elem": {
-                "Type": "SchemaInfo",
-                "Info": {
-                  "content": {
-                    "Type": "String",
-                    "Required": true
-                  },
-                  "path": {
-                    "Type": "String",
-                    "Required": true
-                  }
-                }
-              }
-            },
-            "public_ip": {
-              "Type": "List",
-              "Optional": true,
-              "MaxItems": 1,
-              "Elem": {
-                "Type": "SchemaInfo",
-                "Info": {
-                  "eip": {
-                    "Type": "List",
-                    "Required": true,
-                    "MaxItems": 1,
-                    "Elem": {
-                      "Type": "SchemaInfo",
-                      "Info": {
-                        "bandwidth": {
-                          "Type": "List",
-                          "Required": true,
-                          "MaxItems": 1,
-                          "Elem": {
-                            "Type": "SchemaInfo",
-                            "Info": {
-                              "charging_mode": {
-                                "Type": "String",
-                                "Required": true
-                              },
-                              "share_type": {
-                                "Type": "String",
-                                "Required": true
-                              },
-                              "size": {
-                                "Type": "Int",
-                                "Required": true
-                              }
-                            }
-                          }
-                        },
-                        "ip_type": {
-                          "Type": "String",
-                          "Required": true
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "user_data": {
-              "Type": "String",
-              "Optional": true
-            }
-          }
-        }
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "scaling_configuration_name": {
-        "Type": "String",
-        "Required": true
-      }
-    },
-    "flexibleengine_as_group_v1": {
-      "__timeouts__": [
-        "create",
-        "delete"
-      ],
-      "available_zones": {
-        "Type": "List",
-        "Optional": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      },
-      "cool_down_time": {
-        "Type": "Int",
-        "Optional": true,
-        "Description": "The cooling duration, in seconds."
-      },
-      "delete_instances": {
-        "Type": "String",
-        "Optional": true,
-        "Description": "Whether to delete instances when they are removed from the AS group."
-      },
-      "delete_publicip": {
-        "Type": "Bool",
-        "Optional": true
-      },
-      "desire_instance_number": {
-        "Type": "Int",
-        "Optional": true
-      },
-      "health_periodic_audit_method": {
-        "Type": "String",
-        "Optional": true
-      },
-      "health_periodic_audit_time": {
-        "Type": "Int",
-        "Optional": true,
-        "Description": "The health check period for instances, in minutes."
-      },
-      "instance_terminate_policy": {
-        "Type": "String",
-        "Optional": true
-      },
-      "instances": {
-        "Type": "List",
-        "Optional": true,
-        "Description": "The instances id list in the as group.",
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      },
-      "lb_listener_id": {
-        "Type": "String",
-        "Optional": true,
-        "Description": "The system supports the binding of up to three ELB listeners, the IDs of which are separated using a comma."
-      },
-      "max_instance_number": {
-        "Type": "Int",
-        "Optional": true
-      },
-      "min_instance_number": {
-        "Type": "Int",
-        "Optional": true
-      },
-      "networks": {
-        "Type": "List",
-        "Required": true,
-        "MaxItems": 5,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "id": {
-              "Type": "String",
-              "Required": true
-            }
-          }
-        }
-      },
-      "notifications": {
-        "Type": "List",
-        "Optional": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "scaling_configuration_id": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "scaling_group_name": {
-        "Type": "String",
-        "Required": true
-      },
-      "security_groups": {
-        "Type": "List",
-        "Required": true,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "id": {
-              "Type": "String",
-              "Required": true
-            }
-          }
-        }
-      },
-      "vpc_id": {
-        "Type": "String",
-        "Required": true
-      }
-    },
-    "flexibleengine_as_policy_v1": {
-      "alarm_id": {
-        "Type": "String",
-        "Optional": true
-      },
-      "cool_down_time": {
-        "Type": "Int",
-        "Optional": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "scaling_group_id": {
-        "Type": "String",
-        "Required": true
-      },
-      "scaling_policy_action": {
-        "Type": "List",
-        "Optional": true,
-        "MaxItems": 1,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "instance_number": {
-              "Type": "Int",
-              "Optional": true
-            },
-            "operation": {
-              "Type": "String",
-              "Optional": true
-            }
-          }
-        }
-      },
-      "scaling_policy_name": {
-        "Type": "String",
-        "Required": true
-      },
-      "scaling_policy_type": {
-        "Type": "String",
-        "Required": true
-      },
-      "scheduled_policy": {
-        "Type": "List",
-        "Optional": true,
-        "MaxItems": 1,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "end_time": {
-              "Type": "String",
-              "Optional": true
-            },
-            "launch_time": {
-              "Type": "String",
-              "Required": true
-            },
-            "recurrence_type": {
-              "Type": "String",
-              "Optional": true
-            },
-            "recurrence_value": {
-              "Type": "String",
-              "Optional": true
-            },
-            "start_time": {
-              "Type": "String",
-              "Optional": true
-            }
-          }
-        }
-      }
-    },
-    "flexibleengine_blockstorage_volume_v2": {
+    "huaweicloud_blockstorage_volume_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -549,7 +241,7 @@
         "Computed": true
       }
     },
-    "flexibleengine_compute_floatingip_associate_v2": {
+    "huaweicloud_compute_floatingip_associate_v2": {
       "fixed_ip": {
         "Type": "String",
         "Optional": true
@@ -568,7 +260,7 @@
         "Computed": true
       }
     },
-    "flexibleengine_compute_floatingip_v2": {
+    "huaweicloud_compute_floatingip_v2": {
       "address": {
         "Type": "String",
         "Computed": true
@@ -591,7 +283,7 @@
         "Computed": true
       }
     },
-    "flexibleengine_compute_instance_v2": {
+    "huaweicloud_compute_instance_v2": {
       "__timeouts__": [
         "create",
         "update",
@@ -617,8 +309,7 @@
       },
       "availability_zone": {
         "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Required": true
       },
       "block_device": {
         "Type": "List",
@@ -674,7 +365,7 @@
       "floating_ip": {
         "Type": "String",
         "Optional": true,
-        "Removed": "Use the flexibleengine_compute_floatingip_associate_v2 resource instead"
+        "Removed": "Use the huaweicloud_compute_floatingip_associate_v2 resource instead"
       },
       "image_id": {
         "Type": "String",
@@ -723,7 +414,7 @@
               "Type": "String",
               "Optional": true,
               "Computed": true,
-              "Removed": "Use the flexibleengine_compute_floatingip_associate_v2 resource instead"
+              "Removed": "Use the huaweicloud_compute_floatingip_associate_v2 resource instead"
             },
             "mac": {
               "Type": "String",
@@ -834,7 +525,7 @@
       "volume": {
         "Type": "Set",
         "Optional": true,
-        "Removed": "Use block_device or flexibleengine_compute_volume_attach_v2 instead",
+        "Removed": "Use block_device or huaweicloud_compute_volume_attach_v2 instead",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -856,7 +547,7 @@
         }
       }
     },
-    "flexibleengine_compute_keypair_v2": {
+    "huaweicloud_compute_keypair_v2": {
       "name": {
         "Type": "String",
         "Required": true
@@ -875,7 +566,63 @@
         "Optional": true
       }
     },
-    "flexibleengine_compute_servergroup_v2": {
+    "huaweicloud_compute_secgroup_v2": {
+      "__timeouts__": [
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "rule": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cidr": {
+              "Type": "String",
+              "Optional": true
+            },
+            "from_group_id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "from_port": {
+              "Type": "Int",
+              "Required": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ip_protocol": {
+              "Type": "String",
+              "Required": true
+            },
+            "self": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "to_port": {
+              "Type": "Int",
+              "Required": true
+            }
+          }
+        }
+      }
+    },
+    "huaweicloud_compute_servergroup_v2": {
       "members": {
         "Type": "List",
         "Computed": true,
@@ -906,7 +653,7 @@
         "Optional": true
       }
     },
-    "flexibleengine_compute_volume_attach_v2": {
+    "huaweicloud_compute_volume_attach_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -930,7 +677,7 @@
         "Required": true
       }
     },
-    "flexibleengine_dns_recordset_v2": {
+    "huaweicloud_dns_recordset_v2": {
       "__timeouts__": [
         "create",
         "update",
@@ -946,7 +693,8 @@
       },
       "records": {
         "Type": "List",
-        "Optional": true,
+        "Required": true,
+        "MinItems": 1,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -959,13 +707,11 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true,
-        "Computed": true
+        "Optional": true
       },
       "type": {
         "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Required": true
       },
       "value_specs": {
         "Type": "Map",
@@ -976,16 +722,12 @@
         "Required": true
       }
     },
-    "flexibleengine_dns_zone_v2": {
+    "huaweicloud_dns_zone_v2": {
       "__timeouts__": [
         "create",
         "update",
         "delete"
       ],
-      "attributes": {
-        "Type": "Map",
-        "Optional": true
-      },
       "description": {
         "Type": "String",
         "Optional": true
@@ -996,7 +738,7 @@
       },
       "masters": {
         "Type": "Set",
-        "Optional": true,
+        "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -1011,202 +753,156 @@
         "Optional": true,
         "Computed": true
       },
+      "router": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "router_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "router_region": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "ttl": {
         "Type": "Int",
-        "Optional": true,
-        "Computed": true
-      },
-      "type": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Optional": true
       },
       "value_specs": {
         "Type": "Map",
         "Optional": true
+      },
+      "zone_type": {
+        "Type": "String",
+        "Optional": true
       }
     },
-    "flexibleengine_drs_replication_v2": {
-      "created_at": {
-        "Type": "String",
-        "Computed": true
-      },
-      "description": {
-        "Type": "String",
-        "Optional": true
-      },
-      "failure_detail": {
-        "Type": "String",
-        "Computed": true
-      },
-      "fault_level": {
-        "Type": "String",
-        "Computed": true
-      },
-      "name": {
-        "Type": "String",
-        "Optional": true
-      },
-      "priority_station": {
-        "Type": "String",
-        "Required": true
-      },
-      "progress": {
-        "Type": "String",
-        "Computed": true
-      },
-      "record_metadata": {
-        "Type": "String",
-        "Computed": true
-      },
-      "replication_consistency_group_id": {
-        "Type": "String",
-        "Computed": true
-      },
-      "replication_model": {
-        "Type": "String",
-        "Optional": true
-      },
-      "replication_status": {
-        "Type": "String",
-        "Computed": true
-      },
-      "status": {
-        "Type": "String",
-        "Computed": true
-      },
-      "updated_at": {
-        "Type": "String",
-        "Computed": true
-      },
-      "volume_ids": {
-        "Type": "List",
-        "Required": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      }
-    },
-    "flexibleengine_drs_replicationconsistencygroup_v2": {
-      "created_at": {
-        "Type": "String",
-        "Computed": true
-      },
-      "description": {
-        "Type": "String",
-        "Optional": true
-      },
-      "failure_detail": {
-        "Type": "String",
-        "Computed": true
-      },
-      "fault_level": {
-        "Type": "String",
-        "Computed": true
-      },
-      "name": {
-        "Type": "String",
-        "Optional": true
-      },
-      "priority_station": {
-        "Type": "String",
-        "Required": true
-      },
-      "replication_ids": {
-        "Type": "Set",
-        "Required": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      },
-      "replication_model": {
-        "Type": "String",
-        "Optional": true
-      },
-      "replication_status": {
-        "Type": "String",
-        "Computed": true
-      },
-      "status": {
-        "Type": "String",
-        "Computed": true
-      },
-      "updated_at": {
-        "Type": "String",
-        "Computed": true
-      }
-    },
-    "flexibleengine_elb_backend": {
-      "__timeouts__": [
-        "create",
-        "delete"
-      ],
-      "address": {
-        "Type": "String",
-        "Required": true
-      },
-      "listener_id": {
-        "Type": "String",
-        "Required": true
-      },
-      "server_id": {
-        "Type": "String",
-        "Required": true
-      }
-    },
-    "flexibleengine_elb_health": {
+    "huaweicloud_elb_backendecs": {
       "__timeouts__": [
         "create",
         "update",
         "delete"
       ],
-      "healthcheck_connect_port": {
-        "Type": "Int",
-        "Optional": true
-      },
-      "healthcheck_interval": {
-        "Type": "Int",
-        "Optional": true
-      },
-      "healthcheck_protocol": {
+      "create_time": {
         "Type": "String",
-        "Optional": true
+        "Computed": true
       },
-      "healthcheck_timeout": {
-        "Type": "Int",
-        "Optional": true
-      },
-      "healthcheck_uri": {
+      "health_status": {
         "Type": "String",
-        "Optional": true
-      },
-      "healthy_threshold": {
-        "Type": "Int",
-        "Optional": true
+        "Computed": true
       },
       "listener_id": {
         "Type": "String",
         "Required": true
       },
-      "region": {
+      "listeners": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "private_address": {
+        "Type": "String",
+        "Required": true
+      },
+      "public_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "server_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "server_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "huaweicloud_elb_healthcheck": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "healthcheck_connect_port": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "healthcheck_interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "healthcheck_protocol": {
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "healthcheck_timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "healthcheck_uri": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "healthy_threshold": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "listener_id": {
+        "Type": "String",
+        "Required": true
       },
       "unhealthy_threshold": {
         "Type": "Int",
         "Optional": true,
         "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Computed": true
       }
     },
-    "flexibleengine_elb_listener": {
+    "huaweicloud_elb_listener": {
       "__timeouts__": [
         "create",
         "update",
         "delete"
       ],
+      "admin_state_up": {
+        "Type": "Bool",
+        "Computed": true
+      },
       "backend_port": {
         "Type": "Int",
         "Required": true
@@ -1217,19 +913,406 @@
       },
       "certificate_id": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
+      },
+      "certificates": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "cookie_timeout": {
         "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "healthcheck_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "lb_algorithm": {
+        "Type": "String",
+        "Required": true
+      },
+      "loadbalancer_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "member_number": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "port": {
+        "Type": "Int",
+        "Required": true
+      },
+      "protocol": {
+        "Type": "String",
+        "Required": true
+      },
+      "session_sticky": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "ssl_ciphers": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "ssl_protocols": {
+        "Type": "String",
+        "Optional": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "sticky_session_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tcp_draining": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "tcp_draining_timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "tcp_timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "udp_timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "huaweicloud_elb_loadbalancer": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "admin_state_up": {
+        "Type": "Int",
+        "Required": true
+      },
+      "az": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bandwidth": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "charge_mode": {
+        "Type": "String",
+        "Optional": true
+      },
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "eip_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "security_group_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tenantid": {
+        "Type": "String",
+        "Optional": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "vip_address": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "vip_subnet_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "huaweicloud_fw_firewall_group_v2": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "admin_state_up": {
+        "Type": "Bool",
         "Optional": true
       },
       "description": {
         "Type": "String",
         "Optional": true
       },
-      "lb_algorithm": {
+      "egress_policy_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "ingress_policy_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "ports": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "value_specs": {
+        "Type": "Map",
+        "Optional": true
+      }
+    },
+    "huaweicloud_fw_policy_v2": {
+      "__timeouts__": [
+        "create"
+      ],
+      "audited": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "rules": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "shared": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "value_specs": {
+        "Type": "Map",
+        "Optional": true
+      }
+    },
+    "huaweicloud_fw_rule_v2": {
+      "action": {
         "Type": "String",
         "Required": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "destination_ip_address": {
+        "Type": "String",
+        "Optional": true
+      },
+      "destination_port": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "ip_version": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "protocol": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "source_ip_address": {
+        "Type": "String",
+        "Optional": true
+      },
+      "source_port": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "value_specs": {
+        "Type": "Map",
+        "Optional": true
+      }
+    },
+    "huaweicloud_kms_key_v1": {
+      "creation_date": {
+        "Type": "String",
+        "Computed": true
+      },
+      "default_key_flag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "domain_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "expiration_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "is_enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "key_alias": {
+        "Type": "String",
+        "Required": true
+      },
+      "key_description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "key_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "pending_days": {
+        "Type": "String",
+        "Optional": true
+      },
+      "realm": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "scheduled_deletion_date": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "huaweicloud_lb_listener_v2": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "admin_state_up": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "connection_limit": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "default_pool_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "default_tls_container_ref": {
+        "Type": "String",
+        "Optional": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
       },
       "loadbalancer_id": {
         "Type": "String",
@@ -1253,41 +1336,21 @@
         "Optional": true,
         "Computed": true
       },
-      "session_sticky": {
-        "Type": "Bool",
-        "Optional": true
+      "sni_container_refs": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
-      "session_sticky_type": {
+      "tenant_id": {
         "Type": "String",
-        "Optional": true
-      },
-      "ssl_ciphers": {
-        "Type": "String",
-        "Optional": true
-      },
-      "ssl_protocols": {
-        "Type": "String",
-        "Optional": true
-      },
-      "tcp_draining": {
-        "Type": "Bool",
-        "Optional": true
-      },
-      "tcp_draining_timeout": {
-        "Type": "Int",
-        "Optional": true
-      },
-      "tcp_timeout": {
-        "Type": "Int",
         "Optional": true,
         "Computed": true
-      },
-      "udp_timeout": {
-        "Type": "Int",
-        "Optional": true
       }
     },
-    "flexibleengine_elb_loadbalancer": {
+    "huaweicloud_lb_loadbalancer_v2": {
       "__timeouts__": [
         "create",
         "update",
@@ -1297,17 +1360,18 @@
         "Type": "Bool",
         "Optional": true
       },
-      "az": {
-        "Type": "String",
-        "Optional": true
-      },
-      "bandwidth": {
-        "Type": "Int",
-        "Optional": true
-      },
       "description": {
         "Type": "String",
         "Optional": true
+      },
+      "flavor": {
+        "Type": "String",
+        "Optional": true
+      },
+      "loadbalancer_provider": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       },
       "name": {
         "Type": "String",
@@ -1318,35 +1382,263 @@
         "Optional": true,
         "Computed": true
       },
-      "security_group_id": {
+      "security_group_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tenant_id": {
         "Type": "String",
         "Optional": true,
         "Computed": true
-      },
-      "tenantid": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "type": {
-        "Type": "String",
-        "Required": true
       },
       "vip_address": {
         "Type": "String",
         "Optional": true,
         "Computed": true
       },
-      "vip_subnet_id": {
+      "vip_port_id": {
         "Type": "String",
-        "Optional": true
+        "Computed": true
       },
-      "vpc_id": {
+      "vip_subnet_id": {
         "Type": "String",
         "Required": true
       }
     },
-    "flexibleengine_networking_floatingip_v2": {
+    "huaweicloud_lb_member_v2": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "address": {
+        "Type": "String",
+        "Required": true
+      },
+      "admin_state_up": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "pool_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "protocol_port": {
+        "Type": "Int",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "subnet_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "weight": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "huaweicloud_lb_monitor_v2": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "admin_state_up": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "delay": {
+        "Type": "Int",
+        "Required": true
+      },
+      "expected_codes": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "http_method": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "max_retries": {
+        "Type": "Int",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "pool_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "timeout": {
+        "Type": "Int",
+        "Required": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      },
+      "url_path": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "huaweicloud_lb_pool_v2": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "admin_state_up": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "lb_method": {
+        "Type": "String",
+        "Required": true
+      },
+      "listener_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "loadbalancer_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "persistence": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cookie_name": {
+              "Type": "String",
+              "Optional": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "protocol": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "huaweicloud_nat_gateway_v2": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "internal_network_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "router_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "spec": {
+        "Type": "String",
+        "Required": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "huaweicloud_nat_snat_rule_v2": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "floating_ip_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "nat_gateway_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "network_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "huaweicloud_networking_floatingip_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -1384,7 +1676,7 @@
         "Optional": true
       }
     },
-    "flexibleengine_networking_network_v2": {
+    "huaweicloud_networking_network_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -1393,6 +1685,15 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "availability_zone_hints": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "name": {
         "Type": "String",
@@ -1439,7 +1740,7 @@
         "Optional": true
       }
     },
-    "flexibleengine_networking_port_v2": {
+    "huaweicloud_networking_port_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -1457,10 +1758,17 @@
           "ElementsType": "String"
         }
       },
+      "all_security_group_ids": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "allowed_address_pairs": {
         "Type": "Set",
         "Optional": true,
-        "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -1516,6 +1824,10 @@
         "Type": "String",
         "Required": true
       },
+      "no_security_groups": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "region": {
         "Type": "String",
         "Optional": true,
@@ -1524,7 +1836,6 @@
       "security_group_ids": {
         "Type": "Set",
         "Optional": true,
-        "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -1540,14 +1851,15 @@
         "Optional": true
       }
     },
-    "flexibleengine_networking_router_interface_v2": {
+    "huaweicloud_networking_router_interface_v2": {
       "__timeouts__": [
         "create",
         "delete"
       ],
       "port_id": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "region": {
         "Type": "String",
@@ -1560,10 +1872,11 @@
       },
       "subnet_id": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       }
     },
-    "flexibleengine_networking_router_route_v2": {
+    "huaweicloud_networking_router_route_v2": {
       "destination_cidr": {
         "Type": "String",
         "Required": true
@@ -1582,7 +1895,7 @@
         "Required": true
       }
     },
-    "flexibleengine_networking_router_v2": {
+    "huaweicloud_networking_router_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -1592,14 +1905,47 @@
         "Optional": true,
         "Computed": true
       },
+      "availability_zone_hints": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "distributed": {
         "Type": "Bool",
         "Optional": true,
         "Computed": true
       },
-      "external_gateway": {
+      "enable_snat": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "external_fixed_ip": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_address": {
+              "Type": "String",
+              "Optional": true
+            },
+            "subnet_id": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "external_network_id": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "name": {
         "Type": "String",
@@ -1620,7 +1966,7 @@
         "Optional": true
       }
     },
-    "flexibleengine_networking_secgroup_rule_v2": {
+    "huaweicloud_networking_secgroup_rule_v2": {
       "__timeouts__": [
         "delete"
       ],
@@ -1672,7 +2018,7 @@
         "Computed": true
       }
     },
-    "flexibleengine_networking_secgroup_v2": {
+    "huaweicloud_networking_secgroup_v2": {
       "__timeouts__": [
         "delete"
       ],
@@ -1700,7 +2046,7 @@
         "Computed": true
       }
     },
-    "flexibleengine_networking_subnet_v2": {
+    "huaweicloud_networking_subnet_v2": {
       "__timeouts__": [
         "create",
         "delete"
@@ -1742,7 +2088,10 @@
       "gateway_ip": {
         "Type": "String",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "ConflictsWith": [
+          "no_gateway"
+        ]
       },
       "host_routes": {
         "Type": "List",
@@ -1765,6 +2114,16 @@
         "Type": "Int",
         "Optional": true
       },
+      "ipv6_address_mode": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "ipv6_ra_mode": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "name": {
         "Type": "String",
         "Optional": true
@@ -1775,7 +2134,10 @@
       },
       "no_gateway": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "gateway_ip"
+        ]
       },
       "region": {
         "Type": "String",
@@ -1792,65 +2154,7 @@
         "Optional": true
       }
     },
-    "flexibleengine_networking_vip_associate_v2": {
-      "port_ids": {
-        "Type": "Set",
-        "Required": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      },
-      "vip_id": {
-        "Type": "String",
-        "Required": true
-      },
-      "vip_ip_address": {
-        "Type": "String",
-        "Computed": true
-      },
-      "vip_subnet_id": {
-        "Type": "String",
-        "Computed": true
-      }
-    },
-    "flexibleengine_networking_vip_v2": {
-      "device_owner": {
-        "Type": "String",
-        "Computed": true
-      },
-      "id": {
-        "Type": "String",
-        "Computed": true
-      },
-      "ip_address": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "name": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "network_id": {
-        "Type": "String",
-        "Required": true
-      },
-      "status": {
-        "Type": "String",
-        "Computed": true
-      },
-      "subnet_id": {
-        "Type": "String",
-        "Required": true
-      },
-      "tenant_id": {
-        "Type": "String",
-        "Computed": true
-      }
-    },
-    "flexibleengine_rds_instance_v1": {
+    "huaweicloud_rds_instance_v1": {
       "__timeouts__": [
         "create",
         "delete"
@@ -2011,7 +2315,7 @@
         "Required": true
       }
     },
-    "flexibleengine_s3_bucket": {
+    "huaweicloud_s3_bucket": {
       "acl": {
         "Type": "String",
         "Optional": true
@@ -2177,6 +2481,10 @@
         "Optional": true,
         "Computed": true
       },
+      "tags": {
+        "Type": "Map",
+        "Optional": true
+      },
       "versioning": {
         "Type": "List",
         "Optional": true,
@@ -2237,7 +2545,7 @@
         "Computed": true
       }
     },
-    "flexibleengine_s3_bucket_object": {
+    "huaweicloud_s3_bucket_object": {
       "acl": {
         "Type": "String",
         "Optional": true
@@ -2295,6 +2603,11 @@
           "content"
         ]
       },
+      "sse_kms_key_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "version_id": {
         "Type": "String",
         "Computed": true
@@ -2304,7 +2617,7 @@
         "Optional": true
       }
     },
-    "flexibleengine_s3_bucket_policy": {
+    "huaweicloud_s3_bucket_policy": {
       "bucket": {
         "Type": "String",
         "Required": true
@@ -2314,7 +2627,7 @@
         "Required": true
       }
     },
-    "flexibleengine_smn_subscription_v2": {
+    "huaweicloud_smn_subscription_v2": {
       "endpoint": {
         "Type": "String",
         "Required": true
@@ -2347,7 +2660,7 @@
         "Required": true
       }
     },
-    "flexibleengine_smn_topic_v2": {
+    "huaweicloud_smn_topic_v2": {
       "create_time": {
         "Type": "String",
         "Optional": true,
@@ -2376,202 +2689,86 @@
         "Optional": true,
         "Computed": true
       }
-    },
-    "flexibleengine_vpc_peering_connection_accepter_v2": {
-      "__timeouts__": [
-        "create",
-        "delete"
-      ],
-      "accept": {
-        "Type": "Bool",
+    }
+  },
+  "data-sources": {
+    "huaweicloud_kms_data_key_v1": {
+      "cipher_text": {
+        "Type": "String",
         "Optional": true
       },
-      "name": {
-        "Type": "String",
-        "Computed": true
-      },
-      "peer_tenant_id": {
-        "Type": "String",
-        "Computed": true
-      },
-      "peer_vpc_id": {
-        "Type": "String",
-        "Computed": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "status": {
-        "Type": "String",
-        "Computed": true
-      },
-      "vpc_id": {
-        "Type": "String",
-        "Computed": true
-      },
-      "vpc_peering_connection_id": {
-        "Type": "String",
-        "Required": true
-      }
-    },
-    "flexibleengine_vpc_peering_connection_v2": {
-      "__timeouts__": [
-        "create",
-        "delete"
-      ],
-      "id": {
-        "Type": "String",
-        "Computed": true
-      },
-      "name": {
+      "datakey_length": {
         "Type": "String",
         "Required": true
       },
-      "peer_tenant_id": {
+      "encryption_context": {
         "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "peer_vpc_id": {
-        "Type": "String",
-        "Required": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "status": {
-        "Type": "String",
-        "Computed": true
-      },
-      "vpc_id": {
-        "Type": "String",
-        "Required": true
-      }
-    },
-    "flexibleengine_vpc_route_v2": {
-      "__timeouts__": [
-        "create",
-        "delete"
-      ],
-      "destination": {
-        "Type": "String",
-        "Required": true
-      },
-      "nexthop": {
-        "Type": "String",
-        "Required": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "tenant_id": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "type": {
-        "Type": "String",
-        "Required": true
-      },
-      "vpc_id": {
-        "Type": "String",
-        "Required": true
-      }
-    },
-    "flexibleengine_vpc_subnet_v1": {
-      "__timeouts__": [
-        "create",
-        "delete"
-      ],
-      "availability_zone": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "cidr": {
-        "Type": "String",
-        "Required": true
-      },
-      "dhcp_enable": {
-        "Type": "Bool",
         "Optional": true
       },
-      "dns_list": {
-        "Type": "Set",
+      "key_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "plain_text": {
+        "Type": "String",
         "Optional": true,
+        "Computed": true
+      }
+    },
+    "huaweicloud_kms_key_v1": {
+      "creation_date": {
+        "Type": "String",
+        "Computed": true
+      },
+      "default_key_flag": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "domain_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "key_alias": {
+        "Type": "String",
+        "Optional": true
+      },
+      "key_description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "key_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "key_state": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "realm": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "scheduled_deletion_date": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "huaweicloud_networking_network_v2": {
+      "admin_state_up": {
+        "Type": "String",
+        "Computed": true
+      },
+      "availability_zone_hints": {
+        "Type": "List",
         "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
-      },
-      "gateway_ip": {
-        "Type": "String",
-        "Required": true
-      },
-      "name": {
-        "Type": "String",
-        "Required": true
-      },
-      "primary_dns": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "secondary_dns": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "vpc_id": {
-        "Type": "String",
-        "Required": true
-      }
-    },
-    "flexibleengine_vpc_v1": {
-      "__timeouts__": [
-        "create",
-        "delete"
-      ],
-      "cidr": {
-        "Type": "String",
-        "Required": true
-      },
-      "name": {
-        "Type": "String",
-        "Required": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "shared": {
-        "Type": "Bool",
-        "Computed": true
-      },
-      "status": {
-        "Type": "String",
-        "Computed": true
-      }
-    }
-  },
-  "data-sources": {
-    "flexibleengine_networking_network_v2": {
-      "admin_state_up": {
-        "Type": "String",
-        "Computed": true
       },
       "matching_subnet_cidr": {
         "Type": "String",
@@ -2594,6 +2791,10 @@
         "Type": "String",
         "Computed": true
       },
+      "status": {
+        "Type": "String",
+        "Optional": true
+      },
       "tenant_id": {
         "Type": "String",
         "Optional": true,
@@ -2603,7 +2804,7 @@
         }
       }
     },
-    "flexibleengine_networking_secgroup_v2": {
+    "huaweicloud_networking_secgroup_v2": {
       "name": {
         "Type": "String",
         "Optional": true
@@ -2623,7 +2824,123 @@
         "Computed": true
       }
     },
-    "flexibleengine_rds_flavors_v1": {
+    "huaweicloud_networking_subnet_v2": {
+      "allocation_pools": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "end": {
+              "Type": "String",
+              "Computed": true
+            },
+            "start": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "cidr": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "dhcp_disabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "ConflictsWith": [
+          "dhcp_enabled"
+        ]
+      },
+      "dhcp_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "ConflictsWith": [
+          "dhcp_disabled"
+        ]
+      },
+      "dns_nameservers": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "enable_dhcp": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "gateway_ip": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "host_routes": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "destination_cidr": {
+              "Type": "String",
+              "Computed": true
+            },
+            "next_hop": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "ip_version": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "ipv6_address_mode": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "ipv6_ra_mode": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "network_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "subnet_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
+        "Computed": true,
+        "Default": {
+          "Type": "string"
+        }
+      }
+    },
+    "huaweicloud_rds_flavors_v1": {
       "datastore_name": {
         "Type": "String",
         "Required": true
@@ -2658,7 +2975,7 @@
         "Computed": true
       }
     },
-    "flexibleengine_s3_bucket_object": {
+    "huaweicloud_s3_bucket_object": {
       "body": {
         "Type": "String",
         "Computed": true
@@ -2735,206 +3052,6 @@
       "website_redirect_location": {
         "Type": "String",
         "Computed": true
-      }
-    },
-    "flexibleengine_vpc_peering_connection_v2": {
-      "id": {
-        "Type": "String",
-        "Optional": true
-      },
-      "name": {
-        "Type": "String",
-        "Optional": true
-      },
-      "peer_tenant_id": {
-        "Type": "String",
-        "Optional": true
-      },
-      "peer_vpc_id": {
-        "Type": "String",
-        "Optional": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "status": {
-        "Type": "String",
-        "Optional": true
-      },
-      "vpc_id": {
-        "Type": "String",
-        "Optional": true
-      }
-    },
-    "flexibleengine_vpc_route_ids_v2": {
-      "ids": {
-        "Type": "Set",
-        "Computed": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "vpc_id": {
-        "Type": "String",
-        "Required": true
-      }
-    },
-    "flexibleengine_vpc_route_v2": {
-      "destination": {
-        "Type": "String",
-        "Optional": true
-      },
-      "id": {
-        "Type": "String",
-        "Optional": true
-      },
-      "nexthop": {
-        "Type": "String",
-        "Optional": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "tenant_id": {
-        "Type": "String",
-        "Optional": true
-      },
-      "type": {
-        "Type": "String",
-        "Optional": true
-      },
-      "vpc_id": {
-        "Type": "String",
-        "Optional": true
-      }
-    },
-    "flexibleengine_vpc_subnet_ids_v1": {
-      "ids": {
-        "Type": "Set",
-        "Computed": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "vpc_id": {
-        "Type": "String",
-        "Required": true
-      }
-    },
-    "flexibleengine_vpc_subnet_v1": {
-      "availability_zone": {
-        "Type": "String",
-        "Optional": true
-      },
-      "cidr": {
-        "Type": "String",
-        "Optional": true
-      },
-      "dhcp_enable": {
-        "Type": "Bool",
-        "Computed": true
-      },
-      "dns_list": {
-        "Type": "Set",
-        "Computed": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      },
-      "gateway_ip": {
-        "Type": "String",
-        "Optional": true
-      },
-      "id": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "name": {
-        "Type": "String",
-        "Optional": true
-      },
-      "primary_dns": {
-        "Type": "String",
-        "Optional": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "secondary_dns": {
-        "Type": "String",
-        "Optional": true
-      },
-      "status": {
-        "Type": "String",
-        "Optional": true
-      },
-      "vpc_id": {
-        "Type": "String",
-        "Optional": true
-      }
-    },
-    "flexibleengine_vpc_v1": {
-      "cidr": {
-        "Type": "String",
-        "Optional": true
-      },
-      "id": {
-        "Type": "String",
-        "Optional": true
-      },
-      "name": {
-        "Type": "String",
-        "Optional": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "routes": {
-        "Type": "List",
-        "Computed": true,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "destination": {
-              "Type": "String",
-              "Computed": true
-            },
-            "nexthop": {
-              "Type": "String",
-              "Computed": true
-            }
-          }
-        }
-      },
-      "shared": {
-        "Type": "Bool",
-        "Optional": true
-      },
-      "status": {
-        "Type": "String",
-        "Optional": true
       }
     }
   }
