@@ -70,7 +70,7 @@
 
   extends("Binary.+Expression")=BinaryExpression
 
-  extends(".*Expression|.*Variable|ExpressionHolder")=Expression
+  extends(".*Expression|.*Variable|ExpressionHolder|CollectionValue")=Expression
 }
 
 root ::= root_element*
@@ -173,12 +173,12 @@ Expression ::= (
     | SelectExpression
     | IndexSelectExpression
 
-    | CollectionValue
-    | TemplateExpr
-    | VariableExpr
-    | ForExpr
-    | Expression Splat
+    //| TemplateExpression // TODO: Investigate templates
+    | ForExpression
+    //| SplatExpression // TODO: Check whether could be replaced with index, select
 
+
+    | CollectionValue
     | Variable
     | UnaryExpression
     | LiteralExpression
@@ -187,6 +187,8 @@ Expression ::= (
   methods = [
   ]
 }
+
+SplatExpression ::= Expression Splat
 
 // TODO: Check ILVariable
 SelectExpression ::= Expression OP_DOT Identifier {
@@ -212,32 +214,50 @@ Variable ::= identifier | '*' {
 
 
 LiteralExpression ::= (
-  NumericLit |
-  "true" |
-  "false" |
-  "null"
+  number_literal |
+  boolean_literal
+  null_literal
 );
 
-CollectionValue ::= tuple | object;
-tuple ::= "[" (
-    (Expression ("," Expression)* ","?)?
-) "]";
-object ::= "{" (
-    (objectelem ("," objectelem)* ","?)?
-) "}";
-objectelem ::= (Identifier | Expression) "=" Expression;
+CollectionValue ::= tuple | object2;
 
-TemplateExpr ::= quotedTemplate | heredocTemplate;
+tuple ::= "[" tuple_element* "]" {
+  pin=1
+  extends=Expression
+}
+private tuple_element ::= Expression  (','|&']') {
+  pin=1
+  recoverWhile = not_bracket_or_next_tuple_value
+}
+
+object2 ::= '{' object_element2* '}' {
+  pin=1
+  methods=[
+    findProperty
+    getPresentation
+  ]
+  extends=Expression
+}
+
+private object_element2 ::= (ObjectElement) (','|&'}')? {
+  pin=1
+  recoverWhile = not_brace_or_next_value_2
+}
+ObjectElement ::= (Identifier | Expression) "=" Expression
+{
+  extends=Expression
+}
+
+TemplateExpression ::= quotedTemplate | heredocTemplate;
 quotedTemplate ::= (as defined in prose above);
 heredocTemplate ::= (
     ("<<" | "<<-") Identifier Newline
     (content as defined in prose above)
     Identifier Newline
 );
-StringLit ::= '"' (quoted literals as defined in prose above) '"';
-VariableExpr ::= Identifier;
+StringLit ::= DOUBLE_QUOTED_STRING
 
-MethodCallExpression ::= Identifier ParameterList
+MethodCallExpression ::= Expression ParameterList
 {
   methods=[
     Callee="Identifier"
@@ -255,11 +275,17 @@ ParameterList ::= '(' (Expression? (',' Expression)* (',' | '...')?)? ')' {
 }
 
 
-ForExpr ::= forTupleExpr | forObjectExpr;
-forTupleExpr ::= "[" forIntro Expression forCond? "]";
-forObjectExpr ::= "{" forIntro Expression "=>" Expression "..."? forCond? "}";
-forIntro ::= "for" Identifier ("," Identifier)? "in" Expression ":";
-forCond ::= "if" Expression;
+ForExpression ::= ForTupleExpression | ForObjectExpression;
+ForTupleExpression ::= "[" ForIntro Expression ForCondition? "]";
+ForObjectExpression ::= "{" ForIntro Expression "=>" Expression "..."? ForCondition? "}";
+ForIntro ::= "for" Identifier ("," Identifier)? ("in" Expression) ":"
+{
+  pin('.*')=1
+}
+ForCondition ::= "if" Expression
+{
+  pin=1
+}
 
 
 Index ::= "[" Expression "]";
@@ -289,7 +315,15 @@ BinaryMultiplyExpression ::= Expression mulOp Expression
 
 
 
-ConditionalExpression ::= Expression "?" Expression ":" Expression;
+ConditionalExpression ::= Expression('?' <<push 1>> Expression (':' Expression) <<pop>>)
+{
+  pin(".*")="'\?'|'\:'"
+  methods=[
+    condition="Expression[0]"
+    then="Expression[1]"
+    else="Expression[2]"
+  ]
+}
 
 // Kinda interpolations (HIL)
 Template ::= (
@@ -352,7 +386,6 @@ private relationalOp ::= OP_LESS
 
 // Mappings
 Identifier ::= identifier
-NumericLit ::= number_literal
 Newline ::= "\n"
 //endregion HCL2
 
@@ -440,4 +473,7 @@ heredoc_marker::= HD_MARKER {
 // Recoveries
 private not_bracket_or_next_value ::= !(']'|(literal | array | object))
 private not_brace_or_next_value ::= !('}'|value)
+
+private not_bracket_or_next_tuple_value ::= !(']'|(Expression))
+private not_brace_or_next_value_2 ::= !('}'|ObjectElement)
 
