@@ -328,6 +328,18 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
             isBlock = true
           }
         }
+      } else if (et == null) {
+        /*
+          Something like with 'Value' == 'String':
+          dimensions = {
+            instanceId = "i-bp1247jeep0y53nu3bnk,i-bp11gdcik8z6dl5jm84p"
+            device = "/dev/vda1,/dev/vdb1"
+          }
+         */
+        val t = elem.string("Type") ?: elem.string("type")
+        if (t != null) {
+          //hint = TypeHint(parseType(t))
+        }
       }
       // ?? return BlockType(name).toPOBT()
     }
