@@ -1,3 +1,4 @@
+//noinspection BnfUnusedRuleForFile
 /*
  * Copyright 2000-2015 JetBrains s.r.o.
  *
@@ -141,6 +142,118 @@ value ::= literal | identifier | array | object {
   methods = [
   ]
 }
+
+
+//region HCL2
+ConfigFile ::= Body;
+Body       ::= (Attribute | Block)*;
+Attribute  ::= Identifier "=" Expression Newline;
+Block      ::= Identifier (StringLit|Identifier)* "{" Newline Body "}" Newline;
+
+
+Expression ::= ExprTerm | Operation | Conditional
+
+ExprTerm ::= (
+    LiteralValue |
+    CollectionValue |
+    TemplateExpr |
+    VariableExpr |
+    FunctionCall |
+    ForExpr |
+    ExprTerm Index |
+    ExprTerm GetAttr |
+    ExprTerm Splat |
+    "(" Expression ")"
+);
+
+LiteralValue ::= (
+  NumericLit |
+  "true" |
+  "false" |
+  "null"
+);
+
+CollectionValue ::= tuple | object;
+tuple ::= "[" (
+    (Expression ("," Expression)* ","?)?
+) "]";
+object ::= "{" (
+    (objectelem ("," objectelem)* ","?)?
+) "}";
+objectelem ::= (Identifier | Expression) "=" Expression;
+
+TemplateExpr ::= quotedTemplate | heredocTemplate;
+quotedTemplate ::= (as defined in prose above);
+heredocTemplate ::= (
+    ("<<" | "<<-") Identifier Newline
+    (content as defined in prose above)
+    Identifier Newline
+);
+StringLit ::= '"' (quoted literals as defined in prose above) '"';
+VariableExpr ::= Identifier;
+
+FunctionCall ::= Identifier "(" Arguments ")";
+Arguments ::= (
+    () ||
+    (Expression ("," Expression)* ("," | "...")?)
+);
+
+
+ForExpr ::= forTupleExpr | forObjectExpr;
+forTupleExpr ::= "[" forIntro Expression forCond? "]";
+forObjectExpr ::= "{" forIntro Expression "=>" Expression "..."? forCond? "}";
+forIntro ::= "for" Identifier ("," Identifier)? "in" Expression ":";
+forCond ::= "if" Expression;
+
+
+Index ::= "[" Expression "]";
+GetAttr ::= "." Identifier;
+
+Splat ::= attrSplat | fullSplat;
+attrSplat ::= "." "*" GetAttr*;
+fullSplat ::= "[" "*" "]" (GetAttr | Index)*;
+
+// TODO: Priorities
+Operation ::= unaryOp | binaryOp;
+unaryOp ::= ("-" | "!") ExprTerm;
+binaryOp ::= ExprTerm binaryOperator ExprTerm;
+binaryOperator ::= compareOperator | arithmeticOperator | logicOperator;
+compareOperator ::= "==" | "!=" | "<" | ">" | "<=" | ">=";
+arithmeticOperator ::= "+" | "-" | "*" | "/" | "%";
+logicOperator ::= "&&" | "||" | "!";
+
+
+Conditional ::= Expression "?" Expression ":" Expression;
+
+// Kinda interpolations (HIL)
+Template ::= (
+    TemplateLiteral |
+    TemplateInterpolation |
+    TemplateDirective
+)*
+TemplateDirective ::= TemplateIf | TemplateFor;
+TemplateInterpolation ::= ("${" | "${~") Expression ("}" | "~}")
+TemplateIf ::= (
+    ("%{" | "%{~") "if" Expression ("}" | "~}")
+    Template
+    (
+        ("%{" | "%{~") "else" ("}" | "~}")
+        Template
+    )?
+    ("%{" | "%{~") "endif" ("}" | "~}")
+);
+TemplateFor ::= (
+    ("%{" | "%{~") "for" Identifier ("," Identifier) "in" Expression ("}" | "~}")
+    Template
+    ("%{" | "%{~") "endfor" ("}" | "~}")
+);
+
+// Mappings
+Identifier ::= identifier
+NumericLit ::= number_literal
+Newline ::= "\n"
+//endregion HCL2
+
 
 identifier ::= ID {
   name = "identifier"
