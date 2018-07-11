@@ -27,7 +27,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
     return new HCLLexer(EnumSet.allOf(HCLCapability.class));
   }
 
-  public void testNumberWithSuffix() throws Exception {
+  public void testNumberWithSuffix() {
     doTest("arr=[1k, 1Kb]", "ID ('arr')\n" +
         "= ('=')\n" +
         "[ ('[')\n" +
@@ -38,7 +38,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "] (']')");
   }
 
-  public void testTerraformIL() throws Exception {
+  public void testTerraformIL() {
     doTest("count = \"${count()}\"", "ID ('count')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -46,7 +46,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${count()}\"')");
   }
 
-  public void testTerraformILWithSpecials() throws Exception {
+  public void testTerraformILWithSpecials() {
     doTest("a = \"${$()}\"", "ID ('a')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -54,7 +54,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${$()}\"')");
   }
 
-  public void testTerraformILWithSpecials2() throws Exception {
+  public void testTerraformILWithSpecials2() {
     doTest("a = \"${{$}$}}\"", "ID ('a')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -62,7 +62,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${{$}$}}\"')");
   }
 
-  public void testTerraformILInception() throws Exception {
+  public void testTerraformILInception() {
     doTest("count = \"${foo(${bar()})}\"", "ID ('count')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -70,7 +70,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${foo(${bar()})}\"')");
   }
 
-  public void testTerraformILInception2() throws Exception {
+  public void testTerraformILInception2() {
     doTest("count = \"${${}}\"", "ID ('count')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -78,7 +78,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${${}}\"')");
   }
 
-  public void testTerraformILWithString() throws Exception {
+  public void testTerraformILWithString() {
     doTest("count = \"${call(\"count\")}\"", "ID ('count')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -86,7 +86,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${call(\"count\")}\"')");
   }
 
-  public void testTerraformILWithIncorrectString() throws Exception {
+  public void testTerraformILWithIncorrectString() {
     doTest("count = \"${call(incomplete\")}\"", "ID ('count')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -94,7 +94,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${call(incomplete\")}\"')");
   }
 
-  public void testTerraformILWithString2() throws Exception {
+  public void testTerraformILWithString2() {
     doTest("count = '${call(\"count\")}'", "ID ('count')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -102,7 +102,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "SINGLE_QUOTED_STRING (''${call(\"count\")}'')");
   }
 
-  public void testTerraformILWithStringWithClosingBrace() throws Exception {
+  public void testTerraformILWithStringWithClosingBrace() {
     doTest("a = \"${foo(\"}\")}\"", "ID ('a')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -110,7 +110,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${foo(\"}\")}\"')");
   }
 
-  public void testTerraformILWithString_Unfinished() throws Exception {
+  public void testTerraformILWithString_Unfinished() {
     doTest("a = '${\"uf)}'", "ID ('a')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -118,7 +118,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "SINGLE_QUOTED_STRING (''${\"uf)}'')");
   }
 
-  public void testTerraformILWithString_Unfinished2() throws Exception {
+  public void testTerraformILWithString_Unfinished2() {
     doTest("a = \"${\"uf)}\"", "ID ('a')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -126,7 +126,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${\"uf)}\"')");
   }
 
-  public void testTerraformILWithString_Unfinished3() throws Exception {
+  public void testTerraformILWithString_Unfinished3() {
     doTest("c{a = \"${f(\"b.json\")}\"\'}", "ID ('c')\n" +
         "{ ('{')\n" +
         "ID ('a')\n" +
@@ -137,7 +137,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "SINGLE_QUOTED_STRING (''}')");
   }
 
-  public void testComplicatedTerraformConfigWithILStings() throws Exception {
+  public void testComplicatedTerraformConfigWithILStings() {
     doTest("container_definitions = \"${file(\"ecs-container-definitions.json\")}\"", "ID ('container_definitions')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -145,7 +145,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${file(\"ecs-container-definitions.json\")}\"')");
   }
 
-  public void testUnfinishedInterpolation() throws Exception {
+  public void testUnfinishedInterpolation() {
     doTest("a = \"${b(\"c\")}${{}}\"", "ID ('a')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -153,7 +153,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${b(\"c\")}${{}}\"')");
   }
 
-  public void testUnfinishedInterpolation2() throws Exception {
+  public void testUnfinishedInterpolation2() {
     doTest("a = \"${b(\"c\")}${\"\nx=y", "ID ('a')\n" +
         "WHITE_SPACE (' ')\n" +
         "= ('=')\n" +
@@ -161,7 +161,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${b(\"c\")}${\"\\nx=y')");
   }
 
-  public void testSimpleTokens_String_With_Interpolation() throws Exception {
+  public void testSimpleTokens_String_With_Interpolation() {
     List<String> strings = Arrays.asList(
         "\"${file(\"foo\")}\"",
         "\"${file(\\\"foo\\\")}\"",
@@ -173,7 +173,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
     }
   }
 
-  public void testSimpleTokens_Number_With_Modifier() throws Exception {
+  public void testSimpleTokens_Number_With_Modifier() {
     List<String> strings = Arrays.asList(
         "1k",
         "1Kb"
@@ -183,13 +183,13 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
     }
   }
 
-  public void testMultilineString_WithInterpolation() throws Exception {
+  public void testMultilineString_WithInterpolation() {
     doTest("mli=\"${hello\n  world}\"", "ID ('mli')\n" +
         "= ('=')\n" +
         "DOUBLE_QUOTED_STRING ('\"${hello\\n  world}\"')\n");
   }
 
-  public void testNonEscapedQuoteInInterpolation() throws Exception {
+  public void testNonEscapedQuoteInInterpolation() {
     doTest("x=[\n" +
         " \"${\"a\"}\",\n" +
         " \"${\"b\\\\\"}\\\\\",\n" +
@@ -207,7 +207,7 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "");
   }
 
-  public void testEscapedQuoteInInterpolation() throws Exception {
+  public void testEscapedQuoteInInterpolation() {
     doTest("\"${\"\\\"x\\\"\"}\"\n",
         "DOUBLE_QUOTED_STRING ('\"${\"\\\"x\\\"\"}\"')\n" +
         "WHITE_SPACE ('\\n')\n");
