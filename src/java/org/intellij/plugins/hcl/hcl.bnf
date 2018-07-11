@@ -170,19 +170,33 @@ Expression ::= (
     | BinaryMultiplyExpression
 
     | MethodCallExpression
+    | SelectExpression
+    | IndexSelectExpression
 
     | LiteralValue
     | CollectionValue
     | TemplateExpr
     | VariableExpr
     | ForExpr
-    | Expression Index
-    | Expression GetAttr
     | Expression Splat
 ) {
   name="expression"
   methods = [
   ]
+}
+
+// TODO: Check ILVariable
+SelectExpression ::= Expression OP_DOT Identifier {
+  methods=[
+    Expression=""
+    from="Expression[0]"
+    field="Expression[1]"
+  ]
+}
+
+IndexSelectExpression ::= Expression ('[' Expression ']') {
+  pin(".*")="'\['"
+  extends = SelectExpression
 }
 
 ParenthesizedExpression ::= '(' <<push 0>> Expression ')' <<pop>>
@@ -250,7 +264,7 @@ fullSplat ::= "[" "*" "]" (GetAttr | Index)*;
 UnaryExpression ::= unaryOp Expression
 {
   methods = [
-    operand="ILExpression"
+    operand="Expression"
     getOperationSign
   ]
 }
