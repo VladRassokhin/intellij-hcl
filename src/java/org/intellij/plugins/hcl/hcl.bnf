@@ -156,8 +156,19 @@ Block      ::= Identifier (StringLit|Identifier)* "{" Newline Body "}" Newline;
 
 
 Expression ::= (
-    Operation
-    | Conditional
+      ParenthesizedExpression
+
+    | ConditionalExpression
+
+    | BinaryOrExpression
+    | BinaryAndExpression
+
+    | BinaryEqualityExpression
+    | BinaryRelationalExpression
+
+    | BinaryAdditionExpression
+    | BinaryMultiplyExpression
+
     | LiteralValue
     | CollectionValue
     | TemplateExpr
@@ -167,7 +178,6 @@ Expression ::= (
     | Expression Index
     | Expression GetAttr
     | Expression Splat
-    | ParenthesizedExpression
 ) {
   name="expression"
   methods = [
@@ -225,16 +235,26 @@ attrSplat ::= "." "*" GetAttr*;
 fullSplat ::= "[" "*" "]" (GetAttr | Index)*;
 
 // TODO: Priorities
-Operation ::= unaryOp | binaryOp;
-unaryOp ::= ("-" | "!") Expression;
-binaryOp ::= Expression binaryOperator Expression;
-binaryOperator ::= compareOperator | arithmeticOperator | logicOperator;
-compareOperator ::= "==" | "!=" | "<" | ">" | "<=" | ">=";
-arithmeticOperator ::= "+" | "-" | "*" | "/" | "%";
-logicOperator ::= "&&" | "||" | "!";
+UnaryExpression ::= unaryOp Expression
+{
+  methods = [
+    operand="ILExpression"
+    getOperationSign
+  ]
+}
+
+BinaryRelationalExpression ::= Expression relationalOp Expression
+BinaryEqualityExpression ::= Expression equalityOp Expression
+
+BinaryAndExpression ::= Expression andOp Expression
+BinaryOrExpression ::= Expression orOp Expression
+
+BinaryAdditionExpression ::= Expression addOp Expression
+BinaryMultiplyExpression ::= Expression mulOp Expression
 
 
-Conditional ::= Expression "?" Expression ":" Expression;
+
+ConditionalExpression ::= Expression "?" Expression ":" Expression;
 
 // Kinda interpolations (HIL)
 Template ::= (
@@ -258,6 +278,42 @@ TemplateFor ::= (
     Template
     ("%{" | "%{~") "endfor" ("}" | "~}")
 );
+
+
+// Operators
+private mulOp ::= OP_MUL | OP_DIV | OP_MOD
+{
+  name="operator"
+}
+private addOp ::= OP_PLUS | OP_MINUS
+{
+  name="operator"
+}
+private unaryOp ::= OP_MINUS | OP_NOT
+{
+  name="operator"
+}
+private orOp ::= OP_OR_OR
+{
+  name="operator"
+}
+private andOp ::= OP_AND_AND
+{
+  name="operator"
+}
+private equalityOp ::= OP_EQUAL
+                    | OP_NOT_EQUAL
+{
+  name="operator"
+}
+private relationalOp ::= OP_LESS
+                       | OP_GREATER
+                       | OP_LESS_OR_EQUAL
+                       | OP_GREATER_OR_EQUAL
+{
+  name="operator"
+}
+
 
 // Mappings
 Identifier ::= identifier
