@@ -186,9 +186,9 @@ Expression ::= (
     | MethodCallExpression
     | SelectExpression
     | IndexSelectExpression
+    //| SplatSelectExpression // for now covered by IndexSelectExpression
 
     | ForArrayExpression | ForObjectExpression
-    //| SplatExpression // TODO: Check whether could be replaced with index, select
 
 
     | CollectionValue
@@ -202,8 +202,6 @@ Expression ::= (
   ]
 }
 
-SplatExpression ::= Expression Splat
-
 // TODO: Check ILVariable
 SelectExpression ::= Expression OP_DOT identifier {
   methods=[
@@ -214,6 +212,11 @@ SelectExpression ::= Expression OP_DOT identifier {
 }
 
 IndexSelectExpression ::= Expression ('[' Expression ']') {
+  pin(".*")="'\['"
+  extends = SelectExpression
+}
+
+SplatSelectExpression ::= Expression ('[' '*' ']' (IndexSelectExpression | SelectExpression)?) {
   pin(".*")="'\['"
   extends = SelectExpression
 }
@@ -310,12 +313,6 @@ ForCondition ::= "if" Expression
 }
 
 
-Index ::= "[" Expression "]";
-GetAttr ::= "." identifier;
-
-Splat ::= attrSplat | fullSplat;
-attrSplat ::= "." "*" GetAttr*;
-fullSplat ::= "[" "*" "]" (GetAttr | Index)*;
 
 // TODO: Priorities
 UnaryExpression ::= unaryOp Expression

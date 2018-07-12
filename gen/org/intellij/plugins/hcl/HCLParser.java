@@ -32,20 +32,11 @@ public class HCLParser implements PsiParser, LightPsiParser {
     else if (t == FOR_INTRO) {
       r = ForIntro(b, 0);
     }
-    else if (t == GET_ATTR) {
-      r = GetAttr(b, 0);
-    }
-    else if (t == INDEX) {
-      r = Index(b, 0);
-    }
     else if (t == PARAMETER_LIST) {
       r = ParameterList(b, 0);
     }
-    else if (t == SPLAT) {
-      r = Splat(b, 0);
-    }
-    else if (t == SPLAT_EXPRESSION) {
-      r = SplatExpression(b, 0);
+    else if (t == SPLAT_SELECT_EXPRESSION) {
+      r = SplatSelectExpression(b, 0);
     }
     else if (t == TEMPLATE) {
       r = Template(b, 0);
@@ -68,17 +59,11 @@ public class HCLParser implements PsiParser, LightPsiParser {
     else if (t == ARRAY) {
       r = array(b, 0);
     }
-    else if (t == ATTR_SPLAT) {
-      r = attrSplat(b, 0);
-    }
     else if (t == BLOCK) {
       r = block(b, 0);
     }
     else if (t == BOOLEAN_LITERAL) {
       r = boolean_literal(b, 0);
-    }
-    else if (t == FULL_SPLAT) {
-      r = fullSplat(b, 0);
     }
     else if (t == HEREDOC_CONTENT) {
       r = heredoc_content(b, 0);
@@ -130,7 +115,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
       FOR_OBJECT_EXPRESSION, HEREDOC_LITERAL, IDENTIFIER, INDEX_SELECT_EXPRESSION,
       LITERAL, METHOD_CALL_EXPRESSION, NULL_LITERAL, NUMBER_LITERAL,
       OBJECT, OBJECT_2, PARENTHESIZED_EXPRESSION, SELECT_EXPRESSION,
-      SPLAT_EXPRESSION, STRING_LITERAL, TEMPLATE_EXPRESSION, UNARY_EXPRESSION,
+      SPLAT_SELECT_EXPRESSION, STRING_LITERAL, TEMPLATE_EXPRESSION, UNARY_EXPRESSION,
       VALUE, VARIABLE),
   };
 
@@ -192,33 +177,6 @@ public class HCLParser implements PsiParser, LightPsiParser {
     r = r && Expression(b, l + 1, -1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
-  }
-
-  /* ********************************************************** */
-  // "." identifier
-  public static boolean GetAttr(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "GetAttr")) return false;
-    if (!nextTokenIs(b, OP_DOT)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, OP_DOT);
-    r = r && identifier(b, l + 1);
-    exit_section_(b, m, GET_ATTR, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // "[" Expression "]"
-  public static boolean Index(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Index")) return false;
-    if (!nextTokenIs(b, L_BRACKET)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, L_BRACKET);
-    r = r && Expression(b, l + 1, -1);
-    r = r && consumeToken(b, R_BRACKET);
-    exit_section_(b, m, INDEX, r);
-    return r;
   }
 
   /* ********************************************************** */
@@ -326,27 +284,42 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // attrSplat | fullSplat
-  public static boolean Splat(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Splat")) return false;
-    if (!nextTokenIs(b, "<splat>", OP_DOT, L_BRACKET)) return false;
+  // Expression ('[' '*' ']' (IndexSelectExpression | SelectExpression)?)
+  public static boolean SplatSelectExpression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "SplatSelectExpression")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, SPLAT, "<splat>");
-    r = attrSplat(b, l + 1);
-    if (!r) r = fullSplat(b, l + 1);
+    Marker m = enter_section_(b, l, _NONE_, SPLAT_SELECT_EXPRESSION, "<splat select expression>");
+    r = Expression(b, l + 1, -1);
+    r = r && SplatSelectExpression_1(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  /* ********************************************************** */
-  // Expression Splat
-  public static boolean SplatExpression(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "SplatExpression")) return false;
+  // '[' '*' ']' (IndexSelectExpression | SelectExpression)?
+  private static boolean SplatSelectExpression_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "SplatSelectExpression_1")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeTokens(b, 1, L_BRACKET, OP_MUL, R_BRACKET);
+    p = r; // pin = '\['
+    r = r && SplatSelectExpression_1_3(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // (IndexSelectExpression | SelectExpression)?
+  private static boolean SplatSelectExpression_1_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "SplatSelectExpression_1_3")) return false;
+    SplatSelectExpression_1_3_0(b, l + 1);
+    return true;
+  }
+
+  // IndexSelectExpression | SelectExpression
+  private static boolean SplatSelectExpression_1_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "SplatSelectExpression_1_3_0")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, SPLAT_EXPRESSION, "<splat expression>");
-    r = Expression(b, l + 1, -1);
-    r = r && Splat(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    r = Expression(b, l + 1, 9);
+    if (!r) r = Expression(b, l + 1, 8);
     return r;
   }
 
@@ -728,30 +701,6 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "." "*" GetAttr*
-  public static boolean attrSplat(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "attrSplat")) return false;
-    if (!nextTokenIs(b, OP_DOT)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, OP_DOT, OP_MUL);
-    r = r && attrSplat_2(b, l + 1);
-    exit_section_(b, m, ATTR_SPLAT, r);
-    return r;
-  }
-
-  // GetAttr*
-  private static boolean attrSplat_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "attrSplat_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!GetAttr(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "attrSplat_2", c)) break;
-    }
-    return true;
-  }
-
-  /* ********************************************************** */
   // property_name* object
   public static boolean block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block")) return false;
@@ -810,39 +759,6 @@ public class HCLParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, OP_EQUAL);
     if (!r) r = consumeToken(b, OP_NOT_EQUAL);
     exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // "[" "*" "]" (GetAttr | Index)*
-  public static boolean fullSplat(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "fullSplat")) return false;
-    if (!nextTokenIs(b, L_BRACKET)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, L_BRACKET, OP_MUL, R_BRACKET);
-    r = r && fullSplat_3(b, l + 1);
-    exit_section_(b, m, FULL_SPLAT, r);
-    return r;
-  }
-
-  // (GetAttr | Index)*
-  private static boolean fullSplat_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "fullSplat_3")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!fullSplat_3_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "fullSplat_3", c)) break;
-    }
-    return true;
-  }
-
-  // GetAttr | Index
-  private static boolean fullSplat_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "fullSplat_3_0")) return false;
-    boolean r;
-    r = GetAttr(b, l + 1);
-    if (!r) r = Index(b, l + 1);
     return r;
   }
 

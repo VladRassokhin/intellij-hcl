@@ -69,14 +69,6 @@ public class HCLElementVisitor extends PsiElementVisitor {
     visitForExpression(o);
   }
 
-  public void visitGetAttr(@NotNull HCLGetAttr o) {
-    visitPsiElement(o);
-  }
-
-  public void visitIndex(@NotNull HCLIndex o) {
-    visitPsiElement(o);
-  }
-
   public void visitIndexSelectExpression(@NotNull HCLIndexSelectExpression o) {
     visitSelectExpression(o);
   }
@@ -97,12 +89,8 @@ public class HCLElementVisitor extends PsiElementVisitor {
     visitExpression(o);
   }
 
-  public void visitSplat(@NotNull HCLSplat o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSplatExpression(@NotNull HCLSplatExpression o) {
-    visitExpression(o);
+  public void visitSplatSelectExpression(@NotNull HCLSplatSelectExpression o) {
+    visitSelectExpression(o);
   }
 
   public void visitTemplate(@NotNull HCLTemplate o) {
@@ -142,10 +130,6 @@ public class HCLElementVisitor extends PsiElementVisitor {
     visitContainer(o);
   }
 
-  public void visitAttrSplat(@NotNull HCLAttrSplat o) {
-    visitPsiElement(o);
-  }
-
   public void visitBlock(@NotNull HCLBlock o) {
     visitElement(o);
     // visitPsiNameIdentifierOwner(o);
@@ -157,10 +141,6 @@ public class HCLElementVisitor extends PsiElementVisitor {
 
   public void visitContainer(@NotNull HCLContainer o) {
     visitValue(o);
-  }
-
-  public void visitFullSplat(@NotNull HCLFullSplat o) {
-    visitPsiElement(o);
   }
 
   public void visitHeredocContent(@NotNull HCLHeredocContent o) {

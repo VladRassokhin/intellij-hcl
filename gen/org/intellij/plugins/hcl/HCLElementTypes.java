@@ -9,7 +9,6 @@ import org.intellij.plugins.hcl.psi.impl.*;
 public interface HCLElementTypes {
 
   IElementType ARRAY = new HCLElementType("ARRAY");
-  IElementType ATTR_SPLAT = new HCLElementType("ATTR_SPLAT");
   IElementType BINARY_ADDITION_EXPRESSION = new HCLElementType("BINARY_ADDITION_EXPRESSION");
   IElementType BINARY_AND_EXPRESSION = new HCLElementType("BINARY_AND_EXPRESSION");
   IElementType BINARY_EQUALITY_EXPRESSION = new HCLElementType("BINARY_EQUALITY_EXPRESSION");
@@ -25,13 +24,10 @@ public interface HCLElementTypes {
   IElementType FOR_CONDITION = new HCLElementType("FOR_CONDITION");
   IElementType FOR_INTRO = new HCLElementType("FOR_INTRO");
   IElementType FOR_OBJECT_EXPRESSION = new HCLElementType("FOR_OBJECT_EXPRESSION");
-  IElementType FULL_SPLAT = new HCLElementType("FULL_SPLAT");
-  IElementType GET_ATTR = new HCLElementType("GET_ATTR");
   IElementType HEREDOC_CONTENT = new HCLElementType("HEREDOC_CONTENT");
   IElementType HEREDOC_LITERAL = new HCLElementType("HEREDOC_LITERAL");
   IElementType HEREDOC_MARKER = new HCLElementType("HEREDOC_MARKER");
   IElementType IDENTIFIER = new HCLElementType("IDENTIFIER");
-  IElementType INDEX = new HCLElementType("INDEX");
   IElementType INDEX_SELECT_EXPRESSION = new HCLElementType("INDEX_SELECT_EXPRESSION");
   IElementType LITERAL = new HCLElementType("LITERAL");
   IElementType METHOD_CALL_EXPRESSION = new HCLElementType("METHOD_CALL_EXPRESSION");
@@ -43,8 +39,7 @@ public interface HCLElementTypes {
   IElementType PARENTHESIZED_EXPRESSION = new HCLElementType("PARENTHESIZED_EXPRESSION");
   IElementType PROPERTY = new HCLElementType("PROPERTY");
   IElementType SELECT_EXPRESSION = new HCLElementType("SELECT_EXPRESSION");
-  IElementType SPLAT = new HCLElementType("SPLAT");
-  IElementType SPLAT_EXPRESSION = new HCLElementType("SPLAT_EXPRESSION");
+  IElementType SPLAT_SELECT_EXPRESSION = new HCLElementType("SPLAT_SELECT_EXPRESSION");
   IElementType STRING_LITERAL = new HCLElementType("STRING_LITERAL");
   IElementType TEMPLATE = new HCLElementType("TEMPLATE");
   IElementType TEMPLATE_DIRECTIVE = new HCLElementType("TEMPLATE_DIRECTIVE");
@@ -101,9 +96,6 @@ public interface HCLElementTypes {
        if (type == ARRAY) {
         return new HCLArrayImpl(node);
       }
-      else if (type == ATTR_SPLAT) {
-        return new HCLAttrSplatImpl(node);
-      }
       else if (type == BINARY_ADDITION_EXPRESSION) {
         return new HCLBinaryAdditionExpressionImpl(node);
       }
@@ -143,12 +135,6 @@ public interface HCLElementTypes {
       else if (type == FOR_OBJECT_EXPRESSION) {
         return new HCLForObjectExpressionImpl(node);
       }
-      else if (type == FULL_SPLAT) {
-        return new HCLFullSplatImpl(node);
-      }
-      else if (type == GET_ATTR) {
-        return new HCLGetAttrImpl(node);
-      }
       else if (type == HEREDOC_CONTENT) {
         return new HCLHeredocContentImpl(node);
       }
@@ -160,9 +146,6 @@ public interface HCLElementTypes {
       }
       else if (type == IDENTIFIER) {
         return new HCLIdentifierImpl(node);
-      }
-      else if (type == INDEX) {
-        return new HCLIndexImpl(node);
       }
       else if (type == INDEX_SELECT_EXPRESSION) {
         return new HCLIndexSelectExpressionImpl(node);
@@ -194,11 +177,8 @@ public interface HCLElementTypes {
       else if (type == SELECT_EXPRESSION) {
         return new HCLSelectExpressionImpl(node);
       }
-      else if (type == SPLAT) {
-        return new HCLSplatImpl(node);
-      }
-      else if (type == SPLAT_EXPRESSION) {
-        return new HCLSplatExpressionImpl(node);
+      else if (type == SPLAT_SELECT_EXPRESSION) {
+        return new HCLSplatSelectExpressionImpl(node);
       }
       else if (type == STRING_LITERAL) {
         return new HCLStringLiteralImpl(node);

@@ -5,12 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HCLSplat extends PsiElement {
-
-  @Nullable
-  HCLAttrSplat getAttrSplat();
-
-  @Nullable
-  HCLFullSplat getFullSplat();
+public interface HCLSplatSelectExpression extends HCLSelectExpression {
 
 }
