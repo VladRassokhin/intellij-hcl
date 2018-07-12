@@ -33,9 +33,10 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
   init {
     myPropertyValueAlignment =
         if (settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.DO_NOT_ALIGN_PROPERTY) null
-        else if (isElementType(node, OBJECT) || isFile(node)) Alignment.createAlignment(true)
+        else if (isElementType(node, OBJECT, BLOCK_OBJECT) || isFile(node)) Alignment.createAlignment(true)
         else null
     myChildWrap = when (node.elementType) {
+      BLOCK_OBJECT -> Wrap.createWrap(settings.OBJECT_WRAPPING, true)
       OBJECT -> Wrap.createWrap(settings.OBJECT_WRAPPING, true)
       ARRAY -> Wrap.createWrap(settings.ARRAY_WRAPPING, true)
       else -> null
@@ -110,7 +111,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     if (isElementType(myNode, HEREDOC_LITERAL, HEREDOC_MARKER, HEREDOC_CONTENT, HD_MARKER, HD_LINE, HD_START)) {
       return Indent.getAbsoluteNoneIndent()
     }
-    if (isElementType(myNode, OBJECT)) {
+    if (isElementType(myNode, OBJECT, BLOCK_OBJECT)) {
       return Indent.getNormalIndent()
     }
     if (isElementType(myNode, ARRAY)) {

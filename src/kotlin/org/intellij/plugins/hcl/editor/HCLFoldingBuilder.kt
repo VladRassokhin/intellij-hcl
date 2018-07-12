@@ -40,7 +40,7 @@ class HCLFoldingBuilder : CustomFoldingBuilder(), DumbAware {
   private fun collect(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, usedComments: MutableSet<PsiElement>) {
     val node = element.node
     when (node.elementType) {
-      HCLElementTypes.OBJECT -> {
+      HCLElementTypes.OBJECT, HCLElementTypes.BLOCK_OBJECT -> {
         if (isSpanMultipleLines(node) && element is HCLObject) {
           val props = element.propertyList.size
           val blocks = element.blockList.size
@@ -129,6 +129,7 @@ class HCLFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     return when (node.elementType) {
       HCLElementTypes.ARRAY -> "[...]"
       HCLElementTypes.OBJECT -> "{...}"
+      HCLElementTypes.BLOCK_OBJECT -> "{...}"
       HCLElementTypes.BLOCK_COMMENT -> "/*...*/"
       HCLElementTypes.LINE_COMMENT -> "//..."
       else -> "..."

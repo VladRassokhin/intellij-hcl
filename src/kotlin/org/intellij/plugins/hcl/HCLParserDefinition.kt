@@ -86,7 +86,7 @@ open class HCLParserDefinition : ParserDefinition {
 
     val HCL_BRACES: TokenSet = TokenSet.create(L_CURLY, R_CURLY)
     val HCL_BRACKETS: TokenSet = TokenSet.create(L_BRACKET, R_BRACKET)
-    val HCL_CONTAINERS: TokenSet = TokenSet.create(OBJECT, ARRAY)
+    val HCL_CONTAINERS: TokenSet = TokenSet.create(OBJECT, BLOCK_OBJECT, ARRAY)
     val HCL_BOOLEANS: TokenSet = TokenSet.create(TRUE, FALSE)
     val HCL_KEYWORDS: TokenSet = TokenSet.create(TRUE, FALSE, NULL)
     @JvmField val HCL_LITERALS: TokenSet = TokenSet.create(STRING_LITERAL, NUMBER_LITERAL, NULL_LITERAL, TRUE, FALSE)
