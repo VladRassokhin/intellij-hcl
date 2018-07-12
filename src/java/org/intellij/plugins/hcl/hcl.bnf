@@ -81,13 +81,14 @@ private property_outer ::= property_name property {
   pin=2
 }
 
-left property ::= '=' value {
+left property ::= '=' Expression {
   methods=[
     getName
     getNameElement
-    getValue
+//    getValue
     // suppress getValueList() accessor
-    value=""
+//    value=""
+    Expression=""
     getPresentation
   ]
   mixin="org.intellij.plugins.hcl.psi.impl.HCLPropertyMixin"
@@ -144,17 +145,12 @@ fake container ::= {
 
 value ::= literal | identifier | array | object {
   methods = [
+    Expression=""
   ]
 }
 
 
 //region HCL2
-ConfigFile ::= Body;
-Body       ::= (Attribute | Block)*;
-Attribute  ::= Identifier "=" Expression Newline;
-Block      ::= Identifier (StringLit|Identifier)* "{" Newline Body "}" Newline;
-
-
 Expression ::= (
       ParenthesizedExpression
 
@@ -173,7 +169,7 @@ Expression ::= (
     | SelectExpression
     | IndexSelectExpression
 
-    //| TemplateExpression // TODO: Investigate templates
+    | TemplateExpression // TODO: Investigate templates
     | ForExpression
     //| SplatExpression // TODO: Check whether could be replaced with index, select
 
@@ -191,7 +187,7 @@ Expression ::= (
 SplatExpression ::= Expression Splat
 
 // TODO: Check ILVariable
-SelectExpression ::= Expression OP_DOT Identifier {
+SelectExpression ::= Expression OP_DOT identifier {
   methods=[
     Expression=""
     from="Expression[0]"
@@ -209,7 +205,7 @@ ParenthesizedExpression ::= '(' <<push 0>> Expression ')' <<pop>>
 Variable ::= identifier | '*' {
   name="Identifier"
   implements="com.intellij.psi.PsiNamedElement"
-  mixin="org.intellij.plugins.hcl.psi.impl.VariableMixin"
+  mixin="org.intellij.plugins.hcl.psi.impl.HCLVariableMixin"
 }
 
 
@@ -243,19 +239,12 @@ private object_element2 ::= (ObjectElement) (','|&'}')? {
   pin=1
   recoverWhile = not_brace_or_next_value_2
 }
-ObjectElement ::= (Identifier | Expression) "=" Expression
+ObjectElement ::= (identifier | Expression) "=" Expression
 {
   extends=Expression
 }
 
-TemplateExpression ::= quotedTemplate | heredocTemplate;
-quotedTemplate ::= (as defined in prose above);
-heredocTemplate ::= (
-    ("<<" | "<<-") Identifier Newline
-    (content as defined in prose above)
-    Identifier Newline
-);
-StringLit ::= DOUBLE_QUOTED_STRING
+TemplateExpression ::= string_literal | heredoc_literal;
 
 MethodCallExpression ::= Expression ParameterList
 {
@@ -278,7 +267,7 @@ ParameterList ::= '(' (Expression? (',' Expression)* (',' | '...')?)? ')' {
 ForExpression ::= ForTupleExpression | ForObjectExpression;
 ForTupleExpression ::= "[" ForIntro Expression ForCondition? "]";
 ForObjectExpression ::= "{" ForIntro Expression "=>" Expression "..."? ForCondition? "}";
-ForIntro ::= "for" Identifier ("," Identifier)? ("in" Expression) ":"
+ForIntro ::= "for" identifier ("," identifier)? ("in" Expression) ":"
 {
   pin('.*')=1
 }
@@ -289,7 +278,7 @@ ForCondition ::= "if" Expression
 
 
 Index ::= "[" Expression "]";
-GetAttr ::= "." Identifier;
+GetAttr ::= "." identifier;
 
 Splat ::= attrSplat | fullSplat;
 attrSplat ::= "." "*" GetAttr*;
@@ -305,7 +294,7 @@ UnaryExpression ::= unaryOp Expression
 }
 
 fake BinaryExpression ::= Expression+ {
-  mixin="org.intellij.plugins.hcl.psi.impl.BinaryExpressionMixin"
+  mixin="org.intellij.plugins.hcl.psi.impl.HCLBinaryExpressionMixin"
   methods = [
     Expression=""
     LOperand="Expression[0]"
@@ -337,7 +326,7 @@ ConditionalExpression ::= Expression('?' <<push 1>> Expression (':' Expression) 
 
 // Kinda interpolations (HIL)
 Template ::= (
-    TemplateLiteral |
+    TemplateExpression |
     TemplateInterpolation |
     TemplateDirective
 )*
@@ -353,7 +342,7 @@ TemplateIf ::= (
     ("%{" | "%{~") "endif" ("}" | "~}")
 );
 TemplateFor ::= (
-    ("%{" | "%{~") "for" Identifier ("," Identifier) "in" Expression ("}" | "~}")
+    ("%{" | "%{~") "for" identifier ("," identifier) "in" Expression ("}" | "~}")
     Template
     ("%{" | "%{~") "endfor" ("}" | "~}")
 );
@@ -394,9 +383,6 @@ private relationalOp ::= OP_LESS
 }
 
 
-// Mappings
-Identifier ::= identifier
-Newline ::= "\n"
 //endregion HCL2
 
 
@@ -413,6 +399,7 @@ identifier ::= ID {
 literal ::= string_literal | number_literal | boolean_literal | null_literal | heredoc_literal {
   methods = [
     isQuotedString
+    Expression=""
   ]
   mixin = 'org.intellij.plugins.hcl.psi.impl.HCLLiteralMixin'
 }
