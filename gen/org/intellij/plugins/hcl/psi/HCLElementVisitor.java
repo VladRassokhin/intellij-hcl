@@ -93,30 +93,6 @@ public class HCLElementVisitor extends PsiElementVisitor {
     visitSelectExpression(o);
   }
 
-  public void visitTemplate(@NotNull HCLTemplate o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTemplateDirective(@NotNull HCLTemplateDirective o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTemplateExpression(@NotNull HCLTemplateExpression o) {
-    visitExpression(o);
-  }
-
-  public void visitTemplateFor(@NotNull HCLTemplateFor o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTemplateIf(@NotNull HCLTemplateIf o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTemplateInterpolation(@NotNull HCLTemplateInterpolation o) {
-    visitPsiElement(o);
-  }
-
   public void visitUnaryExpression(@NotNull HCLUnaryExpression o) {
     visitExpression(o);
   }

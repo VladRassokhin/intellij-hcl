@@ -41,12 +41,6 @@ public interface HCLElementTypes {
   IElementType SELECT_EXPRESSION = new HCLElementType("SELECT_EXPRESSION");
   IElementType SPLAT_SELECT_EXPRESSION = new HCLElementType("SPLAT_SELECT_EXPRESSION");
   IElementType STRING_LITERAL = new HCLElementType("STRING_LITERAL");
-  IElementType TEMPLATE = new HCLElementType("TEMPLATE");
-  IElementType TEMPLATE_DIRECTIVE = new HCLElementType("TEMPLATE_DIRECTIVE");
-  IElementType TEMPLATE_EXPRESSION = new HCLElementType("TEMPLATE_EXPRESSION");
-  IElementType TEMPLATE_FOR = new HCLElementType("TEMPLATE_FOR");
-  IElementType TEMPLATE_IF = new HCLElementType("TEMPLATE_IF");
-  IElementType TEMPLATE_INTERPOLATION = new HCLElementType("TEMPLATE_INTERPOLATION");
   IElementType UNARY_EXPRESSION = new HCLElementType("UNARY_EXPRESSION");
   IElementType VALUE = new HCLElementType("VALUE");
   IElementType VARIABLE = new HCLElementType("VARIABLE");
@@ -182,21 +176,6 @@ public interface HCLElementTypes {
       }
       else if (type == STRING_LITERAL) {
         return new HCLStringLiteralImpl(node);
-      }
-      else if (type == TEMPLATE) {
-        return new HCLTemplateImpl(node);
-      }
-      else if (type == TEMPLATE_DIRECTIVE) {
-        return new HCLTemplateDirectiveImpl(node);
-      }
-      else if (type == TEMPLATE_FOR) {
-        return new HCLTemplateForImpl(node);
-      }
-      else if (type == TEMPLATE_IF) {
-        return new HCLTemplateIfImpl(node);
-      }
-      else if (type == TEMPLATE_INTERPOLATION) {
-        return new HCLTemplateInterpolationImpl(node);
       }
       else if (type == UNARY_EXPRESSION) {
         return new HCLUnaryExpressionImpl(node);
