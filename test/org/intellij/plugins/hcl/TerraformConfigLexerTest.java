@@ -212,4 +212,87 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
         "DOUBLE_QUOTED_STRING ('\"${\"\\\"x\\\"\"}\"')\n" +
         "WHITE_SPACE ('\\n')\n");
   }
+
+  public void testForArray() {
+    doTest("a = [for k, v in foo: v if true]",
+        "ID ('a')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "= ('=')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "[ ('[')\n" +
+            "ID ('for')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "ID ('k')\n" +
+            ", (',')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "ID ('v')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "ID ('in')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "ID ('foo')\n" +
+            ": (':')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "ID ('v')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "ID ('if')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "true ('true')\n" +
+            "] (']')");
+  }
+
+  public void testSelectExpression() {
+    doTest("a = foo.bar.baz",
+        "ID ('a')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "= ('=')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "ID ('foo')\n" +
+            ". ('.')\n" +
+            "ID ('bar')\n" +
+            ". ('.')\n" +
+            "ID ('baz')");
+  }
+
+  public void testIndexSelectExpression() {
+    doTest("a = foo[5].baz",
+        "ID ('a')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "= ('=')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "ID ('foo')\n" +
+            "[ ('[')\n" +
+            "NUMBER ('5')\n" +
+            "] (']')\n" +
+            ". ('.')\n" +
+            "ID ('baz')");
+  }
+
+
+  public void testSplatExpression() {
+    doTest("a = foo.*.baz",
+        "ID ('a')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "= ('=')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "ID ('foo')\n" +
+            ". ('.')\n" +
+            "* ('*')\n" +
+            ". ('.')\n" +
+            "ID ('baz')");
+  }
+
+  public void testFullSplatExpression() {
+    doTest("a = foo.[*].baz",
+        "ID ('a')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "= ('=')\n" +
+            "WHITE_SPACE (' ')\n" +
+            "ID ('foo')\n" +
+            ". ('.')\n" +
+            "[ ('[')\n" +
+            "* ('*')\n" +
+            "] (']')\n" +
+            ". ('.')\n" +
+            "ID ('baz')");
+  }
 }
