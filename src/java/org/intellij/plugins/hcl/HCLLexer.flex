@@ -33,19 +33,21 @@ NUMBER=({FLOAT_NUMBER}|{SCI_NUMBER}|{HEX_NUMBER}|{SIMPLE_NUMBER}|{OCT_NUMBER})
 
 DIGIT=[:digit:]
 LETTER=(_|[:letter:])
-ID={LETTER}({LETTER}|{DIGIT}|[\.\-])*
+ID={LETTER}({LETTER}|{DIGIT}|[\-])*
 
-HIL_START=(\$\{)
-HIL_STOP=(\})
+HIL_START=(\$\{\~?)
+HIL_STOP=(\~?\})
+TEMPLATE_START=(\%\{\~?)
+TEMPLATE_STOP=(\~?\})
 
 HEREDOC_START="<<"
 
-IL_STRING_ELEMENT=([^\"\'\$\{\}\\]|\\[^\r\n\"\'])+
-STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
+IL_STRING_ELEMENT=([^\"\'\$\%\{\}\\]|\\[^\r\n\"\'])+
+STRING_ELEMENT=([^\"\'\r\n\$\%\{\}\\]|\\[^\r\n\\])+
 
-%state D_STRING, S_STRING, HIL_EXPRESSION, IN_NUMBER
+%state D_STRING, S_STRING, HIL_EXPRESSION, TEMPLATE_EXPRESSION, IN_NUMBER
 %state S_HEREDOC_MARKER, S_HEREDOC_LINE, S_HEREDOC_LINE_END
-%state HIL_EXPRESSION_STRING
+%state HIL_EXPRESSION_STRING, TEMPLATE_EXPRESSION_STRING
 %{
   // This parameters can be getted from capabilities
     private boolean withNumbersWithBytesPostfix;
@@ -131,10 +133,12 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
 
 <D_STRING> {
   {HIL_START} { if (withInterpolationLanguage) {hil_inc(); yybegin(HIL_EXPRESSION);} }
+  {TEMPLATE_START} { if (withInterpolationLanguage) {hil_inc(); yybegin(TEMPLATE_EXPRESSION);} }
   \"          { return eods(); }
   \\\\ {}
   {STRING_ELEMENT} {}
   \$ {}
+  \% {}
   \{ {}
   \} {}
   \' {}
@@ -146,10 +150,12 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
 
 <S_STRING> {
   {HIL_START} { if (withInterpolationLanguage) {hil_inc(); yybegin(HIL_EXPRESSION);} }
+  {TEMPLATE_START} { if (withInterpolationLanguage) {hil_inc(); yybegin(TEMPLATE_EXPRESSION);} }
   \'          { return eoss(); }
   \\\\ {}
   {STRING_ELEMENT} {}
   \$ {}
+  \% {}
   \{ {}
   \} {}
   \" {}
@@ -169,6 +175,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
   \' { myILStringChar=yycharat(yylength() - 1); yybegin(HIL_EXPRESSION_STRING); }
   \" { myILStringChar=yycharat(yylength() - 1); yybegin(HIL_EXPRESSION_STRING); }
   \$ {}
+  \% {}
   \{ {}
   <<EOF>> { return eoil(); }
 }
@@ -176,12 +183,45 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
 <HIL_EXPRESSION_STRING> {
   {HIL_START} {}
   {HIL_STOP} {}
+  {TEMPLATE_START} {}
+  {TEMPLATE_STOP} {}
   {IL_STRING_ELEMENT} {}
   \\\' {}
   \\\" {}
   \' { if(myILStringChar == yycharat(yylength() - 1)) {yybegin(HIL_EXPRESSION);} }
   \" { if(myILStringChar == yycharat(yylength() - 1)) {yybegin(HIL_EXPRESSION);} }
   \$ {}
+  \% {}
+  \{ {}
+  <<EOF>> { return eoil(); }
+}
+
+<TEMPLATE_EXPRESSION> {
+  {TEMPLATE_START} {hil_inc();}
+  {TEMPLATE_STOP} {if (hil_dec() <= 0) yybegin(stringType == StringType.SingleQ ? S_STRING: D_STRING); }
+  {IL_STRING_ELEMENT} {}
+  \\\' {}
+  \\\" {}
+  \' { myILStringChar=yycharat(yylength() - 1); yybegin(TEMPLATE_EXPRESSION_STRING); }
+  \" { myILStringChar=yycharat(yylength() - 1); yybegin(TEMPLATE_EXPRESSION_STRING); }
+  \$ {}
+  \% {}
+  \{ {}
+  <<EOF>> { return eoil(); }
+}
+
+<TEMPLATE_EXPRESSION_STRING> {
+  {HIL_START} {}
+  {HIL_STOP} {}
+  {TEMPLATE_START} {}
+  {TEMPLATE_STOP} {}
+  {IL_STRING_ELEMENT} {}
+  \\\' {}
+  \\\" {}
+  \' { if(myILStringChar == yycharat(yylength() - 1)) {yybegin(TEMPLATE_EXPRESSION);} }
+  \" { if(myILStringChar == yycharat(yylength() - 1)) {yybegin(TEMPLATE_EXPRESSION);} }
+  \$ {}
+  \% {}
   \{ {}
   <<EOF>> { return eoil(); }
 }
@@ -245,11 +285,30 @@ STRING_ELEMENT=([^\"\'\r\n\$\{\}\\]|\\[^\r\n\\])+
 <YYINITIAL> {
   {WHITE_SPACE}               { return WHITE_SPACE; }
 
+  "("                         { return L_PAREN; }
+  ")"                         { return R_PAREN; }
   "["                         { return L_BRACKET; }
   "]"                         { return R_BRACKET; }
   "{"                         { return L_CURLY; }
   "}"                         { return R_CURLY; }
   ","                         { return COMMA; }
+  "."                         { return OP_DOT; }
+  "+"                         { return OP_PLUS; }
+  "-"                         { return OP_MINUS; }
+  "*"                         { return OP_MUL; }
+  "/"                         { return OP_DIV; }
+  "%"                         { return OP_MOD; }
+  "!"                         { return OP_NOT; }
+  "=="                        { return OP_EQUAL; }
+  "!="                        { return OP_NOT_EQUAL; }
+  "<"                         { return OP_LESS; }
+  ">"                         { return OP_GREATER; }
+  "<="                        { return OP_LESS_OR_EQUAL; }
+  ">="                        { return OP_GREATER_OR_EQUAL; }
+  "&&"                        { return OP_AND_AND; }
+  "||"                        { return OP_OR_OR; }
+  ":"                         { return OP_COLON; }
+  "?"                         { return OP_QUEST; }
   "="                         { return EQUALS; }
   "true"                      { return TRUE; }
   "false"                     { return FALSE; }
