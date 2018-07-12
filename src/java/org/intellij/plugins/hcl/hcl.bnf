@@ -37,6 +37,8 @@
     line_comment = "regexp:(//.*)|(#.*)"
     block_comment = "regexp:/\*([^*]|\*[^/])*\*?(\*/)?"
 
+    L_PAREN='('
+    R_PAREN=')'
     L_BRACKET='['
     R_BRACKET=']'
     L_CURLY='{'
@@ -53,11 +55,36 @@
     FALSE='false'
     NULL='null'
 
-    ID="regexp:[a-zA-Z\.\-_][0-9a-zA-Z\.\-_]*"
+    ID="regexp:[a-zA-Z_][0-9a-zA-Z\-_]*"
+
+    OP_DOT='.'
+
+    // Operators
+    OP_PLUS='+'
+    OP_MINUS='-'
+    OP_MUL='*'
+    OP_DIV='/'
+    OP_MOD='%'
+
+    // Logic operators
+    // Unary
+    OP_NOT='!'
+    // Binary
+    OP_EQUAL='=='
+    OP_NOT_EQUAL='!='
+    OP_LESS='<'
+    OP_GREATER='>'
+    OP_LESS_OR_EQUAL='<='
+    OP_GREATER_OR_EQUAL='>='
+    OP_AND_AND='&&'
+    OP_OR_OR='||'
+    // Ternary condition
+    OP_COLON=':'
+    OP_QUEST='?'
   ]
 
   extends("container|literal|identifier")=value
-  extends("array|object")=container
+  extends("array|object2|object")=container
   extends(".*_literal")=literal
   implements("property")=[
     "org.intellij.plugins.hcl.psi.HCLElement"
@@ -75,7 +102,7 @@
 
 root ::= root_element*
 
-private root_element ::= object | block_outer | property_outer
+private root_element ::= block_outer | property_outer
 
 private property_outer ::= property_name property {
   pin=2
@@ -85,10 +112,11 @@ left property ::= '=' Expression {
   methods=[
     getName
     getNameElement
-//    getValue
+    getValue
     // suppress getValueList() accessor
 //    value=""
     Expression=""
+    property=""
     getPresentation
   ]
   mixin="org.intellij.plugins.hcl.psi.impl.HCLPropertyMixin"
@@ -126,24 +154,13 @@ private object_element ::= (block_outer | property_outer) (','|&'}')? {
   recoverWhile = not_brace_or_next_value
 }
 
-array ::= '[' array_element* ']'  {
-  methods=[
-    getPresentation
-  ]
-  pin=1
-}
-
-private array_element ::= (literal | array | object) (','|&']') {
-  pin=1
-  recoverWhile = not_bracket_or_next_value
-}
-
 private property_name ::= identifier | string_literal
 
 fake container ::= {
 }
 
-value ::= literal | identifier | array | object {
+value ::= literal | identifier | array | object2 {
+  extends=Expression
   methods = [
     Expression=""
   ]
@@ -169,7 +186,6 @@ Expression ::= (
     | SelectExpression
     | IndexSelectExpression
 
-    | TemplateExpression // TODO: Investigate templates
     | ForExpression
     //| SplatExpression // TODO: Check whether could be replaced with index, select
 
@@ -177,7 +193,8 @@ Expression ::= (
     | CollectionValue
     | Variable
     | UnaryExpression
-    | LiteralExpression
+    //| TemplateExpression // TODO: Investigate templates
+    | literal
 ) {
   name="expression"
   methods = [
@@ -208,22 +225,18 @@ Variable ::= identifier | '*' {
   mixin="org.intellij.plugins.hcl.psi.impl.HCLVariableMixin"
 }
 
+CollectionValue ::= array | object2;
 
-LiteralExpression ::= (
-  number_literal |
-  boolean_literal
-  null_literal
-);
-
-CollectionValue ::= tuple | object2;
-
-tuple ::= "[" tuple_element* "]" {
+array ::= '[' array_element* ']'  {
+  methods=[
+    getPresentation
+  ]
   pin=1
-  extends=Expression
 }
-private tuple_element ::= Expression  (','|&']') {
+
+private array_element ::= (Expression) (','|&']') {
   pin=1
-  recoverWhile = not_bracket_or_next_tuple_value
+  recoverWhile = not_bracket_or_next_value
 }
 
 object2 ::= '{' object_element2* '}' {
@@ -232,16 +245,15 @@ object2 ::= '{' object_element2* '}' {
     findProperty
     getPresentation
   ]
-  extends=Expression
 }
 
 private object_element2 ::= (ObjectElement) (','|&'}')? {
   pin=1
   recoverWhile = not_brace_or_next_value_2
 }
-ObjectElement ::= (identifier | Expression) "=" Expression
+private ObjectElement ::= (identifier | Expression) property
 {
-  extends=Expression
+  pin=2
 }
 
 TemplateExpression ::= string_literal | heredoc_literal;
@@ -468,9 +480,8 @@ heredoc_marker::= HD_MARKER {
 
 
 // Recoveries
-private not_bracket_or_next_value ::= !(']'|(literal | array | object))
+private not_bracket_or_next_value ::= !(']'|Expression)
 private not_brace_or_next_value ::= !('}'|value)
 
-private not_bracket_or_next_tuple_value ::= !(']'|(Expression))
 private not_brace_or_next_value_2 ::= !('}'|ObjectElement)
 
