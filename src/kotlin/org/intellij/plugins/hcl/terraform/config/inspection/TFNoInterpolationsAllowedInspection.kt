@@ -124,7 +124,7 @@ class TFNoInterpolationsAllowedInspection : LocalInspectionTool() {
 
     private fun checkDependsOnOfResource(o: HCLProperty) {
       val value = o.value as? HCLArray ?: return
-      val list = value.valueList
+      val list = value.expressionList
       for (e in list) {
         if (e is HCLStringLiteral) {
           reportRanges(e, "depends_on")

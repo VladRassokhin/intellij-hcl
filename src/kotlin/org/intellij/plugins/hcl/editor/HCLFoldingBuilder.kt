@@ -53,7 +53,7 @@ class HCLFoldingBuilder : CustomFoldingBuilder(), DumbAware {
       }
       HCLElementTypes.ARRAY -> {
         if (isSpanMultipleLines(node) && element is HCLArray) {
-          val count = element.valueList.size
+          val count = element.expressionList.size
           when (count) {
             0, 1 -> descriptors.add(NamedFoldingDescriptor(node, node.textRange, null, getCollapsedArrayPlaceholder(element)))
             else -> descriptors.add(FoldingDescriptor(node, node.textRange))
@@ -117,7 +117,7 @@ class HCLFoldingBuilder : CustomFoldingBuilder(), DumbAware {
   }
 
   private fun getCollapsedArrayPlaceholder(element: HCLArray, limit: Int = 30): String {
-    val vals = element.valueList
+    val vals = element.expressionList
     if (vals.isEmpty()) return "[]"
     if (vals.size > 1) return "[...]"
     val node = vals.first().node

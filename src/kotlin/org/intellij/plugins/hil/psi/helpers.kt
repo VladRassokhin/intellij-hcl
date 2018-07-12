@@ -81,7 +81,7 @@ fun getDataSource(position: ILExpression): HCLBlock? {
 }
 
 
-fun <T : PsiElement> PsiElement.getNthChild(n: Int, clazz: Class<ILExpression>): T? {
+fun <T : PsiElement> PsiElement.getNthChild(n: Int, clazz: Class<T>): T? {
   var child: PsiElement? = this.firstChild
   var i: Int = 0
   while (child != null) {

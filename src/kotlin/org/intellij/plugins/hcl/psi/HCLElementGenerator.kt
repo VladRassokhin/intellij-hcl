@@ -108,7 +108,7 @@ open class HCLElementGenerator(private val project: Project) {
 
   fun createComma(): PsiElement {
     val array = createValue<HCLArray>("[1, 2]")
-    return array.valueList[0].nextSibling
+    return array.expressionList[0].nextSibling
   }
 
   fun createIdentifier(name: String): HCLIdentifier {

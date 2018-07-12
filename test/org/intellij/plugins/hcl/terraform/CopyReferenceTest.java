@@ -51,9 +51,9 @@ public class CopyReferenceTest extends LightPlatformTestCase {
     assertNotNull(object);
     HCLProperty property = object.findProperty("depends_on");
     assertNotNull(property);
-    List<HCLValue> valueList = ((HCLArray) (property.getValue())).getValueList();
+    List<HCLExpression> valueList = ((HCLArray) (property.getValue())).getExpressionList();
     assertNotNull(valueList);
-    HCLValue value = valueList.get(0);
+    HCLExpression value = valueList.get(0);
     assertNotNull(value);
     checkFQN("x.y", value);
   }
@@ -66,9 +66,9 @@ public class CopyReferenceTest extends LightPlatformTestCase {
     assertNotNull(object);
     HCLProperty property = object.findProperty("depends_on");
     assertNotNull(property);
-    List<HCLValue> valueList = ((HCLArray) (property.getValue())).getValueList();
+    List<HCLExpression> valueList = ((HCLArray) (property.getValue())).getExpressionList();
     assertNotNull(valueList);
-    HCLValue value = valueList.get(0);
+    HCLExpression value = valueList.get(0);
     assertNotNull(value);
     checkFQN("data.x.y", value);
   }
