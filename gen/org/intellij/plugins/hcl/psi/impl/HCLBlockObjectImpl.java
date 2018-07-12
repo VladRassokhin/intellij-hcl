@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
 
-public class HCLObject2Impl extends HCLContainerImpl implements HCLObject2 {
+public class HCLBlockObjectImpl extends HCLObjectImpl implements HCLBlockObject {
 
-  public HCLObject2Impl(ASTNode node) {
+  public HCLBlockObjectImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull HCLElementVisitor visitor) {
-    visitor.visitObject2(this);
+    visitor.visitBlockObject(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,8 +27,8 @@ public class HCLObject2Impl extends HCLContainerImpl implements HCLObject2 {
 
   @Override
   @NotNull
-  public List<HCLProperty> getPropertyList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLProperty.class);
+  public List<HCLBlock> getBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLBlock.class);
   }
 
 }

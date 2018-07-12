@@ -9,9 +9,6 @@ import com.intellij.navigation.ItemPresentation;
 public interface HCLObject extends HCLContainer {
 
   @NotNull
-  List<HCLBlock> getBlockList();
-
-  @NotNull
   List<HCLProperty> getPropertyList();
 
   @Nullable

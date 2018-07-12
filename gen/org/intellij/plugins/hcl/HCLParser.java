@@ -62,6 +62,9 @@ public class HCLParser implements PsiParser, LightPsiParser {
     else if (t == BLOCK) {
       r = block(b, 0);
     }
+    else if (t == BLOCK_OBJECT) {
+      r = block_object(b, 0);
+    }
     else if (t == BOOLEAN_LITERAL) {
       r = boolean_literal(b, 0);
     }
@@ -86,9 +89,6 @@ public class HCLParser implements PsiParser, LightPsiParser {
     else if (t == OBJECT) {
       r = object(b, 0);
     }
-    else if (t == OBJECT_2) {
-      r = object2(b, 0);
-    }
     else if (t == PROPERTY) {
       r = property(b, 0);
     }
@@ -110,11 +110,11 @@ public class HCLParser implements PsiParser, LightPsiParser {
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(ARRAY, BINARY_ADDITION_EXPRESSION, BINARY_AND_EXPRESSION, BINARY_EQUALITY_EXPRESSION,
-      BINARY_MULTIPLY_EXPRESSION, BINARY_OR_EXPRESSION, BINARY_RELATIONAL_EXPRESSION, BOOLEAN_LITERAL,
-      COLLECTION_VALUE, CONDITIONAL_EXPRESSION, EXPRESSION, FOR_ARRAY_EXPRESSION,
-      FOR_OBJECT_EXPRESSION, HEREDOC_LITERAL, IDENTIFIER, INDEX_SELECT_EXPRESSION,
-      LITERAL, METHOD_CALL_EXPRESSION, NULL_LITERAL, NUMBER_LITERAL,
-      OBJECT, OBJECT_2, PARENTHESIZED_EXPRESSION, SELECT_EXPRESSION,
+      BINARY_MULTIPLY_EXPRESSION, BINARY_OR_EXPRESSION, BINARY_RELATIONAL_EXPRESSION, BLOCK_OBJECT,
+      BOOLEAN_LITERAL, COLLECTION_VALUE, CONDITIONAL_EXPRESSION, EXPRESSION,
+      FOR_ARRAY_EXPRESSION, FOR_OBJECT_EXPRESSION, HEREDOC_LITERAL, IDENTIFIER,
+      INDEX_SELECT_EXPRESSION, LITERAL, METHOD_CALL_EXPRESSION, NULL_LITERAL,
+      NUMBER_LITERAL, OBJECT, PARENTHESIZED_EXPRESSION, SELECT_EXPRESSION,
       SPLAT_SELECT_EXPRESSION, STRING_LITERAL, TEMPLATE_EXPRESSION, UNARY_EXPRESSION,
       VALUE, VARIABLE),
   };
@@ -701,13 +701,13 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // property_name* object
+  // property_name* block_object
   public static boolean block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _LEFT_, BLOCK, "<block>");
     r = block_0(b, l + 1);
-    r = r && object(b, l + 1);
+    r = r && block_object(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -719,6 +719,32 @@ public class HCLParser implements PsiParser, LightPsiParser {
       int c = current_position_(b);
       if (!property_name(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "block_0", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // '{' object_element* '}'
+  public static boolean block_object(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "block_object")) return false;
+    if (!nextTokenIs(b, L_CURLY)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, BLOCK_OBJECT, null);
+    r = consumeToken(b, L_CURLY);
+    p = r; // pin = 1
+    r = r && report_error_(b, block_object_1(b, l + 1));
+    r = p && consumeToken(b, R_CURLY) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // object_element*
+  private static boolean block_object_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "block_object_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!object_element(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "block_object_1", c)) break;
     }
     return true;
   }
@@ -943,7 +969,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '{' object_element* '}'
+  // '{' object_element2* '}'
   public static boolean object(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "object")) return false;
     if (!nextTokenIs(b, L_CURLY)) return false;
@@ -957,39 +983,13 @@ public class HCLParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // object_element*
+  // object_element2*
   private static boolean object_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "object_1")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!object_element(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "object_1", c)) break;
-    }
-    return true;
-  }
-
-  /* ********************************************************** */
-  // '{' object_element2* '}'
-  public static boolean object2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "object2")) return false;
-    if (!nextTokenIs(b, L_CURLY)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, OBJECT_2, null);
-    r = consumeToken(b, L_CURLY);
-    p = r; // pin = 1
-    r = r && report_error_(b, object2_1(b, l + 1));
-    r = p && consumeToken(b, R_CURLY) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // object_element2*
-  private static boolean object2_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "object2_1")) return false;
-    while (true) {
-      int c = current_position_(b);
       if (!object_element2(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "object2_1", c)) break;
+      if (!empty_element_parsed_guard_(b, "object_1", c)) break;
     }
     return true;
   }
@@ -1209,7 +1209,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // literal | identifier | array | object2
+  // literal | identifier | array | object
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
@@ -1217,7 +1217,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
     r = literal(b, l + 1);
     if (!r) r = identifier(b, l + 1);
     if (!r) r = array(b, l + 1);
-    if (!r) r = object2(b, l + 1);
+    if (!r) r = object(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -1462,14 +1462,14 @@ public class HCLParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // array | object2
+  // array | object
   public static boolean CollectionValue(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "CollectionValue")) return false;
     if (!nextTokenIsSmart(b, L_BRACKET, L_CURLY)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, COLLECTION_VALUE, "<collection value>");
     r = array(b, l + 1);
-    if (!r) r = object2(b, l + 1);
+    if (!r) r = object(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

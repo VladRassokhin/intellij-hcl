@@ -28,12 +28,6 @@ public class HCLObjectImpl extends HCLContainerImpl implements HCLObject {
 
   @Override
   @NotNull
-  public List<HCLBlock> getBlockList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLBlock.class);
-  }
-
-  @Override
-  @NotNull
   public List<HCLProperty> getPropertyList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLProperty.class);
   }

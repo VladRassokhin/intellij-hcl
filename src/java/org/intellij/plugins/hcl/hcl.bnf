@@ -1,4 +1,4 @@
-//noinspection BnfUnusedRuleForFile
+//noinspection RegExpRedundantEscapeForFile
 /*
  * Copyright 2000-2015 JetBrains s.r.o.
  *
@@ -84,7 +84,7 @@
   ]
 
   extends("container|literal|identifier")=value
-  extends("array|object2|object")=container
+  extends("array|object|block_object")=container
   extends(".*_literal")=literal
   implements("property")=[
     "org.intellij.plugins.hcl.psi.HCLElement"
@@ -98,7 +98,6 @@
   extends("Binary.+Expression")=BinaryExpression
 
   extends(".*Expression|.*Variable|ExpressionHolder|CollectionValue")=Expression
-  extends("For.+Expression")=ForExpression
 }
 
 root ::= root_element*
@@ -128,7 +127,7 @@ private block_outer ::= property_name block {
   pin=2
 }
 
-left block ::= property_name* object {
+left block ::= property_name* block_object {
   methods=[
       getName
       getFullName
@@ -142,12 +141,9 @@ left block ::= property_name* object {
   pin=2
 }
 
-object ::= '{' object_element* '}' {
+block_object ::= '{' object_element* '}' {
   pin=1
-  methods=[
-    findProperty
-    getPresentation
-  ]
+  extends=object
 }
 
 private object_element ::= (block_outer | property_outer) (','|&'}')? {
@@ -160,7 +156,7 @@ private property_name ::= identifier | string_literal
 fake container ::= {
 }
 
-value ::= literal | identifier | array | object2 {
+value ::= literal | identifier | array | object {
   extends=Expression
   methods = [
     Expression=""
@@ -216,6 +212,7 @@ IndexSelectExpression ::= Expression ('[' Expression ']') {
   extends = SelectExpression
 }
 
+//noinspection BnfUnusedRule
 SplatSelectExpression ::= Expression ('[' '*' ']' (IndexSelectExpression | SelectExpression)?) {
   pin(".*")="'\['"
   extends = SelectExpression
@@ -229,7 +226,7 @@ Variable ::= identifier | '*' {
   mixin="org.intellij.plugins.hcl.psi.impl.HCLVariableMixin"
 }
 
-CollectionValue ::= array | object2;
+CollectionValue ::= array | object;
 
 array ::= '[' array_element* ']'  {
   methods=[
@@ -243,7 +240,7 @@ private array_element ::= (Expression) (','|&']') {
   recoverWhile = not_bracket_or_next_value
 }
 
-object2 ::= '{' object_element2* '}' {
+object ::= '{' object_element2* '}' {
   pin=1
   methods=[
     findProperty

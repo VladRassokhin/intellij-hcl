@@ -135,6 +135,10 @@ public class HCLElementVisitor extends PsiElementVisitor {
     // visitPsiNameIdentifierOwner(o);
   }
 
+  public void visitBlockObject(@NotNull HCLBlockObject o) {
+    visitObject(o);
+  }
+
   public void visitBooleanLiteral(@NotNull HCLBooleanLiteral o) {
     visitLiteral(o);
   }
@@ -172,10 +176,6 @@ public class HCLElementVisitor extends PsiElementVisitor {
   }
 
   public void visitObject(@NotNull HCLObject o) {
-    visitContainer(o);
-  }
-
-  public void visitObject2(@NotNull HCLObject2 o) {
     visitContainer(o);
   }
 

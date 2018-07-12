@@ -16,6 +16,7 @@ public interface HCLElementTypes {
   IElementType BINARY_OR_EXPRESSION = new HCLElementType("BINARY_OR_EXPRESSION");
   IElementType BINARY_RELATIONAL_EXPRESSION = new HCLElementType("BINARY_RELATIONAL_EXPRESSION");
   IElementType BLOCK = new HCLElementType("BLOCK");
+  IElementType BLOCK_OBJECT = new HCLElementType("BLOCK_OBJECT");
   IElementType BOOLEAN_LITERAL = new HCLElementType("BOOLEAN_LITERAL");
   IElementType COLLECTION_VALUE = new HCLElementType("COLLECTION_VALUE");
   IElementType CONDITIONAL_EXPRESSION = new HCLElementType("CONDITIONAL_EXPRESSION");
@@ -34,7 +35,6 @@ public interface HCLElementTypes {
   IElementType NULL_LITERAL = new HCLElementType("NULL_LITERAL");
   IElementType NUMBER_LITERAL = new HCLElementType("NUMBER_LITERAL");
   IElementType OBJECT = new HCLElementType("OBJECT");
-  IElementType OBJECT_2 = new HCLElementType("OBJECT_2");
   IElementType PARAMETER_LIST = new HCLElementType("PARAMETER_LIST");
   IElementType PARENTHESIZED_EXPRESSION = new HCLElementType("PARENTHESIZED_EXPRESSION");
   IElementType PROPERTY = new HCLElementType("PROPERTY");
@@ -117,6 +117,9 @@ public interface HCLElementTypes {
       else if (type == BLOCK) {
         return new HCLBlockImpl(node);
       }
+      else if (type == BLOCK_OBJECT) {
+        return new HCLBlockObjectImpl(node);
+      }
       else if (type == BOOLEAN_LITERAL) {
         return new HCLBooleanLiteralImpl(node);
       }
@@ -161,9 +164,6 @@ public interface HCLElementTypes {
       }
       else if (type == OBJECT) {
         return new HCLObjectImpl(node);
-      }
-      else if (type == OBJECT_2) {
-        return new HCLObject2Impl(node);
       }
       else if (type == PARAMETER_LIST) {
         return new HCLParameterListImpl(node);
