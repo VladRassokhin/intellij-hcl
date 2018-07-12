@@ -18,6 +18,8 @@ package org.intellij.plugins.hcl;
 import com.intellij.testFramework.TestDataPath;
 import org.intellij.plugins.hcl.terraform.config.TerraformParserDefinition;
 
+import java.io.IOException;
+
 @TestDataPath("$CONTENT_ROOT/test-data/psi/")
 public class TerraformConfigParserTest extends HCLParserTest {
   public TerraformConfigParserTest() {
@@ -61,5 +63,33 @@ public class TerraformConfigParserTest extends HCLParserTest {
   public void testEscapedQuotesInInterpolation() {
     setTerraformExtension();
     doTest();
+  }
+
+  public void testForArray() throws IOException {
+    doCodeTest("a = [for k, v in foo: v if true]");
+  }
+
+  public void testSelectExpression() throws IOException {
+    doCodeTest("a = foo.bar.baz");
+  }
+
+  public void testIndexSelectExpression() throws IOException {
+    doCodeTest("a = foo[5].baz");
+  }
+
+  public void testSplatExpression() throws IOException {
+    doCodeTest("a = foo.*.baz");
+  }
+
+  public void testFullSplatExpression() throws IOException {
+    doCodeTest("a = foo[*].baz");
+  }
+
+  public void testComplexSplat() throws IOException {
+    doCodeTest("a = tuple.*.foo.bar[0]");
+  }
+
+  public void testComplexFullSplat() throws IOException {
+    doCodeTest("a = tuple[*].foo.bar[0]");
   }
 }

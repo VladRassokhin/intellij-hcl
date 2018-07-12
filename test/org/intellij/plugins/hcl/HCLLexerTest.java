@@ -127,7 +127,9 @@ public class HCLLexerTest extends BaseLexerTestCase {
         "= ('=')\n" +
         "WHITE_SPACE (' ')\n" +
         "DOUBLE_QUOTED_STRING ('\"${file(\"')\n" +
-        "ID ('ecs-container-definitions.json')\n" +
+        "ID ('ecs-container-definitions')\n" +
+        ". ('.')\n" +
+        "ID ('json')\n" +
         "DOUBLE_QUOTED_STRING ('\")}\"')");
   }
 
