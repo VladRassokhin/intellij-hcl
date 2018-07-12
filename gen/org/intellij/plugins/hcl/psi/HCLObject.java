@@ -17,4 +17,7 @@ public interface HCLObject extends HCLContainer {
   @Nullable
   ItemPresentation getPresentation();
 
+  @NotNull
+  List<HCLBlock> getBlockList();
+
 }

@@ -98,6 +98,11 @@ public class HCLPsiImplUtilJ {
   }
 
   @NotNull
+  public static List<HCLBlock> getBlockList(@NotNull HCLObject object) {
+    return PsiTreeUtil.getChildrenOfTypeAsList(object, HCLBlock.class);
+  }
+
+  @NotNull
   public static String getValue(@NotNull HCLStringLiteral literal) {
     return HCLPsiImplUtils.INSTANCE.getValue(literal);
   }

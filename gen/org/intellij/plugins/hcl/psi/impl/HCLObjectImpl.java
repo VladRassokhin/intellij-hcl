@@ -42,4 +42,9 @@ public class HCLObjectImpl extends HCLContainerImpl implements HCLObject {
     return HCLPsiImplUtilJ.getPresentation(this);
   }
 
+  @NotNull
+  public List<HCLBlock> getBlockList() {
+    return HCLPsiImplUtilJ.getBlockList(this);
+  }
+
 }
