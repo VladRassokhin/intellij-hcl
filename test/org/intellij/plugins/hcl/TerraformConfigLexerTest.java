@@ -164,8 +164,8 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
   public void testSimpleTokens_String_With_Interpolation() {
     List<String> strings = Arrays.asList(
         "\"${file(\"foo\")}\"",
-        "\"${file(\\\"foo\\\")}\"",
-        "\"${file(\\\"" + f100 + "\\\")}\"",
+        "\"${~file(\\\"foo\\\")}\"",
+        "\"${file(\\\"" + f100 + "\\\")~}\"",
         "\"${join(\"\\\\\",\\\\\"\", values(var.developers))}\""
     );
     for (String input : strings) {
@@ -282,17 +282,23 @@ public class TerraformConfigLexerTest extends HCLLexerTest {
   }
 
   public void testFullSplatExpression() {
-    doTest("a = foo.[*].baz",
+    doTest("a = foo[*].baz",
         "ID ('a')\n" +
             "WHITE_SPACE (' ')\n" +
             "= ('=')\n" +
             "WHITE_SPACE (' ')\n" +
             "ID ('foo')\n" +
-            ". ('.')\n" +
             "[ ('[')\n" +
             "* ('*')\n" +
             "] (']')\n" +
             ". ('.')\n" +
             "ID ('baz')");
+  }
+
+  public void testTemplateInjection() {
+    doTest("\"%{ for v in [\"true\"] }${v}%{ endfor }\"",
+        "DOUBLE_QUOTED_STRING ('\"%{ for v in [\"true\"] }${v}%{ endfor }\"')");
+    doTest("\"%{~ for v in [\"true\"] ~}\"",
+        "DOUBLE_QUOTED_STRING ('\"%{~ for v in [\"true\"] ~}\"')");
   }
 }
