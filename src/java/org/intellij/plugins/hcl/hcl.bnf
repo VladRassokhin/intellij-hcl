@@ -98,6 +98,7 @@
   extends("Binary.+Expression")=BinaryExpression
 
   extends(".*Expression|.*Variable|ExpressionHolder|CollectionValue")=Expression
+  extends("For.+Expression")=ForExpression
 }
 
 root ::= root_element*
@@ -186,7 +187,7 @@ Expression ::= (
     | SelectExpression
     | IndexSelectExpression
 
-    | ForExpression
+    | ForArrayExpression | ForObjectExpression
     //| SplatExpression // TODO: Check whether could be replaced with index, select
 
 
@@ -276,12 +277,32 @@ ParameterList ::= '(' (Expression? (',' Expression)* (',' | '...')?)? ')' {
 }
 
 
-ForExpression ::= ForTupleExpression | ForObjectExpression;
-ForTupleExpression ::= "[" ForIntro Expression ForCondition? "]";
-ForObjectExpression ::= "{" ForIntro Expression "=>" Expression "..."? ForCondition? "}";
+fake ForExpression ::=ForIntro Expression? ForCondition?
+{
+  methods=[
+    Intro="ForIntro"
+    Condition="ForCondition"
+  ]
+}
+
+ForArrayExpression ::= "[" ForIntro Expression ForCondition? "]"
+{
+  extends=ForExpression
+}
+ForObjectExpression ::= "{" ForIntro Expression "=>" Expression "..."? ForCondition? "}"
+{
+  extends=ForExpression
+}
+
 ForIntro ::= "for" identifier ("," identifier)? ("in" Expression) ":"
 {
   pin('.*')=1
+  methods=[
+    getVar1
+    getVar2
+    getContainer
+    Expression=""
+  ]
 }
 ForCondition ::= "if" Expression
 {

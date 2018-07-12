@@ -18,6 +18,9 @@ package org.intellij.plugins.hcl.psi.impl;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.intellij.plugins.hcl.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -162,5 +165,29 @@ public class HCLPsiImplUtilJ {
   @NotNull
   public static String getId(@NotNull HCLIdentifier identifier) {
     return HCLPsiImplUtils.INSTANCE.getId(identifier);
+  }
+
+  @NotNull
+  public static HCLIdentifier getVar1(@NotNull HCLForIntro intro) {
+    //noinspection ConstantConditions
+    return PsiTreeUtil.getChildOfType(intro, HCLIdentifier.class);
+  }
+
+  @Nullable
+  public static HCLIdentifier getVar2(@NotNull HCLForIntro intro) {
+    final HCLIdentifier var1 = getVar1(intro);
+    final PsiElement next = PsiTreeUtil.skipSiblingsForward(var1, PsiWhiteSpace.class);
+    if (next.getText().equals(",")) {
+      return PsiTreeUtil.getNextSiblingOfType(next, HCLIdentifier.class);
+    }
+    return null;
+  }
+
+  @NotNull
+  public static HCLExpression getContainer(@NotNull HCLForIntro intro) {
+    final HCLIdentifier var1 = getVar1(intro);
+    final HCLIdentifier var2 = getVar2(intro);
+    //noinspection ConstantConditions
+    return PsiTreeUtil.getNextSiblingOfType(var2 != null ? var2 : var1, HCLExpression.class);
   }
 }
