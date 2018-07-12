@@ -190,8 +190,8 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
     doBasicCompletionTest("data x y {}\nresource a b {depends_on=[\"<caret>\"]}", 1, "data.x.y");
 
     // Only stings allowed in arrays, prevent other elements
-    doBasicCompletionTest("resource x y {}\nresource a b {depends_on=[<caret>]}", 0);
-    doBasicCompletionTest("data x y {}\nresource a b {depends_on=[<caret>]}", 0);
+    doBasicCompletionTest("resource x y {}\nresource a b {depends_on=[<caret>]}", 1, "x.y");
+    doBasicCompletionTest("data x y {}\nresource a b {depends_on=[<caret>]}",  1, "data.x.y");
   }
 
   public void testResourceTypeCompletionGivenDefinedProvidersOrForNoPropsProviders() throws Exception {
@@ -290,8 +290,8 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
     doBasicCompletionTest("data x y {}\ndata a b {depends_on=[\"<caret>\"]}", 1, "data.x.y");
 
     // Only stings allowed in arrays, prevent other elements
-    doBasicCompletionTest("resource x y {}\ndata a b {depends_on=[<caret>]}", 0);
-    doBasicCompletionTest("data x y {}\ndata a b {depends_on=[<caret>]}", 0);
+    doBasicCompletionTest("resource x y {}\ndata a b {depends_on=[<caret>]}", 1, "x.y");
+    doBasicCompletionTest("data x y {}\ndata a b {depends_on=[<caret>]}", 1, "data.x.y");
   }
 
   public void testDataSourceTypeCompletionGivenDefinedProviders() throws Exception {

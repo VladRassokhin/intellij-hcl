@@ -25,10 +25,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.patterns.PlatformPatterns.not
 import com.intellij.patterns.PlatformPatterns.psiElement
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiLanguageInjectionHost
-import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.*
 import com.intellij.psi.impl.DebugUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
@@ -171,6 +168,15 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         .withSuperParent(4, PropertyOrBlock)
         .withSuperParent(5, Object)
         .withSuperParent(6, Block)
+        , PropertyObjectKeyCompletionProvider)
+    // property = { a=""  <caret> }
+    extend(CompletionType.BASIC, psiElement().withElementType(HCLParserDefinition.IDENTIFYING_LITERALS)
+        .inFile(TerraformConfigFile)
+        .withParent(psiElement(PsiErrorElement::class.java))
+        .withSuperParent(2, Object)
+        .withSuperParent(3, PropertyOrBlock)
+        .withSuperParent(4, Object)
+        .withSuperParent(5, Block)
         , PropertyObjectKeyCompletionProvider)
     //endregion
 

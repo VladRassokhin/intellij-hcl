@@ -162,15 +162,17 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (identifier | Expression) property
+  // (identifier | Expression) property (','|&'}')?
   static boolean ObjectElement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ObjectElement")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
     r = ObjectElement_0(b, l + 1);
     r = r && property(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
+    p = r; // pin = 2
+    r = r && ObjectElement_2(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // identifier | Expression
@@ -179,6 +181,34 @@ public class HCLParser implements PsiParser, LightPsiParser {
     boolean r;
     r = identifier(b, l + 1);
     if (!r) r = Expression(b, l + 1, -1);
+    return r;
+  }
+
+  // (','|&'}')?
+  private static boolean ObjectElement_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ObjectElement_2")) return false;
+    ObjectElement_2_0(b, l + 1);
+    return true;
+  }
+
+  // ','|&'}'
+  private static boolean ObjectElement_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ObjectElement_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    if (!r) r = ObjectElement_2_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // &'}'
+  private static boolean ObjectElement_2_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ObjectElement_2_0_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _AND_);
+    r = consumeToken(b, R_CURLY);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -808,17 +838,28 @@ public class HCLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '=' Expression
+  // ('='|':') Expression
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
-    if (!nextTokenIs(b, EQUALS)) return false;
+    if (!nextTokenIs(b, "<property>", OP_COLON, EQUALS)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _LEFT_, PROPERTY, null);
-    r = consumeToken(b, EQUALS);
+    Marker m = enter_section_(b, l, _LEFT_, PROPERTY, "<property>");
+    r = property_0(b, l + 1);
     p = r; // pin = 1
     r = r && Expression(b, l + 1, -1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
+  }
+
+  // '='|':'
+  private static boolean property_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, EQUALS);
+    if (!r) r = consumeToken(b, OP_COLON);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */

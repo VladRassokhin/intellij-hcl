@@ -92,4 +92,8 @@ public class TerraformConfigParserTest extends HCLParserTest {
   public void testComplexFullSplat() throws IOException {
     doCodeTest("a = tuple[*].foo.bar[0]");
   }
+
+  public void testPropsInObject() throws IOException {
+    doCodeTest("a = {a=1, b:2, c=3\nd=4\ne:null}");
+  }
 }
