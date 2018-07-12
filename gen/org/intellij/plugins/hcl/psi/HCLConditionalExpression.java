@@ -4,14 +4,19 @@ package org.intellij.plugins.hcl.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.navigation.ItemPresentation;
 
-public interface HCLArray extends HCLContainer {
+public interface HCLConditionalExpression extends HCLExpression {
 
   @NotNull
   List<HCLExpression> getExpressionList();
 
+  @NotNull
+  HCLExpression getCondition();
+
   @Nullable
-  ItemPresentation getPresentation();
+  HCLExpression getThen();
+
+  @Nullable
+  HCLExpression getElse();
 
 }

@@ -4,11 +4,8 @@ package org.intellij.plugins.hcl.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
 
-public interface HCLValue extends HCLExpression, HCLElement {
-
-  //WARNING: Expression(...) is skipped
-  //matching Expression(HCLValue, ...)
-  //methods are not found in HCLPsiImplUtilJ
+public interface HCLVariable extends HCLExpression, PsiNamedElement {
 
 }

@@ -10,19 +10,25 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
 
-public abstract class HCLValueImpl extends HCLExpressionImpl implements HCLValue {
+public class HCLParenthesizedExpressionImpl extends HCLExpressionImpl implements HCLParenthesizedExpression {
 
-  public HCLValueImpl(ASTNode node) {
+  public HCLParenthesizedExpressionImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull HCLElementVisitor visitor) {
-    visitor.visitValue(this);
+    visitor.visitParenthesizedExpression(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof HCLElementVisitor) accept((HCLElementVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public HCLExpression getExpression() {
+    return findChildByClass(HCLExpression.class);
   }
 
 }

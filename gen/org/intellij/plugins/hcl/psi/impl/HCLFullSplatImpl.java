@@ -8,21 +8,34 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import org.intellij.plugins.hcl.psi.*;
 
-public abstract class HCLValueImpl extends HCLExpressionImpl implements HCLValue {
+public class HCLFullSplatImpl extends ASTWrapperPsiElement implements HCLFullSplat {
 
-  public HCLValueImpl(ASTNode node) {
+  public HCLFullSplatImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull HCLElementVisitor visitor) {
-    visitor.visitValue(this);
+    visitor.visitFullSplat(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof HCLElementVisitor) accept((HCLElementVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<HCLGetAttr> getGetAttrList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLGetAttr.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HCLIndex> getIndexList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLIndex.class);
   }
 
 }

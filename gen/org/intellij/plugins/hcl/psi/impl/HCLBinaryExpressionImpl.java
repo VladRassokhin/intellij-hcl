@@ -9,20 +9,35 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
+import com.intellij.psi.tree.IElementType;
 
-public abstract class HCLValueImpl extends HCLExpressionImpl implements HCLValue {
+public class HCLBinaryExpressionImpl extends HCLBinaryExpressionMixin implements HCLBinaryExpression {
 
-  public HCLValueImpl(ASTNode node) {
+  public HCLBinaryExpressionImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull HCLElementVisitor visitor) {
-    visitor.visitValue(this);
+    visitor.visitBinaryExpression(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof HCLElementVisitor) accept((HCLElementVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public HCLExpression getLOperand() {
+    List<HCLExpression> p1 = PsiTreeUtil.getChildrenOfTypeAsList(this, HCLExpression.class);
+    return p1.get(0);
+  }
+
+  @Override
+  @Nullable
+  public HCLExpression getROperand() {
+    List<HCLExpression> p1 = PsiTreeUtil.getChildrenOfTypeAsList(this, HCLExpression.class);
+    return p1.size() < 2 ? null : p1.get(1);
   }
 
 }

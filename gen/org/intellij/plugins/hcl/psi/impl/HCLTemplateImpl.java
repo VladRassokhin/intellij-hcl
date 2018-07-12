@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import org.intellij.plugins.hcl.psi.*;
-import com.intellij.navigation.ItemPresentation;
 
-public class HCLArrayImpl extends HCLContainerImpl implements HCLArray {
+public class HCLTemplateImpl extends ASTWrapperPsiElement implements HCLTemplate {
 
-  public HCLArrayImpl(ASTNode node) {
+  public HCLTemplateImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull HCLElementVisitor visitor) {
-    visitor.visitArray(this);
+    visitor.visitTemplate(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -32,9 +32,16 @@ public class HCLArrayImpl extends HCLContainerImpl implements HCLArray {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLExpression.class);
   }
 
-  @Nullable
-  public ItemPresentation getPresentation() {
-    return HCLPsiImplUtilJ.getPresentation(this);
+  @Override
+  @NotNull
+  public List<HCLTemplateDirective> getTemplateDirectiveList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLTemplateDirective.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HCLTemplateInterpolation> getTemplateInterpolationList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLTemplateInterpolation.class);
   }
 
 }

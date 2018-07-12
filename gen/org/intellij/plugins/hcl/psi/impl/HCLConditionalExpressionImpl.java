@@ -9,16 +9,15 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
-import com.intellij.navigation.ItemPresentation;
 
-public class HCLArrayImpl extends HCLContainerImpl implements HCLArray {
+public class HCLConditionalExpressionImpl extends HCLExpressionImpl implements HCLConditionalExpression {
 
-  public HCLArrayImpl(ASTNode node) {
+  public HCLConditionalExpressionImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull HCLElementVisitor visitor) {
-    visitor.visitArray(this);
+    visitor.visitConditionalExpression(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -32,9 +31,25 @@ public class HCLArrayImpl extends HCLContainerImpl implements HCLArray {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLExpression.class);
   }
 
+  @Override
+  @NotNull
+  public HCLExpression getCondition() {
+    List<HCLExpression> p1 = getExpressionList();
+    return p1.get(0);
+  }
+
+  @Override
   @Nullable
-  public ItemPresentation getPresentation() {
-    return HCLPsiImplUtilJ.getPresentation(this);
+  public HCLExpression getThen() {
+    List<HCLExpression> p1 = getExpressionList();
+    return p1.size() < 2 ? null : p1.get(1);
+  }
+
+  @Override
+  @Nullable
+  public HCLExpression getElse() {
+    List<HCLExpression> p1 = getExpressionList();
+    return p1.size() < 3 ? null : p1.get(2);
   }
 
 }

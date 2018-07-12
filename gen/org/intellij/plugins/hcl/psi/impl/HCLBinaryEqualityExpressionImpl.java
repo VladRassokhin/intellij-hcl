@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
 
-public abstract class HCLValueImpl extends HCLExpressionImpl implements HCLValue {
+public class HCLBinaryEqualityExpressionImpl extends HCLBinaryExpressionImpl implements HCLBinaryEqualityExpression {
 
-  public HCLValueImpl(ASTNode node) {
+  public HCLBinaryEqualityExpressionImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull HCLElementVisitor visitor) {
-    visitor.visitValue(this);
+    visitor.visitBinaryEqualityExpression(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {

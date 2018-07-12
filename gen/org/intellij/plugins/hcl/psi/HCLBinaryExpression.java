@@ -4,14 +4,17 @@ package org.intellij.plugins.hcl.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.tree.IElementType;
 
-public interface HCLArray extends HCLContainer {
+public interface HCLBinaryExpression extends HCLExpression {
 
   @NotNull
-  List<HCLExpression> getExpressionList();
+  HCLExpression getLOperand();
 
   @Nullable
-  ItemPresentation getPresentation();
+  HCLExpression getROperand();
+
+  @NotNull
+  IElementType getOperationSign();
 
 }

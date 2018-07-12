@@ -10,19 +10,31 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
 
-public abstract class HCLValueImpl extends HCLExpressionImpl implements HCLValue {
+public class HCLSplatExpressionImpl extends HCLExpressionImpl implements HCLSplatExpression {
 
-  public HCLValueImpl(ASTNode node) {
+  public HCLSplatExpressionImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull HCLElementVisitor visitor) {
-    visitor.visitValue(this);
+    visitor.visitSplatExpression(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof HCLElementVisitor) accept((HCLElementVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public HCLExpression getExpression() {
+    return findNotNullChildByClass(HCLExpression.class);
+  }
+
+  @Override
+  @NotNull
+  public HCLSplat getSplat() {
+    return findNotNullChildByClass(HCLSplat.class);
   }
 
 }

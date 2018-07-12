@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
 
-public abstract class HCLValueImpl extends HCLExpressionImpl implements HCLValue {
+public abstract class HCLTemplateExpressionImpl extends HCLExpressionImpl implements HCLTemplateExpression {
 
-  public HCLValueImpl(ASTNode node) {
+  public HCLTemplateExpressionImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull HCLElementVisitor visitor) {
-    visitor.visitValue(this);
+    visitor.visitTemplateExpression(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {

@@ -5,10 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HCLValue extends HCLExpression, HCLElement {
-
-  //WARNING: Expression(...) is skipped
-  //matching Expression(HCLValue, ...)
-  //methods are not found in HCLPsiImplUtilJ
+public interface HCLBinaryAdditionExpression extends HCLBinaryExpression {
 
 }

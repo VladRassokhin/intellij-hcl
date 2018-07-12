@@ -10,19 +10,33 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static org.intellij.plugins.hcl.HCLElementTypes.*;
 import org.intellij.plugins.hcl.psi.*;
 
-public abstract class HCLValueImpl extends HCLExpressionImpl implements HCLValue {
+public class HCLSelectExpressionImpl extends HCLExpressionImpl implements HCLSelectExpression {
 
-  public HCLValueImpl(ASTNode node) {
+  public HCLSelectExpressionImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull HCLElementVisitor visitor) {
-    visitor.visitValue(this);
+    visitor.visitSelectExpression(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof HCLElementVisitor) accept((HCLElementVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public HCLExpression getFrom() {
+    List<HCLExpression> p1 = PsiTreeUtil.getChildrenOfTypeAsList(this, HCLExpression.class);
+    return p1.get(0);
+  }
+
+  @Override
+  @Nullable
+  public HCLExpression getField() {
+    List<HCLExpression> p1 = PsiTreeUtil.getChildrenOfTypeAsList(this, HCLExpression.class);
+    return p1.size() < 2 ? null : p1.get(1);
   }
 
 }

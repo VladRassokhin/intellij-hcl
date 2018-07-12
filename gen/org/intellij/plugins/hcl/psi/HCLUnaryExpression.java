@@ -5,12 +5,13 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HCLLiteral extends HCLValue {
+public interface HCLUnaryExpression extends HCLExpression {
 
-  boolean isQuotedString();
+  @Nullable
+  HCLExpression getOperand();
 
-  //WARNING: Expression(...) is skipped
-  //matching Expression(HCLLiteral, ...)
+  //WARNING: getOperationSign(...) is skipped
+  //matching getOperationSign(HCLUnaryExpression, ...)
   //methods are not found in HCLPsiImplUtilJ
 
 }
