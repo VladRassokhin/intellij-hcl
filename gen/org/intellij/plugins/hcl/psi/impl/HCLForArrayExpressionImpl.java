@@ -25,4 +25,9 @@ public class HCLForArrayExpressionImpl extends HCLForExpressionImpl implements H
     else super.accept(visitor);
   }
 
+  @NotNull
+  public HCLExpression getExpression() {
+    return HCLPsiImplUtilJ.getExpression(this);
+  }
+
 }

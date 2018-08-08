@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface HCLForArrayExpression extends HCLForExpression {
 
+  @NotNull
+  HCLExpression getExpression();
+
 }

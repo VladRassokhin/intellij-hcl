@@ -25,10 +25,18 @@ public class HCLForObjectExpressionImpl extends HCLForExpressionImpl implements 
     else super.accept(visitor);
   }
 
-  @Override
   @NotNull
-  public List<HCLExpression> getExpressionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HCLExpression.class);
+  public HCLExpression getKey() {
+    return HCLPsiImplUtilJ.getKey(this);
+  }
+
+  @NotNull
+  public HCLExpression getValue() {
+    return HCLPsiImplUtilJ.getValue(this);
+  }
+
+  public boolean isGrouping() {
+    return HCLPsiImplUtilJ.isGrouping(this);
   }
 
 }

@@ -26,12 +26,6 @@ public class HCLForExpressionImpl extends HCLExpressionImpl implements HCLForExp
   }
 
   @Override
-  @Nullable
-  public HCLExpression getExpression() {
-    return findChildByClass(HCLExpression.class);
-  }
-
-  @Override
   @NotNull
   public HCLForIntro getIntro() {
     return findNotNullChildByClass(HCLForIntro.class);

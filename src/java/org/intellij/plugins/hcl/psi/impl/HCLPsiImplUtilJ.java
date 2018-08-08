@@ -21,6 +21,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
+import org.intellij.plugins.hcl.HCLElementTypes;
 import org.intellij.plugins.hcl.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -182,7 +183,7 @@ public class HCLPsiImplUtilJ {
   public static HCLIdentifier getVar2(@NotNull HCLForIntro intro) {
     final HCLIdentifier var1 = getVar1(intro);
     final PsiElement next = PsiTreeUtil.skipSiblingsForward(var1, PsiWhiteSpace.class);
-    if (next.getText().equals(",")) {
+    if (next != null && next.getNode().getElementType() == HCLElementTypes.COMMA) {
       return PsiTreeUtil.getNextSiblingOfType(next, HCLIdentifier.class);
     }
     return null;
@@ -194,5 +195,27 @@ public class HCLPsiImplUtilJ {
     final HCLIdentifier var2 = getVar2(intro);
     //noinspection ConstantConditions
     return PsiTreeUtil.getNextSiblingOfType(var2 != null ? var2 : var1, HCLExpression.class);
+  }
+
+  @NotNull
+  public static HCLExpression getExpression(@NotNull HCLForArrayExpression expression) {
+    //noinspection ConstantConditions
+    return PsiTreeUtil.getChildOfType(expression, HCLExpression.class);
+  }
+
+  @NotNull
+  public static HCLExpression getKey(@NotNull HCLForObjectExpression expression) {
+    //noinspection ConstantConditions
+    return PsiTreeUtil.getChildOfType(expression, HCLExpression.class);
+  }
+
+  @NotNull
+  public static HCLExpression getValue(@NotNull HCLForObjectExpression expression) {
+    //noinspection ConstantConditions
+    return PsiTreeUtil.getNextSiblingOfType(getKey(expression), HCLExpression.class);
+  }
+
+  public static boolean isGrouping(@NotNull HCLForObjectExpression expression) {
+    return expression.getNode().findChildByType(HCLElementTypes.OP_ELLIPSIS) != null;
   }
 }

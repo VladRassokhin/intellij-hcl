@@ -285,6 +285,7 @@ ParameterList ::= '(' (Expression? (',' Expression)* (',' | '...')?)? ')' {
 fake ForExpression ::=ForIntro Expression? ForCondition?
 {
   methods=[
+    Expression=""
     Intro="ForIntro"
     Condition="ForCondition"
   ]
@@ -293,10 +294,19 @@ fake ForExpression ::=ForIntro Expression? ForCondition?
 ForArrayExpression ::= "[" ForIntro Expression ForCondition? "]"
 {
   extends=ForExpression
+  methods=[
+    getExpression
+  ]
 }
 ForObjectExpression ::= "{" ForIntro Expression "=>" Expression "..."? ForCondition? "}"
 {
   extends=ForExpression
+  methods=[
+    Expression=""
+    getKey
+    getValue
+    isGrouping
+  ]
 }
 
 ForIntro ::= "for" identifier ("," identifier)? ("in" Expression) ":"

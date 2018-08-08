@@ -8,6 +8,11 @@ import com.intellij.psi.PsiElement;
 public interface HCLForObjectExpression extends HCLForExpression {
 
   @NotNull
-  List<HCLExpression> getExpressionList();
+  HCLExpression getKey();
+
+  @NotNull
+  HCLExpression getValue();
+
+  boolean isGrouping();
 
 }

@@ -7,9 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public interface HCLForExpression extends HCLExpression {
 
-  @Nullable
-  HCLExpression getExpression();
-
   @NotNull
   HCLForIntro getIntro();
 
