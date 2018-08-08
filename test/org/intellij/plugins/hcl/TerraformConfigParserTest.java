@@ -69,6 +69,35 @@ public class TerraformConfigParserTest extends HCLParserTest {
     doCodeTest("a = [for k, v in foo: v if true]");
   }
 
+  public void testForArray2() throws IOException {
+    doCodeTest("cidr_blocks = [\n" +
+        "  for num in var.subnet_numbers:\n" +
+        "  cidrsubnet(data.aws_vpc.example.cidr_block, 8, num)\n" +
+        "]");
+  }
+
+  public void testForArrayIf() throws IOException {
+    doCodeTest("value = {\n" +
+        "  for instance in aws_instance.example:\n" +
+        "  instance.id => instance.public\n" +
+        "  if instance.associate_public_ip_address\n" +
+        "}");
+  }
+
+  public void testForObject() throws IOException {
+    doCodeTest("value = {\n" +
+        "  for instance in aws_instance.example:\n" +
+        "  instance.id => instance.private_ip\n" +
+        "}");
+  }
+
+  public void testForObjectGrouping() throws IOException {
+    doCodeTest("value = {\n" +
+        "  for instance in aws_instance.example:\n" +
+        "  instance.availability_zone => instance.id...\n" +
+        "}");
+  }
+
   public void testSelectExpression() throws IOException {
     doCodeTest("a = foo.bar.baz");
   }
