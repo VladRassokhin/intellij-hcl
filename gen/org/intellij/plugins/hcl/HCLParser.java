@@ -330,8 +330,8 @@ public class HCLParser implements PsiParser, LightPsiParser {
   private static boolean SplatSelectExpression_1_3_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "SplatSelectExpression_1_3_0")) return false;
     boolean r;
-    r = Expression(b, l + 1, 9);
-    if (!r) r = Expression(b, l + 1, 8);
+    r = Expression(b, l + 1, 11);
+    if (!r) r = Expression(b, l + 1, 10);
     return r;
   }
 
@@ -974,11 +974,11 @@ public class HCLParser implements PsiParser, LightPsiParser {
   // 5: BINARY(BinaryRelationalExpression)
   // 6: BINARY(BinaryAdditionExpression)
   // 7: BINARY(BinaryMultiplyExpression)
-  // 8: POSTFIX(MethodCallExpression)
-  // 9: BINARY(SelectExpression)
-  // 10: POSTFIX(IndexSelectExpression)
-  // 11: PREFIX(ForArrayExpression)
-  // 12: ATOM(ForObjectExpression)
+  // 8: PREFIX(ForArrayExpression)
+  // 9: ATOM(ForObjectExpression)
+  // 10: POSTFIX(MethodCallExpression)
+  // 11: BINARY(SelectExpression)
+  // 12: POSTFIX(IndexSelectExpression)
   // 13: ATOM(CollectionValue)
   // 14: ATOM(Variable)
   // 15: PREFIX(UnaryExpression)
@@ -1034,15 +1034,15 @@ public class HCLParser implements PsiParser, LightPsiParser {
         r = Expression(b, l, 7);
         exit_section_(b, l, m, BINARY_MULTIPLY_EXPRESSION, r, true, null);
       }
-      else if (g < 8 && ParameterList(b, l + 1)) {
+      else if (g < 10 && ParameterList(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, METHOD_CALL_EXPRESSION, r, true, null);
       }
-      else if (g < 9 && consumeTokenSmart(b, OP_DOT)) {
-        r = Expression(b, l, 9);
+      else if (g < 11 && consumeTokenSmart(b, OP_DOT)) {
+        r = Expression(b, l, 11);
         exit_section_(b, l, m, SELECT_EXPRESSION, r, true, null);
       }
-      else if (g < 10 && IndexSelectExpression_0(b, l + 1)) {
+      else if (g < 12 && IndexSelectExpression_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, INDEX_SELECT_EXPRESSION, r, true, null);
       }
@@ -1116,19 +1116,6 @@ public class HCLParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // '[' Expression ']'
-  private static boolean IndexSelectExpression_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "IndexSelectExpression_0")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeTokenSmart(b, L_BRACKET);
-    p = r; // pin = '\['
-    r = r && report_error_(b, Expression(b, l + 1, -1));
-    r = p && consumeToken(b, R_BRACKET) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
   public static boolean ForArrayExpression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ForArrayExpression")) return false;
     if (!nextTokenIsSmart(b, L_BRACKET)) return false;
@@ -1136,7 +1123,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, null);
     r = ForArrayExpression_0(b, l + 1);
     p = r;
-    r = p && Expression(b, l, 11);
+    r = p && Expression(b, l, 8);
     r = p && report_error_(b, ForArrayExpression_1(b, l + 1)) && r;
     exit_section_(b, l, m, FOR_ARRAY_EXPRESSION, r, p, null);
     return r || p;
@@ -1201,6 +1188,19 @@ public class HCLParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "ForObjectExpression_6")) return false;
     ForCondition(b, l + 1);
     return true;
+  }
+
+  // '[' Expression ']'
+  private static boolean IndexSelectExpression_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "IndexSelectExpression_0")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeTokenSmart(b, L_BRACKET);
+    p = r; // pin = '\['
+    r = r && report_error_(b, Expression(b, l + 1, -1));
+    r = p && consumeToken(b, R_BRACKET) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // array | object
