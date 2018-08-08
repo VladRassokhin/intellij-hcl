@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public class ILBinaryRelationalExpressionImpl extends ILBinaryExpressionImpl implements ILBinaryRelationalExpression {
 
-  public ILBinaryRelationalExpressionImpl(ASTNode node) {
+  public ILBinaryRelationalExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

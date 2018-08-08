@@ -120,11 +120,10 @@ public class HILParser implements PsiParser, LightPsiParser {
   // (',' ILExpression )*
   private static boolean ILParameterList_1_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ILParameterList_1_0_1")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!ILParameterList_1_0_1_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "ILParameterList_1_0_1", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -169,7 +168,13 @@ public class HILParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // OP_AND_AND
   static boolean andOp(PsiBuilder b, int l) {
-    return consumeToken(b, OP_AND_AND);
+    if (!recursion_guard_(b, l, "andOp")) return false;
+    if (!nextTokenIs(b, "<operator>", OP_AND_AND)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, null, "<operator>");
+    r = consumeToken(b, OP_AND_AND);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */
@@ -207,7 +212,13 @@ public class HILParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // OP_OR_OR
   static boolean orOp(PsiBuilder b, int l) {
-    return consumeToken(b, OP_OR_OR);
+    if (!recursion_guard_(b, l, "orOp")) return false;
+    if (!nextTokenIs(b, "<operator>", OP_OR_OR)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, null, "<operator>");
+    r = consumeToken(b, OP_OR_OR);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */
@@ -411,7 +422,7 @@ public class HILParser implements PsiParser, LightPsiParser {
   // identifier | '*'
   public static boolean ILVariable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ILVariable")) return false;
-    if (!nextTokenIsSmart(b, OP_MUL, ID)) return false;
+    if (!nextTokenIsSmart(b, ID, OP_MUL)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, IL_VARIABLE, "<Identifier>");
     r = identifier(b, l + 1);

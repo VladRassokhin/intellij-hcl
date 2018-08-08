@@ -13,7 +13,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLParameterListImpl extends ASTWrapperPsiElement implements HCLParameterList {
 
-  public HCLParameterListImpl(ASTNode node) {
+  public HCLParameterListImpl(@NotNull ASTNode node) {
     super(node);
   }
 

@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLMethodCallExpressionImpl extends HCLExpressionImpl implements HCLMethodCallExpression {
 
-  public HCLMethodCallExpressionImpl(ASTNode node) {
+  public HCLMethodCallExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

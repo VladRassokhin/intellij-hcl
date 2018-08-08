@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLBinaryMultiplyExpressionImpl extends HCLBinaryExpressionImpl implements HCLBinaryMultiplyExpression {
 
-  public HCLBinaryMultiplyExpressionImpl(ASTNode node) {
+  public HCLBinaryMultiplyExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

@@ -13,7 +13,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public abstract class HCLExpressionImpl extends ASTWrapperPsiElement implements HCLExpression {
 
-  public HCLExpressionImpl(ASTNode node) {
+  public HCLExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

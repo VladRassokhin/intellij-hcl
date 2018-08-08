@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public abstract class HCLValueImpl extends HCLElementImpl implements HCLValue {
 
-  public HCLValueImpl(ASTNode node) {
+  public HCLValueImpl(@NotNull ASTNode node) {
     super(node);
   }
 

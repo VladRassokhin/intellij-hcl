@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLBinaryOrExpressionImpl extends HCLBinaryExpressionImpl implements HCLBinaryOrExpression {
 
-  public HCLBinaryOrExpressionImpl(ASTNode node) {
+  public HCLBinaryOrExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

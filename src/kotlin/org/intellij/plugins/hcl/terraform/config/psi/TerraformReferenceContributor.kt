@@ -272,7 +272,7 @@ object MapVariableIndexReferenceProvider : PsiReferenceProvider() {
       if (incomplete) {
         default.propertyList.map { it.nameElement }
       } else {
-        listOf(default.findProperty(element.name)?.nameElement).filterNotNull()
+        listOf(element.name?.let{default.findProperty(it)?.nameElement}).filterNotNull()
       }
     }
     return arrayOf(subReference)

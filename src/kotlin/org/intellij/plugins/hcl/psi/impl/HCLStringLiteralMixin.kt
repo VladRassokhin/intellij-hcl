@@ -30,7 +30,7 @@ import org.intellij.plugins.hcl.psi.HCLElementGenerator
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformSearchScope
 
-abstract class HCLStringLiteralMixin(node: ASTNode?) : HCLLiteralImpl(node), HCLStringLiteral, PsiLanguageInjectionHost, PsiNamedElement {
+abstract class HCLStringLiteralMixin(node: ASTNode) : HCLLiteralImpl(node), HCLStringLiteral, PsiLanguageInjectionHost, PsiNamedElement {
   override fun isValidHost() = true
 
   companion object {

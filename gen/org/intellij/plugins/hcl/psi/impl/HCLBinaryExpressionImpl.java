@@ -13,7 +13,7 @@ import com.intellij.psi.tree.IElementType;
 
 public class HCLBinaryExpressionImpl extends HCLBinaryExpressionMixin implements HCLBinaryExpression {
 
-  public HCLBinaryExpressionImpl(ASTNode node) {
+  public HCLBinaryExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

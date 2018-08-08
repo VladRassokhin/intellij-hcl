@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLBinaryEqualityExpressionImpl extends HCLBinaryExpressionImpl implements HCLBinaryEqualityExpression {
 
-  public HCLBinaryEqualityExpressionImpl(ASTNode node) {
+  public HCLBinaryEqualityExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

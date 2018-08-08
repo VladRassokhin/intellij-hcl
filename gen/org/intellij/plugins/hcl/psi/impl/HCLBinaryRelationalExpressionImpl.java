@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLBinaryRelationalExpressionImpl extends HCLBinaryExpressionImpl implements HCLBinaryRelationalExpression {
 
-  public HCLBinaryRelationalExpressionImpl(ASTNode node) {
+  public HCLBinaryRelationalExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

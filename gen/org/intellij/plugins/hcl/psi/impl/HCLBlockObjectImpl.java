@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLBlockObjectImpl extends HCLObjectImpl implements HCLBlockObject {
 
-  public HCLBlockObjectImpl(ASTNode node) {
+  public HCLBlockObjectImpl(@NotNull ASTNode node) {
     super(node);
   }
 

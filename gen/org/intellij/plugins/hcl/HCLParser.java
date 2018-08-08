@@ -841,7 +841,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
   // ('='|':') Expression
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
-    if (!nextTokenIs(b, "<property>", OP_COLON, EQUALS)) return false;
+    if (!nextTokenIs(b, "<property>", EQUALS, OP_COLON)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _LEFT_, PROPERTY, "<property>");
     r = property_0(b, l + 1);
@@ -1218,7 +1218,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
   // identifier | '*'
   public static boolean Variable(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Variable")) return false;
-    if (!nextTokenIsSmart(b, OP_MUL, ID)) return false;
+    if (!nextTokenIsSmart(b, ID, OP_MUL)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, VARIABLE, "<Identifier>");
     r = identifier(b, l + 1);

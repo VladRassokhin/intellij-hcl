@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public class ILVariableImpl extends ILVariableMixin implements ILVariable {
 
-  public ILVariableImpl(ASTNode node) {
+  public ILVariableImpl(@NotNull ASTNode node) {
     super(node);
   }
 

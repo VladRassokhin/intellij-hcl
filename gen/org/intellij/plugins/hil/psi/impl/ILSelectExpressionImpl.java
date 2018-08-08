@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public class ILSelectExpressionImpl extends ILExpressionImpl implements ILSelectExpression {
 
-  public ILSelectExpressionImpl(ASTNode node) {
+  public ILSelectExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

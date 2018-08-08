@@ -14,7 +14,7 @@ import com.intellij.openapi.util.TextRange;
 
 public class HCLHeredocContentImpl extends HCLHeredocContentMixin implements HCLHeredocContent {
 
-  public HCLHeredocContentImpl(ASTNode node) {
+  public HCLHeredocContentImpl(@NotNull ASTNode node) {
     super(node);
   }
 

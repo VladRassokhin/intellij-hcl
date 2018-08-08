@@ -13,7 +13,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLForIntroImpl extends ASTWrapperPsiElement implements HCLForIntro {
 
-  public HCLForIntroImpl(ASTNode node) {
+  public HCLForIntroImpl(@NotNull ASTNode node) {
     super(node);
   }
 

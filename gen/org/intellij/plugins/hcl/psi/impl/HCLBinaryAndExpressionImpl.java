@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLBinaryAndExpressionImpl extends HCLBinaryExpressionImpl implements HCLBinaryAndExpression {
 
-  public HCLBinaryAndExpressionImpl(ASTNode node) {
+  public HCLBinaryAndExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

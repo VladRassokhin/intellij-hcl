@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLParenthesizedExpressionImpl extends HCLExpressionImpl implements HCLParenthesizedExpression {
 
-  public HCLParenthesizedExpressionImpl(ASTNode node) {
+  public HCLParenthesizedExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

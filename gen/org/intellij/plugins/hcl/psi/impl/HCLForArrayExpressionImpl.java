@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLForArrayExpressionImpl extends HCLForExpressionImpl implements HCLForArrayExpression {
 
-  public HCLForArrayExpressionImpl(ASTNode node) {
+  public HCLForArrayExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

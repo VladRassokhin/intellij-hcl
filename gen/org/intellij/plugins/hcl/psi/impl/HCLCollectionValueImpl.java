@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public abstract class HCLCollectionValueImpl extends HCLExpressionImpl implements HCLCollectionValue {
 
-  public HCLCollectionValueImpl(ASTNode node) {
+  public HCLCollectionValueImpl(@NotNull ASTNode node) {
     super(node);
   }
 

@@ -13,7 +13,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLForConditionImpl extends ASTWrapperPsiElement implements HCLForCondition {
 
-  public HCLForConditionImpl(ASTNode node) {
+  public HCLForConditionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

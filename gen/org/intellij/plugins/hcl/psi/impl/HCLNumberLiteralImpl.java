@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLNumberLiteralImpl extends HCLLiteralImpl implements HCLNumberLiteral {
 
-  public HCLNumberLiteralImpl(ASTNode node) {
+  public HCLNumberLiteralImpl(@NotNull ASTNode node) {
     super(node);
   }
 

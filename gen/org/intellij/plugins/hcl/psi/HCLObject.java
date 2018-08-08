@@ -12,7 +12,7 @@ public interface HCLObject extends HCLContainer {
   List<HCLProperty> getPropertyList();
 
   @Nullable
-  HCLProperty findProperty(String name);
+  HCLProperty findProperty(@NotNull String name);
 
   @Nullable
   ItemPresentation getPresentation();

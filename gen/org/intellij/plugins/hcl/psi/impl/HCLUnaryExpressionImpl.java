@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLUnaryExpressionImpl extends HCLExpressionImpl implements HCLUnaryExpression {
 
-  public HCLUnaryExpressionImpl(ASTNode node) {
+  public HCLUnaryExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

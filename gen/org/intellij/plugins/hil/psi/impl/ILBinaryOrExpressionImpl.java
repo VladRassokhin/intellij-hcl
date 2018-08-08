@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public class ILBinaryOrExpressionImpl extends ILBinaryExpressionImpl implements ILBinaryOrExpression {
 
-  public ILBinaryOrExpressionImpl(ASTNode node) {
+  public ILBinaryOrExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

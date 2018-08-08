@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLVariableImpl extends HCLVariableMixin implements HCLVariable {
 
-  public HCLVariableImpl(ASTNode node) {
+  public HCLVariableImpl(@NotNull ASTNode node) {
     super(node);
   }
 

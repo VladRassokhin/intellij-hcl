@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public class ILBinaryMultiplyExpressionImpl extends ILBinaryExpressionImpl implements ILBinaryMultiplyExpression {
 
-  public ILBinaryMultiplyExpressionImpl(ASTNode node) {
+  public ILBinaryMultiplyExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

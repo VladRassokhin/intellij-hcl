@@ -13,7 +13,7 @@ import com.intellij.navigation.ItemPresentation;
 
 public class HCLArrayImpl extends HCLContainerImpl implements HCLArray {
 
-  public HCLArrayImpl(ASTNode node) {
+  public HCLArrayImpl(@NotNull ASTNode node) {
     super(node);
   }
 

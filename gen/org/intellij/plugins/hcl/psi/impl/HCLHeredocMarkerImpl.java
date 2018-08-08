@@ -13,7 +13,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLHeredocMarkerImpl extends ASTWrapperPsiElement implements HCLHeredocMarker {
 
-  public HCLHeredocMarkerImpl(ASTNode node) {
+  public HCLHeredocMarkerImpl(@NotNull ASTNode node) {
     super(node);
   }
 

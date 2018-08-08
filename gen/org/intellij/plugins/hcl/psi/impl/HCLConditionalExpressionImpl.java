@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLConditionalExpressionImpl extends HCLExpressionImpl implements HCLConditionalExpression {
 
-  public HCLConditionalExpressionImpl(ASTNode node) {
+  public HCLConditionalExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

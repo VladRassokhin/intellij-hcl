@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLSplatSelectExpressionImpl extends HCLSelectExpressionImpl implements HCLSplatSelectExpression {
 
-  public HCLSplatSelectExpressionImpl(ASTNode node) {
+  public HCLSplatSelectExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
