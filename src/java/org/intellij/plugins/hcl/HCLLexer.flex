@@ -292,6 +292,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\%\{\}\\]|\\[^\r\n\\])+
   "{"                         { return L_CURLY; }
   "}"                         { return R_CURLY; }
   ","                         { return COMMA; }
+  "..."                       { return OP_ELLIPSIS; }
   "."                         { return OP_DOT; }
   "+"                         { return OP_PLUS; }
   "-"                         { return OP_MINUS; }
@@ -299,6 +300,7 @@ STRING_ELEMENT=([^\"\'\r\n\$\%\{\}\\]|\\[^\r\n\\])+
   "/"                         { return OP_DIV; }
   "%"                         { return OP_MOD; }
   "!"                         { return OP_NOT; }
+  "=>"                        { return OP_MAPPING; }
   "=="                        { return OP_EQUAL; }
   "!="                        { return OP_NOT_EQUAL; }
   "<"                         { return OP_LESS; }

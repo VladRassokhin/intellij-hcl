@@ -65,11 +65,13 @@ public interface HCLElementTypes {
   IElementType OP_COLON = new HCLTokenType(":");
   IElementType OP_DIV = new HCLTokenType("/");
   IElementType OP_DOT = new HCLTokenType(".");
+  IElementType OP_ELLIPSIS = new HCLTokenType("...");
   IElementType OP_EQUAL = new HCLTokenType("==");
   IElementType OP_GREATER = new HCLTokenType(">");
   IElementType OP_GREATER_OR_EQUAL = new HCLTokenType(">=");
   IElementType OP_LESS = new HCLTokenType("<");
   IElementType OP_LESS_OR_EQUAL = new HCLTokenType("<=");
+  IElementType OP_MAPPING = new HCLTokenType("=>");
   IElementType OP_MINUS = new HCLTokenType("-");
   IElementType OP_MOD = new HCLTokenType("%");
   IElementType OP_MUL = new HCLTokenType("*");

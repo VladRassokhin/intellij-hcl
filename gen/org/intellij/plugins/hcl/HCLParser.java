@@ -290,7 +290,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
-    if (!r) r = consumeToken(b, "...");
+    if (!r) r = consumeToken(b, OP_ELLIPSIS);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1180,7 +1180,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
     r = consumeTokenSmart(b, L_CURLY);
     r = r && ForIntro(b, l + 1);
     r = r && Expression(b, l + 1, -1);
-    r = r && consumeToken(b, "=>");
+    r = r && consumeToken(b, OP_MAPPING);
     r = r && Expression(b, l + 1, -1);
     r = r && ForObjectExpression_5(b, l + 1);
     r = r && ForObjectExpression_6(b, l + 1);
@@ -1192,7 +1192,7 @@ public class HCLParser implements PsiParser, LightPsiParser {
   // "..."?
   private static boolean ForObjectExpression_5(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ForObjectExpression_5")) return false;
-    consumeTokenSmart(b, "...");
+    consumeTokenSmart(b, OP_ELLIPSIS);
     return true;
   }
 

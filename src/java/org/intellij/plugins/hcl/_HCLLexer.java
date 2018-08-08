@@ -184,15 +184,15 @@ public class _HCLLexer implements FlexLexer {
     "\1\30\2\1\1\31\1\32\3\10\1\33\2\34\4\33"+
     "\2\35\2\36\1\33\2\37\3\33\1\40\1\41\1\1"+
     "\1\42\1\1\3\43\1\44\2\45\1\44\1\46\1\47"+
-    "\2\50\2\51\2\33\1\52\1\53\1\54\2\7\2\0"+
-    "\1\55\1\56\1\57\1\60\1\61\1\62\1\63\3\10"+
-    "\1\0\1\64\2\65\1\66\2\67\1\0\1\70\2\43"+
-    "\2\0\2\46\1\33\1\0\2\7\1\0\3\10\1\64"+
-    "\1\66\1\70\3\43\1\0\1\54\1\71\1\10\1\72"+
-    "\1\73";
+    "\2\50\2\51\2\33\1\52\1\53\1\54\2\7\3\0"+
+    "\1\55\1\56\1\57\1\60\1\61\1\62\1\63\1\64"+
+    "\3\10\1\0\1\65\2\66\1\67\2\70\1\0\1\71"+
+    "\2\43\2\0\2\46\1\33\1\0\2\7\1\72\1\0"+
+    "\3\10\1\65\1\67\1\71\3\43\1\0\1\54\1\73"+
+    "\1\10\1\74\1\75";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[132];
+    int [] result = new int[135];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -227,16 +227,16 @@ public class _HCLLexer implements FlexLexer {
     "\0\u0682\0\u0715\0\u0746\0\u0777\0\u021b\0\u021b\0\u07a8\0\u021b"+
     "\0\u07d9\0\u080a\0\u083b\0\u086c\0\u021b\0\u089d\0\u021b\0\u08ce"+
     "\0\u08ff\0\u0930\0\u0961\0\u021b\0\u0992\0\u021b\0\u09c3\0\u09f4"+
-    "\0\u021b\0\u021b\0\u0a25\0\u03a3\0\u0a56\0\u0a87\0\u0ab8\0\u021b"+
-    "\0\u021b\0\u021b\0\u021b\0\u021b\0\u021b\0\u021b\0\u0ae9\0\u0b1a"+
-    "\0\u0b4b\0\u0b7c\0\u0bad\0\u0bde\0\u021b\0\u0c0f\0\u0c40\0\u021b"+
-    "\0\u0c71\0\u0ca2\0\u0cd3\0\u0d04\0\u0d35\0\u0d66\0\u0d97\0\u021b"+
-    "\0\u0dc8\0\u0df9\0\u0e2a\0\u0a87\0\u0e2a\0\u0e5b\0\u0e8c\0\u0ebd"+
-    "\0\u021b\0\u021b\0\u021b\0\u0eee\0\u021b\0\u0f1f\0\u0f50\0\u021b"+
-    "\0\u0372\0\u0f81\0\u0372\0\u0372";
+    "\0\u021b\0\u021b\0\u0a25\0\u0a56\0\u0a87\0\u0ab8\0\u0ae9\0\u0b1a"+
+    "\0\u021b\0\u021b\0\u021b\0\u021b\0\u021b\0\u021b\0\u021b\0\u021b"+
+    "\0\u0b4b\0\u0b7c\0\u0bad\0\u0bde\0\u0c0f\0\u0c40\0\u021b\0\u0c71"+
+    "\0\u0ca2\0\u021b\0\u0cd3\0\u0d04\0\u0d35\0\u0d66\0\u0d97\0\u0dc8"+
+    "\0\u0df9\0\u021b\0\u0e2a\0\u0e5b\0\u0e8c\0\u0ab8\0\u021b\0\u0e8c"+
+    "\0\u0ebd\0\u0eee\0\u0f1f\0\u021b\0\u021b\0\u021b\0\u0f50\0\u021b"+
+    "\0\u0f81\0\u0fb2\0\u021b\0\u0372\0\u0fe3\0\u0372\0\u0372";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[132];
+    int [] result = new int[135];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -281,53 +281,54 @@ public class _HCLLexer implements FlexLexer {
     "\2\22\2\0\1\124\1\125\33\0\1\125\17\0\2\22"+
     "\1\126\1\0\1\124\1\125\33\0\1\125\16\0\5\24"+
     "\1\0\1\24\1\0\2\24\25\0\13\24\10\0\2\124"+
-    "\3\0\1\127\33\0\1\127\35\0\1\130\11\0\1\131"+
-    "\60\0\1\132\60\0\1\133\60\0\1\134\62\0\1\135"+
-    "\61\0\1\136\24\0\5\24\1\0\1\24\1\0\2\24"+
-    "\25\0\1\24\1\137\11\24\7\0\5\24\1\0\1\24"+
-    "\1\0\2\24\25\0\5\24\1\140\5\24\7\0\5\24"+
-    "\1\0\1\24\1\0\2\24\25\0\2\24\1\141\10\24"+
-    "\1\54\2\0\16\54\2\0\1\54\2\0\1\54\1\0"+
-    "\1\142\1\0\27\54\2\0\1\56\100\0\1\143\37\0"+
-    "\1\144\1\145\100\0\1\146\36\0\1\54\2\0\25\54"+
-    "\1\61\30\54\2\0\1\66\57\0\1\147\1\150\56\0"+
-    "\21\72\2\0\1\72\2\0\1\72\1\0\1\151\1\0"+
-    "\27\72\22\0\1\152\36\0\21\72\2\0\1\72\1\75"+
-    "\1\0\1\72\1\0\1\151\1\0\30\72\2\0\24\72"+
-    "\1\61\1\72\1\61\27\72\10\0\1\102\1\103\2\0"+
-    "\1\104\54\0\2\102\2\0\1\104\1\153\33\0\1\153"+
-    "\5\0\1\154\11\0\2\102\1\155\1\0\1\104\1\153"+
-    "\33\0\1\153\5\0\1\154\11\0\2\104\3\0\1\156"+
-    "\33\0\1\156\5\0\1\154\3\0\1\107\66\0\4\111"+
-    "\1\0\1\111\1\0\2\111\25\0\13\111\1\0\1\157"+
-    "\1\160\5\0\4\111\1\0\1\111\1\0\2\111\25\0"+
-    "\13\111\1\112\2\0\56\112\2\0\1\114\60\0\1\116"+
-    "\100\0\1\161\36\0\21\72\2\0\1\72\1\61\1\0"+
-    "\1\72\1\0\1\151\1\0\27\72\6\123\1\162\52\123"+
-    "\7\0\3\163\4\0\1\163\52\0\2\164\1\0\1\164"+
-    "\1\0\1\164\33\0\3\164\4\0\1\164\7\0\1\165"+
-    "\2\163\4\0\1\165\51\0\5\24\1\0\1\24\1\0"+
-    "\2\24\25\0\2\24\1\166\10\24\7\0\5\24\1\0"+
-    "\1\24\1\0\2\24\25\0\6\24\1\167\4\24\7\0"+
-    "\5\24\1\0\1\24\1\0\2\24\25\0\6\24\1\170"+
-    "\4\24\1\54\2\0\25\54\1\0\30\54\23\0\1\171"+
-    "\37\0\1\145\101\0\1\172\37\0\1\150\56\0\1\72"+
-    "\2\0\24\72\1\0\1\72\1\0\27\72\23\0\1\173"+
-    "\44\0\3\174\4\0\1\174\40\0\1\154\61\0\1\175"+
-    "\10\0\2\176\1\0\1\176\1\0\1\176\33\0\3\176"+
-    "\4\0\1\176\7\0\1\177\2\174\4\0\1\177\44\0"+
-    "\1\160\101\0\1\61\35\0\4\123\1\200\54\123\10\0"+
-    "\2\163\56\0\5\24\1\0\1\24\1\0\2\24\25\0"+
-    "\3\24\1\201\7\24\7\0\5\24\1\0\1\24\1\0"+
-    "\2\24\25\0\7\24\1\202\3\24\7\0\5\24\1\0"+
-    "\1\24\1\0\2\24\25\0\6\24\1\203\4\24\10\0"+
-    "\2\174\45\0\1\154\11\0\2\176\1\0\1\176\1\0"+
-    "\1\176\33\0\3\176\3\0\1\154\1\176\10\0\2\174"+
-    "\56\0\5\24\1\0\1\24\1\0\2\24\25\0\3\24"+
-    "\1\204\7\24";
+    "\2\0\1\127\1\130\33\0\1\130\35\0\1\131\11\0"+
+    "\1\132\60\0\1\133\60\0\1\134\1\135\57\0\1\136"+
+    "\62\0\1\137\61\0\1\140\24\0\5\24\1\0\1\24"+
+    "\1\0\2\24\25\0\1\24\1\141\11\24\7\0\5\24"+
+    "\1\0\1\24\1\0\2\24\25\0\5\24\1\142\5\24"+
+    "\7\0\5\24\1\0\1\24\1\0\2\24\25\0\2\24"+
+    "\1\143\10\24\1\54\2\0\16\54\2\0\1\54\2\0"+
+    "\1\54\1\0\1\144\1\0\27\54\2\0\1\56\100\0"+
+    "\1\145\37\0\1\146\1\147\100\0\1\150\36\0\1\54"+
+    "\2\0\25\54\1\61\30\54\2\0\1\66\57\0\1\151"+
+    "\1\152\56\0\21\72\2\0\1\72\2\0\1\72\1\0"+
+    "\1\153\1\0\27\72\22\0\1\154\36\0\21\72\2\0"+
+    "\1\72\1\75\1\0\1\72\1\0\1\153\1\0\30\72"+
+    "\2\0\24\72\1\61\1\72\1\61\27\72\10\0\1\102"+
+    "\1\103\2\0\1\104\54\0\2\102\2\0\1\104\1\155"+
+    "\33\0\1\155\5\0\1\156\11\0\2\102\1\157\1\0"+
+    "\1\104\1\155\33\0\1\155\5\0\1\156\11\0\2\104"+
+    "\3\0\1\160\33\0\1\160\5\0\1\156\3\0\1\107"+
+    "\66\0\4\111\1\0\1\111\1\0\2\111\25\0\13\111"+
+    "\1\0\1\161\1\162\5\0\4\111\1\0\1\111\1\0"+
+    "\2\111\25\0\13\111\1\112\2\0\56\112\2\0\1\114"+
+    "\60\0\1\116\100\0\1\163\36\0\21\72\2\0\1\72"+
+    "\1\61\1\0\1\72\1\0\1\153\1\0\27\72\6\123"+
+    "\1\164\52\123\10\0\2\124\3\0\1\130\33\0\1\130"+
+    "\16\0\3\165\4\0\1\165\52\0\2\166\1\0\1\166"+
+    "\1\0\1\166\33\0\3\166\4\0\1\166\14\0\1\167"+
+    "\53\0\1\170\2\165\4\0\1\170\51\0\5\24\1\0"+
+    "\1\24\1\0\2\24\25\0\2\24\1\171\10\24\7\0"+
+    "\5\24\1\0\1\24\1\0\2\24\25\0\6\24\1\172"+
+    "\4\24\7\0\5\24\1\0\1\24\1\0\2\24\25\0"+
+    "\6\24\1\173\4\24\1\54\2\0\25\54\1\0\30\54"+
+    "\23\0\1\174\37\0\1\147\101\0\1\175\37\0\1\152"+
+    "\56\0\1\72\2\0\24\72\1\0\1\72\1\0\27\72"+
+    "\23\0\1\176\44\0\3\177\4\0\1\177\40\0\1\156"+
+    "\61\0\1\200\10\0\2\201\1\0\1\201\1\0\1\201"+
+    "\33\0\3\201\4\0\1\201\7\0\1\202\2\177\4\0"+
+    "\1\202\44\0\1\162\101\0\1\61\35\0\4\123\1\203"+
+    "\54\123\10\0\2\165\56\0\5\24\1\0\1\24\1\0"+
+    "\2\24\25\0\3\24\1\204\7\24\7\0\5\24\1\0"+
+    "\1\24\1\0\2\24\25\0\7\24\1\205\3\24\7\0"+
+    "\5\24\1\0\1\24\1\0\2\24\25\0\6\24\1\206"+
+    "\4\24\10\0\2\177\45\0\1\156\11\0\2\201\1\0"+
+    "\1\201\1\0\1\201\33\0\3\201\3\0\1\156\1\201"+
+    "\10\0\2\177\56\0\5\24\1\0\1\24\1\0\2\24"+
+    "\25\0\3\24\1\207\7\24";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[4018];
+    int [] result = new int[4116];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -369,13 +370,13 @@ public class _HCLLexer implements FlexLexer {
     "\5\1\2\11\5\1\1\11\2\1\1\11\2\1\1\11"+
     "\1\1\1\11\1\1\1\11\4\1\2\11\1\1\1\11"+
     "\4\1\1\11\1\1\1\11\4\1\1\11\1\1\1\11"+
-    "\2\1\2\11\3\1\2\0\7\11\3\1\1\0\2\1"+
+    "\2\1\2\11\3\1\3\0\10\11\3\1\1\0\2\1"+
     "\1\11\2\1\1\11\1\0\3\1\2\0\1\1\1\11"+
-    "\1\1\1\0\2\1\1\0\3\1\3\11\1\1\1\11"+
-    "\1\1\1\0\1\11\4\1";
+    "\1\1\1\0\2\1\1\11\1\0\3\1\3\11\1\1"+
+    "\1\11\1\1\1\0\1\11\4\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[132];
+    int [] result = new int[135];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -755,39 +756,39 @@ public class _HCLLexer implements FlexLexer {
             case D_STRING: {
               return eods();
             }
-            case 133: break;
+            case 136: break;
             case S_STRING: {
               return eoss();
             }
-            case 134: break;
+            case 137: break;
             case HIL_EXPRESSION: {
               return eoil();
             }
-            case 135: break;
+            case 138: break;
             case TEMPLATE_EXPRESSION: {
               return eoil();
             }
-            case 136: break;
+            case 139: break;
             case S_HEREDOC_MARKER: {
               yybegin(YYINITIAL); return BAD_CHARACTER;
             }
-            case 137: break;
+            case 140: break;
             case S_HEREDOC_LINE: {
               yybegin(YYINITIAL); return BAD_CHARACTER;
             }
-            case 138: break;
+            case 141: break;
             case S_HEREDOC_LINE_END: {
               yybegin(YYINITIAL); return BAD_CHARACTER;
             }
-            case 139: break;
+            case 142: break;
             case HIL_EXPRESSION_STRING: {
               return eoil();
             }
-            case 140: break;
+            case 143: break;
             case TEMPLATE_EXPRESSION_STRING: {
               return eoil();
             }
-            case 141: break;
+            case 144: break;
             default:
         return null;
         }
@@ -797,144 +798,144 @@ public class _HCLLexer implements FlexLexer {
           case 1: 
             { return BAD_CHARACTER;
             }
-          case 60: break;
+          case 62: break;
           case 2: 
             { return WHITE_SPACE;
             }
-          case 61: break;
+          case 63: break;
           case 3: 
             { return OP_DIV;
             }
-          case 62: break;
+          case 64: break;
           case 4: 
             { return LINE_COMMENT;
             }
-          case 63: break;
+          case 65: break;
           case 5: 
             { return OP_MUL;
             }
-          case 64: break;
+          case 66: break;
           case 6: 
             { return OP_MINUS;
             }
-          case 65: break;
+          case 67: break;
           case 7: 
             { if (!withNumbersWithBytesPostfix) return NUMBER;
                                 yybegin(IN_NUMBER); yypushback(yylength());
             }
-          case 66: break;
+          case 68: break;
           case 8: 
             { return ID;
             }
-          case 67: break;
+          case 69: break;
           case 9: 
             { return OP_DOT;
             }
-          case 68: break;
+          case 70: break;
           case 10: 
             { return OP_PLUS;
             }
-          case 69: break;
+          case 71: break;
           case 11: 
             { return L_CURLY;
             }
-          case 70: break;
+          case 72: break;
           case 12: 
             { return R_CURLY;
             }
-          case 71: break;
+          case 73: break;
           case 13: 
             { return OP_MOD;
             }
-          case 72: break;
+          case 74: break;
           case 14: 
             { return OP_LESS;
             }
-          case 73: break;
+          case 75: break;
           case 15: 
             { stringType = StringType.SingleQ; stringStart = zzStartRead; yybegin(S_STRING);
             }
-          case 74: break;
+          case 76: break;
           case 16: 
             { stringType = StringType.DoubleQ; stringStart = zzStartRead; yybegin(D_STRING);
             }
-          case 75: break;
+          case 77: break;
           case 17: 
             { return L_PAREN;
             }
-          case 76: break;
+          case 78: break;
           case 18: 
             { return R_PAREN;
             }
-          case 77: break;
+          case 79: break;
           case 19: 
             { return L_BRACKET;
             }
-          case 78: break;
+          case 80: break;
           case 20: 
             { return R_BRACKET;
             }
-          case 79: break;
+          case 81: break;
           case 21: 
             { return COMMA;
             }
-          case 80: break;
+          case 82: break;
           case 22: 
             { return OP_NOT;
             }
-          case 81: break;
+          case 83: break;
           case 23: 
             { return EQUALS;
             }
-          case 82: break;
+          case 84: break;
           case 24: 
             { return OP_GREATER;
             }
-          case 83: break;
+          case 85: break;
           case 25: 
             { return OP_COLON;
             }
-          case 84: break;
+          case 86: break;
           case 26: 
             { return OP_QUEST;
             }
-          case 85: break;
+          case 87: break;
           case 27: 
             { 
             }
-          case 86: break;
+          case 88: break;
           case 28: 
             { push_eol(); return eods();
             }
-          case 87: break;
+          case 89: break;
           case 29: 
             { return eods();
             }
-          case 88: break;
+          case 90: break;
           case 30: 
             { push_eol(); return eoss();
             }
-          case 89: break;
+          case 91: break;
           case 31: 
             { return eoss();
             }
-          case 90: break;
+          case 92: break;
           case 32: 
             { if (hil_dec() <= 0) yybegin(stringType == StringType.SingleQ ? S_STRING: D_STRING);
             }
-          case 91: break;
+          case 93: break;
           case 33: 
             { myILStringChar=yycharat(yylength() - 1); yybegin(HIL_EXPRESSION_STRING);
             }
-          case 92: break;
+          case 94: break;
           case 34: 
             { myILStringChar=yycharat(yylength() - 1); yybegin(TEMPLATE_EXPRESSION_STRING);
             }
-          case 93: break;
+          case 95: break;
           case 35: 
             { yybegin(YYINITIAL); return NUMBER;
             }
-          case 94: break;
+          case 96: break;
           case 36: 
             { if (!isHereDocMarkerDefined()) {
       yybegin(YYINITIAL);
@@ -943,7 +944,7 @@ public class _HCLLexer implements FlexLexer {
     yybegin(S_HEREDOC_LINE);
     return BAD_CHARACTER;
             }
-          case 95: break;
+          case 97: break;
           case 37: 
             { if (!isHereDocMarkerDefined()) {
       yybegin(YYINITIAL);
@@ -952,13 +953,13 @@ public class _HCLLexer implements FlexLexer {
     yybegin(S_HEREDOC_LINE);
     return WHITE_SPACE;
             }
-          case 96: break;
+          case 98: break;
           case 38: 
             { yypushback(getEOLLength());
     setHereDocMarker(yytext());
     return HD_MARKER;
             }
-          case 97: break;
+          case 99: break;
           case 39: 
             { int eol = getEOLLength();
     int len = yylength();
@@ -976,87 +977,95 @@ public class _HCLLexer implements FlexLexer {
       return HD_LINE;
     }
             }
-          case 98: break;
+          case 100: break;
           case 40: 
             { yypushback(getEOLLength()); yybegin(S_HEREDOC_LINE_END); return HD_LINE;
             }
-          case 99: break;
+          case 101: break;
           case 41: 
             { yybegin(S_HEREDOC_LINE); return HD_EOL;
             }
-          case 100: break;
+          case 102: break;
           case 42: 
             { if(myILStringChar == yycharat(yylength() - 1)) {yybegin(HIL_EXPRESSION);}
             }
-          case 101: break;
+          case 103: break;
           case 43: 
             { if(myILStringChar == yycharat(yylength() - 1)) {yybegin(TEMPLATE_EXPRESSION);}
             }
-          case 102: break;
+          case 104: break;
           case 44: 
             { return BLOCK_COMMENT;
             }
-          case 103: break;
+          case 105: break;
           case 45: 
             { yybegin(S_HEREDOC_MARKER); return HD_START;
             }
-          case 104: break;
+          case 106: break;
           case 46: 
             { return OP_LESS_OR_EQUAL;
             }
-          case 105: break;
+          case 107: break;
           case 47: 
             { return OP_NOT_EQUAL;
             }
-          case 106: break;
+          case 108: break;
           case 48: 
             { return OP_EQUAL;
             }
-          case 107: break;
-          case 49: 
-            { return OP_GREATER_OR_EQUAL;
-            }
-          case 108: break;
-          case 50: 
-            { return OP_AND_AND;
-            }
           case 109: break;
-          case 51: 
-            { return OP_OR_OR;
+          case 49: 
+            { return OP_MAPPING;
             }
           case 110: break;
-          case 52: 
-            { if (withInterpolationLanguage) {hil_inc(); yybegin(HIL_EXPRESSION);}
+          case 50: 
+            { return OP_GREATER_OR_EQUAL;
             }
           case 111: break;
-          case 53: 
-            { push_eol(); yypushback(1); return eods();
+          case 51: 
+            { return OP_AND_AND;
             }
           case 112: break;
-          case 54: 
-            { if (withInterpolationLanguage) {hil_inc(); yybegin(TEMPLATE_EXPRESSION);}
+          case 52: 
+            { return OP_OR_OR;
             }
           case 113: break;
-          case 55: 
-            { push_eol(); yypushback(1); return eoss();
+          case 53: 
+            { if (withInterpolationLanguage) {hil_inc(); yybegin(HIL_EXPRESSION);}
             }
           case 114: break;
-          case 56: 
-            { hil_inc();
+          case 54: 
+            { push_eol(); yypushback(1); return eods();
             }
           case 115: break;
-          case 57: 
-            { return TRUE;
+          case 55: 
+            { if (withInterpolationLanguage) {hil_inc(); yybegin(TEMPLATE_EXPRESSION);}
             }
           case 116: break;
-          case 58: 
-            { return NULL;
+          case 56: 
+            { push_eol(); yypushback(1); return eoss();
             }
           case 117: break;
-          case 59: 
-            { return FALSE;
+          case 57: 
+            { hil_inc();
             }
           case 118: break;
+          case 58: 
+            { return OP_ELLIPSIS;
+            }
+          case 119: break;
+          case 59: 
+            { return TRUE;
+            }
+          case 120: break;
+          case 60: 
+            { return NULL;
+            }
+          case 121: break;
+          case 61: 
+            { return FALSE;
+            }
+          case 122: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }
