@@ -21,13 +21,12 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.util.containers.ContainerUtil;
 import org.intellij.plugins.hcl.psi.HCLHeredocContent;
 import org.intellij.plugins.hcl.psi.HCLStringLiteral;
 import org.intellij.plugins.hcl.psi.UtilKt;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -61,8 +60,7 @@ public class JavaUtil {
 
   @NotNull
   static List<Pair<TextRange, String>> doGetTextFragments(@NotNull String text, boolean interpolations, boolean quotes) {
-    List<Pair<TextRange, String>> result;
-    result = new ArrayList<Pair<TextRange, String>>();
+    List<Pair<TextRange, String>> result = ContainerUtil.newSmartList();
     final int length = text.length();
     int pos = quotes ? 1 : 0, unescapedSequenceStart = pos;
     int braces = 0;
@@ -75,7 +73,6 @@ public class JavaUtil {
         }
         unescapedSequenceStart = pos;
         pos += 2;
-        final ArrayDeque<Object> stack = new ArrayDeque<Object>();
         braces++;
         boolean inString = false;
         while (pos < length && braces > 0) {
