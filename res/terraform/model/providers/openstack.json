@@ -1,7 +1,7 @@
 {
   "name": "openstack",
   "type": "provider",
-  "version": "v1.6.0-23-gd982c81",
+  "version": "v1.8.0-22-g459bcad",
   "provider": {
     "auth_url": {
       "Type": "String",
@@ -33,6 +33,15 @@
       "Description": "An entry in a `clouds.yaml` file to use.",
       "Default": {
         "Type": "string"
+      }
+    },
+    "default_domain": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The name of the Domain ID to scope to if no other domain is specified. Defaults to `default` (Identity v3).",
+      "Default": {
+        "Type": "string",
+        "Value": "default"
       }
     },
     "domain_id": {
@@ -2339,6 +2348,7 @@
       ],
       "address": {
         "Type": "String",
+        "Optional": true,
         "Computed": true
       },
       "fixed_ip": {
@@ -3144,6 +3154,37 @@
         "Computed": true
       }
     },
+    "openstack_objectstorage_tempurl_v1": {
+      "container": {
+        "Type": "String",
+        "Required": true
+      },
+      "method": {
+        "Type": "String",
+        "Optional": true
+      },
+      "object": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "split": {
+        "Type": "String",
+        "Optional": true
+      },
+      "ttl": {
+        "Type": "Int",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "openstack_vpnaas_endpoint_group_v2": {
       "__timeouts__": [
         "create",
@@ -3630,6 +3671,46 @@
         "Computed": true
       }
     },
+    "openstack_fw_policy_v1": {
+      "audited": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "policy_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "rules": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "shared": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "openstack_identity_auth_scope_v3": {
       "name": {
         "Type": "String",
@@ -3687,6 +3768,45 @@
       },
       "user_name": {
         "Type": "String",
+        "Computed": true
+      }
+    },
+    "openstack_identity_endpoint_v3": {
+      "interface": {
+        "Type": "String",
+        "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "service_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "service_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "url": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "openstack_identity_group_v3": {
+      "domain_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
         "Computed": true
       }
     },
@@ -3873,6 +3993,36 @@
         "Optional": true
       }
     },
+    "openstack_networking_floatingip_v2": {
+      "address": {
+        "Type": "String",
+        "Optional": true
+      },
+      "fixed_ip": {
+        "Type": "String",
+        "Optional": true
+      },
+      "pool": {
+        "Type": "String",
+        "Optional": true
+      },
+      "port_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
     "openstack_networking_network_v2": {
       "admin_state_up": {
         "Type": "String",
@@ -3919,6 +4069,70 @@
         "Type": "String",
         "Optional": true,
         "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with."
+      }
+    },
+    "openstack_networking_router_v2": {
+      "admin_state_up": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "availability_zone_hints": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "distributed": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "enable_snat": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "external_fixed_ip": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_address": {
+              "Type": "String",
+              "Optional": true
+            },
+            "subnet_id": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "external_network_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true
+      },
+      "router_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "openstack_networking_secgroup_v2": {

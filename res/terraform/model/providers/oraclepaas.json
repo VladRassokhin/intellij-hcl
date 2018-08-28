@@ -1,8 +1,13 @@
 {
   "name": "oraclepaas",
   "type": "provider",
-  "version": "v1.2.1-1-g9c4c333",
+  "version": "v1.3.0-1-g5979bcd",
   "provider": {
+    "application_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The HTTP endpoint for the Oracle Application operations"
+    },
     "database_endpoint": {
       "Type": "String",
       "Optional": true,
@@ -53,6 +58,233 @@
     }
   },
   "resources": {
+    "oraclepaas_application_container": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "app_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "archive_url": {
+        "Type": "String",
+        "Optional": true
+      },
+      "auth_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "deployment": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "deployment_file"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "environment": {
+              "Type": "Map",
+              "Optional": true
+            },
+            "instances": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "java_system_properties": {
+              "Type": "Map",
+              "Optional": true
+            },
+            "memory": {
+              "Type": "String",
+              "Optional": true
+            },
+            "notes": {
+              "Type": "String",
+              "Optional": true
+            },
+            "secure_environment": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "services": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "identifier": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "password": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "username": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "deployment_file": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "deployment"
+        ]
+      },
+      "git_password": {
+        "Type": "String",
+        "Optional": true
+      },
+      "git_repository": {
+        "Type": "String",
+        "Optional": true
+      },
+      "git_username": {
+        "Type": "String",
+        "Optional": true
+      },
+      "manifest": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "manifest_file"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "clustered": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "command": {
+              "Type": "String",
+              "Optional": true
+            },
+            "health_check_endpoint": {
+              "Type": "String",
+              "Optional": true
+            },
+            "home": {
+              "Type": "String",
+              "Optional": true
+            },
+            "mode": {
+              "Type": "String",
+              "Optional": true
+            },
+            "notes": {
+              "Type": "String",
+              "Optional": true
+            },
+            "release": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "build": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "commit": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "version": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "runtime": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "major_version": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "shutdown_time": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "startup_time": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "type": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "manifest_file": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "manifest"
+        ]
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "notes": {
+        "Type": "String",
+        "Optional": true
+      },
+      "notification_email": {
+        "Type": "String",
+        "Optional": true
+      },
+      "runtime": {
+        "Type": "String",
+        "Optional": true
+      },
+      "subscription_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "web_url": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "oraclepaas_database_access_rule": {
       "__timeouts__": [
         "create",
@@ -519,6 +751,10 @@
         "create",
         "delete"
       ],
+      "assign_public_ip": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "availability_domain": {
         "Type": "String",
         "Optional": true
@@ -563,6 +799,10 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "desired_state": {
+        "Type": "String",
+        "Optional": true
       },
       "edition": {
         "Type": "String",
@@ -706,6 +946,10 @@
       "ssh_public_key": {
         "Type": "String",
         "Required": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
       },
       "subnet": {
         "Type": "String",

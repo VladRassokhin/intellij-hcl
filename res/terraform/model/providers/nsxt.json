@@ -1,7 +1,7 @@
 {
   "name": "nsxt",
   "type": "provider",
-  "version": "v1.0.0-236-g816bcb0",
+  "version": "v1.0.0-269-gd95c020",
   "provider": {
     "allow_unverified_ssl": {
       "Type": "Bool",
@@ -799,6 +799,62 @@
             }
           }
         }
+      }
+    },
+    "nsxt_ip_discovery_switching_profile": {
+      "arp_bindings_limit": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Limit for the amount of ARP bindings"
+      },
+      "arp_snooping_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Indicates whether ARP snooping is enabled"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of this resource"
+      },
+      "dhcp_snooping_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Indicates whether DHCP snooping is enabled"
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The display name of this resource. Defaults to ID if not set",
+        "Computed": true
+      },
+      "revision": {
+        "Type": "Int",
+        "Description": "The _revision property describes the current revision of the resource. To prevent clients from overwriting each other's changes, PUT operations must include the current _revision of the resource, which clients should obtain by issuing a GET operation. If the _revision provided in a PUT request is missing or stale, the operation will be rejected",
+        "Computed": true
+      },
+      "tag": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of opaque identifiers meaningful to the user",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "scope": {
+              "Type": "String",
+              "Required": true
+            },
+            "tag": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "vm_tools_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Indicating whether VM tools will be enabled. This option is only supported on ESX where vm-tools is installed"
       }
     },
     "nsxt_ip_pool": {
@@ -2573,7 +2629,7 @@
             "server_auth": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Server authentication mode (IGNORE/REQUIRED)"
+              "Description": "Server authentication mode"
             },
             "server_ssl_profile_id": {
               "Type": "String",
@@ -4299,6 +4355,16 @@
         "Optional": true,
         "Description": "Enable connected NSX routes advertisement"
       },
+      "advertise_lb_snat_ip_routes": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable LB SNAT IP routes advertisement"
+      },
+      "advertise_lb_vip_routes": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable LB VIP routes advertisement"
+      },
       "advertise_nat_routes": {
         "Type": "Bool",
         "Optional": true,
@@ -4362,6 +4428,77 @@
               "Type": "String",
               "Optional": true,
               "Description": "Type of the NSX resource"
+            }
+          }
+        }
+      },
+      "revision": {
+        "Type": "Int",
+        "Description": "The _revision property describes the current revision of the resource. To prevent clients from overwriting each other's changes, PUT operations must include the current _revision of the resource, which clients should obtain by issuing a GET operation. If the _revision provided in a PUT request is missing or stale, the operation will be rejected",
+        "Computed": true
+      },
+      "tag": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of opaque identifiers meaningful to the user",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "scope": {
+              "Type": "String",
+              "Required": true
+            },
+            "tag": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      }
+    },
+    "nsxt_mac_management_switching_profile": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of this resource"
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The display name of this resource. Defaults to ID if not set",
+        "Computed": true
+      },
+      "mac_change_allowed": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Allowing source MAC address change"
+      },
+      "mac_learning": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Allowing source MAC address learning"
+            },
+            "limit": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The maximum number of MAC addresses that can be learned on this port"
+            },
+            "limit_policy": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The policy after MAC Limit is exceeded"
+            },
+            "unicast_flooding_allowed": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Allowing flooding for unlearned MAC for ingress traffic"
             }
           }
         }
@@ -4562,6 +4699,233 @@
         }
       }
     },
+    "nsxt_ns_service_group": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of this resource"
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The display name of this resource. Defaults to ID if not set",
+        "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "Description": "List of NSService or NSServiceGroup resources that can be added as members to an NSServiceGroup",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "revision": {
+        "Type": "Int",
+        "Description": "The _revision property describes the current revision of the resource. To prevent clients from overwriting each other's changes, PUT operations must include the current _revision of the resource, which clients should obtain by issuing a GET operation. If the _revision provided in a PUT request is missing or stale, the operation will be rejected",
+        "Computed": true
+      },
+      "tag": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of opaque identifiers meaningful to the user",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "scope": {
+              "Type": "String",
+              "Required": true
+            },
+            "tag": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      }
+    },
+    "nsxt_qos_switching_profile": {
+      "class_of_service": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Class of service"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of this resource"
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The display name of this resource. Defaults to ID if not set",
+        "Computed": true
+      },
+      "dscp_priority": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "DSCP Priority"
+      },
+      "dscp_trusted": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Trust mode for DSCP"
+      },
+      "egress_rate_shaper": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "average_bw_mbps": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Average Bandwidth in mbps"
+            },
+            "burst_size": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Burst size in bytes"
+            },
+            "enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this rate shaper is enabled"
+            },
+            "peak_bw_mbps": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Peak Bandwidth in mbps"
+            }
+          }
+        }
+      },
+      "ingress_broadcast_rate_shaper": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "average_bw_kbps": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Average Bandwidth in kbps"
+            },
+            "burst_size": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Burst size in bytes"
+            },
+            "enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this rate shaper is enabled"
+            },
+            "peak_bw_kbps": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Peak Bandwidth in kbps"
+            }
+          }
+        }
+      },
+      "ingress_rate_shaper": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "average_bw_mbps": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Average Bandwidth in mbps"
+            },
+            "burst_size": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Burst size in bytes"
+            },
+            "enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether this rate shaper is enabled"
+            },
+            "peak_bw_mbps": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Peak Bandwidth in mbps"
+            }
+          }
+        }
+      },
+      "revision": {
+        "Type": "Int",
+        "Description": "The _revision property describes the current revision of the resource. To prevent clients from overwriting each other's changes, PUT operations must include the current _revision of the resource, which clients should obtain by issuing a GET operation. If the _revision provided in a PUT request is missing or stale, the operation will be rejected",
+        "Computed": true
+      },
+      "tag": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of opaque identifiers meaningful to the user",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "scope": {
+              "Type": "String",
+              "Required": true
+            },
+            "tag": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      }
+    },
+    "nsxt_spoofguard_switching_profile": {
+      "address_binding_whitelist_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "When true, this profile overrides the default system wide settings for Spoof Guard when assigned to ports"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of this resource"
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The display name of this resource. Defaults to ID if not set",
+        "Computed": true
+      },
+      "revision": {
+        "Type": "Int",
+        "Description": "The _revision property describes the current revision of the resource. To prevent clients from overwriting each other's changes, PUT operations must include the current _revision of the resource, which clients should obtain by issuing a GET operation. If the _revision provided in a PUT request is missing or stale, the operation will be rejected",
+        "Computed": true
+      },
+      "tag": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of opaque identifiers meaningful to the user",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "scope": {
+              "Type": "String",
+              "Required": true
+            },
+            "tag": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      }
+    },
     "nsxt_static_route": {
       "description": {
         "Type": "String",
@@ -4614,6 +4978,106 @@
               "Type": "String",
               "Optional": true,
               "Description": "Logical router port id"
+            }
+          }
+        }
+      },
+      "revision": {
+        "Type": "Int",
+        "Description": "The _revision property describes the current revision of the resource. To prevent clients from overwriting each other's changes, PUT operations must include the current _revision of the resource, which clients should obtain by issuing a GET operation. If the _revision provided in a PUT request is missing or stale, the operation will be rejected",
+        "Computed": true
+      },
+      "tag": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of opaque identifiers meaningful to the user",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "scope": {
+              "Type": "String",
+              "Required": true
+            },
+            "tag": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      }
+    },
+    "nsxt_switch_security_switching_profile": {
+      "block_client_dhcp": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Indicates whether DHCP client blocking is enabled"
+      },
+      "block_non_ip": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Block all traffic except IP/(G)ARP/BPDU"
+      },
+      "block_server_dhcp": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Indicates whether DHCP server blocking is enabled"
+      },
+      "bpdu_filter_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Indicates whether BPDU filter is enabled"
+      },
+      "bpdu_filter_whitelist": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of allowed MAC addresses to be excluded from BPDU filtering",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of this resource"
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The display name of this resource. Defaults to ID if not set",
+        "Computed": true
+      },
+      "rate_limits": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether rate limiting is enabled"
+            },
+            "rx_broadcast": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Incoming broadcast traffic limit in packets per second"
+            },
+            "rx_multicast": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Incoming multicast traffic limit in packets per second"
+            },
+            "tx_broadcast": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Outgoing broadcast traffic limit in packets per second"
+            },
+            "tx_multicast": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Outgoing multicast traffic limit in packets per second"
             }
           }
         }
@@ -4753,7 +5217,53 @@
         "Computed": true
       }
     },
+    "nsxt_logical_tier1_router": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of this resource",
+        "Computed": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The display name of this resource",
+        "Computed": true
+      },
+      "edge_cluster_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ID of the edge cluster connected to this router",
+        "Computed": true
+      },
+      "id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Unique ID of this resource",
+        "Computed": true
+      }
+    },
     "nsxt_mac_pool": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of this resource",
+        "Computed": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The display name of this resource",
+        "Computed": true
+      },
+      "id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Unique ID of this resource",
+        "Computed": true
+      }
+    },
+    "nsxt_ns_group": {
       "description": {
         "Type": "String",
         "Optional": true,

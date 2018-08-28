@@ -1,7 +1,7 @@
 {
   "name": "azurerm",
   "type": "provider",
-  "version": "v1.8.0-87-g956f1065",
+  "version": "v1.13.0-23-gdc324190",
   "provider": {
     "client_id": {
       "Type": "String",
@@ -184,6 +184,11 @@
               "Type": "String",
               "Optional": true
             },
+            "ftps_state": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
             "http2_enabled": {
               "Type": "Bool",
               "Optional": true
@@ -218,12 +223,22 @@
               "Type": "String",
               "Optional": true
             },
+            "linux_fx_version": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
             "local_mysql_enabled": {
               "Type": "Bool",
               "Optional": true,
               "Computed": true
             },
             "managed_pipeline_mode": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "min_tls_version": {
               "Type": "String",
               "Optional": true,
               "Computed": true
@@ -458,6 +473,28 @@
         "Type": "Bool",
         "Optional": true
       },
+      "identity": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tenant_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "location": {
         "Type": "String",
         "Required": true
@@ -494,6 +531,11 @@
               "Type": "String",
               "Optional": true
             },
+            "ftps_state": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
             "http2_enabled": {
               "Type": "Bool",
               "Optional": true
@@ -528,12 +570,22 @@
               "Type": "String",
               "Optional": true
             },
+            "linux_fx_version": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
             "local_mysql_enabled": {
               "Type": "Bool",
               "Optional": true,
               "Computed": true
             },
             "managed_pipeline_mode": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "min_tls_version": {
               "Type": "String",
               "Optional": true,
               "Computed": true
@@ -1345,6 +1397,39 @@
         "Optional": true,
         "Computed": true
       },
+      "month_days": {
+        "Type": "Set",
+        "Optional": true,
+        "ConflictsWith": [
+          "week_days",
+          "monthly_occurrence"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
+        }
+      },
+      "monthly_occurrence": {
+        "Type": "List",
+        "Optional": true,
+        "ConflictsWith": [
+          "week_days",
+          "month_days"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "day": {
+              "Type": "String",
+              "Required": true
+            },
+            "occurrence": {
+              "Type": "Int",
+              "Required": true
+            }
+          }
+        }
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -1361,6 +1446,274 @@
       "timezone": {
         "Type": "String",
         "Optional": true
+      },
+      "week_days": {
+        "Type": "Set",
+        "Optional": true,
+        "ConflictsWith": [
+          "month_days",
+          "monthly_occurrence"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "azurerm_autoscale_setting": {
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "notification": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "email": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "custom_emails": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "send_to_subscription_administrator": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "send_to_subscription_co_administrator": {
+                    "Type": "Bool",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "webhook": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "properties": {
+                    "Type": "Map",
+                    "Optional": true
+                  },
+                  "service_uri": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "profile": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 20,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "capacity": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "default": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "maximum": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "minimum": {
+                    "Type": "Int",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "fixed_date": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "start": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "timezone": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "recurrence": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "days": {
+                    "Type": "List",
+                    "Required": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "hours": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "Int"
+                    }
+                  },
+                  "minutes": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "Int"
+                    }
+                  },
+                  "timezone": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "rule": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 10,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "metric_trigger": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "metric_name": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "metric_resource_id": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "operator": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "statistic": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "threshold": {
+                          "Type": "Float",
+                          "Required": true
+                        },
+                        "time_aggregation": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "time_grain": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "time_window": {
+                          "Type": "String",
+                          "Required": true
+                        }
+                      }
+                    }
+                  },
+                  "scale_action": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "cooldown": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "direction": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "type": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "value": {
+                          "Type": "Int",
+                          "Required": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true
+      },
+      "target_resource_id": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_availability_set": {
@@ -1392,6 +1745,82 @@
         "Type": "Map",
         "Optional": true,
         "Computed": true
+      }
+    },
+    "azurerm_azuread_application": {
+      "application_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "available_to_other_tenants": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "homepage": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "identifier_uris": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "oauth2_allow_implicit_flow": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "reply_urls": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "azurerm_azuread_service_principal": {
+      "application_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "azurerm_azuread_service_principal_password": {
+      "end_date": {
+        "Type": "String",
+        "Required": true
+      },
+      "key_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "service_principal_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "start_date": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "value": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_cdn_endpoint": {
@@ -1547,7 +1976,18 @@
           "Info": {
             "command": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Computed": true,
+              "Deprecated": "Use `commands` instead."
+            },
+            "commands": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
             },
             "cpu": {
               "Type": "Float",
@@ -1620,6 +2060,27 @@
       "fqdn": {
         "Type": "String",
         "Computed": true
+      },
+      "image_registry_credential": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "password": {
+              "Type": "String",
+              "Required": true
+            },
+            "server": {
+              "Type": "String",
+              "Required": true
+            },
+            "username": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       },
       "ip_address": {
         "Type": "String",
@@ -2025,7 +2486,11 @@
         }
       }
     },
-    "azurerm_data_lake_store": {
+    "azurerm_data_lake_analytics_account": {
+      "default_store_account_name": {
+        "Type": "String",
+        "Required": true
+      },
       "location": {
         "Type": "String",
         "Required": true
@@ -2046,6 +2511,82 @@
       "tier": {
         "Type": "String",
         "Optional": true
+      }
+    },
+    "azurerm_data_lake_analytics_firewall_rule": {
+      "account_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "end_ip_address": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "start_ip_address": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_data_lake_store": {
+      "encryption_state": {
+        "Type": "String",
+        "Optional": true
+      },
+      "encryption_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "firewall_allow_azure_ips": {
+        "Type": "String",
+        "Optional": true
+      },
+      "firewall_state": {
+        "Type": "String",
+        "Optional": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true
+      },
+      "tier": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "azurerm_data_lake_store_file": {
+      "account_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "local_file_path": {
+        "Type": "String",
+        "Required": true
+      },
+      "remote_file_path": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azurerm_data_lake_store_firewall_rule": {
@@ -2719,6 +3260,53 @@
         "Computed": true
       }
     },
+    "azurerm_eventhub_namespace_authorization_rule": {
+      "listen": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Deprecated": "location is no longer used"
+      },
+      "manage": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "namespace_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "primary_connection_string": {
+        "Type": "String",
+        "Computed": true
+      },
+      "primary_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "secondary_connection_string": {
+        "Type": "String",
+        "Computed": true
+      },
+      "secondary_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "send": {
+        "Type": "Bool",
+        "Optional": true
+      }
+    },
     "azurerm_express_route_circuit": {
       "allow_classic_operations": {
         "Type": "Bool",
@@ -2977,6 +3565,24 @@
           }
         }
       },
+      "site_credential": {
+        "Type": "List",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "password": {
+              "Type": "String",
+              "Computed": true
+            },
+            "username": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "storage_connection_string": {
         "Type": "String",
         "Required": true
@@ -3083,6 +3689,63 @@
       }
     },
     "azurerm_iothub": {
+      "endpoint": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "batch_frequency_in_seconds": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "connection_string": {
+              "Type": "String",
+              "Required": true
+            },
+            "container_name": {
+              "Type": "String",
+              "Optional": true
+            },
+            "encoding": {
+              "Type": "String",
+              "Optional": true
+            },
+            "file_name_format": {
+              "Type": "String",
+              "Optional": true
+            },
+            "max_chunk_size_in_bytes": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "event_hub_events_endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "event_hub_events_path": {
+        "Type": "String",
+        "Computed": true
+      },
+      "event_hub_operations_endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "event_hub_operations_path": {
+        "Type": "String",
+        "Computed": true
+      },
       "hostname": {
         "Type": "String",
         "Computed": true
@@ -3098,6 +3761,39 @@
       "resource_group_name": {
         "Type": "String",
         "Required": true
+      },
+      "route": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "condition": {
+              "Type": "String",
+              "Optional": true
+            },
+            "enabled": {
+              "Type": "Bool",
+              "Required": true
+            },
+            "endpoint_names": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "source": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       },
       "shared_access_policy": {
         "Type": "List",
@@ -3555,6 +4251,53 @@
       }
     },
     "azurerm_kubernetes_cluster": {
+      "addon_profile": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "http_application_routing": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Required": true
+                  },
+                  "http_application_routing_zone_name": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "oms_agent": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Required": true
+                  },
+                  "log_analytics_workspace_id": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "agent_pool_profile": {
         "Type": "List",
         "Required": true,
@@ -3574,6 +4317,11 @@
               "Type": "String",
               "Computed": true,
               "Deprecated": "This field has been deprecated. Use the parent `fqdn` instead"
+            },
+            "max_pods": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
             },
             "name": {
               "Type": "String",
@@ -3683,6 +4431,45 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "network_profile": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "dns_service_ip": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "docker_bridge_cidr": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "network_plugin": {
+              "Type": "String",
+              "Required": true
+            },
+            "pod_cidr": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "service_cidr": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
+      "node_resource_group": {
+        "Type": "String",
+        "Computed": true
       },
       "resource_group_name": {
         "Type": "String",
@@ -4189,6 +4976,135 @@
         "Computed": true
       }
     },
+    "azurerm_logic_app_action_custom": {
+      "body": {
+        "Type": "String",
+        "Required": true
+      },
+      "logic_app_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_logic_app_action_http": {
+      "body": {
+        "Type": "String",
+        "Optional": true
+      },
+      "headers": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "logic_app_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "method": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "uri": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_logic_app_trigger_custom": {
+      "body": {
+        "Type": "String",
+        "Required": true
+      },
+      "logic_app_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_logic_app_trigger_http_request": {
+      "logic_app_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "method": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "relative_path": {
+        "Type": "String",
+        "Optional": true
+      },
+      "schema": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_logic_app_trigger_recurrence": {
+      "frequency": {
+        "Type": "String",
+        "Required": true
+      },
+      "interval": {
+        "Type": "Int",
+        "Required": true
+      },
+      "logic_app_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_logic_app_workflow": {
+      "access_endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "parameters": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true
+      },
+      "workflow_schema": {
+        "Type": "String",
+        "Optional": true
+      },
+      "workflow_version": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
     "azurerm_managed_disk": {
       "create_option": {
         "Type": "String",
@@ -4407,6 +5323,84 @@
                 "Type": "SchemaElements",
                 "ElementsType": "String"
               }
+            },
+            "service_uri": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      }
+    },
+    "azurerm_monitor_action_group": {
+      "email_receiver": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "email_address": {
+              "Type": "String",
+              "Required": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "short_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "sms_receiver": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "country_code": {
+              "Type": "String",
+              "Required": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "phone_number": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true
+      },
+      "webhook_receiver": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
             },
             "service_uri": {
               "Type": "String",
@@ -4863,6 +5857,7 @@
       "destination_application_security_group_ids": {
         "Type": "Set",
         "Optional": true,
+        "MaxItems": 1,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -4931,6 +5926,7 @@
       "source_application_security_group_ids": {
         "Type": "Set",
         "Optional": true,
+        "MaxItems": 1,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -4972,6 +5968,146 @@
         "Type": "Map",
         "Optional": true,
         "Computed": true
+      }
+    },
+    "azurerm_notification_hub": {
+      "apns_credential": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "application_mode": {
+              "Type": "String",
+              "Required": true
+            },
+            "bundle_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "key_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "team_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "token": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "gcm_credential": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "api_key": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "namespace_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_notification_hub_authorization_rule": {
+      "listen": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "manage": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "namespace_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "notification_hub_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "primary_access_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "secondary_access_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "send": {
+        "Type": "Bool",
+        "Optional": true
+      }
+    },
+    "azurerm_notification_hub_namespace": {
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "namespace_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "servicebus_endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "sku": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       }
     },
     "azurerm_packet_capture": {
@@ -6244,6 +7380,211 @@
         "Computed": true
       }
     },
+    "azurerm_service_fabric_cluster": {
+      "add_on_features": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "certificate": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "thumbprint": {
+              "Type": "String",
+              "Required": true
+            },
+            "thumbprint_secondary": {
+              "Type": "String",
+              "Optional": true
+            },
+            "x509_store_name": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "client_certificate_thumbprint": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "is_admin": {
+              "Type": "Bool",
+              "Required": true
+            },
+            "thumbprint": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "cluster_endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "diagnostics_config": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "blob_endpoint": {
+              "Type": "String",
+              "Required": true
+            },
+            "protected_account_key_name": {
+              "Type": "String",
+              "Required": true
+            },
+            "queue_endpoint": {
+              "Type": "String",
+              "Required": true
+            },
+            "storage_account_name": {
+              "Type": "String",
+              "Required": true
+            },
+            "table_endpoint": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "fabric_settings": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "parameters": {
+              "Type": "Map",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "management_endpoint": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "node_type": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "application_ports": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "start_port": {
+                    "Type": "Int",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "client_endpoint_port": {
+              "Type": "Int",
+              "Required": true
+            },
+            "durability_level": {
+              "Type": "String",
+              "Optional": true
+            },
+            "ephemeral_ports": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "start_port": {
+                    "Type": "Int",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "http_endpoint_port": {
+              "Type": "Int",
+              "Required": true
+            },
+            "instance_count": {
+              "Type": "Int",
+              "Required": true
+            },
+            "is_primary": {
+              "Type": "Bool",
+              "Required": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "reliability_level": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true
+      },
+      "upgrade_mode": {
+        "Type": "String",
+        "Required": true
+      },
+      "vm_image": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurerm_servicebus_namespace": {
       "capacity": {
         "Type": "Int",
@@ -6401,6 +7742,52 @@
         "Type": "Bool",
         "Optional": true,
         "Deprecated": "This field has been removed by Azure."
+      }
+    },
+    "azurerm_servicebus_queue_authorization_rule": {
+      "listen": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "manage": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "namespace_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "primary_connection_string": {
+        "Type": "String",
+        "Computed": true
+      },
+      "primary_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "queue_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "secondary_connection_string": {
+        "Type": "String",
+        "Computed": true
+      },
+      "secondary_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "send": {
+        "Type": "Bool",
+        "Optional": true
       }
     },
     "azurerm_servicebus_subscription": {
@@ -7708,7 +9095,7 @@
                 "Info": {
                   "key_data": {
                     "Type": "String",
-                    "Optional": true
+                    "Required": true
                   },
                   "path": {
                     "Type": "String",
@@ -8484,7 +9871,7 @@
         "Optional": true
       },
       "sku": {
-        "Type": "Set",
+        "Type": "List",
         "Required": true,
         "MaxItems": 1,
         "Elem": {
@@ -9103,6 +10490,11 @@
               "Type": "String",
               "Optional": true
             },
+            "ftps_state": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
             "http2_enabled": {
               "Type": "Bool",
               "Optional": true
@@ -9137,12 +10529,22 @@
               "Type": "String",
               "Optional": true
             },
+            "linux_fx_version": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
             "local_mysql_enabled": {
               "Type": "Bool",
               "Optional": true,
               "Computed": true
             },
             "managed_pipeline_mode": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "min_tls_version": {
               "Type": "String",
               "Optional": true,
               "Computed": true
@@ -9306,6 +10708,85 @@
         "Computed": true
       }
     },
+    "azurerm_azuread_application": {
+      "application_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "available_to_other_tenants": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "homepage": {
+        "Type": "String",
+        "Computed": true
+      },
+      "identifier_uris": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "object_id"
+        ]
+      },
+      "oauth2_allow_implicit_flow": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "object_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "name"
+        ]
+      },
+      "reply_urls": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "azurerm_azuread_service_principal": {
+      "application_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "object_id",
+          "display_name"
+        ]
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "object_id",
+          "application_id"
+        ]
+      },
+      "object_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "display_name",
+          "application_id"
+        ]
+      }
+    },
     "azurerm_builtin_role_definition": {
       "assignable_scopes": {
         "Type": "List",
@@ -9393,6 +10874,44 @@
         "Computed": true
       },
       "tenant_id": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "azurerm_container_registry": {
+      "admin_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "admin_password": {
+        "Type": "String",
+        "Computed": true
+      },
+      "admin_username": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "login_server": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "sku": {
+        "Type": "String",
+        "Computed": true
+      },
+      "storage_account_id": {
         "Type": "String",
         "Computed": true
       }
@@ -9523,6 +11042,22 @@
       }
     },
     "azurerm_data_lake_store": {
+      "encryption_state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "encryption_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "firewall_allow_azure_ips": {
+        "Type": "String",
+        "Computed": true
+      },
+      "firewall_state": {
+        "Type": "String",
+        "Computed": true
+      },
       "location": {
         "Type": "String",
         "Computed": true
@@ -9892,6 +11427,49 @@
       }
     },
     "azurerm_kubernetes_cluster": {
+      "addon_profile": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "http_application_routing": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Computed": true
+                  },
+                  "http_application_routing_zone_name": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "oms_agent": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "enabled": {
+                    "Type": "Bool",
+                    "Computed": true
+                  },
+                  "log_analytics_workspace_id": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "agent_pool_profile": {
         "Type": "List",
         "Computed": true,
@@ -9904,6 +11482,10 @@
             },
             "dns_prefix": {
               "Type": "String",
+              "Computed": true
+            },
+            "max_pods": {
+              "Type": "Int",
               "Computed": true
             },
             "name": {
@@ -10012,6 +11594,39 @@
         "Type": "String",
         "Required": true
       },
+      "network_profile": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "dns_service_ip": {
+              "Type": "String",
+              "Computed": true
+            },
+            "docker_bridge_cidr": {
+              "Type": "String",
+              "Computed": true
+            },
+            "network_plugin": {
+              "Type": "String",
+              "Computed": true
+            },
+            "pod_cidr": {
+              "Type": "String",
+              "Computed": true
+            },
+            "service_cidr": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "node_resource_group": {
+        "Type": "String",
+        "Computed": true
+      },
       "resource_group_name": {
         "Type": "String",
         "Required": true
@@ -10031,6 +11646,82 @@
       },
       "tags": {
         "Type": "Map",
+        "Computed": true
+      }
+    },
+    "azurerm_log_analytics_workspace": {
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "portal_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "primary_shared_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "retention_in_days": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "secondary_shared_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "sku": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "workspace_id": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "azurerm_logic_app_workflow": {
+      "access_endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "parameters": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "workflow_schema": {
+        "Type": "String",
+        "Computed": true
+      },
+      "workflow_version": {
+        "Type": "String",
         "Computed": true
       }
     },
@@ -10322,6 +12013,105 @@
       "tags": {
         "Type": "Map",
         "Computed": true
+      }
+    },
+    "azurerm_notification_hub": {
+      "apns_credential": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "application_mode": {
+              "Type": "String",
+              "Computed": true
+            },
+            "bundle_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "key_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "team_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "token": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "gcm_credential": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "api_key": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "namespace_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azurerm_notification_hub_namespace": {
+      "enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "namespace_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "servicebus_endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "sku": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
       }
     },
     "azurerm_platform_image": {

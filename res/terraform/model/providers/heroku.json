@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "type": "provider",
-  "version": "v1.0.2-1-g4fb1c82",
+  "version": "v1.3.0-5-g694ad19",
   "provider": {
     "api_key": {
       "Type": "String",
@@ -98,6 +98,11 @@
       },
       "heroku_hostname": {
         "Type": "String",
+        "Computed": true
+      },
+      "internal_routing": {
+        "Type": "Bool",
+        "Optional": true,
         "Computed": true
       },
       "name": {
@@ -293,10 +298,53 @@
         "Type": "Set",
         "Optional": true,
         "Computed": true,
+        "Deprecated": "This attribute is deprecated in favor of heroku_space_inbound_ruleset. Using both at the same time will likely cause unexpected behavior.",
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "heroku_space_app_access": {
+      "email": {
+        "Type": "String",
+        "Required": true
+      },
+      "permissions": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "space": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "heroku_space_inbound_ruleset": {
+      "rule": {
+        "Type": "Set",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "String",
+              "Required": true
+            },
+            "source": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "space": {
+        "Type": "String",
+        "Required": true
       }
     },
     "heroku_space_peering_connection_accepter": {
@@ -315,6 +363,56 @@
       "vpc_peering_connection_id": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "heroku_space_vpn_connection": {
+      "ike_version": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "public_ip": {
+        "Type": "String",
+        "Required": true
+      },
+      "routable_cidrs": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "space": {
+        "Type": "String",
+        "Required": true
+      },
+      "space_cidr_block": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tunnels": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "pre_shared_key": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
       }
     },
     "heroku_team_collaborator": {
@@ -362,6 +460,10 @@
       },
       "heroku_hostname": {
         "Type": "String",
+        "Computed": true
+      },
+      "internal_routing": {
+        "Type": "Bool",
         "Computed": true
       },
       "name": {
@@ -474,7 +576,7 @@
         }
       },
       "vpc_cidr": {
-        "Type": "Bool",
+        "Type": "String",
         "Computed": true
       },
       "vpc_id": {

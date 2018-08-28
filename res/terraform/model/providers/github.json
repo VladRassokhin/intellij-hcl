@@ -1,7 +1,7 @@
 {
   "name": "github",
   "type": "provider",
-  "version": "v1.1.0-9-g2b79554",
+  "version": "v1.2.1-1-gd357d69",
   "provider": {
     "base_url": {
       "Type": "String",
@@ -10,6 +10,11 @@
       "Default": {
         "Type": "string"
       }
+    },
+    "insecure": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "Whether server should be accessed without verifying the TLS certificate."
     },
     "organization": {
       "Type": "String",
@@ -134,6 +139,10 @@
         "Type": "String",
         "Required": true
       },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -157,14 +166,50 @@
         "Required": true
       }
     },
+    "github_organization_project": {
+      "body": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "github_organization_webhook": {
       "active": {
         "Type": "Bool",
         "Optional": true
       },
       "configuration": {
-        "Type": "Map",
-        "Optional": true
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "content_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "insecure_ssl": {
+              "Type": "String",
+              "Optional": true
+            },
+            "secret": {
+              "Type": "String",
+              "Optional": true
+            },
+            "url": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       },
       "events": {
         "Type": "Set",
@@ -275,7 +320,7 @@
         "Computed": true
       },
       "topics": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaElements",
@@ -315,14 +360,54 @@
         "Required": true
       }
     },
+    "github_repository_project": {
+      "body": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "repository": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "github_repository_webhook": {
       "active": {
         "Type": "Bool",
         "Optional": true
       },
       "configuration": {
-        "Type": "Map",
-        "Optional": true
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "content_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "insecure_ssl": {
+              "Type": "String",
+              "Optional": true
+            },
+            "secret": {
+              "Type": "String",
+              "Optional": true
+            },
+            "url": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       },
       "events": {
         "Type": "Set",
@@ -365,6 +450,10 @@
       "privacy": {
         "Type": "String",
         "Optional": true
+      },
+      "slug": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "github_team_membership": {
@@ -394,6 +483,30 @@
         "Type": "String",
         "Required": true
       }
+    },
+    "github_user_gpg_key": {
+      "armored_public_key": {
+        "Type": "String",
+        "Required": true
+      },
+      "key_id": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "github_user_ssh_key": {
+      "key": {
+        "Type": "String",
+        "Required": true
+      },
+      "title": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Computed": true
+      }
     }
   },
   "data-sources": {
@@ -414,7 +527,129 @@
           "ElementsType": "String"
         }
       },
+      "importer": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "pages": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "github_repositories": {
+      "full_names": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "names": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "query": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "github_repository": {
+      "allow_merge_commit": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "allow_rebase_merge": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "allow_squash_merge": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "archived": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "default_branch": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "full_name": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "name"
+        ]
+      },
+      "git_clone_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "has_downloads": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "has_issues": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "has_projects": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "has_wiki": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "homepage_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "html_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "http_clone_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "full_name"
+        ]
+      },
+      "private": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "ssh_clone_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "svn_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "topics": {
         "Type": "List",
         "Computed": true,
         "Elem": {

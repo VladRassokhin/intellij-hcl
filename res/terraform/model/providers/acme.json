@@ -1,0 +1,118 @@
+{
+  "name": "acme",
+  "type": "provider",
+  "version": "v1.0.1-1-gdb2ccb4",
+  "provider": {
+    "server_url": {
+      "Type": "String",
+      "Required": true
+    }
+  },
+  "resources": {
+    "acme_certificate": {
+      "account_key_pem": {
+        "Type": "String",
+        "Required": true
+      },
+      "account_ref": {
+        "Type": "String",
+        "Computed": true
+      },
+      "certificate_domain": {
+        "Type": "String",
+        "Computed": true
+      },
+      "certificate_pem": {
+        "Type": "String",
+        "Computed": true
+      },
+      "certificate_request_pem": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "common_name",
+          "subject_alternative_names",
+          "key_type"
+        ]
+      },
+      "certificate_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "common_name": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "certificate_request_pem"
+        ]
+      },
+      "dns_challenge": {
+        "Type": "Set",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "config": {
+              "Type": "Map",
+              "Optional": true
+            },
+            "provider": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "issuer_pem": {
+        "Type": "String",
+        "Computed": true
+      },
+      "key_type": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "certificate_request_pem"
+        ]
+      },
+      "min_days_remaining": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "must_staple": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "private_key_pem": {
+        "Type": "String",
+        "Computed": true
+      },
+      "subject_alternative_names": {
+        "Type": "Set",
+        "Optional": true,
+        "ConflictsWith": [
+          "certificate_request_pem"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "acme_registration": {
+      "account_key_pem": {
+        "Type": "String",
+        "Required": true
+      },
+      "email_address": {
+        "Type": "String",
+        "Required": true
+      },
+      "registration_url": {
+        "Type": "String",
+        "Computed": true
+      }
+    }
+  },
+  "data-sources": {}
+}

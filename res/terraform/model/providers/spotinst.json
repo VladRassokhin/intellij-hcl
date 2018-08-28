@@ -1,7 +1,7 @@
 {
   "name": "spotinst",
   "type": "provider",
-  "version": "v1.1.1-1-g66718a9",
+  "version": "v1.3.0-1-gdf52edc",
   "provider": {
     "account": {
       "Type": "String",
@@ -73,6 +73,10 @@
             },
             "iops": {
               "Type": "Int",
+              "Optional": true
+            },
+            "kms_key_id": {
+              "Type": "String",
               "Optional": true
             },
             "snapshot_id": {
@@ -161,6 +165,14 @@
         "Type": "String",
         "Required": true
       },
+      "instance_types_preferred_spot": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "instance_types_spot": {
         "Type": "List",
         "Required": true,
@@ -228,6 +240,23 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "autoscale_attributes": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "key": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "value": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
             "autoscale_cooldown": {
               "Type": "Int",
               "Optional": true
@@ -269,6 +298,10 @@
               }
             },
             "autoscale_is_enabled": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "autoscale_scale_down_non_service_tasks": {
               "Type": "Bool",
               "Optional": true
             },
@@ -361,6 +394,23 @@
             "autoscale_is_enabled": {
               "Type": "Bool",
               "Optional": true
+            },
+            "autoscale_labels": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "key": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "value": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
             },
             "cluster_identifier": {
               "Type": "String",
@@ -506,6 +556,46 @@
             "secret_key": {
               "Type": "String",
               "Required": true
+            }
+          }
+        }
+      },
+      "integration_route53": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "domains": {
+              "Type": "Set",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "hosted_zone_id": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "record_sets": {
+                    "Type": "Set",
+                    "Required": true,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "name": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "use_public_ip": {
+                          "Type": "Bool",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }

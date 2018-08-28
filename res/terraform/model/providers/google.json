@@ -1,7 +1,7 @@
 {
   "name": "google",
   "type": "provider",
-  "version": "v1.15.0-47-g5be332e",
+  "version": "v1.17.1-10-gf1f0bc9",
   "provider": {
     "credentials": {
       "Type": "String",
@@ -50,7 +50,8 @@
         "Type": "Map",
         "Optional": true,
         "Elem": {
-          "Value": "String"
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       },
       "last_modified_time": {
@@ -101,7 +102,8 @@
         "Type": "Map",
         "Optional": true,
         "Elem": {
-          "Value": "String"
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       },
       "last_modified_time": {
@@ -247,6 +249,139 @@
         }
       }
     },
+    "google_binary_authorization_attestor": {
+      "attestation_authority_note": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "delegation_service_account_email": {
+              "Type": "String",
+              "Computed": true
+            },
+            "note_reference": {
+              "Type": "String",
+              "Required": true
+            },
+            "public_keys": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "ascii_armored_pgp_public_key": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "comment": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "id": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "google_binary_authorization_policy": {
+      "admission_whitelist_patterns": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name_pattern": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "cluster_admission_rules": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cluster": {
+              "Type": "String",
+              "Required": true
+            },
+            "enforcement_mode": {
+              "Type": "String",
+              "Optional": true
+            },
+            "evaluation_mode": {
+              "Type": "String",
+              "Optional": true
+            },
+            "require_attestations_by": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "default_admission_rule": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enforcement_mode": {
+              "Type": "String",
+              "Required": true
+            },
+            "evaluation_mode": {
+              "Type": "String",
+              "Required": true
+            },
+            "require_attestations_by": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "google_cloudbuild_trigger": {
       "__timeouts__": [
         "create",
@@ -311,6 +446,14 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "substitutions": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "trigger_template": {
         "Type": "List",
@@ -530,6 +673,7 @@
     "google_compute_address": {
       "__timeouts__": [
         "create",
+        "update",
         "delete"
       ],
       "address": {
@@ -548,6 +692,18 @@
       "description": {
         "Type": "String",
         "Optional": true
+      },
+      "label_fingerprint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "name": {
         "Type": "String",
@@ -1078,6 +1234,11 @@
       }
     },
     "google_compute_firewall": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
       "allow": {
         "Type": "Set",
         "Optional": true,
@@ -1101,6 +1262,10 @@
             }
           }
         }
+      },
+      "creation_timestamp": {
+        "Type": "String",
+        "Computed": true
       },
       "deny": {
         "Type": "Set",
@@ -1335,6 +1500,7 @@
     "google_compute_global_address": {
       "__timeouts__": [
         "create",
+        "update",
         "delete"
       ],
       "address": {
@@ -1352,6 +1518,18 @@
       "ip_version": {
         "Type": "String",
         "Optional": true
+      },
+      "label_fingerprint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "name": {
         "Type": "String",
@@ -1426,9 +1604,18 @@
       }
     },
     "google_compute_health_check": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
       "check_interval_sec": {
         "Type": "Int",
         "Optional": true
+      },
+      "creation_timestamp": {
+        "Type": "String",
+        "Computed": true
       },
       "description": {
         "Type": "String",
@@ -1443,9 +1630,9 @@
         "Optional": true,
         "MaxItems": 1,
         "ConflictsWith": [
+          "https_health_check",
           "tcp_health_check",
-          "ssl_health_check",
-          "https_health_check"
+          "ssl_health_check"
         ],
         "Elem": {
           "Type": "SchemaInfo",
@@ -1474,9 +1661,9 @@
         "Optional": true,
         "MaxItems": 1,
         "ConflictsWith": [
+          "http_health_check",
           "tcp_health_check",
-          "ssl_health_check",
-          "http_health_check"
+          "ssl_health_check"
         ],
         "Elem": {
           "Type": "SchemaInfo",
@@ -1518,9 +1705,9 @@
         "Optional": true,
         "MaxItems": 1,
         "ConflictsWith": [
-          "tcp_health_check",
           "http_health_check",
-          "https_health_check"
+          "https_health_check",
+          "tcp_health_check"
         ],
         "Elem": {
           "Type": "SchemaInfo",
@@ -1549,9 +1736,9 @@
         "Optional": true,
         "MaxItems": 1,
         "ConflictsWith": [
-          "ssl_health_check",
           "http_health_check",
-          "https_health_check"
+          "https_health_check",
+          "ssl_health_check"
         ],
         "Elem": {
           "Type": "SchemaInfo",
@@ -1578,6 +1765,10 @@
       "timeout_sec": {
         "Type": "Int",
         "Optional": true
+      },
+      "type": {
+        "Type": "String",
+        "Computed": true
       },
       "unhealthy_threshold": {
         "Type": "Int",
@@ -1722,6 +1913,15 @@
       "labels": {
         "Type": "Map",
         "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "licenses": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -1977,7 +2177,8 @@
         "Type": "Map",
         "Optional": true,
         "Elem": {
-          "Value": "String"
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       },
       "metadata_fingerprint": {
@@ -2367,7 +2568,8 @@
         "Optional": true,
         "Computed": true,
         "Elem": {
-          "Value": "String"
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       },
       "metadata_fingerprint": {
@@ -3170,7 +3372,8 @@
         "Type": "Map",
         "Required": true,
         "Elem": {
-          "Value": "String"
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       },
       "project": {
@@ -3377,6 +3580,130 @@
         "Computed": true
       }
     },
+    "google_compute_region_disk": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "creation_timestamp": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "disk_encryption_key": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "raw_key": {
+              "Type": "String",
+              "Optional": true
+            },
+            "sha256": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "label_fingerprint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "last_attach_timestamp": {
+        "Type": "String",
+        "Computed": true
+      },
+      "last_detach_timestamp": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "replica_zones": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 2,
+        "MinItems": 2,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "self_link": {
+        "Type": "String",
+        "Computed": true
+      },
+      "size": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "snapshot": {
+        "Type": "String",
+        "Optional": true
+      },
+      "source_snapshot_encryption_key": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "raw_key": {
+              "Type": "String",
+              "Optional": true
+            },
+            "sha256": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "source_snapshot_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "users": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "google_compute_region_instance_group_manager": {
       "__timeouts__": [
         "create",
@@ -3428,7 +3755,7 @@
       },
       "instance_template": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -3531,6 +3858,42 @@
         "Type": "String",
         "Optional": true
       },
+      "version": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "instance_template": {
+              "Type": "String",
+              "Required": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "target_size": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "fixed": {
+                    "Type": "Int",
+                    "Optional": true
+                  },
+                  "percent": {
+                    "Type": "Int",
+                    "Optional": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "wait_for_instances": {
         "Type": "Bool",
         "Optional": true
@@ -3604,19 +3967,57 @@
       }
     },
     "google_compute_router": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
       "bgp": {
         "Type": "List",
-        "Required": true,
+        "Optional": true,
         "MaxItems": 1,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "advertise_mode": {
+              "Type": "String",
+              "Optional": true
+            },
+            "advertised_groups": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "advertised_ip_ranges": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "description": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "range": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            },
             "asn": {
               "Type": "Int",
               "Required": true
             }
           }
         }
+      },
+      "creation_timestamp": {
+        "Type": "String",
+        "Computed": true
       },
       "description": {
         "Type": "String",
@@ -4032,6 +4433,7 @@
       "secondary_ip_range": {
         "Type": "List",
         "Optional": true,
+        "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -4620,6 +5022,41 @@
         "Required": true
       }
     },
+    "google_container_analysis_note": {
+      "attestation_authority": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "hint": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "human_readable_name": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "google_container_cluster": {
       "__timeouts__": [
         "create",
@@ -4713,6 +5150,10 @@
       },
       "description": {
         "Type": "String",
+        "Optional": true
+      },
+      "enable_binary_authorization": {
+        "Type": "Bool",
         "Optional": true
       },
       "enable_kubernetes_alpha": {
@@ -4953,7 +5394,8 @@
               "Type": "Map",
               "Optional": true,
               "Elem": {
-                "Value": "String"
+                "Type": "SchemaElements",
+                "ElementsType": "String"
               }
             },
             "local_ssd_count": {
@@ -4970,7 +5412,8 @@
               "Type": "Map",
               "Optional": true,
               "Elem": {
-                "Value": "String"
+                "Type": "SchemaElements",
+                "ElementsType": "String"
               }
             },
             "min_cpu_platform": {
@@ -5154,7 +5597,8 @@
                     "Type": "Map",
                     "Optional": true,
                     "Elem": {
-                      "Value": "String"
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
                     }
                   },
                   "local_ssd_count": {
@@ -5171,7 +5615,8 @@
                     "Type": "Map",
                     "Optional": true,
                     "Elem": {
-                      "Value": "String"
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
                     }
                   },
                   "min_cpu_platform": {
@@ -5299,7 +5744,8 @@
         "Type": "Map",
         "Optional": true,
         "Elem": {
-          "Value": "String"
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       },
       "subnetwork": {
@@ -5432,7 +5878,8 @@
               "Type": "Map",
               "Optional": true,
               "Elem": {
-                "Value": "String"
+                "Type": "SchemaElements",
+                "ElementsType": "String"
               }
             },
             "local_ssd_count": {
@@ -5449,7 +5896,8 @@
               "Type": "Map",
               "Optional": true,
               "Elem": {
-                "Value": "String"
+                "Type": "SchemaElements",
+                "ElementsType": "String"
               }
             },
             "min_cpu_platform": {
@@ -5622,7 +6070,8 @@
                     "Type": "Map",
                     "Optional": true,
                     "Elem": {
-                      "Value": "String"
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
                     }
                   },
                   "network": {
@@ -5706,6 +6155,10 @@
                           "Type": "Int",
                           "Optional": true,
                           "Computed": true
+                        },
+                        "boot_disk_type": {
+                          "Type": "String",
+                          "Optional": true
                         },
                         "num_local_ssds": {
                           "Type": "Int",
@@ -5793,7 +6246,8 @@
                     "Type": "Map",
                     "Optional": true,
                     "Elem": {
-                      "Value": "String"
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
                     }
                   },
                   "properties": {
@@ -5827,6 +6281,10 @@
                           "Type": "Int",
                           "Optional": true,
                           "Computed": true
+                        },
+                        "boot_disk_type": {
+                          "Type": "String",
+                          "Optional": true
                         },
                         "num_local_ssds": {
                           "Type": "Int",
@@ -5865,7 +6323,8 @@
         "Optional": true,
         "Computed": true,
         "Elem": {
-          "Value": "String"
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       },
       "name": {
@@ -6891,6 +7350,10 @@
       "rotation_period": {
         "Type": "String",
         "Optional": true
+      },
+      "self_link": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "google_kms_crypto_key_iam_binding": {
@@ -6945,6 +7408,10 @@
       "project": {
         "Type": "String",
         "Optional": true,
+        "Computed": true
+      },
+      "self_link": {
+        "Type": "String",
         "Computed": true
       }
     },
@@ -7864,7 +8331,8 @@
               "Type": "Map",
               "Optional": true,
               "Elem": {
-                "Value": "String"
+                "Type": "SchemaElements",
+                "ElementsType": "String"
               }
             },
             "push_endpoint": {
@@ -8036,7 +8504,8 @@
       ],
       "alternative_location_id": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "authorized_network": {
         "Type": "String",
@@ -8997,6 +9466,20 @@
           }
         }
       },
+      "encryption": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "default_kms_key_name": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "force_destroy": {
         "Type": "Bool",
         "Optional": true
@@ -9312,7 +9795,8 @@
       },
       "role_entity": {
         "Type": "List",
-        "Required": true,
+        "Optional": true,
+        "Computed": true,
         "MinItems": 1,
         "Elem": {
           "Type": "SchemaElements",
@@ -9374,6 +9858,7 @@
       "role_entity": {
         "Type": "List",
         "Optional": true,
+        "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -10332,6 +10817,10 @@
         "Type": "String",
         "Computed": true
       },
+      "enable_binary_authorization": {
+        "Type": "Bool",
+        "Computed": true
+      },
       "enable_kubernetes_alpha": {
         "Type": "Bool",
         "Computed": true
@@ -10551,7 +11040,8 @@
               "Type": "Map",
               "Computed": true,
               "Elem": {
-                "Value": "String"
+                "Type": "SchemaElements",
+                "ElementsType": "String"
               }
             },
             "local_ssd_count": {
@@ -10566,7 +11056,8 @@
               "Type": "Map",
               "Computed": true,
               "Elem": {
-                "Value": "String"
+                "Type": "SchemaElements",
+                "ElementsType": "String"
               }
             },
             "min_cpu_platform": {
@@ -10733,7 +11224,8 @@
                     "Type": "Map",
                     "Computed": true,
                     "Elem": {
-                      "Value": "String"
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
                     }
                   },
                   "local_ssd_count": {
@@ -10748,7 +11240,8 @@
                     "Type": "Map",
                     "Computed": true,
                     "Elem": {
-                      "Value": "String"
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
                     }
                   },
                   "min_cpu_platform": {
@@ -10864,7 +11357,8 @@
         "Type": "Map",
         "Computed": true,
         "Elem": {
-          "Value": "String"
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       },
       "subnetwork": {
@@ -11241,6 +11735,24 @@
         "Computed": true
       }
     },
+    "google_project_services": {
+      "disable_on_destroy": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true
+      },
+      "services": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "google_service_account": {
       "account_id": {
         "Type": "String",
@@ -11274,6 +11786,7 @@
       },
       "name": {
         "Type": "String",
+        "Optional": true,
         "Computed": true
       },
       "project": {
@@ -11290,7 +11803,11 @@
       },
       "service_account_id": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "ConflictsWith": [
+          "name"
+        ],
+        "Deprecated": "Please use name to specify full service account key path projects/{project}/serviceAccounts/{serviceAccount}/keys/{keyId}"
       }
     },
     "google_storage_object_signed_url": {
@@ -11318,7 +11835,8 @@
         "Type": "Map",
         "Optional": true,
         "Elem": {
-          "Value": "String"
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       },
       "http_method": {
@@ -11335,10 +11853,18 @@
       }
     },
     "google_storage_project_service_account": {
+      "email_address": {
+        "Type": "String",
+        "Computed": true
+      },
       "project": {
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "user_project": {
+        "Type": "String",
+        "Optional": true
       }
     }
   }

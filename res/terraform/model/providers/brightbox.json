@@ -1,0 +1,556 @@
+{
+  "name": "brightbox",
+  "type": "provider",
+  "version": "v1.0.5-1-ge5c055a",
+  "provider": {
+    "account": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Brightbox Cloud Account to operate on"
+    },
+    "apiclient": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Brightbox Cloud API Client",
+      "Default": {
+        "Type": "string",
+        "Value": "app-dkmch"
+      }
+    },
+    "apisecret": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Brightbox Cloud API Client Secret",
+      "Default": {
+        "Type": "string",
+        "Value": "uogoelzgt0nwawb"
+      }
+    },
+    "apiurl": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Brightbox Cloud Api URL for selected Region",
+      "Default": {
+        "Type": "string",
+        "Value": "https://api.gb1.brightbox.com/"
+      }
+    },
+    "password": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Brightbox Cloud Password for User Name"
+    },
+    "username": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Brightbox Cloud User Name"
+    }
+  },
+  "resources": {
+    "brightbox_cloudip": {
+      "fqdn": {
+        "Type": "String",
+        "Computed": true
+      },
+      "locked": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "public_ip": {
+        "Type": "String",
+        "Computed": true
+      },
+      "reverse_dns": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "target": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "brightbox_container": {
+      "account_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "auth_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "auth_user": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "orbit_url": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Brightbox Cloud Orbit URL for selected Region",
+        "Default": {
+          "Type": "string",
+          "Value": "https://orbit.brightbox.com/v1/"
+        }
+      }
+    },
+    "brightbox_database_server": {
+      "admin_password": {
+        "Type": "String",
+        "Computed": true
+      },
+      "admin_username": {
+        "Type": "String",
+        "Computed": true
+      },
+      "allow_access": {
+        "Type": "Set",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "database_engine": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "database_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "database_version": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "locked": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "maintenance_hour": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "maintenance_weekday": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "snapshot": {
+        "Type": "String",
+        "Optional": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "brightbox_firewall_policy": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "server_group": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "brightbox_firewall_rule": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "destination": {
+        "Type": "String",
+        "Optional": true
+      },
+      "destination_port": {
+        "Type": "String",
+        "Optional": true
+      },
+      "firewall_policy": {
+        "Type": "String",
+        "Required": true
+      },
+      "icmp_type_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "protocol": {
+        "Type": "String",
+        "Optional": true
+      },
+      "source": {
+        "Type": "String",
+        "Optional": true
+      },
+      "source_port": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "brightbox_load_balancer": {
+      "buffer_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "certificate_pem": {
+        "Type": "String",
+        "Optional": true
+      },
+      "certificate_private_key": {
+        "Type": "String",
+        "Optional": true
+      },
+      "healthcheck": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "interval": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Required": true
+            },
+            "request": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "threshold_down": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            },
+            "threshold_up": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            },
+            "timeout": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "listener": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "in": {
+              "Type": "Int",
+              "Required": true
+            },
+            "out": {
+              "Type": "Int",
+              "Required": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Required": true
+            },
+            "timeout": {
+              "Type": "Int",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "locked": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "nodes": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "policy": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "sslv3": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "brightbox_server": {
+      "fqdn": {
+        "Type": "String",
+        "Computed": true
+      },
+      "hostname": {
+        "Type": "String",
+        "Computed": true
+      },
+      "image": {
+        "Type": "String",
+        "Required": true
+      },
+      "interface": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ipv4_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ipv4_address_private": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ipv6_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ipv6_hostname": {
+        "Type": "String",
+        "Computed": true
+      },
+      "locked": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "public_hostname": {
+        "Type": "String",
+        "Computed": true
+      },
+      "server_groups": {
+        "Type": "Set",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "user_data": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "user_data_base64"
+        ]
+      },
+      "user_data_base64": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "user_data"
+        ]
+      },
+      "username": {
+        "Type": "String",
+        "Computed": true
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "brightbox_server_group": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      }
+    }
+  },
+  "data-sources": {
+    "brightbox_database_type": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "disk_size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "ram": {
+        "Type": "Int",
+        "Computed": true
+      }
+    },
+    "brightbox_image": {
+      "ancestor_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "arch": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "compatibility_mode": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "disk_size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "licence_name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "locked": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "most_recent": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "official": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "owner": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "public": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "source_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "username": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "virtual_size": {
+        "Type": "Int",
+        "Computed": true
+      }
+    },
+    "brightbox_server_group": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    }
+  }
+}

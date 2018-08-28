@@ -1,7 +1,7 @@
 {
   "name": "vsphere",
   "type": "provider",
-  "version": "v1.6.0-11-g534931a",
+  "version": "v1.7.0-1-g3bccdeb",
   "provider": {
     "allow_unverified_ssl": {
       "Type": "Bool",
@@ -574,6 +574,11 @@
       "folder": {
         "Type": "String",
         "Optional": true
+      },
+      "moid": {
+        "Type": "String",
+        "Description": "Managed object ID of the datacenter.",
+        "Computed": true
       },
       "name": {
         "Type": "String",
@@ -2364,6 +2369,89 @@
         "Description": "The display name of the category."
       }
     },
+    "vsphere_vapp_container": {
+      "cpu_expandable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Determines if the reservation on a vApp container can grow beyond the specified value, if the parent resource pool has unreserved resources."
+      },
+      "cpu_limit": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The utilization of a vApp container will not exceed this limit, even if there are available resources. Set to -1 for unlimited."
+      },
+      "cpu_reservation": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Amount of CPU (MHz) that is guaranteed available to the vApp container."
+      },
+      "cpu_share_level": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The allocation level. The level is a simplified view of shares. Levels map to a pre-determined set of numeric values for shares. Can be one of low, normal, high, or custom."
+      },
+      "cpu_shares": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The number of shares allocated. Used to determine resource allocation in case of resource contention. If this is set, cpu_share_level must be custom.",
+        "Computed": true
+      },
+      "custom_attributes": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "A list of custom attributes to set on this resource."
+      },
+      "memory_expandable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Determines if the reservation on a vApp container can grow beyond the specified value, if the parent resource pool has unreserved resources."
+      },
+      "memory_limit": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The utilization of a vApp container will not exceed this limit, even if there are available resources. Set to -1 for unlimited."
+      },
+      "memory_reservation": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Amount of memory (MB) that is guaranteed available to the vApp container."
+      },
+      "memory_share_level": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The allocation level. The level is a simplified view of shares. Levels map to a pre-determined set of numeric values for shares. Can be one of low, normal, high, or custom."
+      },
+      "memory_shares": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The number of shares allocated. Used to determine resource allocation in case of resource contention. If this is set, memory_share_level must be custom.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the vApp container."
+      },
+      "parent_folder_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ID of the parent VM folder."
+      },
+      "parent_resource_pool_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The managed object ID of the parent resource pool or the compute resource the vApp container is in."
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "A list of tag IDs to apply to this object.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "vsphere_virtual_disk": {
       "adapter_type": {
         "Type": "String",
@@ -3136,6 +3224,11 @@
         "Optional": true,
         "Description": "Enable the execution of pre-standby scripts when VMware tools is installed."
       },
+      "scsi_bus_sharing": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Mode for sharing the SCSI bus. The modes are physicalSharing, virtualSharing, and noSharing."
+      },
       "scsi_controller_count": {
         "Type": "Int",
         "Optional": true,
@@ -3569,6 +3662,11 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "scsi_bus_sharing": {
+        "Type": "String",
+        "Description": "Mode for sharing the SCSI bus.",
+        "Computed": true
       },
       "scsi_controller_scan_count": {
         "Type": "Int",

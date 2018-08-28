@@ -1,7 +1,7 @@
 {
   "name": "scaleway",
   "type": "provider",
-  "version": "v1.5.0-7-g2f8ddba",
+  "version": "v1.5.1-33-gc22beed",
   "provider": {
     "access_key": {
       "Type": "String",
@@ -206,6 +206,16 @@
       }
     },
     "scaleway_token": {
+      "access_key": {
+        "Type": "String",
+        "Description": "The access_key.",
+        "Computed": true
+      },
+      "creation_ip": {
+        "Type": "String",
+        "Description": "The ip used to create the key.",
+        "Computed": true
+      },
       "description": {
         "Type": "String",
         "Optional": true,
@@ -231,6 +241,11 @@
         "Type": "String",
         "Optional": true,
         "Description": "User password, in case a login is require"
+      },
+      "secret_key": {
+        "Type": "String",
+        "Description": "The secret_key.",
+        "Computed": true
       },
       "user_id": {
         "Type": "String",
@@ -350,6 +365,14 @@
         "Description": "date when the image was created",
         "Computed": true
       },
+      "most_recent": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "select most recent image if multiple match",
+        "ConflictsWith": [
+          "name_filter"
+        ]
+      },
       "name": {
         "Type": "String",
         "Optional": true,
@@ -359,7 +382,10 @@
       "name_filter": {
         "Type": "String",
         "Optional": true,
-        "Description": "partial name of the desired image to filter with"
+        "Description": "partial name of the desired image to filter with",
+        "ConflictsWith": [
+          "most_recent"
+        ]
       },
       "organization": {
         "Type": "String",
@@ -369,6 +395,42 @@
       "public": {
         "Type": "Bool",
         "Description": "indication if the bootscript is public",
+        "Computed": true
+      }
+    },
+    "scaleway_security_group": {
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "enable_default_security": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the security group"
+      }
+    },
+    "scaleway_volume": {
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "the name of the volume"
+      },
+      "server": {
+        "Type": "String",
+        "Computed": true
+      },
+      "size_in_gb": {
+        "Type": "Int",
+        "Description": "the size of the volume in GB",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Description": "the type of backing storage",
         "Computed": true
       }
     }
