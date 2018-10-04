@@ -1,3 +1,7 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import org.jsoup.Jsoup
+
 /*
  * Copyright 2000-2017 JetBrains s.r.o.
  *
@@ -14,6 +18,8 @@
  * limitations under the License.
  */
 buildscript {
+    ext.docBaseUrl='https://www.terraform.io'
+    ext.jsoupVersion='1.9.2'
     ext.kotlinVersion='1.2.31'
     repositories {
         mavenLocal()
@@ -22,6 +28,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
+        classpath "org.jsoup:jsoup:${jsoupVersion}"
     }
 }
 
@@ -61,12 +68,6 @@ clean {
     delete "${intellij.sandboxDirectory}/plugins/${intellij.pluginName}"
 }
 
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
-    compile 'com.beust:klaxon:0.31'
-    testCompile 'org.assertj:assertj-core:2.6.0'
-}
-
 sourceCompatibility = '1.6'
 targetCompatibility = '1.6'
 
@@ -90,6 +91,25 @@ sourceSets {
             srcDir 'test-data'
         }
     }
+    integrationTest {
+        kotlin {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('integration-test')
+        }
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
+    compile 'com.beust:klaxon:0.31'
+    testCompile 'org.assertj:assertj-core:2.6.0'
+    integrationTestCompile "org.jsoup:jsoup:${jsoupVersion}"
 }
 
 if (System.getenv('TEAMCITY_VERSION') != null) {
@@ -107,6 +127,15 @@ idea {
 task wrapper(type: Wrapper) {
     gradleVersion = '3.5'
 }
+
+task integrationTest(type: Test) {
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    outputs.upToDateWhen { false }
+}
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
 
 String getFileWatcherPluginVersion(String ideaVersion) {
     def version = GradleVersion.version(ideaVersion)
@@ -127,4 +156,71 @@ String getFileWatcherPluginVersion(String ideaVersion) {
         return "162.80"
     }
     return "143.110"
+}
+
+task fetchDocData {
+    description "Reads from the Terraform website to update the doc-data-generated.json file (which " +
+            "holds a small amount of information that cannot be derived from existing model data)"
+    doLast {
+        def docData = new JsonSlurper().parse(file('res/terraform/model-external/doc-data.json'))
+
+        def docDataGenerated = [
+                'functions': fetchFunctionDocData(),
+                'paths': fetchProviderDocData(docData)
+        ]
+
+        def json = JsonOutput.prettyPrint(JsonOutput.toJson(docDataGenerated))
+
+        file('res/terraform/model/doc-data-generated.json').write(json)
+    }
+}
+
+def fetchFunctionDocData() {
+    def functions = []
+
+    def doc = Jsoup.connect("${docBaseUrl}/docs/configuration/interpolation.html").get()
+
+    for (codeElement in doc.select("p > a[href^=#] > code")) {
+        def signature = codeElement.text()
+        def matcher = signature =~ /^(\w+)\(/
+        if (matcher) {
+            def name = matcher.group(1)
+            functions.add([
+                    "name": name,
+                    "fragment": codeElement.parent().attr("href").substring(1),
+                    "signature": signature
+            ])
+        }
+    }
+
+    return functions.sort { it[0] }
+}
+
+def fetchProviderDocData(docData) {
+    def docDataPathsLookup = docData['paths'].collectEntries()
+    def generatedPaths = []
+    for (providerLink in Jsoup.connect("${docBaseUrl}/docs/providers/index.html").get().getElementsByTag("a")) {
+        def providerMatch = providerLink.attr("href") =~ "/docs/providers/(\\w+)/index.html"
+        if (providerMatch) {
+            def provider = providerMatch.group(1)
+            def keepProviderPrefix = docData['keepProviderPrefix'].contains(provider)
+            def path = "/docs/providers/${docDataPathsLookup["provider.${provider}"] ?: provider}"
+            def doc = Jsoup.connect("${docBaseUrl}${path}/index.html").get()
+            for (link in doc.getElementsByTag("a")) {
+                def matcher = link.attr("href") =~ "${path}/([dr])/(\\w+).html"
+                if (matcher) {
+                    def linkText = link.text()
+                    def name = linkText.split(' ')[0]
+                    def actualPage = matcher.group(2)
+                    def expectedPage = keepProviderPrefix ? name : name.substring(name.indexOf('_') + 1)
+                    if (actualPage != expectedPage) {
+                        def type = matcher.group(1) == "d" ? "data" : "resource"
+                        generatedPaths.add(["$type.$name", actualPage])
+                    }
+                }
+            }
+        }
+    }
+
+    return generatedPaths.sort { it[0] }
 }

@@ -84,6 +84,11 @@ object TerraformPatterns {
           .with(createBlockPattern("backend"))
           .withSuperParent(2, TerraformRootBlock)
 
+  val Provisioner: PsiElementPattern.Capture<HCLBlock> =
+      PlatformPatterns.psiElement(HCLBlock::class.java)
+          .with(createBlockPattern("provisioner"))
+          .withSuperParent(2, ResourceRootBlock)
+
   val ModuleWithEmptySource: PsiElementPattern.Capture<HCLBlock> =
       PlatformPatterns.psiElement(HCLBlock::class.java)
           .and(ModuleRootBlock)

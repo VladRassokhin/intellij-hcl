@@ -23,6 +23,13 @@ class TypeModel(
     val backends: MutableList<BackendType> = arrayListOf(),
     val functions: List<Function> = arrayListOf()
 ) {
+  private val backendsByName = backends.associateBy { it.type }
+  private val dataSourcesByName = dataSources.associateBy { it.type }
+  private val functionsByName = functions.associateBy { it.name }
+  private val providersByName = providers.associateBy { it.type }
+  private val provisionersByName = provisioners.associateBy { it.type }
+  private val resourcesByName = resources.associateBy { it.type }
+
   @Suppress("MemberVisibilityCanBePrivate")
   companion object {
     private val VersionProperty = PropertyType("version", Types.String, hint = SimpleHint("VersionRange"), injectionAllowed = false)
@@ -119,23 +126,27 @@ class TypeModel(
   }
 
   fun getResourceType(name: String): ResourceType? {
-    return resources.firstOrNull { it.type == name }
+    return resourcesByName[name]
   }
 
   fun getDataSourceType(name: String): DataSourceType? {
-    return dataSources.firstOrNull { it.type == name }
+    return dataSourcesByName[name]
   }
 
   fun getProviderType(name: String): ProviderType? {
-    return providers.firstOrNull { it.type == name }
+    return providersByName[name]
   }
 
   fun getProvisionerType(name: String): ProvisionerType? {
-    return provisioners.firstOrNull { it.type == name }
+    return provisionersByName[name]
   }
 
   fun getBackendType(name: String): BackendType? {
-    return backends.firstOrNull { it.type == name }
+    return backendsByName[name]
+  }
+
+  fun getFunctionType(name: String): Function? {
+    return functionsByName[name]
   }
 
   fun getByFQN(fqn: String): Any? {

@@ -18,16 +18,26 @@ package org.intellij.plugins.hcl.terraform.config
 import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import org.intellij.plugins.hcl.HCLBundle
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
+import org.intellij.plugins.hcl.terraform.config.externalDoc.ExternalUrlReference
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 
 class TerraformDocumentationProvider : AbstractDocumentationProvider() {
-  override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
-    if (element is HCLProperty) {
-      return "Property ${element.name}"
+  override fun getUrlFor(element: PsiElement?, originalElement: PsiElement?): List<String>? {
+    return when (element) {
+      is ExternalUrlReference.MyFakePsiElement -> listOf(element.getUrl())
+      else -> null
     }
-    return null
+  }
+
+  override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
+    return when (element) {
+      is ExternalUrlReference.MyFakePsiElement -> HCLBundle.message("open.documentation.in.browser")
+      is HCLProperty -> "Property ${element.name}"
+      else -> null
+    }
   }
 
   override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {

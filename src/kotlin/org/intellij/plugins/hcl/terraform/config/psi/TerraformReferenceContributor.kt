@@ -25,6 +25,7 @@ import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.patterns.HCLPatterns
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.externalDoc.*
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformConfigFile
@@ -122,6 +123,48 @@ class TerraformReferenceContributor : PsiReferenceContributor() {
             .withSuperParent(4, HCLPatterns.Object)
             .withSuperParent(5, TerraformPatterns.ModuleRootBlock)
         , ModuleProvidersReferenceProvider)
+
+    // keywords
+    registrar.registerReferenceProvider(
+        psiElement(HCLIdentifier::class.java)
+            .inFile(TerraformConfigFile)
+            .withParent(HCLPatterns.Block)
+        , KeywordReferenceProvider)
+
+    // 'backend' types
+    registrar.registerReferenceProvider(
+        psiElement(HCLStringLiteral::class.java)
+            .inFile(TerraformConfigFile)
+            .withParent(TerraformPatterns.Backend)
+        , BackendTypeReferenceProvider)
+
+    // 'data' types
+    registrar.registerReferenceProvider(
+        psiElement(HCLStringLiteral::class.java)
+            .inFile(TerraformConfigFile)
+            .withParent(TerraformPatterns.DataSourceRootBlock)
+        , DataSourceTypeReferenceProvider)
+
+    // 'provider' types
+    registrar.registerReferenceProvider(
+        psiElement(HCLStringLiteral::class.java)
+            .inFile(TerraformConfigFile)
+            .withParent(TerraformPatterns.ProviderRootBlock)
+        , ProviderTypeReferenceProvider)
+
+    // 'provisioner' types
+    registrar.registerReferenceProvider(
+        psiElement(HCLStringLiteral::class.java)
+            .inFile(TerraformConfigFile)
+            .withParent(TerraformPatterns.Provisioner)
+        , ProvisionerTypeReferenceProvider)
+
+    // 'resource' types
+    registrar.registerReferenceProvider(
+        psiElement(HCLStringLiteral::class.java)
+            .inFile(TerraformConfigFile)
+            .withParent(TerraformPatterns.ResourceRootBlock)
+        , ResourceTypeReferenceProvider)
   }
 }
 
