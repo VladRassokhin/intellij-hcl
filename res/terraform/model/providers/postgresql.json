@@ -24,7 +24,11 @@
     "expected_version": {
       "Type": "String",
       "Optional": true,
-      "Description": "Specify the expected version of PostgreSQL."
+      "Description": "Specify the expected version of PostgreSQL.",
+      "Default": {
+        "Type": "string",
+        "Value": "9.0.0"
+      }
     },
     "host": {
       "Type": "String",
@@ -34,7 +38,11 @@
     "max_connections": {
       "Type": "Int",
       "Optional": true,
-      "Description": "Maximum number of connections to establish to the database. Zero means unlimited."
+      "Description": "Maximum number of connections to establish to the database. Zero means unlimited.",
+      "Default": {
+        "Type": "uint",
+        "Value": "4"
+      }
     },
     "password": {
       "Type": "String",
@@ -75,12 +83,20 @@
       "allow_connections": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "If false then no one can connect to this database"
+        "Description": "If false then no one can connect to this database",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "connection_limit": {
         "Type": "Int",
         "Optional": true,
-        "Description": "How many concurrent connections can be made to this database"
+        "Description": "How many concurrent connections can be made to this database",
+        "Default": {
+          "Type": "int",
+          "Value": "-1"
+        }
       },
       "encoding": {
         "Type": "String",
@@ -152,22 +168,38 @@
       "bypass_row_level_security": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Determine whether a role bypasses every row-level security (RLS) policy"
+        "Description": "Determine whether a role bypasses every row-level security (RLS) policy",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "connection_limit": {
         "Type": "Int",
         "Optional": true,
-        "Description": "How many concurrent connections can be made with this role"
+        "Description": "How many concurrent connections can be made with this role",
+        "Default": {
+          "Type": "int",
+          "Value": "-1"
+        }
       },
       "create_database": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Define a role's ability to create databases"
+        "Description": "Define a role's ability to create databases",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "create_role": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Determine whether this role will be permitted to create new roles"
+        "Description": "Determine whether this role will be permitted to create new roles",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "encrypted": {
         "Type": "String",
@@ -177,17 +209,29 @@
       "encrypted_password": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Control whether the password is stored encrypted in the system catalogs"
+        "Description": "Control whether the password is stored encrypted in the system catalogs",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "inherit": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Determine whether a role \"inherits\" the privileges of roles it is a member of"
+        "Description": "Determine whether a role \"inherits\" the privileges of roles it is a member of",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "login": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Determine whether a role is allowed to log in"
+        "Description": "Determine whether a role is allowed to log in",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -203,34 +247,58 @@
       "replication": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Determine whether a role is allowed to initiate streaming replication or put the system in and out of backup mode"
+        "Description": "Determine whether a role is allowed to initiate streaming replication or put the system in and out of backup mode",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "skip_drop_role": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Skip actually running the DROP ROLE command when removing a ROLE from PostgreSQL"
+        "Description": "Skip actually running the DROP ROLE command when removing a ROLE from PostgreSQL",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "skip_reassign_owned": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Skip actually running the REASSIGN OWNED command when removing a role from PostgreSQL"
+        "Description": "Skip actually running the REASSIGN OWNED command when removing a role from PostgreSQL",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "superuser": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Determine whether the new role is a \"superuser\""
+        "Description": "Determine whether the new role is a \"superuser\"",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "valid_until": {
         "Type": "String",
         "Optional": true,
-        "Description": "Sets a date and time after which the role's password is no longer valid"
+        "Description": "Sets a date and time after which the role's password is no longer valid",
+        "Default": {
+          "Type": "string",
+          "Value": "infinity"
+        }
       }
     },
     "postgresql_schema": {
       "if_not_exists": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "When true, use the existing schema if it exists"
+        "Description": "When true, use the existing schema if it exists",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -256,7 +324,11 @@
               "Description": "If true, allow the specified ROLEs to CREATE new objects within the schema(s)",
               "ConflictsWith": [
                 "policy.create_with_grant"
-              ]
+              ],
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "create_with_grant": {
               "Type": "Bool",
@@ -264,12 +336,19 @@
               "Description": "If true, allow the specified ROLEs to CREATE new objects within the schema(s) and GRANT the same CREATE privilege to different ROLEs",
               "ConflictsWith": [
                 "policy.create"
-              ]
+              ],
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "role": {
               "Type": "String",
               "Optional": true,
               "Description": "ROLE who will receive this policy (default: PUBLIC)",
+              "Default": {
+                "Type": "string"
+              },
               "Elem": {
                 "Type": "SchemaElements",
                 "ElementsType": "String"
@@ -281,7 +360,11 @@
               "Description": "If true, allow the specified ROLEs to use objects within the schema(s)",
               "ConflictsWith": [
                 "policy.usage_with_grant"
-              ]
+              ],
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "usage_with_grant": {
               "Type": "Bool",
@@ -289,7 +372,11 @@
               "Description": "If true, allow the specified ROLEs to use objects within the schema(s) and GRANT the same USAGE privilege to different ROLEs",
               "ConflictsWith": [
                 "policy.usage"
-              ]
+              ],
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }

@@ -308,7 +308,8 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       throw IllegalStateException(Constants.TIMEOUTS + " not expected here")
     }
 
-    val type = parseType(value.string("Type"))
+    val typeString = value.string("Type")
+    val type = parseType(typeString)
     val elem = value.obj("Elem")
     if (elem != null && elem.isNotEmpty()) {
       // Valid only for TypeSet and TypeList, should parse internal structure
@@ -347,7 +348,24 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     val conflicts: List<String> = value.array<String>("ConflictsWith")?.map { it } ?: emptyList()
 
     val deprecated = value.string("Deprecated")
-    val has_default: Boolean = value.obj("Default")?.isNotEmpty() ?: false
+    val defaultObj = value.obj("Default")
+    val defaultValue = if (defaultObj == null || defaultObj.isEmpty()) {
+      null
+    }
+    else {
+      val defaultValueString = defaultObj.string("Value")
+      when (typeString) {
+        null -> null
+        "Bool", "TypeBool" -> defaultValueString?.toBoolean() ?: false
+        "Int", "TypeInt" -> defaultValueString?.toInt() ?: 0
+        "Float", "TypeFloat" -> defaultValueString ?: "0"
+        "String", "TypeString" -> defaultValueString ?: ""
+        else -> {
+          LOG.warn("Unhandled default type $typeString for $fqn")
+            defaultValueString
+        }
+      }
+    }
     // || m["InputDefault"]?.string("value") != null // Not sure about this property TODO: Investigate how it works in terraform
 
     val additional = external[fqn] ?: TypeModelProvider.Additional(name)
@@ -382,7 +400,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
         deprecated = deprecated,
         computed = computed,
         conflictsWith = conflicts,
-        has_default = has_default).toPOBT()
+        defaultValue = defaultValue).toPOBT()
   }
 
   private fun parseType(string: String?): Type {

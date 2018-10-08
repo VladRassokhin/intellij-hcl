@@ -7,6 +7,10 @@ if [ ! -f 'providers.list.full' ]; then
   exit 1
 fi
 
+if [ -z "$GOPATH" ]; then
+  GOPATH="$(go env GOPATH)"  # use the default GOPATH
+fi
+
 out="$CUR/schemas"
 mkdir -p "$out"
 rm -f "$CUR/failure.txt"
@@ -52,10 +56,10 @@ for p in $(cat "$CUR/providers.list.full"); do
   rm -rf generate-schema
   mkdir generate-schema
   cp -r "$CUR/template/generate-schema.go" generate-schema/generate-schema.go
-  sed -i "s/__FULL_NAME__/$p/g" generate-schema/generate-schema.go
-  sed -i "s/__NAME__/${p:19}/g" generate-schema/generate-schema.go
-  sed -i "s/__REVISION__/$revision/g" generate-schema/generate-schema.go
-  sed -i "s~__OUT__~$out~g" generate-schema/generate-schema.go
+  sed -i '' "s/__FULL_NAME__/$p/g" generate-schema/generate-schema.go
+  sed -i '' "s/__NAME__/${p:19}/g" generate-schema/generate-schema.go
+  sed -i '' "s/__REVISION__/$revision/g" generate-schema/generate-schema.go
+  sed -i '' "s~__OUT__~$out~g" generate-schema/generate-schema.go
 
   #echo "Building $p"
   #make

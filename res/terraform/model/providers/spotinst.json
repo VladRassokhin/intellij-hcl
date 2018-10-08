@@ -1,7 +1,7 @@
 {
   "name": "spotinst",
   "type": "provider",
-  "version": "v1.3.0-1-gdf52edc",
+  "version": "v1.4.0-1-g86fe5af",
   "provider": {
     "account": {
       "Type": "String",
@@ -118,7 +118,11 @@
       },
       "enable_monitoring": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "ephemeral_block_device": {
         "Type": "Set",
@@ -233,6 +237,68 @@
           }
         }
       },
+      "integration_docker_swarm": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "autoscale_cooldown": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "autoscale_down": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "evaluation_periods": {
+                    "Type": "Int",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "autoscale_headroom": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "cpu_per_unit": {
+                    "Type": "Int",
+                    "Optional": true
+                  },
+                  "memory_per_unit": {
+                    "Type": "Int",
+                    "Optional": true
+                  },
+                  "num_of_units": {
+                    "Type": "Int",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "autoscale_is_enabled": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "master_host": {
+              "Type": "String",
+              "Required": true
+            },
+            "master_port": {
+              "Type": "Int",
+              "Required": true
+            }
+          }
+        }
+      },
       "integration_ecs": {
         "Type": "List",
         "Optional": true,
@@ -296,6 +362,10 @@
                   }
                 }
               }
+            },
+            "autoscale_is_auto_config": {
+              "Type": "Bool",
+              "Optional": true
             },
             "autoscale_is_enabled": {
               "Type": "Bool",
@@ -1004,7 +1074,11 @@
             },
             "is_enabled": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "max_capacity": {
               "Type": "String",
@@ -1048,6 +1122,10 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "shutdown_script": {
+        "Type": "String",
+        "Optional": true
       },
       "signal": {
         "Type": "Set",
@@ -1155,7 +1233,11 @@
                   },
                   "grace_period": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "int",
+                      "Value": "-1"
+                    }
                   },
                   "health_check_type": {
                     "Type": "String",

@@ -1,7 +1,7 @@
 {
   "name": "oraclepaas",
   "type": "provider",
-  "version": "v1.3.0-1-g5979bcd",
+  "version": "v1.3.2-1-g8babe52",
   "provider": {
     "application_endpoint": {
       "Type": "String",
@@ -74,6 +74,14 @@
       "auth_type": {
         "Type": "String",
         "Optional": true
+      },
+      "availability_domain": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "deployment": {
         "Type": "List",
@@ -164,6 +172,16 @@
         "Type": "String",
         "Optional": true
       },
+      "load_balancer_subnets": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 2,
+        "MinItems": 2,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "manifest": {
         "Type": "List",
         "Optional": true,
@@ -236,7 +254,11 @@
             },
             "shutdown_time": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "-1"
+              }
             },
             "startup_time": {
               "Type": "Int",
@@ -268,13 +290,25 @@
         "Type": "String",
         "Optional": true
       },
-      "runtime": {
+      "region": {
         "Type": "String",
         "Optional": true
       },
+      "runtime": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "java"
+        }
+      },
       "subscription_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "HOURLY"
+        }
       },
       "tags": {
         "Type": "Map",
@@ -296,11 +330,19 @@
       },
       "destination": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "database.AccessRuleDestination",
+          "Value": "DB_1"
+        }
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -351,14 +393,22 @@
             },
             "create_if_missing": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
       },
       "bring_your_own_license": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "cloud_storage_container": {
         "Type": "String",
@@ -381,6 +431,14 @@
             },
             "backup_destination": {
               "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "NONE"
+              }
+            },
+            "backup_storage_volume_size": {
+              "Type": "Int",
               "Optional": true
             },
             "character_set": {
@@ -392,25 +450,45 @@
                 "hybrid_disaster_recovery"
               ]
             },
+            "data_storage_volume_size": {
+              "Type": "Int",
+              "Optional": true
+            },
             "db_demo": {
               "Type": "String",
               "Optional": true
             },
             "disaster_recovery": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "failover_database": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "golden_gate": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "is_rac": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "national_character_set": {
               "Type": "String",
@@ -432,7 +510,11 @@
             },
             "sid": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "ORCL"
+              }
             },
             "snapshot_name": {
               "Type": "String",
@@ -448,11 +530,19 @@
             },
             "timezone": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "UTC"
+              }
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "database.ServiceInstanceType",
+                "Value": "db"
+              }
             },
             "usable_storage": {
               "Type": "Int",
@@ -548,7 +638,11 @@
       },
       "high_performance_storage": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "hybrid_disaster_recovery": {
         "Type": "List",
@@ -619,7 +713,11 @@
             },
             "on_premise": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "service_id": {
               "Type": "String",
@@ -646,7 +744,11 @@
       },
       "level": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "PAAS"
+        }
       },
       "name": {
         "Type": "String",
@@ -723,7 +825,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -735,7 +841,11 @@
       },
       "protocol": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "java.AccessRuleProtocol",
+          "Value": "tcp"
+        }
       },
       "service_instance_id": {
         "Type": "String",
@@ -761,7 +871,11 @@
       },
       "backup_destination": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "BOTH"
+        }
       },
       "backups": {
         "Type": "List",
@@ -772,7 +886,11 @@
           "Info": {
             "auto_generate": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "cloud_storage_container": {
               "Type": "String",
@@ -793,7 +911,11 @@
       },
       "bring_your_own_license": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "description": {
         "Type": "String",
@@ -802,7 +924,11 @@
       },
       "desired_state": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "running"
+        }
       },
       "edition": {
         "Type": "String",
@@ -810,11 +936,19 @@
       },
       "enable_admin_console": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "force_delete": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "ip_network": {
         "Type": "String",
@@ -822,11 +956,19 @@
       },
       "level": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "PAAS"
+        }
       },
       "metering_frequency": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "HOURLY"
+        }
       },
       "name": {
         "Type": "String",
@@ -860,7 +1002,11 @@
                   },
                   "port": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "int",
+                      "Value": "8989"
+                    }
                   },
                   "username": {
                     "Type": "String",
@@ -871,7 +1017,11 @@
             },
             "high_availability": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "ip_reservations": {
               "Type": "List",
@@ -913,7 +1063,11 @@
             },
             "load_balancing_policy": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "LEAST_CONNECTION_COUNT"
+              }
             },
             "root_url": {
               "Type": "String",
@@ -957,7 +1111,11 @@
       },
       "use_identity_service": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "weblogic_server": {
         "Type": "List",
@@ -983,11 +1141,19 @@
                   },
                   "port": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "int",
+                      "Value": "7001"
+                    }
                   },
                   "secured_port": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "int",
+                      "Value": "7002"
+                    }
                   },
                   "username": {
                     "Type": "String",
@@ -1049,11 +1215,19 @@
                   },
                   "server_count": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "int",
+                      "Value": "1"
+                    }
                   },
                   "servers_per_node": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "int",
+                      "Value": "1"
+                    }
                   },
                   "shape": {
                     "Type": "String",
@@ -1119,7 +1293,11 @@
                 "Info": {
                   "mode": {
                     "Type": "String",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "string",
+                      "Value": "PRODUCTION"
+                    }
                   },
                   "name": {
                     "Type": "String",
@@ -1174,11 +1352,19 @@
                   },
                   "overwrite_jvm_args": {
                     "Type": "Bool",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   },
                   "server_count": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "int",
+                      "Value": "1"
+                    }
                   }
                 }
               }
@@ -1202,7 +1388,11 @@
                   },
                   "port": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "int",
+                      "Value": "5556"
+                    }
                   },
                   "username": {
                     "Type": "String",
@@ -1221,19 +1411,35 @@
                 "Info": {
                   "content_port": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "int",
+                      "Value": "8001"
+                    }
                   },
                   "deployment_channel_port": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "int",
+                      "Value": "9001"
+                    }
                   },
                   "privileged_content_port": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "int",
+                      "Value": "80"
+                    }
                   },
                   "privileged_secured_content_port": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "int",
+                      "Value": "443"
+                    }
                   }
                 }
               }
@@ -1269,7 +1475,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -1307,7 +1517,11 @@
       },
       "backup_destination": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "NONE"
+        }
       },
       "backups": {
         "Type": "List",
@@ -1332,7 +1546,11 @@
             },
             "create_if_missing": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -1355,7 +1573,11 @@
       },
       "metering_frequency": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "HOURLY"
+        }
       },
       "mysql_configuration": {
         "Type": "List",
@@ -1375,7 +1597,11 @@
             },
             "db_storage": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "25"
+              }
             },
             "enterprise_monitor_configuration": {
               "Type": "List",
@@ -1428,7 +1654,11 @@
             },
             "mysql_port": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "3306"
+              }
             },
             "mysql_username": {
               "Type": "String",

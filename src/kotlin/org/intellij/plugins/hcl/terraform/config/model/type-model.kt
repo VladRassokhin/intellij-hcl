@@ -52,7 +52,7 @@ open class PropertyType(val name: String, val type: Type,
                         description: String? = null,
                         required: Boolean = false, deprecated: String? = null, computed: Boolean = false,
                         conflictsWith: List<String> = emptyList(),
-                        val has_default: Boolean = false
+                        val defaultValue: Any? = null
 ) : BaseModelType(description = description, required = required, deprecated = deprecated, computed = computed, conflictsWith = conflictsWith) {
   override fun toString(): String {
     return "PropertyType(name='$name', type='$type')"
@@ -76,6 +76,7 @@ class PropertyOrBlockType private constructor(val property: PropertyType? = null
   val deprecated: String? get() = if (property != null) property.deprecated else block!!.deprecated
   val computed: Boolean get() = property?.computed ?: block!!.computed
   val conflictsWith: List<String> get() = property?.conflictsWith ?: block!!.conflictsWith
+  val defaultValue: Any? get() = property?.defaultValue
 
   init {
     assert(property != null || block != null) { "Either property or block expected" }

@@ -1,7 +1,7 @@
 {
   "name": "runscope",
   "type": "provider",
-  "version": "v0.3.0-1-ge0e8aa4",
+  "version": "v0.5.0-1-ge21b5e0",
   "provider": {
     "access_token": {
       "Type": "String",
@@ -11,7 +11,11 @@
     "api_url": {
       "Type": "String",
       "Optional": true,
-      "Description": "A runscope api url i.e. https://api.runscope.com."
+      "Description": "A runscope api url i.e. https://api.runscope.com.",
+      "Default": {
+        "Type": "string",
+        "Value": "https://api.runscope.com"
+      }
     }
   },
   "resources": {
@@ -29,6 +33,49 @@
       "bucket_id": {
         "Type": "String",
         "Required": true
+      },
+      "emails": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "notify_all": {
+              "Type": "Bool",
+              "Required": true
+            },
+            "notify_on": {
+              "Type": "String",
+              "Required": true
+            },
+            "notify_threshold": {
+              "Type": "Int",
+              "Required": true
+            },
+            "recipients": {
+              "Type": "Set",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "email": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "id": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       "initial_variables": {
         "Type": "Map",
@@ -93,7 +140,19 @@
       },
       "verify_ssl": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "webhooks": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "runscope_schedule": {
@@ -199,6 +258,10 @@
         }
       },
       "method": {
+        "Type": "String",
+        "Optional": true
+      },
+      "note": {
         "Type": "String",
         "Optional": true
       },

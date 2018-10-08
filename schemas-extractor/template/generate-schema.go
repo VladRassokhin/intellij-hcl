@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"reflect"
 	"time"
 )
 
@@ -127,8 +126,11 @@ func export(v *schema.Schema) SchemaDefinition {
 	}
 
 	// TODO: Find better solution
-	if defValue, err := v.DefaultValue(); err == nil && defValue != nil && !reflect.DeepEqual(defValue, v.Default) {
-		item.Default = exportValue(defValue, fmt.Sprintf("%T", defValue))
+	if defValue, err := v.DefaultValue(); err == nil && defValue != nil {
+		defValueAsMap, ok := defValue.(map[string]interface{})
+		if !ok || len(defValueAsMap) != 0 {
+			item.Default = exportValue(defValue, fmt.Sprintf("%T", defValue))
+		}
 	}
 	return item
 }

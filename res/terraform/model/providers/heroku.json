@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "type": "provider",
-  "version": "v1.3.0-5-g694ad19",
+  "version": "v1.4.0-6-g3be502b",
   "provider": {
     "api_key": {
       "Type": "String",
@@ -143,6 +143,11 @@
         "Optional": true,
         "Computed": true
       },
+      "uuid": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "web_url": {
         "Type": "String",
         "Computed": true
@@ -155,7 +160,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -269,6 +278,71 @@
         "Required": true
       }
     },
+    "heroku_slug": {
+      "app": {
+        "Type": "String",
+        "Required": true
+      },
+      "blob": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "method": {
+              "Type": "String",
+              "Computed": true
+            },
+            "url": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "buildpack_provided_description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "checksum": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "commit": {
+        "Type": "String",
+        "Optional": true
+      },
+      "commit_description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "file_path": {
+        "Type": "String",
+        "Optional": true
+      },
+      "process_types": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "stack": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "stack_id": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "heroku_space": {
       "name": {
         "Type": "String",
@@ -292,7 +366,11 @@
       },
       "shield": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "trusted_ip_ranges": {
         "Type": "Set",
@@ -433,6 +511,28 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "heroku_team_member": {
+      "email": {
+        "Type": "String",
+        "Required": true
+      },
+      "federated": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      },
+      "team": {
+        "Type": "String",
+        "Required": true
       }
     }
   },

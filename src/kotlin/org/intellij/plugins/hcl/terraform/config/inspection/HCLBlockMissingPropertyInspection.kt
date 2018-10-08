@@ -88,7 +88,7 @@ class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
     val obj = block.`object` ?: return
     ProgressIndicatorProvider.checkCanceled()
 
-    val candidates = ArrayList<PropertyOrBlockType>(properties.filter { it.required && !(it.property?.has_default ?: false) })
+    val candidates = ArrayList<PropertyOrBlockType>(properties.filter { it.required && it.property?.defaultValue == null })
     if (candidates.isEmpty()) return
     val all = ArrayList<String>()
     all.addAll(obj.propertyList.map { it.name })
