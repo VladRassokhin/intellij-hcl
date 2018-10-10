@@ -1,7 +1,7 @@
 {
   "name": "profitbricks",
   "type": "provider",
-  "version": "v1.4.0-1-gf0382c4",
+  "version": "v1.3.3-1-gbaa4b55",
   "provider": {
     "endpoint": {
       "Type": "String",
@@ -19,11 +19,7 @@
     "retries": {
       "Type": "Int",
       "Optional": true,
-      "Deprecated": "Timeout is used instead of this functionality",
-      "Default": {
-        "Type": "int",
-        "Value": "50"
-      }
+      "Deprecated": "Timeout is used instead of this functionality"
     },
     "username": {
       "Type": "String",
@@ -361,26 +357,6 @@
         "Type": "String",
         "Required": true
       },
-      "firewallrule_id": {
-        "Type": "String",
-        "Computed": true
-      },
-      "image_name": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true,
-        "ConflictsWith": [
-          "volume.0.image_name"
-        ]
-      },
-      "image_password": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true,
-        "ConflictsWith": [
-          "volume.0.image_password"
-        ]
-      },
       "licence_type": {
         "Type": "String",
         "Optional": true
@@ -390,9 +366,8 @@
         "Required": true
       },
       "nic": {
-        "Type": "List",
+        "Type": "Set",
         "Required": true,
-        "MaxItems": 1,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -401,9 +376,8 @@
               "Optional": true
             },
             "firewall": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
-              "MaxItems": 1,
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
@@ -417,8 +391,7 @@
                   },
                   "ip": {
                     "Type": "String",
-                    "Optional": true,
-                    "Computed": true
+                    "Optional": true
                   },
                   "ips": {
                     "Type": "List",
@@ -502,67 +475,35 @@
         "Type": "Int",
         "Required": true
       },
-      "ssh_key_path": {
-        "Type": "List",
-        "Optional": true,
-        "Computed": true,
-        "ConflictsWith": [
-          "volume.0.ssh_key_path"
-        ],
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      },
       "volume": {
-        "Type": "List",
+        "Type": "Set",
         "Required": true,
-        "MaxItems": 1,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "availability_zone": {
               "Type": "String",
-              "Optional": true,
-              "Computed": true
+              "Optional": true
             },
             "bus": {
               "Type": "String",
-              "Optional": true,
-              "Computed": true
+              "Optional": true
             },
             "disk_type": {
               "Type": "String",
               "Required": true
             },
-            "image_aliases": {
-              "Type": "List",
-              "Computed": true,
-              "Elem": {
-                "Type": "SchemaElements",
-                "ElementsType": "String"
-              }
-            },
             "image_name": {
               "Type": "String",
-              "Optional": true,
-              "ConflictsWith": [
-                "image_name"
-              ],
-              "Deprecated": "Please use image_name under server level"
+              "Required": true
             },
             "image_password": {
               "Type": "String",
-              "Optional": true,
-              "ConflictsWith": [
-                "image_password"
-              ],
-              "Deprecated": "Please use image_password under server level"
+              "Optional": true
             },
             "licence_type": {
               "Type": "String",
-              "Optional": true,
-              "Computed": true
+              "Optional": true
             },
             "name": {
               "Type": "String",
@@ -575,7 +516,6 @@
             "ssh_key_path": {
               "Type": "List",
               "Optional": true,
-              "Deprecated": "Please use ssh_key_path under server level",
               "Elem": {
                 "Type": "SchemaElements",
                 "ElementsType": "String"
