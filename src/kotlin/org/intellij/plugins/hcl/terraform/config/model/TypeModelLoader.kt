@@ -348,21 +348,14 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     val conflicts: List<String> = value.array<String>("ConflictsWith")?.map { it } ?: emptyList()
 
     val deprecated = value.string("Deprecated")
-    val defaultObj = value.obj("Default")
-    val defaultValue = if (defaultObj == null || defaultObj.isEmpty()) {
-      null
-    }
-    else {
-      val defaultValueString = defaultObj.string("Value")
+    val defaultValue: Any? = value.obj("Default")?.string("Value")?.let {
       when (typeString) {
-        null -> null
-        "Bool", "TypeBool" -> defaultValueString?.toBoolean() ?: false
-        "Int", "TypeInt" -> defaultValueString?.toInt() ?: 0
-        "Float", "TypeFloat" -> defaultValueString ?: "0"
-        "String", "TypeString" -> defaultValueString ?: ""
+        "Bool", "TypeBool" -> it.toBoolean()
+        "Int", "TypeInt" -> it.toInt()
+        "Float", "TypeFloat", "String", "TypeString" -> it
         else -> {
           LOG.warn("Unhandled default type $typeString for $fqn")
-            defaultValueString
+          it
         }
       }
     }
