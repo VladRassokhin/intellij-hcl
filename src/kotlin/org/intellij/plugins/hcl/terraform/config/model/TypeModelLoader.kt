@@ -16,7 +16,6 @@
 package org.intellij.plugins.hcl.terraform.config.model
 
 import com.beust.klaxon.*
-import com.intellij.openapi.application.Application
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.SystemInfo
@@ -35,9 +34,9 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   val provisioners: MutableList<ProvisionerType> = arrayListOf()
   val backends: MutableList<BackendType> = arrayListOf()
   val functions: MutableList<Function> = arrayListOf()
+  private val application = ApplicationManager.getApplication()
 
   fun load(): TypeModel? {
-    val application = ApplicationManager.getApplication()
     try {
       val resources: Collection<String> = getAllResourcesToLoad(ModelResourcesPrefix)
 
@@ -49,7 +48,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
           continue
         }
 
-        loadOne(application, file, stream)
+        loadOne(file, stream)
       }
 
       val schemas = getSharedSchemas()
@@ -58,21 +57,21 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
         try {
           stream = file.inputStream()
         } catch(e: Exception) {
-          logErrorAndFailInInternalMode(application, "Cannot open stream for file '${file.absolutePath}'", e)
+          logErrorAndFailInInternalMode("Cannot open stream for file '${file.absolutePath}'", e)
           continue
         }
-        loadOne(application, file.absolutePath, stream)
+        loadOne(file.absolutePath, stream)
       }
 
       // TODO: Fetch latest model from github (?)
       return TypeModel(this.resources, this.dataSources, this.providers, this.provisioners, this.backends, this.functions)
     } catch(e: Exception) {
-      logErrorAndFailInInternalMode(application, "Failed to load Terraform Model", e)
+      logErrorAndFailInInternalMode("Failed to load Terraform Model", e)
       return null
     }
   }
 
-  private fun loadOne(application: Application, file: String, stream: InputStream) {
+  private fun loadOne(file: String, stream: InputStream) {
     val json: JsonObject?
     try {
       json = stream.use {
@@ -80,22 +79,22 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
         parser.parse(stream) as JsonObject?
       }
       if (json == null) {
-        logErrorAndFailInInternalMode(application, "In file '$file' no JSON found")
+        logErrorAndFailInInternalMode("In file '$file' no JSON found")
         return
       }
     } catch(e: Exception) {
-      logErrorAndFailInInternalMode(application, "Failed to load json data from file '$file'", e)
+      logErrorAndFailInInternalMode("Failed to load json data from file '$file'", e)
       return
     }
     try {
       parseFile(json, file)
     } catch(e: Throwable) {
-      logErrorAndFailInInternalMode(application, "Failed to parse file '$file'", e)
+      logErrorAndFailInInternalMode("Failed to parse file '$file'", e)
     }
     return
   }
 
-  private fun logErrorAndFailInInternalMode(application: Application, msg: String, e: Throwable? = null) {
+  private fun logErrorAndFailInInternalMode(msg: String, e: Throwable? = null) {
     val msg2 = if (e == null) msg else "$msg: ${e.message}"
     if (e == null) LOG.error(msg2) else LOG.error(msg2, e)
     if (application.isInternal) {
@@ -354,7 +353,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
         "Int", "TypeInt" -> it.toInt()
         "Float", "TypeFloat", "String", "TypeString" -> it
         else -> {
-          LOG.warn("Unhandled default type $typeString for $fqn")
+          logErrorAndFailInInternalMode("Unhandled default type $typeString for $fqn")
           it
         }
       }

@@ -38,13 +38,13 @@ class TFDefaultPropertyInspection : LocalInspectionTool() {
                 val name = p.name
                 val defaultValue = model[name]?.defaultValue ?: continue
                 val value = p.value ?: continue
-                if (compare(value, defaultValue)) {
+                if (isEquals(value, defaultValue)) {
                     holder.registerProblem(p, "'$name' is set to its default value", ProblemHighlightType.LIKE_UNUSED_SYMBOL, DeletePropertyFix)
                 }
             }
         }
 
-        private fun compare(value: HCLValue, defaultValue: Any): Boolean {
+        private fun isEquals(value: HCLValue, defaultValue: Any): Boolean {
             return when (value) {
                 is HCLBooleanLiteral -> value.value == defaultValue
                 is HCLNumberLiteral -> value.value == defaultValue
