@@ -230,7 +230,6 @@ object ModuleDetectionUtil {
     var parent: VirtualFile? = start
     while (true) {
       if (parent == null) return null
-      if (parent == base) break
 
       val child = parent.findChild(".terraform")
       if (child != null && child.isDirectory) {
@@ -238,6 +237,5 @@ object ModuleDetectionUtil {
       }
       parent = parent.parent
     }
-    return null
   }
 }
