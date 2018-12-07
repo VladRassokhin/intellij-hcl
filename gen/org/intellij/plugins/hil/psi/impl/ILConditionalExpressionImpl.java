@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public class ILConditionalExpressionImpl extends ILExpressionImpl implements ILConditionalExpression {
 
-  public ILConditionalExpressionImpl(ASTNode node) {
+  public ILConditionalExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

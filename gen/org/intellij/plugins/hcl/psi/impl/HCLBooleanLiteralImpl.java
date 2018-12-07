@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLBooleanLiteralImpl extends HCLLiteralImpl implements HCLBooleanLiteral {
 
-  public HCLBooleanLiteralImpl(ASTNode node) {
+  public HCLBooleanLiteralImpl(@NotNull ASTNode node) {
     super(node);
   }
 

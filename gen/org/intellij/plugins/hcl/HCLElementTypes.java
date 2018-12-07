@@ -46,7 +46,7 @@ public interface HCLElementTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == ARRAY) {
+      if (type == ARRAY) {
         return new HCLArrayImpl(node);
       }
       else if (type == BLOCK) {

@@ -13,7 +13,7 @@ import com.intellij.psi.tree.IElementType;
 
 public class ILUnaryExpressionImpl extends ILExpressionImpl implements ILUnaryExpression {
 
-  public ILUnaryExpressionImpl(ASTNode node) {
+  public ILUnaryExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

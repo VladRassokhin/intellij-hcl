@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public class ILBinaryEqualityExpressionImpl extends ILBinaryExpressionImpl implements ILBinaryEqualityExpression {
 
-  public ILBinaryEqualityExpressionImpl(ASTNode node) {
+  public ILBinaryEqualityExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public class ILMethodCallExpressionImpl extends ILExpressionImpl implements ILMethodCallExpression {
 
-  public ILMethodCallExpressionImpl(ASTNode node) {
+  public ILMethodCallExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
