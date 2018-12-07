@@ -201,6 +201,18 @@ public class HILParserTest extends ParsingTestCase {
     doCodeTest("${\"\\\"x\\\"\"}");
   }
 
+  public void testUnaryOverSelect() throws Exception {
+    doCodeTest("!var.private");
+  }
+
+  public void testUnaryOverIndexSelect() throws Exception {
+    doCodeTest("!var.list[0]");
+  }
+
+  public void testConditionalOverUnary() throws IOException {
+    doCodeTest("!false?!false:!false");
+  }
+
   protected void doCodeTest(@NotNull final String code, @NotNull final String expected) throws IOException {
     myFile = createPsiFile("a", code);
     ensureParsed(myFile);
