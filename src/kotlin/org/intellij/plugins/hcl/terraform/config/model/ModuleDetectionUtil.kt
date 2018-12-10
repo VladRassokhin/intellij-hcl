@@ -22,11 +22,14 @@ import com.beust.klaxon.string
 import com.intellij.openapi.application.Application
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.util.Key
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiManager
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
@@ -68,89 +71,135 @@ object ModuleDetectionUtil {
     val directory = file.containingDirectory ?: return CachedValueProvider.Result(null to null, moduleBlock)
     var err: String? = null
 
+    val project = moduleBlock.project
+
     val dotTerraform = ModuleDetectionUtil.getTerraformDirSomewhere(directory)
     if (dotTerraform != null) {
       LOG.debug("Found .terraform directory: $dotTerraform")
-      val manifest = ModuleDetectionUtil.getTerraformModulesManifest(directory)
-      val keyPrefix: String
-      if (manifest != null) {
-        LOG.debug("All modules from modules.json: ${manifest.modules}")
-        val pair = getKeyPrefix(directory, dotTerraform, manifest, name, source)
-        if (pair.first == null) {
-          return CachedValueProvider.Result(findRelativeModule(directory, moduleBlock, source) to (pair.second
-              ?: "Can't determine key prefix"), moduleBlock, directory, dotTerraform)
-        }
-        keyPrefix = pair.first!!
+      val manifestFile = getTerraformModulesManifestFile(project, dotTerraform)
+      if (manifestFile != null) {
+        LOG.debug("Found manifest.json: $manifestFile")
+        val manifest = CachedValuesManager.getManager(project).getCachedValue(file, ManifestCachedValueProvider(manifestFile))
+        if (manifest != null) {
+          val keyPrefix: String
+          LOG.debug("All modules from modules.json: ${manifest.modules}")
+          val pair = getKeyPrefix(directory, dotTerraform, manifest, name, source)
+          if (pair.first == null) {
+            val relativeModule = findRelativeModule(directory, moduleBlock, source)
+            return CachedValueProvider.Result(relativeModule to (pair.second
+                ?: "Can't determine key prefix"), moduleBlock, dotTerraform, manifestFile, *getModuleFiles(relativeModule))
+          }
+          keyPrefix = pair.first!!
 
-        LOG.debug("Searching for module with source '$source' and keyPrefix '$keyPrefix'")
-        val module = manifest.modules.find {
-          it.source == source && it.key.startsWith(keyPrefix) && !it.key.removePrefix(keyPrefix).contains('|')
-        }
+          LOG.debug("Searching for module with source '$source' and keyPrefix '$keyPrefix'")
+          val module = manifest.modules.find {
+            it.source == source && it.key.startsWith(keyPrefix) && !it.key.removePrefix(keyPrefix).contains('|')
+          }
 
-        if (module != null) {
-          LOG.debug("Found module $module")
-          val path = module.full
-          val relative = manifest.context.findFileByRelativePath(path)
-          if (relative != null) {
-            LOG.debug("Absolute module dir: $relative")
-            val dir = PsiManager.getInstance(moduleBlock.project).findDirectory(relative)
-            if (dir != null) {
-              LOG.debug("Module search succeed, directory is $dir")
-              return CachedValueProvider.Result(Module(dir) to null, moduleBlock, directory, dotTerraform, relative, dir)
+          if (module != null) {
+            LOG.debug("Found module $module")
+            val path = module.full
+            var relative = manifest.context.findFileByRelativePath(path)
+            if (relative != null) {
+              LOG.debug("Absolute module dir: $relative")
+              val canonical = relative.canonicalFile
+              // TODO: Symlink resolving probably would not work on Windows
+              if (canonical != null && canonical != relative) {
+                if (VfsUtilCore.isAncestor(project.baseDir ?: manifest.context, canonical, true)) {
+                  LOG.debug("Replacing module relative path ('${relative.name}') with canonical: '$canonical'")
+                  relative = canonical
+                }
+              }
+              val dir = PsiManager.getInstance(project).findDirectory(relative)
+              if (dir != null) {
+                LOG.debug("Module search succeed, directory is $dir")
+                return CachedValueProvider.Result(Module(dir) to null, moduleBlock, directory, dotTerraform, manifestFile, relative, dir, *dir.files)
+              } else {
+                err = "Can't find PsiDirectory for $relative"
+                LOG.debug(err)
+              }
             } else {
-              err = "Can't find PsiDirectory for $relative"
+              err = "Can't find relative dir '$path' in '${manifest.context}'"
               LOG.debug(err)
             }
-          } else {
-            err = "Can't find relative dir '$path' in '${manifest.context}'"
-            LOG.debug(err)
           }
         }
+        else {
+          err = "Failed to parse .terraform/modules/modules.json, please rerun `terraform get`"
+          LOG.warn(err)
+        }
+      } else {
+        err = "No modules/modules.json found in .terraform directory, please run `terraform get` in appropriate place"
+        LOG.warn(err)
       }
     } else {
       err = "No .terraform found under project directory, please run `terraform get` in appropriate place"
       LOG.warn(err)
-      return CachedValueProvider.Result(findRelativeModule(directory, moduleBlock, source) to err, moduleBlock, directory)
     }
 
     if (err != null) {
       err = "Terraform Module '$name' with source '$source' directory not found locally, use `terraform get` to fetch modules."
       LOG.warn(err)
     }
-    return CachedValueProvider.Result(findRelativeModule(directory, moduleBlock, source) to err, moduleBlock, directory)
+    val relativeModule = findRelativeModule(directory, moduleBlock, source)
+    return CachedValueProvider.Result(relativeModule to err, moduleBlock, directory, *getVFSChainOrVFS(directory, project), *getModuleFiles(relativeModule))
+  }
+
+  private fun getModuleFiles(module: Module?): Array<out PsiElement> {
+    if (module == null) return emptyArray()
+    val item = module.item
+    return when (item) {
+      is PsiDirectory -> arrayOf(item, *item.files)
+      else -> arrayOf(item)
+    }
+  }
+
+  private fun getVFSChainOrVFS(directory: PsiDirectory, project: Project): Array<out ModificationTracker> {
+    return getVFSChain(directory, project) ?: arrayOf(VirtualFileManager.getInstance())
+  }
+
+  private fun getVFSChain(file: PsiFileSystemItem, project: Project): Array<out VirtualFile>? {
+    val base = project.baseDir ?: return null
+    val start = file.virtualFile
+    if (!VfsUtilCore.isAncestor(base, start, false)) {
+      LOG.warn("'$file' is not under project root")
+      return null
+    }
+    val chain = ArrayList<VirtualFile>()
+
+    var parent: VirtualFile? = start
+    while (true) {
+      if (parent == null) return null
+      chain.add(parent)
+      if (parent == base) break
+      parent = parent.parent
+    }
+    return chain.toTypedArray()
   }
 
 
-  private val TerraformModulesManifestFileUrlKey = Key<String>("TerraformModulesManifestFileUrl")
-
-  fun getTerraformModulesManifest(directory: PsiDirectory): ModulesManifest? {
-    var url = directory.getUserData(TerraformModulesManifestFileUrlKey)
-    var manifestFile: VirtualFile? = null
-
-    if (url != null) {
-      manifestFile = VirtualFileManager.getInstance().findFileByUrl(url)
-      if (manifestFile == null || !manifestFile.isValid) {
-        manifestFile = null
-        directory.putUserData(TerraformModulesManifestFileUrlKey, null)
-      }
+  private fun getTerraformModulesManifestFile(project: Project, dotTerraform: VirtualFile): VirtualFile? {
+    val projectRoot = project.baseDir
+    if (projectRoot != null && !VfsUtilCore.isAncestor(projectRoot, dotTerraform, false)) {
+      LOG.warn("Dir $dotTerraform is not under project root")
+      return null
     }
+    if (!dotTerraform.isValid || !dotTerraform.exists()) return null
 
-    if (manifestFile == null) {
-      val dotTerraformDir = getTerraformDirSomewhere(directory) ?: return null
-      manifestFile = dotTerraformDir.findFileByRelativePath("modules/modules.json") ?: return null
-      if (!manifestFile.exists() || manifestFile.isDirectory) return null
-
-      url = manifestFile.url
-      directory.putUserData(TerraformModulesManifestFileUrlKey, url)
+    val file = dotTerraform.findFileByRelativePath("modules/modules.json")
+    if (file == null || !file.exists() || file.isDirectory || !file.isValid) {
+      return null
     }
-
-    return CachedValuesManager.getCachedValue(directory, ManifestCachedValueProvider(manifestFile))
+    return file
   }
 
   class ManifestCachedValueProvider(private val file: VirtualFile) : CachedValueProvider<ModulesManifest> {
     override fun compute(): CachedValueProvider.Result<ModulesManifest>? {
+      if (!file.isValid || !file.exists() || file.isDirectory) {
+        return CachedValueProvider.Result(null, this.file)
+      }
       val parsed = parseManifest(file)
-      return CachedValueProvider.Result(parsed, file)
+      return CachedValueProvider.Result(parsed, this.file, file)
     }
   }
 
