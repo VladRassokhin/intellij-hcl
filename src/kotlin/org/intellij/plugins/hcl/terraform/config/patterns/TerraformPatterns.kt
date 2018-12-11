@@ -33,7 +33,10 @@ object TerraformPatterns {
   val ConfigOverrideFile: PsiFilePattern.Capture<HCLFile> =
       PlatformPatterns.psiFile(HCLFile::class.java)
           .and(TerraformConfigFile)
-          .inVirtualFile(PlatformPatterns.virtualFile().withName(StandardPatterns.string().endsWith("_override." + TerraformFileType.DEFAULT_EXTENSION)))
+          .inVirtualFile(
+              StandardPatterns.or(
+                  PlatformPatterns.virtualFile().withName(StandardPatterns.string().matches("override." + TerraformFileType.DEFAULT_EXTENSION)),
+                  PlatformPatterns.virtualFile().withName(StandardPatterns.string().endsWith("_override." + TerraformFileType.DEFAULT_EXTENSION))))
 
   val RootBlock: PsiElementPattern.Capture<HCLBlock> =
       PlatformPatterns.psiElement(HCLBlock::class.java)
