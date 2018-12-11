@@ -32,6 +32,7 @@ import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ResourcePropertyInsertHandler
 import org.intellij.plugins.hcl.terraform.config.model.*
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.ConfigOverrideFile
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.ModuleWithEmptySource
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
 import java.util.*
@@ -65,7 +66,8 @@ class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
       block.getNameElementUnquoted(0) ?: return
       val obj = block.`object` ?: return
       // TODO: Generify
-      if(ModuleWithEmptySource.accepts(block)) return
+      if (ModuleWithEmptySource.accepts(block)) return
+      if (ConfigOverrideFile.accepts(block.containingFile)) return
       val properties = ModelHelper.getBlockProperties(block)
       doCheck(block, holder, properties)
       if (recursive) {
