@@ -42,6 +42,11 @@ object ModuleDetectionUtil {
 
   data class ModulesManifest(val context: VirtualFile, val modules: List<ModuleManifest>)
 
+  /**
+   * @param[source] value of Module's `source` property
+   * @param[dir] path relative to project root, usually starts with '.terraform/modules/'
+   * @param[root] path inside `dir` directory
+   */
   data class ModuleManifest(val source: String, val key: String, val version: String, val dir: String, val root: String) {
     val full
       get() = dir + if (root.isNotEmpty()) "/$root" else ""
@@ -102,6 +107,12 @@ object ModuleDetectionUtil {
             var relative = manifest.context.findFileByRelativePath(path)
             if (relative != null) {
               LOG.debug("Absolute module dir: $relative")
+              if (isRelativeSource(source)) {
+                findRelativeModule(directory, moduleBlock, source)?.let {
+                  LOG.debug("Shortcutting to relative module")
+                  return CachedValueProvider.Result(it to null, moduleBlock, directory, dotTerraform, manifestFile, relative, getModuleFiles(it))
+                }
+              }
               val canonical = relative.canonicalFile
               // TODO: Symlink resolving probably would not work on Windows
               if (canonical != null && canonical != relative) {
@@ -113,7 +124,8 @@ object ModuleDetectionUtil {
               val dir = PsiManager.getInstance(project).findDirectory(relative)
               if (dir != null) {
                 LOG.debug("Module search succeed, directory is $dir")
-                return CachedValueProvider.Result(Module(dir) to null, moduleBlock, directory, dotTerraform, manifestFile, relative, dir, *dir.files)
+                val mod = Module(dir)
+                return CachedValueProvider.Result(mod to null, moduleBlock, directory, dotTerraform, manifestFile, relative, getModuleFiles(mod))
               } else {
                 err = "Can't find PsiDirectory for $relative"
                 LOG.debug(err)
@@ -143,6 +155,13 @@ object ModuleDetectionUtil {
     }
     val relativeModule = findRelativeModule(directory, moduleBlock, source)
     return CachedValueProvider.Result(relativeModule to err, moduleBlock, directory, *getVFSChainOrVFS(directory, project), *getModuleFiles(relativeModule))
+  }
+
+  private fun isRelativeSource(source: String): Boolean {
+    // TODO: Improve
+    if (source.startsWith("./")) return true
+    if (source.startsWith("../")) return true
+    return false
   }
 
   private fun getModuleFiles(module: Module?): Array<out PsiElement> {
