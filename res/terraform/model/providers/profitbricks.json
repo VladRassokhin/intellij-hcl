@@ -1,7 +1,7 @@
 {
   "name": "profitbricks",
   "type": "provider",
-  "version": "v1.3.3-1-gbaa4b55",
+  "version": "v1.4.0-1-gf0382c4",
   "provider": {
     "endpoint": {
       "Type": "String",
@@ -357,6 +357,26 @@
         "Type": "String",
         "Required": true
       },
+      "firewallrule_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "image_name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "volume.0.image_name"
+        ]
+      },
+      "image_password": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "volume.0.image_password"
+        ]
+      },
       "licence_type": {
         "Type": "String",
         "Optional": true
@@ -366,8 +386,9 @@
         "Required": true
       },
       "nic": {
-        "Type": "Set",
+        "Type": "List",
         "Required": true,
+        "MaxItems": 1,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -376,8 +397,9 @@
               "Optional": true
             },
             "firewall": {
-              "Type": "Set",
+              "Type": "List",
               "Optional": true,
+              "MaxItems": 1,
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
@@ -391,7 +413,8 @@
                   },
                   "ip": {
                     "Type": "String",
-                    "Optional": true
+                    "Optional": true,
+                    "Computed": true
                   },
                   "ips": {
                     "Type": "List",
@@ -475,35 +498,67 @@
         "Type": "Int",
         "Required": true
       },
+      "ssh_key_path": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "volume.0.ssh_key_path"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "volume": {
-        "Type": "Set",
+        "Type": "List",
         "Required": true,
+        "MaxItems": 1,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "availability_zone": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Computed": true
             },
             "bus": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Computed": true
             },
             "disk_type": {
               "Type": "String",
               "Required": true
             },
+            "image_aliases": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
             "image_name": {
               "Type": "String",
-              "Required": true
+              "Optional": true,
+              "ConflictsWith": [
+                "image_name"
+              ],
+              "Deprecated": "Please use image_name under server level"
             },
             "image_password": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "ConflictsWith": [
+                "image_password"
+              ],
+              "Deprecated": "Please use image_password under server level"
             },
             "licence_type": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Computed": true
             },
             "name": {
               "Type": "String",
@@ -516,6 +571,7 @@
             "ssh_key_path": {
               "Type": "List",
               "Optional": true,
+              "Deprecated": "Please use ssh_key_path under server level",
               "Elem": {
                 "Type": "SchemaElements",
                 "ElementsType": "String"

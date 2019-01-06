@@ -1,7 +1,7 @@
 {
   "name": "cloudflare",
   "type": "provider",
-  "version": "v1.2.0-3-g35b7cc5",
+  "version": "v1.10.0-5-g47c18db",
   "provider": {
     "api_client_logging": {
       "Type": "Bool",
@@ -70,6 +70,300 @@
     }
   },
   "resources": {
+    "cloudflare_access_application": {
+      "aud": {
+        "Type": "String",
+        "Computed": true
+      },
+      "domain": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "session_duration": {
+        "Type": "String",
+        "Optional": true
+      },
+      "zone_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "cloudflare_access_policy": {
+      "application_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "decision": {
+        "Type": "String",
+        "Required": true
+      },
+      "exclude": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "email": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "email_domain": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "everyone": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "ip": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "include": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "email": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "email_domain": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "everyone": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "ip": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "precedence": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "require": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "email": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "email_domain": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "everyone": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "ip": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "zone_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "cloudflare_access_rule": {
+      "configuration": {
+        "Type": "Map",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "target": {
+              "Type": "String",
+              "Required": true
+            },
+            "value": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "mode": {
+        "Type": "String",
+        "Required": true
+      },
+      "notes": {
+        "Type": "String",
+        "Optional": true
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "zone_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "cloudflare_account_member": {
+      "email_address": {
+        "Type": "String",
+        "Required": true
+      },
+      "role_ids": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "cloudflare_custom_pages": {
+      "account_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "zone_id"
+        ]
+      },
+      "state": {
+        "Type": "String",
+        "Optional": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Required": true
+      },
+      "zone_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "account_id"
+        ]
+      }
+    },
+    "cloudflare_filter": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "expression": {
+        "Type": "String",
+        "Required": true
+      },
+      "paused": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "ref": {
+        "Type": "String",
+        "Optional": true
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "zone_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "cloudflare_firewall_rule": {
+      "action": {
+        "Type": "String",
+        "Required": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "filter_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "paused": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "priority": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "zone_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "cloudflare_load_balancer": {
       "created_on": {
         "Type": "String",
@@ -151,6 +445,14 @@
           }
         }
       },
+      "session_affinity": {
+        "Type": "String",
+        "Optional": true
+      },
+      "steering_policy": {
+        "Type": "String",
+        "Optional": true
+      },
       "ttl": {
         "Type": "Int",
         "Optional": true,
@@ -220,6 +522,10 @@
       },
       "path": {
         "Type": "String",
+        "Optional": true
+      },
+      "port": {
+        "Type": "Int",
         "Optional": true
       },
       "retries": {
@@ -298,6 +604,10 @@
             "name": {
               "Type": "String",
               "Required": true
+            },
+            "weight": {
+              "Type": "Float",
+              "Optional": true
             }
           }
         }
@@ -886,6 +1196,167 @@
         "Computed": true
       }
     },
+    "cloudflare_worker_route": {
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "ConflictsWith": [
+          "script_name"
+        ]
+      },
+      "multi_script": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "pattern": {
+        "Type": "String",
+        "Required": true
+      },
+      "script_name": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "enabled"
+        ]
+      },
+      "zone": {
+        "Type": "String",
+        "Required": true
+      },
+      "zone_id": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "cloudflare_worker_script": {
+      "content": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "zone"
+        ]
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "name"
+        ]
+      },
+      "zone_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "cloudflare_zone": {
+      "jump_start": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "meta": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "phishing_detected": {
+              "Type": "Bool"
+            },
+            "wildcard_proxiable": {
+              "Type": "Bool"
+            }
+          }
+        }
+      },
+      "name_servers": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "paused": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "plan": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "vanity_name_servers": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "zone": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "cloudflare_zone_lockdown": {
+      "configurations": {
+        "Type": "Set",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "target": {
+              "Type": "String",
+              "Required": true
+            },
+            "value": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "paused": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "urls": {
+        "Type": "Set",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true
+      },
+      "zone_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "cloudflare_zone_settings_override": {
       "initial_settings": {
         "Type": "List",
@@ -1043,6 +1514,11 @@
               }
             },
             "opportunistic_encryption": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "opportunistic_onion": {
               "Type": "String",
               "Optional": true,
               "Computed": true
@@ -1355,6 +1831,11 @@
               }
             },
             "opportunistic_encryption": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "opportunistic_onion": {
               "Type": "String",
               "Optional": true,
               "Computed": true

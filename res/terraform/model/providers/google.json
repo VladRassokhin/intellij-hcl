@@ -1,7 +1,7 @@
 {
   "name": "google",
   "type": "provider",
-  "version": "v1.17.1-10-gf1f0bc9",
+  "version": "v1.20.0-373-g43d40f40",
   "provider": {
     "credentials": {
       "Type": "String",
@@ -21,7 +21,164 @@
     }
   },
   "resources": {
+    "google_app_engine_application": {
+      "auth_domain": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "code_bucket": {
+        "Type": "String",
+        "Computed": true
+      },
+      "default_bucket": {
+        "Type": "String",
+        "Computed": true
+      },
+      "default_hostname": {
+        "Type": "String",
+        "Computed": true
+      },
+      "feature_settings": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "split_health_checks": {
+              "Type": "Bool",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "gcr_domain": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "serving_status": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "url_dispatch_rule": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "domain": {
+              "Type": "String",
+              "Computed": true
+            },
+            "path": {
+              "Type": "String",
+              "Computed": true
+            },
+            "service": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      }
+    },
+    "google_appengine_firewall_rule": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "action": {
+        "Type": "String",
+        "Required": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "priority": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "source_range": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "google_bigquery_dataset": {
+      "access": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "domain": {
+              "Type": "String",
+              "Optional": true
+            },
+            "group_by_email": {
+              "Type": "String",
+              "Optional": true
+            },
+            "role": {
+              "Type": "String",
+              "Optional": true
+            },
+            "special_group": {
+              "Type": "String",
+              "Optional": true
+            },
+            "user_by_email": {
+              "Type": "String",
+              "Optional": true
+            },
+            "view": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "dataset_id": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "project_id": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "table_id": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "creation_time": {
         "Type": "Int",
         "Computed": true
@@ -29,6 +186,10 @@
       "dataset_id": {
         "Type": "String",
         "Required": true
+      },
+      "default_partition_expiration_ms": {
+        "Type": "Int",
+        "Optional": true
       },
       "default_table_expiration_ms": {
         "Type": "Int",
@@ -190,9 +351,37 @@
       }
     },
     "google_bigtable_instance": {
+      "cluster": {
+        "Type": "Set",
+        "Required": true,
+        "MaxItems": 2,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cluster_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "num_nodes": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "storage_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "zone": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "cluster_id": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Computed": true,
+        "Removed": "Use cluster instead."
       },
       "display_name": {
         "Type": "String",
@@ -209,7 +398,9 @@
       },
       "num_nodes": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Computed": true,
+        "Removed": "Use cluster instead."
       },
       "project": {
         "Type": "String",
@@ -218,15 +409,31 @@
       },
       "storage_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true,
+        "Removed": "Use cluster instead."
       },
       "zone": {
         "Type": "String",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "Removed": "Use cluster instead."
       }
     },
     "google_bigtable_table": {
+      "column_family": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "family": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "instance_name": {
         "Type": "String",
         "Required": true
@@ -249,149 +456,73 @@
         }
       }
     },
-    "google_binary_authorization_attestor": {
-      "attestation_authority_note": {
-        "Type": "List",
-        "Required": true,
-        "MaxItems": 1,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "delegation_service_account_email": {
-              "Type": "String",
-              "Computed": true
-            },
-            "note_reference": {
-              "Type": "String",
-              "Required": true
-            },
-            "public_keys": {
-              "Type": "List",
-              "Optional": true,
-              "Elem": {
-                "Type": "SchemaInfo",
-                "Info": {
-                  "ascii_armored_pgp_public_key": {
-                    "Type": "String",
-                    "Required": true
-                  },
-                  "comment": {
-                    "Type": "String",
-                    "Optional": true
-                  },
-                  "id": {
-                    "Type": "String",
-                    "Computed": true
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "description": {
-        "Type": "String",
-        "Optional": true
-      },
-      "name": {
+    "google_billing_account_iam_binding": {
+      "billing_account_id": {
         "Type": "String",
         "Required": true
       },
-      "project": {
+      "etag": {
         "Type": "String",
-        "Optional": true,
         "Computed": true
+      },
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
       }
     },
-    "google_binary_authorization_policy": {
-      "admission_whitelist_patterns": {
-        "Type": "List",
-        "Optional": true,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "name_pattern": {
-              "Type": "String",
-              "Optional": true
-            }
-          }
-        }
-      },
-      "cluster_admission_rules": {
-        "Type": "Set",
-        "Optional": true,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "cluster": {
-              "Type": "String",
-              "Required": true
-            },
-            "enforcement_mode": {
-              "Type": "String",
-              "Optional": true
-            },
-            "evaluation_mode": {
-              "Type": "String",
-              "Optional": true
-            },
-            "require_attestations_by": {
-              "Type": "Set",
-              "Optional": true,
-              "Elem": {
-                "Type": "SchemaElements",
-                "ElementsType": "String"
-              }
-            }
-          }
-        }
-      },
-      "default_admission_rule": {
-        "Type": "List",
-        "Required": true,
-        "MaxItems": 1,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "enforcement_mode": {
-              "Type": "String",
-              "Required": true
-            },
-            "evaluation_mode": {
-              "Type": "String",
-              "Required": true
-            },
-            "require_attestations_by": {
-              "Type": "Set",
-              "Optional": true,
-              "Elem": {
-                "Type": "SchemaElements",
-                "ElementsType": "String"
-              }
-            }
-          }
-        }
-      },
-      "description": {
+    "google_billing_account_iam_member": {
+      "billing_account_id": {
         "Type": "String",
-        "Optional": true
+        "Required": true
       },
-      "project": {
+      "etag": {
         "Type": "String",
-        "Optional": true,
         "Computed": true
+      },
+      "member": {
+        "Type": "String",
+        "Required": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_billing_account_iam_policy": {
+      "billing_account_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "policy_data": {
+        "Type": "String",
+        "Required": true
       }
     },
     "google_cloudbuild_trigger": {
       "__timeouts__": [
         "create",
+        "update",
         "delete"
       ],
       "build": {
         "Type": "List",
         "Optional": true,
-        "Description": "Contents of the build template.",
         "MaxItems": 1,
+        "ConflictsWith": [
+          "filename"
+        ],
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -410,8 +541,12 @@
                 "Type": "SchemaInfo",
                 "Info": {
                   "args": {
-                    "Type": "String",
-                    "Optional": true
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
                   },
                   "name": {
                     "Type": "String",
@@ -431,7 +566,15 @@
           }
         }
       },
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
       "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "disabled": {
         "Type": "String",
         "Optional": true
       },
@@ -441,6 +584,22 @@
         "ConflictsWith": [
           "build"
         ]
+      },
+      "ignored_files": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "included_files": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "project": {
         "Type": "String",
@@ -454,6 +613,10 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "trigger_id": {
+        "Type": "String",
+        "Computed": true
       },
       "trigger_template": {
         "Type": "List",
@@ -474,9 +637,10 @@
               "Type": "String",
               "Optional": true
             },
-            "project": {
+            "project_id": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Computed": true
             },
             "repo_name": {
               "Type": "String",
@@ -508,6 +672,47 @@
         "Type": "String",
         "Optional": true
       },
+      "environment_variables": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "event_trigger": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "trigger_http"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "event_type": {
+              "Type": "String",
+              "Required": true
+            },
+            "failure_policy": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "retry": {
+                    "Type": "Bool",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "resource": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "https_trigger_url": {
         "Type": "String",
         "Optional": true,
@@ -534,17 +739,43 @@
       "retry_on_failure": {
         "Type": "Bool",
         "Optional": true,
-        "ConflictsWith": [
-          "trigger_http"
-        ]
+        "Computed": true,
+        "Removed": "This field is removed. Use `event_trigger.failure_policy.retry` instead."
+      },
+      "runtime": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       },
       "source_archive_bucket": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "source_archive_object": {
         "Type": "String",
-        "Required": true
+        "Optional": true
+      },
+      "source_repository": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "source_archive_bucket",
+          "source_archive_object"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "deployed_url": {
+              "Type": "String",
+              "Computed": true
+            },
+            "url": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       },
       "timeout": {
         "Type": "Int",
@@ -553,10 +784,12 @@
       "trigger_bucket": {
         "Type": "String",
         "Optional": true,
+        "Computed": true,
         "ConflictsWith": [
           "trigger_http",
           "trigger_topic"
-        ]
+        ],
+        "Removed": "This field is removed. Use `event_trigger` instead."
       },
       "trigger_http": {
         "Type": "Bool",
@@ -569,10 +802,12 @@
       "trigger_topic": {
         "Type": "String",
         "Optional": true,
+        "Computed": true,
         "ConflictsWith": [
           "trigger_http",
           "trigger_bucket"
-        ]
+        ],
+        "Removed": "This field is removed. Use `event_trigger` instead."
       }
     },
     "google_cloudiot_registry": {
@@ -619,6 +854,7 @@
       "http_config": {
         "Type": "Map",
         "Optional": true,
+        "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -632,6 +868,7 @@
       "mqtt_config": {
         "Type": "Map",
         "Optional": true,
+        "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -670,10 +907,161 @@
         }
       }
     },
-    "google_compute_address": {
+    "google_composer_environment": {
       "__timeouts__": [
         "create",
         "update",
+        "delete"
+      ],
+      "config": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "airflow_uri": {
+              "Type": "String",
+              "Computed": true
+            },
+            "dag_gcs_prefix": {
+              "Type": "String",
+              "Computed": true
+            },
+            "gke_cluster": {
+              "Type": "String",
+              "Computed": true
+            },
+            "node_config": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "disk_size_gb": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "machine_type": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "network": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "oauth_scopes": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "service_account": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "subnetwork": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "tags": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "zone": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "node_count": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            },
+            "software_config": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "airflow_config_overrides": {
+                    "Type": "Map",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "env_variables": {
+                    "Type": "Map",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "image_version": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "pypi_packages": {
+                    "Type": "Map",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "google_compute_address": {
+      "__timeouts__": [
+        "create",
         "delete"
       ],
       "address": {
@@ -692,18 +1080,6 @@
       "description": {
         "Type": "String",
         "Optional": true
-      },
-      "label_fingerprint": {
-        "Type": "String",
-        "Computed": true
-      },
-      "labels": {
-        "Type": "Map",
-        "Optional": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
       },
       "name": {
         "Type": "String",
@@ -740,6 +1116,39 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "google_compute_attached_disk": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "device_name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "disk": {
+        "Type": "String",
+        "Required": true
+      },
+      "instance": {
+        "Type": "String",
+        "Required": true
+      },
+      "mode": {
+        "Type": "String",
+        "Optional": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       }
     },
     "google_compute_autoscaler": {
@@ -888,6 +1297,10 @@
       }
     },
     "google_compute_backend_service": {
+      "affinity_cookie_ttl_sec": {
+        "Type": "Int",
+        "Optional": true
+      },
       "backend": {
         "Type": "Set",
         "Optional": true,
@@ -995,6 +1408,7 @@
       "custom_request_headers": {
         "Type": "Set",
         "Optional": true,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -1118,12 +1532,12 @@
       "disk_encryption_key_raw": {
         "Type": "String",
         "Optional": true,
-        "Deprecated": "Use disk_encryption_key.raw_key instead."
+        "Removed": "Use disk_encryption_key.raw_key instead."
       },
       "disk_encryption_key_sha256": {
         "Type": "String",
         "Computed": true,
-        "Deprecated": "Use disk_encryption_key.sha256 instead."
+        "Removed": "Use disk_encryption_key.sha256 instead."
       },
       "image": {
         "Type": "String",
@@ -1342,6 +1756,9 @@
         "Type": "Set",
         "Optional": true,
         "Computed": true,
+        "ConflictsWith": [
+          "destination_ranges"
+        ],
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -1350,7 +1767,6 @@
       "source_service_accounts": {
         "Type": "Set",
         "Optional": true,
-        "MaxItems": 1,
         "ConflictsWith": [
           "source_tags",
           "target_tags"
@@ -1363,6 +1779,11 @@
       "source_tags": {
         "Type": "Set",
         "Optional": true,
+        "ConflictsWith": [
+          "destination_ranges",
+          "source_service_accounts",
+          "target_service_accounts"
+        ],
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -1371,7 +1792,6 @@
       "target_service_accounts": {
         "Type": "Set",
         "Optional": true,
-        "MaxItems": 1,
         "ConflictsWith": [
           "source_tags",
           "target_tags"
@@ -1384,6 +1804,10 @@
       "target_tags": {
         "Type": "Set",
         "Optional": true,
+        "ConflictsWith": [
+          "source_service_accounts",
+          "target_service_accounts"
+        ],
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -1421,18 +1845,6 @@
       "ip_version": {
         "Type": "String",
         "Optional": true
-      },
-      "label_fingerprint": {
-        "Type": "String",
-        "Computed": true
-      },
-      "labels": {
-        "Type": "Map",
-        "Optional": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
       },
       "load_balancing_scheme": {
         "Type": "String",
@@ -1479,14 +1891,6 @@
         "Type": "String",
         "Computed": true
       },
-      "service_label": {
-        "Type": "String",
-        "Optional": true
-      },
-      "service_name": {
-        "Type": "String",
-        "Computed": true
-      },
       "subnetwork": {
         "Type": "String",
         "Optional": true,
@@ -1500,12 +1904,16 @@
     "google_compute_global_address": {
       "__timeouts__": [
         "create",
-        "update",
         "delete"
       ],
       "address": {
         "Type": "String",
+        "Optional": true,
         "Computed": true
+      },
+      "address_type": {
+        "Type": "String",
+        "Optional": true
       },
       "creation_timestamp": {
         "Type": "String",
@@ -1518,18 +1926,6 @@
       "ip_version": {
         "Type": "String",
         "Optional": true
-      },
-      "label_fingerprint": {
-        "Type": "String",
-        "Computed": true
-      },
-      "labels": {
-        "Type": "Map",
-        "Optional": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
       },
       "name": {
         "Type": "String",
@@ -1566,11 +1962,13 @@
       },
       "label_fingerprint": {
         "Type": "String",
-        "Computed": true
+        "Computed": true,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
       },
       "labels": {
         "Type": "Map",
         "Optional": true,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -1652,6 +2050,10 @@
             "request_path": {
               "Type": "String",
               "Optional": true
+            },
+            "response": {
+              "Type": "String",
+              "Optional": true
             }
           }
         }
@@ -1681,6 +2083,10 @@
               "Optional": true
             },
             "request_path": {
+              "Type": "String",
+              "Optional": true
+            },
+            "response": {
               "Type": "String",
               "Optional": true
             }
@@ -1893,14 +2299,22 @@
         "update",
         "delete"
       ],
-      "create_timeout": {
+      "archive_size_bytes": {
         "Type": "Int",
-        "Optional": true,
-        "Deprecated": "Use timeouts block instead. See https://www.terraform.io/docs/configuration/resources.html#timeouts."
+        "Computed": true
+      },
+      "creation_timestamp": {
+        "Type": "String",
+        "Computed": true
       },
       "description": {
         "Type": "String",
         "Optional": true
+      },
+      "disk_size_gb": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
       },
       "family": {
         "Type": "String",
@@ -2079,7 +2493,7 @@
       "create_timeout": {
         "Type": "Int",
         "Optional": true,
-        "Deprecated": "Use timeouts block instead."
+        "Removed": "Use timeouts block instead."
       },
       "deletion_protection": {
         "Type": "Bool",
@@ -2197,36 +2611,6 @@
         "Type": "String",
         "Required": true
       },
-      "network": {
-        "Type": "List",
-        "Optional": true,
-        "Removed": "Please use network_interface",
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "address": {
-              "Type": "String",
-              "Optional": true
-            },
-            "external_address": {
-              "Type": "String",
-              "Computed": true
-            },
-            "internal_address": {
-              "Type": "String",
-              "Computed": true
-            },
-            "name": {
-              "Type": "String",
-              "Computed": true
-            },
-            "source": {
-              "Type": "String",
-              "Required": true
-            }
-          }
-        }
-      },
       "network_interface": {
         "Type": "List",
         "Required": true,
@@ -2241,7 +2625,8 @@
                 "Info": {
                   "assigned_nat_ip": {
                     "Type": "String",
-                    "Computed": true
+                    "Computed": true,
+                    "Removed": "Use network_interface.access_config.nat_ip instead."
                   },
                   "nat_ip": {
                     "Type": "String",
@@ -2263,12 +2648,12 @@
             "address": {
               "Type": "String",
               "Optional": true,
-              "Computed": true
+              "Computed": true,
+              "Removed": "Please use network_ip"
             },
             "alias_ip_range": {
               "Type": "List",
               "Optional": true,
-              "MaxItems": 1,
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
@@ -2295,8 +2680,7 @@
             "network_ip": {
               "Type": "String",
               "Optional": true,
-              "Computed": true,
-              "Deprecated": "Please use address"
+              "Computed": true
             },
             "subnetwork": {
               "Type": "String",
@@ -2444,6 +2828,7 @@
       },
       "boot_disk": {
         "Type": "List",
+        "Optional": true,
         "Computed": true,
         "MaxItems": 1,
         "Elem": {
@@ -2561,6 +2946,7 @@
       },
       "machine_type": {
         "Type": "String",
+        "Optional": true,
         "Computed": true
       },
       "metadata": {
@@ -2592,6 +2978,7 @@
       },
       "network_interface": {
         "Type": "List",
+        "Optional": true,
         "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
@@ -2605,7 +2992,8 @@
                 "Info": {
                   "assigned_nat_ip": {
                     "Type": "String",
-                    "Computed": true
+                    "Computed": true,
+                    "Removed": "Use network_interface.access_config.nat_ip instead."
                   },
                   "nat_ip": {
                     "Type": "String",
@@ -2628,13 +3016,13 @@
             "address": {
               "Type": "String",
               "Optional": true,
-              "Computed": true
+              "Computed": true,
+              "Removed": "Please use network_ip"
             },
             "alias_ip_range": {
               "Type": "List",
               "Optional": true,
               "Computed": true,
-              "MaxItems": 1,
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
@@ -2662,8 +3050,7 @@
             "network_ip": {
               "Type": "String",
               "Optional": true,
-              "Computed": true,
-              "Deprecated": "Please use address"
+              "Computed": true
             },
             "subnetwork": {
               "Type": "String",
@@ -2839,16 +3226,19 @@
         "Type": "List",
         "Optional": true,
         "MaxItems": 1,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "health_check": {
               "Type": "String",
-              "Required": true
+              "Required": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "initial_delay_sec": {
               "Type": "Int",
-              "Required": true
+              "Required": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             }
           }
         }
@@ -2878,7 +3268,7 @@
         "Required": true
       },
       "named_port": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
@@ -2902,49 +3292,47 @@
       "rolling_update_policy": {
         "Type": "List",
         "Optional": true,
+        "Computed": true,
         "MaxItems": 1,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "max_surge_fixed": {
               "Type": "Int",
               "Optional": true,
-              "ConflictsWith": [
-                "rolling_update_policy.0.max_surge_percent"
-              ]
+              "Computed": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "max_surge_percent": {
               "Type": "Int",
               "Optional": true,
-              "ConflictsWith": [
-                "rolling_update_policy.0.max_surge_fixed"
-              ]
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "max_unavailable_fixed": {
               "Type": "Int",
               "Optional": true,
-              "ConflictsWith": [
-                "rolling_update_policy.0.max_unavailable_percent"
-              ]
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "max_unavailable_percent": {
               "Type": "Int",
               "Optional": true,
-              "ConflictsWith": [
-                "rolling_update_policy.0.max_unavailable_fixed"
-              ]
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "min_ready_sec": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "minimal_action": {
               "Type": "String",
-              "Required": true
+              "Required": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "type": {
               "Type": "String",
-              "Required": true
+              "Required": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             }
           }
         }
@@ -2974,31 +3362,37 @@
         "Type": "List",
         "Optional": true,
         "Computed": true,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "instance_template": {
               "Type": "String",
-              "Required": true
+              "Required": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "name": {
               "Type": "String",
-              "Required": true
+              "Required": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "target_size": {
               "Type": "List",
               "Optional": true,
               "MaxItems": 1,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
                   "fixed": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
                   },
                   "percent": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
                   }
                 }
               }
@@ -3050,6 +3444,20 @@
               "Optional": true,
               "Computed": true
             },
+            "disk_encryption_key": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "kms_key_self_link": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            },
             "disk_name": {
               "Type": "String",
               "Optional": true
@@ -3079,7 +3487,8 @@
             },
             "source_image": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Computed": true
             },
             "type": {
               "Type": "String",
@@ -3165,7 +3574,8 @@
                 "Info": {
                   "assigned_nat_ip": {
                     "Type": "String",
-                    "Computed": true
+                    "Computed": true,
+                    "Removed": "Use network_interface.access_config.nat_ip instead."
                   },
                   "nat_ip": {
                     "Type": "String",
@@ -3183,7 +3593,8 @@
             "address": {
               "Type": "String",
               "Optional": true,
-              "Computed": true
+              "Computed": true,
+              "Removed": "Please use network_ip"
             },
             "alias_ip_range": {
               "Type": "List",
@@ -3209,9 +3620,7 @@
             },
             "network_ip": {
               "Type": "String",
-              "Optional": true,
-              "Computed": true,
-              "Deprecated": "Please use address"
+              "Optional": true
             },
             "subnetwork": {
               "Type": "String",
@@ -3304,6 +3713,72 @@
         "Computed": true
       }
     },
+    "google_compute_interconnect_attachment": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "cloud_router_ip_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "creation_timestamp": {
+        "Type": "String",
+        "Computed": true
+      },
+      "customer_router_ip_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "google_reference_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "interconnect": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "private_interconnect_info": {
+        "Type": "List",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "tag8021q": {
+              "Type": "Int",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "router": {
+        "Type": "String",
+        "Required": true
+      },
+      "self_link": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "google_compute_network": {
       "auto_create_subnetworks": {
         "Type": "Bool",
@@ -3383,6 +3858,11 @@
       }
     },
     "google_compute_project_metadata_item": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
       "key": {
         "Type": "String",
         "Required": true
@@ -3714,16 +4194,19 @@
         "Type": "List",
         "Optional": true,
         "MaxItems": 1,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "health_check": {
               "Type": "String",
-              "Required": true
+              "Required": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "initial_delay_sec": {
               "Type": "Int",
-              "Required": true
+              "Required": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             }
           }
         }
@@ -3762,7 +4245,7 @@
         "Required": true
       },
       "named_port": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
@@ -3790,49 +4273,47 @@
       "rolling_update_policy": {
         "Type": "List",
         "Optional": true,
+        "Computed": true,
         "MaxItems": 1,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "max_surge_fixed": {
               "Type": "Int",
               "Optional": true,
-              "ConflictsWith": [
-                "rolling_update_policy.0.max_surge_percent"
-              ]
+              "Computed": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "max_surge_percent": {
               "Type": "Int",
               "Optional": true,
-              "ConflictsWith": [
-                "rolling_update_policy.0.max_surge_fixed"
-              ]
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "max_unavailable_fixed": {
               "Type": "Int",
               "Optional": true,
-              "ConflictsWith": [
-                "rolling_update_policy.0.max_unavailable_percent"
-              ]
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "max_unavailable_percent": {
               "Type": "Int",
               "Optional": true,
-              "ConflictsWith": [
-                "rolling_update_policy.0.max_unavailable_fixed"
-              ]
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "min_ready_sec": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "minimal_action": {
               "Type": "String",
-              "Required": true
+              "Required": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "type": {
               "Type": "String",
-              "Required": true
+              "Required": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             }
           }
         }
@@ -3856,37 +4337,45 @@
       },
       "update_strategy": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true,
+        "Deprecated": "This field is removed."
       },
       "version": {
         "Type": "List",
         "Optional": true,
         "Computed": true,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "instance_template": {
               "Type": "String",
-              "Required": true
+              "Required": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "name": {
               "Type": "String",
-              "Required": true
+              "Required": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
             },
             "target_size": {
               "Type": "List",
               "Optional": true,
               "MaxItems": 1,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
                   "fixed": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
                   },
                   "percent": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
                   }
                 }
               }
@@ -4074,6 +4563,96 @@
         "Required": true
       }
     },
+    "google_compute_router_nat": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "icmp_idle_timeout_sec": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "min_ports_per_vm": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "nat_ip_allocate_option": {
+        "Type": "String",
+        "Required": true
+      },
+      "nat_ips": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "router": {
+        "Type": "String",
+        "Required": true
+      },
+      "source_subnetwork_ip_ranges_to_nat": {
+        "Type": "String",
+        "Optional": true
+      },
+      "subnetwork": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "secondary_ip_range_names": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "source_ip_ranges_to_nat": {
+              "Type": "Set",
+              "Required": true,
+              "MinItems": 1,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "tcp_established_idle_timeout_sec": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "tcp_transitory_idle_timeout_sec": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "udp_idle_timeout_sec": {
+        "Type": "Int",
+        "Optional": true
+      }
+    },
     "google_compute_router_peer": {
       "advertised_route_priority": {
         "Type": "Int",
@@ -4224,6 +4803,18 @@
         "update",
         "delete"
       ],
+      "creation_timestamp": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "disk_size_gb": {
+        "Type": "Int",
+        "Computed": true
+      },
       "label_fingerprint": {
         "Type": "String",
         "Computed": true
@@ -4231,6 +4822,14 @@
       "labels": {
         "Type": "Map",
         "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "licenses": {
+        "Type": "List",
+        "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -4249,28 +4848,72 @@
         "Type": "String",
         "Computed": true
       },
+      "snapshot_encryption_key": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "raw_key": {
+              "Type": "String",
+              "Optional": true
+            },
+            "sha256": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "snapshot_encryption_key_raw": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Removed": "Use snapshot_encryption_key.raw_key instead."
       },
       "snapshot_encryption_key_sha256": {
         "Type": "String",
+        "Computed": true,
+        "Removed": "Use snapshot_encryption_key.sha256 instead."
+      },
+      "snapshot_id": {
+        "Type": "Int",
         "Computed": true
       },
       "source_disk": {
         "Type": "String",
         "Required": true
       },
+      "source_disk_encryption_key": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "raw_key": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
       "source_disk_encryption_key_raw": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Removed": "Use source_disk_encryption_key.raw_key instead."
       },
       "source_disk_encryption_key_sha256": {
         "Type": "String",
-        "Computed": true
+        "Computed": true,
+        "Removed": "Use source_disk_encryption_key.sha256 instead."
       },
       "source_disk_link": {
         "Type": "String",
+        "Computed": true
+      },
+      "storage_bytes": {
+        "Type": "Int",
         "Computed": true
       },
       "zone": {
@@ -4280,11 +4923,19 @@
       }
     },
     "google_compute_ssl_certificate": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
       "certificate": {
         "Type": "String",
         "Required": true
       },
       "certificate_id": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "creation_timestamp": {
         "Type": "String",
         "Computed": true
       },
@@ -4295,10 +4946,7 @@
       "name": {
         "Type": "String",
         "Optional": true,
-        "Computed": true,
-        "ConflictsWith": [
-          "name_prefix"
-        ]
+        "Computed": true
       },
       "name_prefix": {
         "Type": "String",
@@ -4453,90 +5101,6 @@
         "Computed": true
       }
     },
-    "google_compute_subnetwork_iam_binding": {
-      "etag": {
-        "Type": "String",
-        "Computed": true
-      },
-      "members": {
-        "Type": "Set",
-        "Required": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      },
-      "project": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "role": {
-        "Type": "String",
-        "Required": true
-      },
-      "subnetwork": {
-        "Type": "String",
-        "Required": true
-      }
-    },
-    "google_compute_subnetwork_iam_member": {
-      "etag": {
-        "Type": "String",
-        "Computed": true
-      },
-      "member": {
-        "Type": "String",
-        "Required": true
-      },
-      "project": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "role": {
-        "Type": "String",
-        "Required": true
-      },
-      "subnetwork": {
-        "Type": "String",
-        "Required": true
-      }
-    },
-    "google_compute_subnetwork_iam_policy": {
-      "etag": {
-        "Type": "String",
-        "Computed": true
-      },
-      "policy_data": {
-        "Type": "String",
-        "Required": true
-      },
-      "project": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "subnetwork": {
-        "Type": "String",
-        "Required": true
-      }
-    },
     "google_compute_target_http_proxy": {
       "__timeouts__": [
         "create",
@@ -4648,7 +5212,7 @@
         }
       },
       "instances": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Computed": true,
         "Elem": {
@@ -4773,6 +5337,15 @@
       }
     },
     "google_compute_url_map": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "creation_timestamp": {
+        "Type": "String",
+        "Computed": true
+      },
       "default_service": {
         "Type": "String",
         "Required": true
@@ -4796,7 +5369,7 @@
               "Optional": true
             },
             "hosts": {
-              "Type": "List",
+              "Type": "Set",
               "Required": true,
               "Elem": {
                 "Type": "SchemaElements",
@@ -4811,7 +5384,7 @@
         }
       },
       "map_id": {
-        "Type": "String",
+        "Type": "Int",
         "Computed": true
       },
       "name": {
@@ -4843,7 +5416,7 @@
                 "Type": "SchemaInfo",
                 "Info": {
                   "paths": {
-                    "Type": "List",
+                    "Type": "Set",
                     "Required": true,
                     "Elem": {
                       "Type": "SchemaElements",
@@ -5022,41 +5595,6 @@
         "Required": true
       }
     },
-    "google_container_analysis_note": {
-      "attestation_authority": {
-        "Type": "List",
-        "Required": true,
-        "MaxItems": 1,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "hint": {
-              "Type": "List",
-              "Required": true,
-              "MaxItems": 1,
-              "Elem": {
-                "Type": "SchemaInfo",
-                "Info": {
-                  "human_readable_name": {
-                    "Type": "String",
-                    "Required": true
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "name": {
-        "Type": "String",
-        "Required": true
-      },
-      "project": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      }
-    },
     "google_container_cluster": {
       "__timeouts__": [
         "create",
@@ -5143,6 +5681,42 @@
           }
         }
       },
+      "cluster_autoscaling": {
+        "Type": "List",
+        "Computed": true,
+        "MaxItems": 1,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "Bool",
+              "Required": true
+            },
+            "resource_limits": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "maximum": {
+                    "Type": "Int",
+                    "Optional": true
+                  },
+                  "minimum": {
+                    "Type": "Int",
+                    "Optional": true
+                  },
+                  "resource_type": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "cluster_ipv4_cidr": {
         "Type": "String",
         "Optional": true,
@@ -5154,7 +5728,9 @@
       },
       "enable_binary_authorization": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Computed": true,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
       },
       "enable_kubernetes_alpha": {
         "Type": "Bool",
@@ -5163,6 +5739,12 @@
       "enable_legacy_abac": {
         "Type": "Bool",
         "Optional": true
+      },
+      "enable_tpu": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
       },
       "endpoint": {
         "Type": "String",
@@ -5187,13 +5769,69 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "cluster_ipv4_cidr_block": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true,
+              "ConflictsWith": [
+                "ip_allocation_policy.0.create_subnetwork",
+                "ip_allocation_policy.0.subnetwork_name",
+                "ip_allocation_policy.0.cluster_secondary_range_name",
+                "ip_allocation_policy.0.services_secondary_range_name"
+              ]
+            },
             "cluster_secondary_range_name": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Computed": true,
+              "ConflictsWith": [
+                "ip_allocation_policy.0.create_subnetwork",
+                "ip_allocation_policy.0.subnetwork_name",
+                "ip_allocation_policy.0.cluster_ipv4_cidr_block",
+                "ip_allocation_policy.0.services_ipv4_cidr_block"
+              ]
+            },
+            "create_subnetwork": {
+              "Type": "Bool",
+              "Optional": true,
+              "ConflictsWith": [
+                "ip_allocation_policy.0.cluster_ipv4_cidr_block",
+                "ip_allocation_policy.0.services_ipv4_cidr_block",
+                "ip_allocation_policy.0.cluster_secondary_range_name",
+                "ip_allocation_policy.0.services_secondary_range_name"
+              ]
+            },
+            "services_ipv4_cidr_block": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true,
+              "ConflictsWith": [
+                "ip_allocation_policy.0.create_subnetwork",
+                "ip_allocation_policy.0.subnetwork_name",
+                "ip_allocation_policy.0.cluster_secondary_range_name",
+                "ip_allocation_policy.0.services_secondary_range_name"
+              ]
             },
             "services_secondary_range_name": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Computed": true,
+              "ConflictsWith": [
+                "ip_allocation_policy.0.create_subnetwork",
+                "ip_allocation_policy.0.subnetwork_name",
+                "ip_allocation_policy.0.cluster_ipv4_cidr_block",
+                "ip_allocation_policy.0.services_ipv4_cidr_block"
+              ]
+            },
+            "subnetwork_name": {
+              "Type": "String",
+              "Optional": true,
+              "ConflictsWith": [
+                "ip_allocation_policy.0.cluster_ipv4_cidr_block",
+                "ip_allocation_policy.0.services_ipv4_cidr_block",
+                "ip_allocation_policy.0.cluster_secondary_range_name",
+                "ip_allocation_policy.0.services_secondary_range_name"
+              ]
             }
           }
         }
@@ -5267,11 +5905,11 @@
             },
             "password": {
               "Type": "String",
-              "Required": true
+              "Optional": true
             },
             "username": {
               "Type": "String",
-              "Required": true
+              "Optional": true
             }
           }
         }
@@ -5307,7 +5945,9 @@
       },
       "master_ipv4_cidr_block": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true,
+        "Removed": "Use private_cluster_config.master_ipv4_cidr_block instead."
       },
       "master_version": {
         "Type": "String",
@@ -5449,6 +6089,7 @@
             "taint": {
               "Type": "List",
               "Optional": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
@@ -5471,6 +6112,7 @@
               "Type": "List",
               "Optional": true,
               "MaxItems": 1,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
@@ -5541,6 +6183,12 @@
                 }
               }
             },
+            "max_pods_per_node": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
+            },
             "name": {
               "Type": "String",
               "Optional": true,
@@ -5550,7 +6198,7 @@
               "Type": "String",
               "Optional": true,
               "Computed": true,
-              "Deprecated": "Use the random provider instead. See migration instructions at https://github.com/terraform-providers/terraform-provider-google/issues/1054#issuecomment-377390209"
+              "Removed": "Use the random provider instead. See migration instructions at https://github.com/terraform-providers/terraform-provider-google/issues/1054#issuecomment-377390209"
             },
             "node_config": {
               "Type": "List",
@@ -5652,6 +6300,7 @@
                   "taint": {
                     "Type": "List",
                     "Optional": true,
+                    "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
                     "Elem": {
                       "Type": "SchemaInfo",
                       "Info": {
@@ -5674,6 +6323,7 @@
                     "Type": "List",
                     "Optional": true,
                     "MaxItems": 1,
+                    "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
                     "Elem": {
                       "Type": "SchemaInfo",
                       "Info": {
@@ -5709,6 +6359,7 @@
         "Type": "List",
         "Optional": true,
         "MaxItems": 1,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -5721,7 +6372,44 @@
       },
       "private_cluster": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Computed": true,
+        "Removed": "Use private_cluster_config.enable_private_nodes instead."
+      },
+      "private_cluster_config": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "private_cluster",
+          "master_ipv4_cidr_block"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enable_private_endpoint": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "enable_private_nodes": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "master_ipv4_cidr_block": {
+              "Type": "String",
+              "Optional": true
+            },
+            "private_endpoint": {
+              "Type": "String",
+              "Computed": true
+            },
+            "public_endpoint": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
       },
       "project": {
         "Type": "String",
@@ -5822,6 +6510,12 @@
           }
         }
       },
+      "max_pods_per_node": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true,
+        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details."
+      },
       "name": {
         "Type": "String",
         "Optional": true,
@@ -5831,7 +6525,7 @@
         "Type": "String",
         "Optional": true,
         "Computed": true,
-        "Deprecated": "Use the random provider instead. See migration instructions at https://github.com/terraform-providers/terraform-provider-google/issues/1054#issuecomment-377390209"
+        "Removed": "Use the random provider instead. See migration instructions at https://github.com/terraform-providers/terraform-provider-google/issues/1054#issuecomment-377390209"
       },
       "node_config": {
         "Type": "List",
@@ -5933,6 +6627,7 @@
             "taint": {
               "Type": "List",
               "Optional": true,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
@@ -5955,6 +6650,7 @@
               "Type": "List",
               "Optional": true,
               "MaxItems": 1,
+              "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
@@ -6014,6 +6710,10 @@
         "Type": "String",
         "Optional": true
       },
+      "region": {
+        "Type": "String",
+        "Optional": true
+      },
       "state": {
         "Type": "String",
         "Computed": true
@@ -6052,7 +6752,7 @@
             "delete_autogen_bucket": {
               "Type": "Bool",
               "Optional": true,
-              "Deprecated": "autogenerated buckets are shared by all clusters in the same region, so deleting this bucket could adversely harm other dataproc clusters. If you need a bucket that can be deleted, please create a new one and set the `staging_bucket` field"
+              "Removed": "If you need a bucket that can be deleted, please createa new one and set the `staging_bucket` field"
             },
             "gce_cluster_config": {
               "Type": "List",
@@ -6103,7 +6803,7 @@
                     ]
                   },
                   "tags": {
-                    "Type": "List",
+                    "Type": "Set",
                     "Optional": true,
                     "Elem": {
                       "Type": "SchemaElements",
@@ -6143,6 +6843,23 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "accelerators": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "accelerator_count": {
+                          "Type": "Int",
+                          "Required": true
+                        },
+                        "accelerator_type": {
+                          "Type": "String",
+                          "Required": true
+                        }
+                      }
+                    }
+                  },
                   "disk_config": {
                     "Type": "List",
                     "Optional": true,
@@ -6167,6 +6884,11 @@
                         }
                       }
                     }
+                  },
+                  "image_uri": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
                   },
                   "instance_names": {
                     "Type": "List",
@@ -6206,6 +6928,15 @@
                       "Type": "SchemaInfo",
                       "Info": {
                         "boot_disk_size_gb": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Computed": true
+                        },
+                        "boot_disk_type": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "num_local_ssds": {
                           "Type": "Int",
                           "Optional": true,
                           "Computed": true
@@ -6269,6 +7000,23 @@
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
+                  "accelerators": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "accelerator_count": {
+                          "Type": "Int",
+                          "Required": true
+                        },
+                        "accelerator_type": {
+                          "Type": "String",
+                          "Required": true
+                        }
+                      }
+                    }
+                  },
                   "disk_config": {
                     "Type": "List",
                     "Optional": true,
@@ -6293,6 +7041,11 @@
                         }
                       }
                     }
+                  },
+                  "image_uri": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
                   },
                   "instance_names": {
                     "Type": "List",
@@ -6971,6 +7724,11 @@
       }
     },
     "google_dns_managed_zone": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
       "description": {
         "Type": "String",
         "Optional": true
@@ -6978,6 +7736,14 @@
       "dns_name": {
         "Type": "String",
         "Required": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "name": {
         "Type": "String",
@@ -7120,7 +7886,8 @@
       "protoc_output": {
         "Type": "String",
         "Optional": true,
-        "Deprecated": "Please use protoc_output_base64 instead."
+        "Computed": true,
+        "Removed": "Please use protoc_output_base64 instead."
       },
       "protoc_output_base64": {
         "Type": "String",
@@ -7302,6 +8069,10 @@
                 }
               }
             },
+            "inherit_from_parent": {
+              "Type": "Bool",
+              "Optional": true
+            },
             "suggested_value": {
               "Type": "String",
               "Optional": true,
@@ -7354,6 +8125,25 @@
       "self_link": {
         "Type": "String",
         "Computed": true
+      },
+      "version_template": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "algorithm": {
+              "Type": "String",
+              "Required": true
+            },
+            "protection_level": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
       }
     },
     "google_kms_crypto_key_iam_binding": {
@@ -7659,6 +8449,558 @@
         "Computed": true
       }
     },
+    "google_monitoring_alert_policy": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "combiner": {
+        "Type": "String",
+        "Required": true
+      },
+      "conditions": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "condition_absent": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "aggregations": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "alignment_period": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "cross_series_reducer": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "group_by_fields": {
+                          "Type": "List",
+                          "Optional": true,
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "per_series_aligner": {
+                          "Type": "String",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
+                  "duration": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "filter": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "trigger": {
+                    "Type": "List",
+                    "Optional": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "count": {
+                          "Type": "Int",
+                          "Optional": true
+                        },
+                        "percent": {
+                          "Type": "Float",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "condition_threshold": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "aggregations": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "alignment_period": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "cross_series_reducer": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "group_by_fields": {
+                          "Type": "List",
+                          "Optional": true,
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "per_series_aligner": {
+                          "Type": "String",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
+                  "comparison": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "denominator_aggregations": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "alignment_period": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "cross_series_reducer": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "group_by_fields": {
+                          "Type": "List",
+                          "Optional": true,
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "per_series_aligner": {
+                          "Type": "String",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
+                  "denominator_filter": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "duration": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "filter": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "threshold_value": {
+                    "Type": "Float",
+                    "Optional": true
+                  },
+                  "trigger": {
+                    "Type": "List",
+                    "Optional": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "count": {
+                          "Type": "Int",
+                          "Optional": true
+                        },
+                        "percent": {
+                          "Type": "Float",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "display_name": {
+              "Type": "String",
+              "Required": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "creation_record": {
+        "Type": "List",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "mutate_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "mutated_by": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "display_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "documentation": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "content": {
+              "Type": "String",
+              "Optional": true
+            },
+            "mime_type": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "labels": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "notification_channels": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "google_monitoring_group": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "display_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "filter": {
+        "Type": "String",
+        "Required": true
+      },
+      "is_cluster": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "parent_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "google_monitoring_notification_channel": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      },
+      "user_labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "verification_status": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "google_monitoring_uptime_check_config": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "content_matchers": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "content": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "display_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "http_check": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "tcp_check"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "auth_info": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "password": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "username": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Type": "Map",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "mask_headers": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "path": {
+              "Type": "String",
+              "Optional": true
+            },
+            "port": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "use_ssl": {
+              "Type": "Bool",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "internal_checkers": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "display_name": {
+              "Type": "String",
+              "Optional": true
+            },
+            "gcp_zone": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true
+            },
+            "network": {
+              "Type": "String",
+              "Optional": true
+            },
+            "peer_project_id": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "is_internal": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "monitored_resource": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "resource_group"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "labels": {
+              "Type": "Map",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "period": {
+        "Type": "String",
+        "Optional": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "resource_group": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "monitored_resource"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "group_id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "resource_type": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "selected_regions": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tcp_check": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "http_check"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "port": {
+              "Type": "Int",
+              "Required": true
+            }
+          }
+        }
+      },
+      "timeout": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "google_organization_iam_binding": {
       "etag": {
         "Type": "String",
@@ -7684,7 +9026,7 @@
     "google_organization_iam_custom_role": {
       "deleted": {
         "Type": "Bool",
-        "Optional": true
+        "Computed": true
       },
       "description": {
         "Type": "String",
@@ -7839,6 +9181,10 @@
                 }
               }
             },
+            "inherit_from_parent": {
+              "Type": "Bool",
+              "Optional": true
+            },
             "suggested_value": {
               "Type": "String",
               "Optional": true,
@@ -7882,78 +9228,91 @@
     "google_project": {
       "app_engine": {
         "Type": "List",
-        "Optional": true,
-        "MaxItems": 1,
+        "Computed": true,
+        "Removed": "This field has been removed. Use the google_app_engine_application resource instead.",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "auth_domain": {
               "Type": "String",
               "Optional": true,
-              "Computed": true
+              "Computed": true,
+              "Removed": "This field has been removed. Use the google_app_engine_application resource instead."
             },
             "code_bucket": {
               "Type": "String",
-              "Computed": true
+              "Computed": true,
+              "Removed": "This field has been removed. Use the google_app_engine_application resource instead."
             },
             "default_bucket": {
               "Type": "String",
-              "Computed": true
+              "Computed": true,
+              "Removed": "This field has been removed. Use the google_app_engine_application resource instead."
             },
             "default_hostname": {
               "Type": "String",
-              "Computed": true
+              "Computed": true,
+              "Removed": "This field has been removed. Use the google_app_engine_application resource instead."
             },
             "feature_settings": {
               "Type": "List",
               "Optional": true,
               "Computed": true,
-              "MaxItems": 1,
+              "Removed": "This field has been removed. Use the google_app_engine_application resource instead.",
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
                   "split_health_checks": {
                     "Type": "Bool",
-                    "Optional": true
+                    "Optional": true,
+                    "Removed": "This field has been removed. Use the google_app_engine_application resource instead."
                   }
                 }
               }
             },
             "gcr_domain": {
               "Type": "String",
-              "Computed": true
+              "Computed": true,
+              "Removed": "This field has been removed. Use the google_app_engine_application resource instead."
             },
             "location_id": {
               "Type": "String",
               "Optional": true,
-              "Computed": true
+              "Computed": true,
+              "Removed": "This field has been removed. Use the google_app_engine_application resource instead."
             },
             "name": {
               "Type": "String",
-              "Computed": true
+              "Computed": true,
+              "Removed": "This field has been removed. Use the google_app_engine_application resource instead."
             },
             "serving_status": {
               "Type": "String",
               "Optional": true,
-              "Computed": true
+              "Computed": true,
+              "Removed": "This field has been removed. Use the google_app_engine_application resource instead."
             },
             "url_dispatch_rule": {
               "Type": "List",
               "Computed": true,
+              "Removed": "This field has been removed. Use the google_app_engine_application resource instead.",
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
                   "domain": {
                     "Type": "String",
-                    "Computed": true
+                    "Computed": true,
+                    "Removed": "This field has been removed. Use the google_app_engine_application resource instead."
                   },
                   "path": {
                     "Type": "String",
-                    "Computed": true
+                    "Computed": true,
+                    "Removed": "This field has been removed. Use the google_app_engine_application resource instead."
                   },
                   "service": {
                     "Type": "String",
-                    "Computed": true
+                    "Computed": true,
+                    "Removed": "This field has been removed. Use the google_app_engine_application resource instead."
                   }
                 }
               }
@@ -8016,6 +9375,41 @@
         "Computed": true
       }
     },
+    "google_project_iam_audit_config": {
+      "audit_log_config": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "exempted_members": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "log_type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true
+      },
+      "service": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "google_project_iam_binding": {
       "etag": {
         "Type": "String",
@@ -8041,7 +9435,7 @@
     "google_project_iam_custom_role": {
       "deleted": {
         "Type": "Bool",
-        "Optional": true
+        "Computed": true
       },
       "description": {
         "Type": "String",
@@ -8096,12 +9490,12 @@
       "authoritative": {
         "Type": "Bool",
         "Optional": true,
-        "Deprecated": "A future version of Terraform will remove the authoritative field. To ignore changes not managed by Terraform, use google_project_iam_binding and google_project_iam_member instead. See https://www.terraform.io/docs/providers/google/r/google_project_iam.html for more information."
+        "Removed": "The authoritative field was removed. To ignore changes not managed by Terraform, use google_project_iam_binding and google_project_iam_member instead. See https://www.terraform.io/docs/providers/google/r/google_project_iam.html for more information."
       },
       "disable_project": {
         "Type": "Bool",
         "Optional": true,
-        "Deprecated": "This will be removed with the authoritative field. Use lifecycle.prevent_destroy instead."
+        "Removed": "This field was removed alongside the authoritative field. Use lifecycle.prevent_destroy instead."
       },
       "etag": {
         "Type": "String",
@@ -8113,12 +9507,12 @@
       },
       "project": {
         "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Required": true
       },
       "restore_policy": {
         "Type": "String",
-        "Computed": true
+        "Computed": true,
+        "Removed": "This field was removed alongside the authoritative field. To ignore changes not managed by Terraform, use google_project_iam_binding and google_project_iam_member instead. See https://www.terraform.io/docs/providers/google/r/google_project_iam.html for more information."
       }
     },
     "google_project_organization_policy": {
@@ -8211,6 +9605,10 @@
                   }
                 }
               }
+            },
+            "inherit_from_parent": {
+              "Type": "Bool",
+              "Optional": true
             },
             "suggested_value": {
               "Type": "String",
@@ -8587,6 +9985,10 @@
       }
     },
     "google_resource_manager_lien": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
       "create_time": {
         "Type": "String",
         "Computed": true
@@ -8684,7 +10086,7 @@
       "policy_data": {
         "Type": "String",
         "Optional": true,
-        "Deprecated": "Use the 'google_service_account_iam_policy' resource to define policies for a service account"
+        "Removed": "Use the 'google_service_account_iam_policy' resource to define policies for a service account"
       },
       "project": {
         "Type": "String",
@@ -8801,6 +10203,10 @@
       }
     },
     "google_sourcerepo_repository": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
       "name": {
         "Type": "String",
         "Required": true
@@ -9098,6 +10504,10 @@
               "Type": "String",
               "Optional": true,
               "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
             }
           }
         }
@@ -9119,7 +10529,8 @@
       },
       "region": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "replica_configuration": {
         "Type": "List",
@@ -9209,6 +10620,10 @@
             }
           }
         }
+      },
+      "service_account_email_address": {
+        "Type": "String",
+        "Computed": true
       },
       "settings": {
         "Type": "List",
@@ -9329,6 +10744,10 @@
                     "Optional": true,
                     "Computed": true
                   },
+                  "private_network": {
+                    "Type": "String",
+                    "Optional": true
+                  },
                   "require_ssl": {
                     "Type": "Bool",
                     "Optional": true
@@ -9403,6 +10822,44 @@
             }
           }
         }
+      }
+    },
+    "google_sql_ssl_cert": {
+      "cert": {
+        "Type": "String",
+        "Computed": true
+      },
+      "cert_serial_number": {
+        "Type": "String",
+        "Computed": true
+      },
+      "common_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "expiration_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "instance": {
+        "Type": "String",
+        "Required": true
+      },
+      "private_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "server_ca_cert": {
+        "Type": "String",
+        "Computed": true
+      },
+      "sha1_fingerprint": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "google_sql_user": {
@@ -9594,6 +11051,10 @@
         "Optional": true,
         "Computed": true
       },
+      "requester_pays": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "self_link": {
         "Type": "String",
         "Computed": true
@@ -9775,6 +11236,10 @@
         "Optional": true,
         "Removed": "Please use resource \"storage_object_acl.predefined_acl\" instead."
       },
+      "self_link": {
+        "Type": "String",
+        "Computed": true
+      },
       "source": {
         "Type": "String",
         "Optional": true,
@@ -9788,16 +11253,72 @@
         "Computed": true
       }
     },
+    "google_storage_default_object_access_control": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "bucket": {
+        "Type": "String",
+        "Required": true
+      },
+      "domain": {
+        "Type": "String",
+        "Computed": true
+      },
+      "email": {
+        "Type": "String",
+        "Computed": true
+      },
+      "entity": {
+        "Type": "String",
+        "Required": true
+      },
+      "entity_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "generation": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "object": {
+        "Type": "String",
+        "Optional": true
+      },
+      "project_team": {
+        "Type": "List",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "project_number": {
+              "Type": "String",
+              "Optional": true
+            },
+            "team": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "google_storage_default_object_acl": {
       "bucket": {
         "Type": "String",
         "Required": true
       },
       "role_entity": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Computed": true,
-        "MinItems": 1,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -9842,6 +11363,63 @@
         "Required": true
       }
     },
+    "google_storage_object_access_control": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "bucket": {
+        "Type": "String",
+        "Required": true
+      },
+      "domain": {
+        "Type": "String",
+        "Computed": true
+      },
+      "email": {
+        "Type": "String",
+        "Computed": true
+      },
+      "entity": {
+        "Type": "String",
+        "Required": true
+      },
+      "entity_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "generation": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "object": {
+        "Type": "String",
+        "Required": true
+      },
+      "project_team": {
+        "Type": "List",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "project_number": {
+              "Type": "String",
+              "Optional": true
+            },
+            "team": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "google_storage_object_acl": {
       "bucket": {
         "Type": "String",
@@ -9853,15 +11431,290 @@
       },
       "predefined_acl": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "role_entity"
+        ]
       },
       "role_entity": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Computed": true,
+        "ConflictsWith": [
+          "predefined_acl"
+        ],
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
+        }
+      }
+    },
+    "google_storage_transfer_job": {
+      "creation_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "deletion_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Required": true
+      },
+      "last_modification_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "schedule": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "schedule_end_date": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "day": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "month": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "year": {
+                    "Type": "Int",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "schedule_start_date": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "day": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "month": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "year": {
+                    "Type": "Int",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "start_time_of_day": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "hours": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "minutes": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "nanos": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "seconds": {
+                    "Type": "Int",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true
+      },
+      "transfer_spec": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "aws_s3_data_source": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "ConflictsWith": [
+                "transfer_spec.gcs_data_source",
+                "transfer_spec.http_data_source"
+              ],
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "aws_access_key": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "access_key_id": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "secret_access_key": {
+                          "Type": "String",
+                          "Required": true
+                        }
+                      }
+                    }
+                  },
+                  "bucket_name": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "gcs_data_sink": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "bucket_name": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "gcs_data_source": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "ConflictsWith": [
+                "transfer_spec.aws_s3_data_source",
+                "transfer_spec.http_data_source"
+              ],
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "bucket_name": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "http_data_source": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "ConflictsWith": [
+                "transfer_spec.aws_s3_data_source",
+                "transfer_spec.gcs_data_source"
+              ],
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "list_url": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "object_conditions": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "exclude_prefixes": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "include_prefixes": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "max_time_elapsed_since_last_modification": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "min_time_elapsed_since_last_modification": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "transfer_options": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "delete_objects_from_source_after_transfer": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "ConflictsWith": [
+                      "transfer_spec.transfer_options.delete_objects_unique_in_sink"
+                    ]
+                  },
+                  "delete_objects_unique_in_sink": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "ConflictsWith": [
+                      "transfer_spec.transfer_options.delete_objects_from_source_after_transfer"
+                    ]
+                  },
+                  "overwrite_objects_already_existing_in_sink": {
+                    "Type": "Bool",
+                    "Optional": true
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -9942,6 +11795,40 @@
         "Type": "String",
         "Computed": true
       },
+      "environment_variables": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "event_trigger": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "event_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "failure_policy": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "retry": {
+                    "Type": "Bool",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "resource": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "https_trigger_url": {
         "Type": "String",
         "Computed": true
@@ -9966,6 +11853,10 @@
         "Type": "Bool",
         "Computed": true
       },
+      "runtime": {
+        "Type": "String",
+        "Computed": true
+      },
       "source_archive_bucket": {
         "Type": "String",
         "Computed": true
@@ -9973,6 +11864,23 @@
       "source_archive_object": {
         "Type": "String",
         "Computed": true
+      },
+      "source_repository": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "deployed_url": {
+              "Type": "String",
+              "Computed": true
+            },
+            "url": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
       },
       "timeout": {
         "Type": "Int",
@@ -10020,6 +11928,10 @@
       }
     },
     "google_compute_backend_service": {
+      "affinity_cookie_ttl_sec": {
+        "Type": "Int",
+        "Computed": true
+      },
       "backend": {
         "Type": "Set",
         "Computed": true,
@@ -10198,13 +12110,25 @@
       }
     },
     "google_compute_default_service_account": {
+      "display_name": {
+        "Type": "String",
+        "Computed": true
+      },
       "email": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
         "Type": "String",
         "Computed": true
       },
       "project": {
         "Type": "String",
         "Optional": true,
+        "Computed": true
+      },
+      "unique_id": {
+        "Type": "String",
         "Computed": true
       }
     },
@@ -10384,6 +12308,371 @@
       "status": {
         "Type": "String",
         "Computed": true
+      }
+    },
+    "google_compute_instance": {
+      "allow_stopping_for_update": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "attached_disk": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "device_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "disk_encryption_key_raw": {
+              "Type": "String",
+              "Computed": true
+            },
+            "disk_encryption_key_sha256": {
+              "Type": "String",
+              "Computed": true
+            },
+            "mode": {
+              "Type": "String",
+              "Computed": true
+            },
+            "source": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "boot_disk": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "auto_delete": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "device_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "disk_encryption_key_raw": {
+              "Type": "String",
+              "Computed": true
+            },
+            "disk_encryption_key_sha256": {
+              "Type": "String",
+              "Computed": true
+            },
+            "initialize_params": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "image": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "size": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "source": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "can_ip_forward": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "cpu_platform": {
+        "Type": "String",
+        "Computed": true
+      },
+      "create_timeout": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "deletion_protection": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "disk": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "auto_delete": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "device_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "disk": {
+              "Type": "String",
+              "Computed": true
+            },
+            "disk_encryption_key_raw": {
+              "Type": "String",
+              "Computed": true
+            },
+            "disk_encryption_key_sha256": {
+              "Type": "String",
+              "Computed": true
+            },
+            "image": {
+              "Type": "String",
+              "Computed": true
+            },
+            "scratch": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "size": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "guest_accelerator": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "count": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "instance_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "label_fingerprint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "machine_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "metadata": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "metadata_fingerprint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "metadata_startup_script": {
+        "Type": "String",
+        "Computed": true
+      },
+      "min_cpu_platform": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "network_interface": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "access_config": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "assigned_nat_ip": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "nat_ip": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "network_tier": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "public_ptr_domain_name": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "address": {
+              "Type": "String",
+              "Computed": true
+            },
+            "alias_ip_range": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "ip_cidr_range": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "subnetwork_range_name": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "network": {
+              "Type": "String",
+              "Computed": true
+            },
+            "network_ip": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnetwork": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnetwork_project": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true
+      },
+      "scheduling": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "automatic_restart": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "on_host_maintenance": {
+              "Type": "String",
+              "Computed": true
+            },
+            "preemptible": {
+              "Type": "Bool",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "scratch_disk": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "interface": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "self_link": {
+        "Type": "String",
+        "Computed": true
+      },
+      "service_account": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "email": {
+              "Type": "String",
+              "Computed": true
+            },
+            "scopes": {
+              "Type": "Set",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tags_fingerprint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "google_compute_instance_group": {
@@ -10809,6 +13098,40 @@
           }
         }
       },
+      "cluster_autoscaling": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "resource_limits": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "maximum": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "minimum": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "resource_type": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "cluster_ipv4_cidr": {
         "Type": "String",
         "Computed": true
@@ -10826,6 +13149,10 @@
         "Computed": true
       },
       "enable_legacy_abac": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "enable_tpu": {
         "Type": "Bool",
         "Computed": true
       },
@@ -10851,11 +13178,27 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "cluster_ipv4_cidr_block": {
+              "Type": "String",
+              "Computed": true
+            },
             "cluster_secondary_range_name": {
               "Type": "String",
               "Computed": true
             },
+            "create_subnetwork": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "services_ipv4_cidr_block": {
+              "Type": "String",
+              "Computed": true
+            },
             "services_secondary_range_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnetwork_name": {
               "Type": "String",
               "Computed": true
             }
@@ -11177,6 +13520,10 @@
                 }
               }
             },
+            "max_pods_per_node": {
+              "Type": "Int",
+              "Computed": true
+            },
             "name": {
               "Type": "String",
               "Computed": true
@@ -11341,6 +13688,35 @@
         "Type": "Bool",
         "Computed": true
       },
+      "private_cluster_config": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enable_private_endpoint": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "enable_private_nodes": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "master_ipv4_cidr_block": {
+              "Type": "String",
+              "Computed": true
+            },
+            "private_endpoint": {
+              "Type": "String",
+              "Computed": true
+            },
+            "public_endpoint": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "project": {
         "Type": "String",
         "Optional": true
@@ -11386,6 +13762,13 @@
       "project": {
         "Type": "String",
         "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "zone"
+        ]
       },
       "valid_master_versions": {
         "Type": "List",
@@ -11511,6 +13894,40 @@
       }
     },
     "google_iam_policy": {
+      "audit_config": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "audit_log_configs": {
+              "Type": "Set",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "exempted_members": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "log_type": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "service": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "binding": {
         "Type": "Set",
         "Required": true,
@@ -11533,6 +13950,28 @@
         }
       },
       "policy_data": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "google_iam_role": {
+      "included_permissions": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "stage": {
+        "Type": "String",
+        "Computed": true
+      },
+      "title": {
         "Type": "String",
         "Computed": true
       }
@@ -11786,8 +14225,7 @@
       },
       "name": {
         "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Required": true
       },
       "project": {
         "Type": "String",
@@ -11804,10 +14242,70 @@
       "service_account_id": {
         "Type": "String",
         "Optional": true,
-        "ConflictsWith": [
-          "name"
-        ],
-        "Deprecated": "Please use name to specify full service account key path projects/{project}/serviceAccounts/{serviceAccount}/keys/{keyId}"
+        "Computed": true,
+        "Removed": "Please use name to specify full service account key path projects/{project}/serviceAccounts/{serviceAccount}/keys/{keyId}"
+      }
+    },
+    "google_storage_bucket_object": {
+      "bucket": {
+        "Type": "String",
+        "Optional": true
+      },
+      "cache_control": {
+        "Type": "String",
+        "Computed": true
+      },
+      "content": {
+        "Type": "String",
+        "Computed": true
+      },
+      "content_disposition": {
+        "Type": "String",
+        "Computed": true
+      },
+      "content_encoding": {
+        "Type": "String",
+        "Computed": true
+      },
+      "content_language": {
+        "Type": "String",
+        "Computed": true
+      },
+      "content_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "crc32c": {
+        "Type": "String",
+        "Computed": true
+      },
+      "detect_md5hash": {
+        "Type": "String",
+        "Computed": true
+      },
+      "md5hash": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "predefined_acl": {
+        "Type": "String",
+        "Computed": true
+      },
+      "self_link": {
+        "Type": "String",
+        "Computed": true
+      },
+      "source": {
+        "Type": "String",
+        "Computed": true
+      },
+      "storage_class": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "google_storage_object_signed_url": {
@@ -11865,6 +14363,17 @@
       "user_project": {
         "Type": "String",
         "Optional": true
+      }
+    },
+    "google_storage_transfer_project_service_account": {
+      "email": {
+        "Type": "String",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       }
     }
   }

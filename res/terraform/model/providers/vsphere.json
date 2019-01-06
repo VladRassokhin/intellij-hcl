@@ -1,7 +1,7 @@
 {
   "name": "vsphere",
   "type": "provider",
-  "version": "v1.7.0-1-g3bccdeb",
+  "version": "v1.9.0-15-gd12abec",
   "provider": {
     "allow_unverified_ssl": {
       "Type": "Bool",
@@ -57,7 +57,7 @@
       "Description": "The directory to save vSphere REST API sessions to",
       "Default": {
         "Type": "string",
-        "Value": "/home/vlad/.govmomi/rest_sessions"
+        "Value": "/home/ubuntu/.govmomi/rest_sessions"
       }
     },
     "user": {
@@ -76,7 +76,7 @@
       "Description": "The directory to save vSphere SOAP API sessions to",
       "Default": {
         "Type": "string",
-        "Value": "/home/vlad/.govmomi/sessions"
+        "Value": "/home/ubuntu/.govmomi/sessions"
       }
     },
     "vsphere_server": {
@@ -2452,6 +2452,62 @@
         }
       }
     },
+    "vsphere_vapp_entity": {
+      "container_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Managed object ID of the vApp container the entity is a member of."
+      },
+      "custom_attributes": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "A list of custom attributes to set on this resource."
+      },
+      "start_action": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "How to start the entity. Valid settings are none or powerOn. If set to none, then the entity does not participate in auto-start."
+      },
+      "start_delay": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Delay in seconds before continuing with the next entity in the order of entities to be started."
+      },
+      "start_order": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Order to start and stop target in vApp."
+      },
+      "stop_action": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Defines the stop action for the entity. Can be set to none, powerOff, guestShutdown, or suspend. If set to none, then the entity does not participate in auto-stop."
+      },
+      "stop_delay": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Delay in seconds before continuing with the next entity in the order of entities to be stopped."
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "A list of tag IDs to apply to this object.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "target_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Managed object ID of the entity to power on or power off. This can be a virtual machine or a vApp."
+      },
+      "wait_for_guest": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Determines if the VM should be marked as being started when VMware Tools are ready instead of waiting for start_delay. This property has no effect for vApps."
+      }
+    },
     "vsphere_virtual_disk": {
       "adapter_type": {
         "Type": "String",
@@ -3281,7 +3337,8 @@
               "Optional": true,
               "Description": "A map of customizable vApp properties and their values. Allows customization of VMs cloned from OVF templates which have customizable vApp properties.",
               "Elem": {
-                "Value": "String"
+                "Type": "SchemaElements",
+                "ElementsType": "String"
               }
             }
           }
@@ -3604,6 +3661,18 @@
         "Type": "String",
         "Required": true,
         "Description": "The display name of the category."
+      }
+    },
+    "vsphere_vapp_container": {
+      "datacenter_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The Managed Object ID of the datacenter."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the vApp container."
       }
     },
     "vsphere_virtual_machine": {

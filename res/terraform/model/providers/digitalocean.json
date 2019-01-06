@@ -1,7 +1,7 @@
 {
   "name": "digitalocean",
   "type": "provider",
-  "version": "v0.1.3-57-ge74dcd8",
+  "version": "v1.1.0-5-gcc2cfb8",
   "provider": {
     "token": {
       "Type": "String",
@@ -15,9 +15,22 @@
         "Type": "String",
         "Optional": true
       },
+      "domains": {
+        "Type": "Set",
+        "Optional": true,
+        "ConflictsWith": [
+          "private_key",
+          "leaf_certificate",
+          "certificate_chain"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "leaf_certificate": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -29,17 +42,25 @@
       },
       "private_key": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "sha1_fingerprint": {
         "Type": "String",
         "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "digitalocean_domain": {
       "ip_address": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -80,7 +101,11 @@
         "Computed": true
       },
       "locked": {
-        "Type": "String",
+        "Type": "Bool",
+        "Computed": true
+      },
+      "memory": {
+        "Type": "Int",
         "Computed": true
       },
       "monitoring": {
@@ -116,7 +141,7 @@
         "Required": true
       },
       "ssh_keys": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaElements",
@@ -128,7 +153,7 @@
         "Computed": true
       },
       "tags": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaElements",
@@ -144,12 +169,43 @@
         "Computed": true
       },
       "volume_ids": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
+        "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "digitalocean_droplet_snapshot": {
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "droplet_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "min_disk_size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "regions": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "size": {
+        "Type": "Float",
+        "Computed": true
       }
     },
     "digitalocean_firewall": {
@@ -158,15 +214,15 @@
         "Computed": true
       },
       "droplet_ids": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "String"
+          "ElementsType": "Int"
         }
       },
       "inbound_rule": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
@@ -177,10 +233,10 @@
             },
             "protocol": {
               "Type": "String",
-              "Optional": true
+              "Required": true
             },
             "source_addresses": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
               "Elem": {
                 "Type": "SchemaElements",
@@ -188,7 +244,7 @@
               }
             },
             "source_droplet_ids": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
               "Elem": {
                 "Type": "SchemaElements",
@@ -196,7 +252,7 @@
               }
             },
             "source_load_balancer_uids": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
               "Elem": {
                 "Type": "SchemaElements",
@@ -204,7 +260,7 @@
               }
             },
             "source_tags": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
               "Elem": {
                 "Type": "SchemaElements",
@@ -219,13 +275,13 @@
         "Required": true
       },
       "outbound_rule": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "destination_addresses": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
               "Elem": {
                 "Type": "SchemaElements",
@@ -233,7 +289,7 @@
               }
             },
             "destination_droplet_ids": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
               "Elem": {
                 "Type": "SchemaElements",
@@ -241,7 +297,7 @@
               }
             },
             "destination_load_balancer_uids": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
               "Elem": {
                 "Type": "SchemaElements",
@@ -249,7 +305,7 @@
               }
             },
             "destination_tags": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
               "Elem": {
                 "Type": "SchemaElements",
@@ -262,7 +318,7 @@
             },
             "protocol": {
               "Type": "String",
-              "Optional": true
+              "Required": true
             }
           }
         }
@@ -293,7 +349,7 @@
         "Computed": true
       },
       "tags": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaElements",
@@ -316,17 +372,229 @@
         "Required": true
       }
     },
+    "digitalocean_floating_ip_assignment": {
+      "droplet_id": {
+        "Type": "Int",
+        "Required": true
+      },
+      "ip_address": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "digitalocean_kubernetes_cluster": {
+      "cluster_subnet": {
+        "Type": "String",
+        "Computed": true
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ipv4_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "kube_config": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "client_certificate": {
+              "Type": "String",
+              "Computed": true
+            },
+            "client_key": {
+              "Type": "String",
+              "Computed": true
+            },
+            "cluster_ca_certificate": {
+              "Type": "String",
+              "Computed": true
+            },
+            "host": {
+              "Type": "String",
+              "Computed": true
+            },
+            "raw_config": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "node_pool": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "node_count": {
+              "Type": "Int",
+              "Required": true
+            },
+            "nodes": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "created_at": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "id": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "status": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "updated_at": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "size": {
+              "Type": "String",
+              "Required": true
+            },
+            "tags": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "region": {
+        "Type": "String",
+        "Required": true
+      },
+      "service_subnet": {
+        "Type": "String",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "version": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "digitalocean_kubernetes_node_pool": {
+      "cluster_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "node_count": {
+        "Type": "Int",
+        "Required": true
+      },
+      "nodes": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "created_at": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "status": {
+              "Type": "String",
+              "Computed": true
+            },
+            "updated_at": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "size": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "digitalocean_loadbalancer": {
       "algorithm": {
         "Type": "String",
         "Optional": true
       },
       "droplet_ids": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "droplet_tag"
+        ],
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "String"
+          "ElementsType": "Int"
         }
       },
       "droplet_tag": {
@@ -370,6 +638,7 @@
       "healthcheck": {
         "Type": "List",
         "Optional": true,
+        "Computed": true,
         "MaxItems": 1,
         "Elem": {
           "Type": "SchemaInfo",
@@ -421,6 +690,10 @@
         "Type": "String",
         "Required": true
       },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
       "sticky_sessions": {
         "Type": "List",
         "Optional": true,
@@ -451,9 +724,8 @@
         "Required": true
       },
       "flags": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Type": "Int",
+        "Optional": true
       },
       "fqdn": {
         "Type": "String",
@@ -461,24 +733,22 @@
       },
       "name": {
         "Type": "String",
-        "Optional": true
+        "Required": true
       },
       "port": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Type": "Int",
+        "Optional": true
       },
       "priority": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Type": "Int",
+        "Optional": true
       },
       "tag": {
         "Type": "String",
         "Optional": true
       },
       "ttl": {
-        "Type": "String",
+        "Type": "Int",
         "Optional": true,
         "Computed": true
       },
@@ -488,21 +758,15 @@
       },
       "value": {
         "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Required": true
       },
       "weight": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Type": "Int",
+        "Optional": true
       }
     },
     "digitalocean_ssh_key": {
       "fingerprint": {
-        "Type": "String",
-        "Computed": true
-      },
-      "id": {
         "Type": "String",
         "Computed": true
       },
@@ -534,13 +798,26 @@
           "ElementsType": "Int"
         }
       },
+      "filesystem_label": {
+        "Type": "String",
+        "Computed": true
+      },
       "filesystem_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "initial_filesystem_type"
+        ],
+        "Deprecated": "This fields functionality has been replaced by `initial_filesystem_type`. The property will still remain as a computed attribute representing the current volumes filesystem type."
+      },
+      "initial_filesystem_label": {
         "Type": "String",
         "Optional": true
       },
-      "id": {
+      "initial_filesystem_type": {
         "Type": "String",
-        "Computed": true
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -553,10 +830,90 @@
       "size": {
         "Type": "Int",
         "Required": true
+      },
+      "snapshot_id": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "digitalocean_volume_attachment": {
+      "droplet_id": {
+        "Type": "Int",
+        "Required": true
+      },
+      "volume_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "digitalocean_volume_snapshot": {
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "min_disk_size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "regions": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "size": {
+        "Type": "Float",
+        "Computed": true
+      },
+      "volume_id": {
+        "Type": "String",
+        "Required": true
       }
     }
   },
   "data-sources": {
+    "digitalocean_certificate": {
+      "domains": {
+        "Type": "Set",
+        "Description": "domains for which the certificate was issued",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of the certificate"
+      },
+      "not_after": {
+        "Type": "String",
+        "Description": "expiration date and time of the certificate",
+        "Computed": true
+      },
+      "sha1_fingerprint": {
+        "Type": "String",
+        "Description": "SHA1 fingerprint of the certificate",
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Description": "current state of the certificate",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Description": "type of the certificate",
+        "Computed": true
+      }
+    },
     "digitalocean_domain": {
       "name": {
         "Type": "String",
@@ -574,7 +931,188 @@
         "Computed": true
       }
     },
+    "digitalocean_droplet": {
+      "backups": {
+        "Type": "Bool",
+        "Description": "whether the droplet has backups enabled",
+        "Computed": true
+      },
+      "disk": {
+        "Type": "Int",
+        "Description": "the size of the droplets disk in gigabytes",
+        "Computed": true
+      },
+      "image": {
+        "Type": "String",
+        "Description": "the image id or slug of the Droplet",
+        "Computed": true
+      },
+      "ipv4_address": {
+        "Type": "String",
+        "Description": "the droplets public ipv4 address",
+        "Computed": true
+      },
+      "ipv4_address_private": {
+        "Type": "String",
+        "Description": "the droplets private ipv4 address",
+        "Computed": true
+      },
+      "ipv6": {
+        "Type": "Bool",
+        "Description": "whether the droplet has ipv6 enabled",
+        "Computed": true
+      },
+      "ipv6_address": {
+        "Type": "String",
+        "Description": "the droplets public ipv6 address",
+        "Computed": true
+      },
+      "ipv6_address_private": {
+        "Type": "String",
+        "Description": "the droplets private ipv4 address",
+        "Computed": true
+      },
+      "locked": {
+        "Type": "Bool",
+        "Description": "whether the droplet has been locked",
+        "Computed": true
+      },
+      "memory": {
+        "Type": "Int",
+        "Description": "memory of the droplet in megabytes",
+        "Computed": true
+      },
+      "monitoring": {
+        "Type": "Bool",
+        "Description": "whether the droplet has monitoring enabled",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of the droplet"
+      },
+      "price_hourly": {
+        "Type": "Float",
+        "Description": "the droplets hourly price",
+        "Computed": true
+      },
+      "price_monthly": {
+        "Type": "Float",
+        "Description": "the droplets monthly price",
+        "Computed": true
+      },
+      "private_networking": {
+        "Type": "Bool",
+        "Description": "whether the droplet has private networking enabled",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Description": "the region that the droplet instance is deployed in",
+        "Computed": true
+      },
+      "size": {
+        "Type": "String",
+        "Description": "the current size of the Droplet",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Description": "state of the droplet instance",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "vcpus": {
+        "Type": "Int",
+        "Description": "the number of virtual cpus",
+        "Computed": true
+      },
+      "volume_ids": {
+        "Type": "Set",
+        "Description": "list of volumes attached to the droplet",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "digitalocean_droplet_snapshot": {
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "droplet_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "min_disk_size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "most_recent": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "name"
+        ]
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true
+      },
+      "regions": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "size": {
+        "Type": "Float",
+        "Computed": true
+      }
+    },
+    "digitalocean_floating_ip": {
+      "droplet_id": {
+        "Type": "Int",
+        "Description": "the droplet id that the floating ip has been assigned to.",
+        "Computed": true
+      },
+      "ip_address": {
+        "Type": "String",
+        "Required": true,
+        "Description": "floating ip address"
+      },
+      "region": {
+        "Type": "String",
+        "Description": "the region that the floating ip is reserved to",
+        "Computed": true
+      }
+    },
     "digitalocean_image": {
+      "distribution": {
+        "Type": "String",
+        "Description": "distribution of the OS of the image",
+        "Computed": true
+      },
       "image": {
         "Type": "String",
         "Description": "slug or id of the image",
@@ -587,8 +1125,11 @@
       },
       "name": {
         "Type": "String",
-        "Required": true,
-        "Description": "name of the image"
+        "Optional": true,
+        "Description": "name of the image",
+        "ConflictsWith": [
+          "slug"
+        ]
       },
       "private": {
         "Type": "Bool",
@@ -596,7 +1137,7 @@
         "Computed": true
       },
       "regions": {
-        "Type": "List",
+        "Type": "Set",
         "Description": "list of the regions that the image is available in",
         "Computed": true,
         "Elem": {
@@ -604,10 +1145,314 @@
           "ElementsType": "String"
         }
       },
+      "slug": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "slug of the image"
+      },
       "type": {
         "Type": "String",
         "Description": "type of the image",
         "Computed": true
+      }
+    },
+    "digitalocean_kubernetes_cluster": {
+      "cluster_subnet": {
+        "Type": "String",
+        "Computed": true
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ipv4_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "kube_config": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "client_certificate": {
+              "Type": "String",
+              "Computed": true
+            },
+            "client_key": {
+              "Type": "String",
+              "Computed": true
+            },
+            "cluster_ca_certificate": {
+              "Type": "String",
+              "Computed": true
+            },
+            "host": {
+              "Type": "String",
+              "Computed": true
+            },
+            "raw_config": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "node_pool": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "node_count": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "nodes": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "created_at": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "id": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "status": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "updated_at": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "size": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tags": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "region": {
+        "Type": "String",
+        "Computed": true
+      },
+      "service_subnet": {
+        "Type": "String",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "version": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "digitalocean_loadbalancer": {
+      "algorithm": {
+        "Type": "String",
+        "Description": "algorithm used to determine which backend Droplet will be selected by a client",
+        "Computed": true
+      },
+      "droplet_ids": {
+        "Type": "Set",
+        "Description": "ids of the droplets assigned to the load balancer",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
+        }
+      },
+      "droplet_tag": {
+        "Type": "String",
+        "Description": "the name of a tag corresponding to droplets assigned to the load balancer",
+        "Computed": true
+      },
+      "forwarding_rule": {
+        "Type": "List",
+        "Description": "list of forwarding rules of the load balancer",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "certificate_id": {
+              "Type": "String",
+              "Description": "the id of the tls certificate used for ssl termination if enabled",
+              "Computed": true
+            },
+            "entry_port": {
+              "Type": "Int",
+              "Description": "the port on which the load balancer instance will listen",
+              "Computed": true
+            },
+            "entry_protocol": {
+              "Type": "String",
+              "Description": "the protocol used for traffic to the load balancer",
+              "Computed": true
+            },
+            "target_port": {
+              "Type": "Int",
+              "Description": "the port on the backend Droplets to which the load balancer will send traffic",
+              "Computed": true
+            },
+            "target_protocol": {
+              "Type": "String",
+              "Description": "the protocol used for traffic to the backend droplets",
+              "Computed": true
+            },
+            "tls_passthrough": {
+              "Type": "Bool",
+              "Description": "whether ssl encrypted traffic will be passed through to the backend droplets",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "healthcheck": {
+        "Type": "List",
+        "Description": "health check settings for the load balancer",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "check_interval_seconds": {
+              "Type": "Int",
+              "Description": "the number of seconds between between two consecutive health checks",
+              "Computed": true
+            },
+            "healthy_threshold": {
+              "Type": "Int",
+              "Description": "the number of times a health check must pass for a backend droplet to be marked 'healthy' and be re-added to the pool",
+              "Computed": true
+            },
+            "path": {
+              "Type": "String",
+              "Description": "the path on the backend Droplets to which the Load Balancer will send a request",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Description": "the port on the backend droplets on which the health check will attempt a connection",
+              "Computed": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Description": "the protocol used for health checks sent to the backend droplets",
+              "Computed": true
+            },
+            "response_timeout_seconds": {
+              "Type": "Int",
+              "Description": "the number of seconds to wait for a response until marking a health check as failed",
+              "Computed": true
+            },
+            "unhealthy_threshold": {
+              "Type": "Int",
+              "Description": "The number of times a health check must fail for a backend droplet to be marked 'unhealthy' and be removed from the pool",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "ip": {
+        "Type": "String",
+        "Description": "public-facing IP address of the load balancer",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of the load balancer"
+      },
+      "redirect_http_to_https": {
+        "Type": "Bool",
+        "Description": "whether http requests will be redirected to https",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Description": "the region that the load blanacer is deployed in",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Description": "current state of the Load Balancer",
+        "Computed": true
+      },
+      "sticky_sessions": {
+        "Type": "List",
+        "Description": "sticky sessions settings for the load balancer",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cookie_name": {
+              "Type": "String",
+              "Description": "the name of the cookie sent to the client",
+              "Computed": true
+            },
+            "cookie_ttl_seconds": {
+              "Type": "Int",
+              "Description": "the number of seconds until the cookie set by the Load Balancer expires",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Description": "how and if requests from a client will be persistently served by the same backend droplet",
+              "Computed": true
+            }
+          }
+        }
       }
     },
     "digitalocean_record": {
@@ -624,11 +1469,6 @@
       "flags": {
         "Type": "Int",
         "Description": "flags of the name record",
-        "Computed": true
-      },
-      "id": {
-        "Type": "Int",
-        "Description": "id of the name record",
         "Computed": true
       },
       "name": {
@@ -664,6 +1504,116 @@
       "weight": {
         "Type": "Int",
         "Description": "weight of the name record",
+        "Computed": true
+      }
+    },
+    "digitalocean_ssh_key": {
+      "fingerprint": {
+        "Type": "String",
+        "Description": "fingerprint of the ssh key",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of the ssh key"
+      },
+      "public_key": {
+        "Type": "String",
+        "Description": "public key part of the ssh key",
+        "Computed": true
+      }
+    },
+    "digitalocean_tag": {
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of the tag"
+      }
+    },
+    "digitalocean_volume": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "volume description"
+      },
+      "droplet_ids": {
+        "Type": "Set",
+        "Description": "list of droplet ids the volume is attached to",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
+        }
+      },
+      "filesystem_label": {
+        "Type": "String",
+        "Description": "the label currently applied to the filesystem",
+        "Computed": true
+      },
+      "filesystem_type": {
+        "Type": "String",
+        "Description": "the type of filesystem currently in-use on the volume",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of the volume"
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "the region that the volume is provisioned in"
+      },
+      "size": {
+        "Type": "Int",
+        "Description": "the size of the volume in gigabytes",
+        "Computed": true
+      }
+    },
+    "digitalocean_volume_snapshot": {
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "min_disk_size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "most_recent": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "name"
+        ]
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true
+      },
+      "regions": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "size": {
+        "Type": "Float",
+        "Computed": true
+      },
+      "volume_id": {
+        "Type": "String",
         "Computed": true
       }
     }

@@ -1,0 +1,3546 @@
+{
+  "name": "rightscale",
+  "type": "provider",
+  "version": "v1.3.0-7-gb77bec6",
+  "provider": {
+    "rightscale_api_token": {
+      "Type": "String",
+      "Required": true,
+      "Description": "API token used to authenticate the RightScale API requests"
+    },
+    "rightscale_project_id": {
+      "Type": "String",
+      "Required": true,
+      "Description": "ID of RightScale project used to provision resources"
+    }
+  },
+  "resources": {
+    "rightscale_credential": {
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "description of the credential object"
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of the credential object"
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "value": {
+        "Type": "String",
+        "Required": true,
+        "Description": "value of the credential object"
+      }
+    },
+    "rightscale_cwf_process": {
+      "error": {
+        "Type": "String",
+        "Description": "process execution error if any",
+        "Computed": true
+      },
+      "outputs": {
+        "Type": "Map",
+        "Description": "process outputs if any",
+        "Computed": true
+      },
+      "parameters": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "main definition parameter values in order of declaration",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "kind": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Entities have a kind and a value.\n  * The kind for a JSON value corresponds to the JSON type name ('string',\n  'number', 'bool', 'null', 'array', 'object')\n  * The kind for a resource declaration is 'declaration'\n  * The kind for a resource collection is 'collection'"
+            },
+            "value": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Entities have a kind and a value.\n  * The value for entities of kind 'string', 'number', 'bool', 'null', 'array'\n    or 'object' is the JSON reprensentation of the underlying value.\n  * The value for a resource collection is a JSON object with the following keys:\n      - 'namespace' contains a string representing the collection namespace (e.g. 'rs')\n      - 'type' contains a string representing the collection type (e.g. 'servers')\n      - 'hrefs' contains an arry of strings representing the hrefs of the resources in the collection\n      - 'details' contains an array of hashes representing the resource attributes\n  * The value for a resource declaration is a JSON object with the following keys:\n      - 'namespace' contains a string representing the declaration namespace (e.g. 'rs')\n      - 'type' contains a string reprensenting the declaration type (e.g. 'servers')\n      - 'fields' contains a hash reprensenting the data needed to create the resource\n      - 'dependencies' contains an array that lists names of references this declaration depends on"
+            }
+          }
+        }
+      },
+      "source": {
+        "Type": "String",
+        "Required": true,
+        "Description": "process source code, must contain a definition called 'main'"
+      },
+      "status": {
+        "Type": "String",
+        "Description": "process status, one of \"completed\", \"failed\", \"canceled\" or \"aborted\"",
+        "Computed": true
+      }
+    },
+    "rightscale_deployment": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "description of deployment"
+      },
+      "href": {
+        "Type": "String",
+        "Description": "href of deployment",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "locked": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "whether deployment is locked"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of deployment"
+      },
+      "resource_group_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID of the Windows Azure Resource Group attached to the deployment"
+      },
+      "server_tag_scope": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "routing scope for tags for servers in the deployment"
+      }
+    },
+    "rightscale_instance": {
+      "associate_public_ip_address": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Specify whether or not you want a public IP assigned when this Instance is launched. Only applies to Network-enabled Instances. If this is not specified, it will default to true."
+      },
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ID of the instance cloud"
+      },
+      "cloud_specific_attributes": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Cloud specific attributes that have no generic rightscale abstraction",
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "admin_username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The user that will be granted administrative privileges. Supported by AzureRM cloud only. For more information, review the documentation."
+            },
+            "automatic_instance_store_mapping": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "A flag indicating whether instance store mapping should be enabled. Not supported in all Clouds."
+            },
+            "availability_set": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Availability set for raw instance. Supported by Azure v2 cloud only."
+            },
+            "create_boot_volume": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "If enabled, the instance will launch into volume storage. Otherwise, it will boot to local storage."
+            },
+            "create_default_port_forwarding_rules": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Automatically create default port forwarding rules (enabled by default). Supported by Azure cloud only."
+            },
+            "delete_boot_volume": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "If enabled, the associated volume will be deleted when the instance is terminated."
+            },
+            "disk_gb": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The size of root disk. Supported by UCA cloud only."
+            },
+            "ebs_optimized": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Whether the instance is able to connect to IOPS-enabled volumes."
+            },
+            "iam_instance_profile": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The name or ARN of the IAM Instance Profile (IIP) to associate with the instance (Amazon only)"
+            },
+            "keep_alive_id": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The id of keep alive. Supported by UCA cloud only."
+            },
+            "keep_alive_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "he ulr of keep alive. Supported by UCA cloud only."
+            },
+            "local_ssd_count": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Additional local SSDs. Supported by GCE cloud only"
+            },
+            "local_ssd_interface": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The type of SSD(s) to be created. Supported by GCE cloud only"
+            },
+            "max_spot_price": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specify the max spot price you will pay for. Required when 'pricing_type' is 'spot'. Only applies to clouds which support spot-pricing and when 'spot' is chosen as the 'pricing_type'. Should be a Float value \u003e= 0.001, eg: 0.095, 0.123, 1.23, etc..."
+            },
+            "memory_mb": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The size of instance memory. Supported by UCA cloud only."
+            },
+            "metadata": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Extra data used for configuration, in query string format."
+            },
+            "num_cores": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The number of instance cores. Supported by UCA cloud only."
+            },
+            "placement_tenancy": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The tenancy of the server you want to launch. A server with a tenancy of dedicated runs on single-tenant hardware and can only be launched into a VPC."
+            },
+            "preemptible": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Launch a preemptible instance. A preemptible instance costs much less, but lasts only 24 hours. It can be terminated sooner due to system demands. Supported by GCE cloud only."
+            },
+            "pricing_type": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specify whether or not you want to utilize 'fixed' (on-demand) or 'spot' pricing. Defaults to 'fixed' and only applies to clouds which support spot instances. Can only be set on when creating a new Instance, Server, or ServerArray, or when updating a Server or ServerArray's next_instance.WARNING: By using spot pricing, you acknowledge that your instance/server/array may not be able to be launched (and arrays may be unable to grow) as newly launched instances might be stuck in bidding, and/or existing instances may be terminated at any time, due to the cloud's spot pricing changes and availability."
+            },
+            "root_volume_performance": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The number of IOPS (I/O Operations Per Second) this root volume should support. Only available on clouds supporting performance provisioning."
+            },
+            "root_volume_size": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The size for root disk. Not supported in all Clouds."
+            },
+            "root_volume_type_uid": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The type of root volume for instance. Only available on clouds supporting root volume type."
+            },
+            "service_account": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Email of service account for instance. Scope will default to cloud-platform. Supported by GCE cloud only."
+            }
+          }
+        }
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "datacenter_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ID of the instance datacenter"
+      },
+      "deployment_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ID of the instance deployment"
+      },
+      "image_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ID of the instance image"
+      },
+      "inputs": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Inputs associated with an instance when incarnated from a server or server array",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "instance_type_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ID of the instance type"
+      },
+      "ip_forwarding_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Allows this Instance to send and receive network traffic when the source and destination IP addresses do not match the IP address of this Instance."
+      },
+      "kernel_image_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ID of the instance kernel image."
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "locked": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "whether instance is locked, a locked instance cannot be terminated or deleted"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the instance"
+      },
+      "placement_group_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The placement group to launch the instance in. Not supported by all clouds \u0026 instance types."
+      },
+      "pricing_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "private_ip_address": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The private ip address for the instance"
+      },
+      "private_ip_addresses": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "public_ip_addresses": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "ramdisk_image_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ID of the ramdisk image"
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "security_group_hrefs": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The IDs of the security groups",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "server_template_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ID of the server template."
+      },
+      "ssh_key_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ID of the SSH key to use"
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "subnet_hrefs": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The IDs of the instance subnets",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "user_data": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "User data that RightScale automatically passes to your instance at boot time"
+      }
+    },
+    "rightscale_network": {
+      "cidr_block": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "range of IP addresses for network, this parameter is required for Amazon clouds"
+      },
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of cloud to create network in"
+      },
+      "deployment_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Optional href of deployment that owns the network."
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "description of network"
+      },
+      "href": {
+        "Type": "String",
+        "Description": "href of network",
+        "Computed": true
+      },
+      "instance_tenancy": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "launch policy for AWS instances in the network. Specify 'dedicated' to force all instances to be launched as 'dedicated'."
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "name of network"
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "route_table_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "sets the default route table for this network"
+      }
+    },
+    "rightscale_network_gateway": {
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of cloud in which to create network gateway"
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "description of network gateway"
+      },
+      "href": {
+        "Type": "String",
+        "Description": "href of network gateway",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of network gateway"
+      },
+      "network_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "network href to attach to"
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "type of network gateway"
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_route": {
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of route"
+      },
+      "destination_cidr_block": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Destination network in CIDR nodation"
+      },
+      "href": {
+        "Type": "String",
+        "Description": "Href of route table",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "next_hop_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The href of the Route's next hop. Required if 'next_hop_type' is 'instance', 'network_interface', or 'network_gateway'. Not allowed otherwise.",
+        "ConflictsWith": [
+          "next_hop_ip",
+          "next_hop_url"
+        ]
+      },
+      "next_hop_ip": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The IP Address of the Route's next hop. Required if 'next_hop_type' is 'ip_string'. Not allowed otherwise.",
+        "ConflictsWith": [
+          "next_hop_url",
+          "next_hop_href"
+        ]
+      },
+      "next_hop_type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The route next hop type.  Options are 'instance', 'network_interface', 'network_gateway', 'ip_string', and 'url'"
+      },
+      "next_hop_url": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The URL of the Route's next hop. Required if 'next_hop_type' is 'url'. Not allowed otherwise.",
+        "ConflictsWith": [
+          "next_hop_ip",
+          "next_hop_href"
+        ]
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "route_table_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Href of route table in which to create new route"
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_route_table": {
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Href of cloud in which to create route table"
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of route table"
+      },
+      "href": {
+        "Type": "String",
+        "Description": "Href of route table",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of route table"
+      },
+      "network_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Href of network in which to create route table"
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_security_group": {
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "href of the security group cloud"
+      },
+      "deployment_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Optional href of deployment that owns the security group"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "description of the security group"
+      },
+      "href": {
+        "Type": "String",
+        "Description": "href of security group",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of the security group"
+      },
+      "network_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "href of the network to create the security group in"
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_security_group_rule": {
+      "cidr_ips": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "An IP address range in CIDR notation. Required if source_type is 'cidr'. Conflicts with 'group_name' and 'group_owner'",
+        "ConflictsWith": [
+          "group_name",
+          "group_owner"
+        ]
+      },
+      "direction": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Direction of traffic.  Options are 'ingress' or 'egress.'"
+      },
+      "group_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Name of source Security Group. Required if source_type is 'group'.  Conflicts with 'cidr_ips'.",
+        "ConflictsWith": [
+          "cidr_ips"
+        ]
+      },
+      "group_owner": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Owner of source Security Group. Required if source_type is 'group'. Conflicts with 'cidr_ips'.",
+        "ConflictsWith": [
+          "cidr_ips"
+        ]
+      },
+      "href": {
+        "Type": "String",
+        "Description": "Href of security group rule",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "priority": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Lower takes precedence. Supported by security group rules created in Microsoft Azure only."
+      },
+      "protocol": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Protocol to filter on.  Options are 'tcp', 'udp', 'icmp' and 'all'."
+      },
+      "protocol_details": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "end_port": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "End of port range (inclusive). Required if protocol is 'tcp' or 'udp'."
+            },
+            "icmp_code": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ICMP code. Required if protocol is 'icmp'."
+            },
+            "icmp_type": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ICMP type. Required if protocol is 'icmp'."
+            },
+            "start_port": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Start of port range (inclusive). Required if protocol is 'tcp' or 'udp'."
+            }
+          }
+        }
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "security_group_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Href of parent security group"
+      },
+      "source_type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Source type. May be a CIDR block or another Security Group. Options are 'cidr_ips' or 'group'."
+      }
+    },
+    "rightscale_server": {
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "deployment_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID of deployment in which to create server"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "description of server"
+      },
+      "href": {
+        "Type": "String",
+        "Description": "href of server",
+        "Computed": true
+      },
+      "instance": {
+        "Type": "List",
+        "Required": true,
+        "Description": "server instance details",
+        "MaxItems": 1,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "associate_public_ip_address": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specify whether or not you want a public IP assigned when this Instance is launched. Only applies to Network-enabled Instances. If this is not specified, it will default to true."
+            },
+            "cloud_href": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The ID of the instance cloud"
+            },
+            "cloud_specific_attributes": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Cloud specific attributes that have no generic rightscale abstraction",
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "admin_username": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The user that will be granted administrative privileges. Supported by AzureRM cloud only. For more information, review the documentation."
+                  },
+                  "automatic_instance_store_mapping": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "A flag indicating whether instance store mapping should be enabled. Not supported in all Clouds."
+                  },
+                  "availability_set": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Availability set for raw instance. Supported by Azure v2 cloud only."
+                  },
+                  "create_boot_volume": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "If enabled, the instance will launch into volume storage. Otherwise, it will boot to local storage."
+                  },
+                  "create_default_port_forwarding_rules": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Automatically create default port forwarding rules (enabled by default). Supported by Azure cloud only."
+                  },
+                  "delete_boot_volume": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "If enabled, the associated volume will be deleted when the instance is terminated."
+                  },
+                  "disk_gb": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The size of root disk. Supported by UCA cloud only."
+                  },
+                  "ebs_optimized": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Whether the instance is able to connect to IOPS-enabled volumes."
+                  },
+                  "iam_instance_profile": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The name or ARN of the IAM Instance Profile (IIP) to associate with the instance (Amazon only)"
+                  },
+                  "keep_alive_id": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The id of keep alive. Supported by UCA cloud only."
+                  },
+                  "keep_alive_url": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "he ulr of keep alive. Supported by UCA cloud only."
+                  },
+                  "local_ssd_count": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Additional local SSDs. Supported by GCE cloud only"
+                  },
+                  "local_ssd_interface": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The type of SSD(s) to be created. Supported by GCE cloud only"
+                  },
+                  "max_spot_price": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Specify the max spot price you will pay for. Required when 'pricing_type' is 'spot'. Only applies to clouds which support spot-pricing and when 'spot' is chosen as the 'pricing_type'. Should be a Float value \u003e= 0.001, eg: 0.095, 0.123, 1.23, etc..."
+                  },
+                  "memory_mb": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The size of instance memory. Supported by UCA cloud only."
+                  },
+                  "metadata": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Extra data used for configuration, in query string format."
+                  },
+                  "num_cores": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The number of instance cores. Supported by UCA cloud only."
+                  },
+                  "placement_tenancy": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The tenancy of the server you want to launch. A server with a tenancy of dedicated runs on single-tenant hardware and can only be launched into a VPC."
+                  },
+                  "preemptible": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Launch a preemptible instance. A preemptible instance costs much less, but lasts only 24 hours. It can be terminated sooner due to system demands. Supported by GCE cloud only."
+                  },
+                  "pricing_type": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Specify whether or not you want to utilize 'fixed' (on-demand) or 'spot' pricing. Defaults to 'fixed' and only applies to clouds which support spot instances. Can only be set on when creating a new Instance, Server, or ServerArray, or when updating a Server or ServerArray's next_instance.WARNING: By using spot pricing, you acknowledge that your instance/server/array may not be able to be launched (and arrays may be unable to grow) as newly launched instances might be stuck in bidding, and/or existing instances may be terminated at any time, due to the cloud's spot pricing changes and availability."
+                  },
+                  "root_volume_performance": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The number of IOPS (I/O Operations Per Second) this root volume should support. Only available on clouds supporting performance provisioning."
+                  },
+                  "root_volume_size": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The size for root disk. Not supported in all Clouds."
+                  },
+                  "root_volume_type_uid": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The type of root volume for instance. Only available on clouds supporting root volume type."
+                  },
+                  "service_account": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Email of service account for instance. Scope will default to cloud-platform. Supported by GCE cloud only."
+                  }
+                }
+              }
+            },
+            "created_at": {
+              "Type": "String",
+              "Computed": true
+            },
+            "datacenter_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the instance datacenter"
+            },
+            "deployment_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the instance deployment"
+            },
+            "image_href": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The ID of the instance image"
+            },
+            "inputs": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Inputs associated with an instance when incarnated from a server or server array",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "Map"
+              }
+            },
+            "instance_type_href": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The ID of the instance type"
+            },
+            "ip_forwarding_enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Allows this Instance to send and receive network traffic when the source and destination IP addresses do not match the IP address of this Instance."
+            },
+            "kernel_image_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the instance kernel image."
+            },
+            "links": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "Map"
+              }
+            },
+            "locked": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "whether instance is locked, a locked instance cannot be terminated or deleted"
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The name of the instance"
+            },
+            "placement_group_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The placement group to launch the instance in. Not supported by all clouds \u0026 instance types."
+            },
+            "pricing_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "private_ip_address": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The private ip address for the instance"
+            },
+            "private_ip_addresses": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "public_ip_addresses": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "ramdisk_image_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the ramdisk image"
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Computed": true
+            },
+            "security_group_hrefs": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The IDs of the security groups",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "server_template_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the server template."
+            },
+            "ssh_key_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the SSH key to use"
+            },
+            "state": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnet_hrefs": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The IDs of the instance subnets",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "updated_at": {
+              "Type": "String",
+              "Computed": true
+            },
+            "user_data": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "User data that RightScale automatically passes to your instance at boot time"
+            }
+          }
+        }
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of server"
+      },
+      "optimized": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "A flag indicating whether Instances of this Server should be optimized for high-performance volumes (e.g. Volumes supporting a specified number of IOPS). Not supported in all Clouds."
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Tags to apply to server and associated instance",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_server_array": {
+      "array_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The array type for the Server Array."
+      },
+      "datacenter_policy": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "datacenter_href": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The href of the Datacenter / Zone."
+            },
+            "max": {
+              "Type": "Int",
+              "Required": true,
+              "Description": "Max instances (0 for unlimited)."
+            },
+            "weight": {
+              "Type": "Int",
+              "Required": true,
+              "Description": "Instance allocation (should total 100%)."
+            }
+          }
+        }
+      },
+      "deployment_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID of deployment in which to create server_array"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "description of server_array"
+      },
+      "elasticity_params": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "alert_specific_params": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Alert based server array params, required if 'array_type' is 'alert'",
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "decision_threshold": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The percentage of servers that must agree in order to trigger an alert before an action is taken."
+                  },
+                  "voters_tag_predicate": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The Voters Tag that RightScale will use in order to determine when to scale up/down."
+                  }
+                }
+              }
+            },
+            "bounds": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "max_count": {
+                    "Type": "Int",
+                    "Required": true,
+                    "Description": "The maximum number of servers that can be operational at the same time in the server array."
+                  },
+                  "min_count": {
+                    "Type": "Int",
+                    "Required": true,
+                    "Description": "The minimum number of servers that must be operational at all times in the server array."
+                  }
+                }
+              }
+            },
+            "pacing": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "resize_calm_time": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The time (in minutes) on how long you want to wait before you repeat another action."
+                  },
+                  "resize_down_by": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The number of servers to scale down by."
+                  },
+                  "resize_up_by": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The number of servers to scale up by."
+                  }
+                }
+              }
+            },
+            "queue_specific_params": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "collect_audit_entries": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The audit SQS queue that will store audit entries."
+                  },
+                  "item_age": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "algorithm": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "The algorithm that defines how an item's age will be determined, either by the average age or max (oldest) age."
+                        },
+                        "max_age": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Description": "The threshold (in seconds) before a resize action occurs on the server array."
+                        },
+                        "regexp": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "The regexp that helps the system determine an item's \"age\" in the queue. Example: created_at: (\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d UTC)"
+                        }
+                      }
+                    }
+                  },
+                  "queue_size": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "items_per_instance": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Description": "Defines the ratio of worker instances per items in the queue. Example: If there are 50 items in the queue and \"Items per instance\" is set to 10, the server array will resize to 5 worker instances (50/10). Default = 1"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "schedule": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "day": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Specifies the day when an alert-based array resizes."
+                  },
+                  "max_count": {
+                    "Type": "Int",
+                    "Required": true,
+                    "Description": "The maximum number of servers that must be operational at all times in the server array. NOTE: Any changes that are made to the min/max count in the server array schedule will overwrite the array's default min/max count settings."
+                  },
+                  "min_count": {
+                    "Type": "Int",
+                    "Required": true,
+                    "Description": "The minimum number of servers that must be operational at all times in the server array. NOTE: Any changes that are made to the min/max count in the server array schedule will overwrite the array's default min/max count settings."
+                  },
+                  "time": {
+                    "Type": "String",
+                    "Required": true,
+                    "Description": "Specifies the time when an alert-based array resizes."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Description": "href of array",
+        "Computed": true
+      },
+      "instance": {
+        "Type": "List",
+        "Required": true,
+        "Description": "server array instance details",
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "associate_public_ip_address": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specify whether or not you want a public IP assigned when this Instance is launched. Only applies to Network-enabled Instances. If this is not specified, it will default to true."
+            },
+            "cloud_href": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The ID of the instance cloud"
+            },
+            "cloud_specific_attributes": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Cloud specific attributes that have no generic rightscale abstraction",
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "admin_username": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The user that will be granted administrative privileges. Supported by AzureRM cloud only. For more information, review the documentation."
+                  },
+                  "automatic_instance_store_mapping": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "A flag indicating whether instance store mapping should be enabled. Not supported in all Clouds."
+                  },
+                  "availability_set": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Availability set for raw instance. Supported by Azure v2 cloud only."
+                  },
+                  "create_boot_volume": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "If enabled, the instance will launch into volume storage. Otherwise, it will boot to local storage."
+                  },
+                  "create_default_port_forwarding_rules": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Automatically create default port forwarding rules (enabled by default). Supported by Azure cloud only."
+                  },
+                  "delete_boot_volume": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "If enabled, the associated volume will be deleted when the instance is terminated."
+                  },
+                  "disk_gb": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The size of root disk. Supported by UCA cloud only."
+                  },
+                  "ebs_optimized": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Whether the instance is able to connect to IOPS-enabled volumes."
+                  },
+                  "iam_instance_profile": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The name or ARN of the IAM Instance Profile (IIP) to associate with the instance (Amazon only)"
+                  },
+                  "keep_alive_id": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The id of keep alive. Supported by UCA cloud only."
+                  },
+                  "keep_alive_url": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "he ulr of keep alive. Supported by UCA cloud only."
+                  },
+                  "local_ssd_count": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Additional local SSDs. Supported by GCE cloud only"
+                  },
+                  "local_ssd_interface": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The type of SSD(s) to be created. Supported by GCE cloud only"
+                  },
+                  "max_spot_price": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Specify the max spot price you will pay for. Required when 'pricing_type' is 'spot'. Only applies to clouds which support spot-pricing and when 'spot' is chosen as the 'pricing_type'. Should be a Float value \u003e= 0.001, eg: 0.095, 0.123, 1.23, etc..."
+                  },
+                  "memory_mb": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The size of instance memory. Supported by UCA cloud only."
+                  },
+                  "metadata": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Extra data used for configuration, in query string format."
+                  },
+                  "num_cores": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The number of instance cores. Supported by UCA cloud only."
+                  },
+                  "placement_tenancy": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The tenancy of the server you want to launch. A server with a tenancy of dedicated runs on single-tenant hardware and can only be launched into a VPC."
+                  },
+                  "preemptible": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Launch a preemptible instance. A preemptible instance costs much less, but lasts only 24 hours. It can be terminated sooner due to system demands. Supported by GCE cloud only."
+                  },
+                  "pricing_type": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Specify whether or not you want to utilize 'fixed' (on-demand) or 'spot' pricing. Defaults to 'fixed' and only applies to clouds which support spot instances. Can only be set on when creating a new Instance, Server, or ServerArray, or when updating a Server or ServerArray's next_instance.WARNING: By using spot pricing, you acknowledge that your instance/server/array may not be able to be launched (and arrays may be unable to grow) as newly launched instances might be stuck in bidding, and/or existing instances may be terminated at any time, due to the cloud's spot pricing changes and availability."
+                  },
+                  "root_volume_performance": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The number of IOPS (I/O Operations Per Second) this root volume should support. Only available on clouds supporting performance provisioning."
+                  },
+                  "root_volume_size": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The size for root disk. Not supported in all Clouds."
+                  },
+                  "root_volume_type_uid": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The type of root volume for instance. Only available on clouds supporting root volume type."
+                  },
+                  "service_account": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Email of service account for instance. Scope will default to cloud-platform. Supported by GCE cloud only."
+                  }
+                }
+              }
+            },
+            "created_at": {
+              "Type": "String",
+              "Computed": true
+            },
+            "datacenter_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the instance datacenter"
+            },
+            "deployment_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the instance deployment"
+            },
+            "image_href": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The ID of the instance image"
+            },
+            "inputs": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Inputs associated with an instance when incarnated from a server or server array",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "Map"
+              }
+            },
+            "instance_type_href": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The ID of the instance type"
+            },
+            "ip_forwarding_enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Allows this Instance to send and receive network traffic when the source and destination IP addresses do not match the IP address of this Instance."
+            },
+            "kernel_image_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the instance kernel image."
+            },
+            "links": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "Map"
+              }
+            },
+            "locked": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "whether instance is locked, a locked instance cannot be terminated or deleted"
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The name of the instance"
+            },
+            "placement_group_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The placement group to launch the instance in. Not supported by all clouds \u0026 instance types."
+            },
+            "pricing_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "private_ip_address": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The private ip address for the instance"
+            },
+            "private_ip_addresses": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "public_ip_addresses": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "ramdisk_image_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the ramdisk image"
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Computed": true
+            },
+            "security_group_hrefs": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The IDs of the security groups",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "server_template_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the server template."
+            },
+            "ssh_key_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the SSH key to use"
+            },
+            "state": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnet_hrefs": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The IDs of the instance subnets",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "updated_at": {
+              "Type": "String",
+              "Computed": true
+            },
+            "user_data": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "User data that RightScale automatically passes to your instance at boot time"
+            }
+          }
+        }
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of server array"
+      },
+      "optimized": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "A flag indicating whether Instances of this ServerArray should be optimized for high-performance volumes (e.g. Volumes supporting a specified number of IOPS). Not supported in all Clouds."
+      },
+      "state": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The status of the server array. If active, the server array is enabled for scaling actions."
+      }
+    },
+    "rightscale_ssh_key": {
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ID of the cloud to operate against"
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of SSH key"
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_subnet": {
+      "cidr_block": {
+        "Type": "String",
+        "Required": true,
+        "Description": "range of IP addresses for subnet, this parameter is required for Amazon clouds"
+      },
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Href of cloud resource"
+      },
+      "datacenter_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID of subnet datacenter"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "description of subnet"
+      },
+      "href": {
+        "Type": "String",
+        "Description": "href of subnet",
+        "Computed": true
+      },
+      "is_default": {
+        "Type": "Bool",
+        "Description": "whether the subnet is the network default subnet",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "name of subnet"
+      },
+      "network_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of subnet network"
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Description": "cloud ID of subnet resource",
+        "Computed": true
+      },
+      "route_table_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID of subnet route table"
+      },
+      "state": {
+        "Type": "String",
+        "Description": "indicates whether subnet is pending, available etc.",
+        "Computed": true
+      }
+    }
+  },
+  "data-sources": {
+    "rightscale_cloud": {
+      "cloud_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cloud_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_credential": {
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "description of credential"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of credential, uses partial match"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "value": {
+        "Type": "String",
+        "Computed": true
+      },
+      "view": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Filter at api level for the view: 'default' or 'sensitive' are valid options"
+      }
+    },
+    "rightscale_datacenter": {
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Href of datacenter cloud resource"
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Optional": true
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "cloud ID - if this filter is set additional retry logic will fire to allow for cloud resource discovery"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_deployment": {
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "description of deployment, uses partial match"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of deployment, uses partial match"
+            },
+            "resource_group_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "resource group href to filter on"
+            },
+            "server_tag_scope": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "tag routing scope of deployments to filter on, uses partial match"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "locked": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "server_tag_scope": {
+        "Type": "String",
+        "Computed": true
+      },
+      "view": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Filter at api level for the view: 'default,' 'inputs' or 'inputs_2_0' are valid options"
+      }
+    },
+    "rightscale_image": {
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of image cloud resource"
+      },
+      "cpu_architecture": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cpu_architecture": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "CPU architecture of image, e.g. 'x86_64', uses partial match"
+            },
+            "description": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "description of image, uses partial match"
+            },
+            "image_type": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The Image Type to filter on. This will be either \"machine\", \"machine_azure\", \"ramdisk\" or \"kernel\""
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of image, uses partial match"
+            },
+            "os_platform": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The image's operating system to filter on. Examples: Linux or Windows."
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "cloud ID - if this filter is set additional retry logic will fire to allow for cloud resource discovery"
+            },
+            "visibility": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The visibility of the Image in the cloud to filter on, defaults to 'private.' Options: private, public."
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "image_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "os_platform": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "root_device_storage": {
+        "Type": "String",
+        "Computed": true
+      },
+      "virtualization_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "visibility": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_instance": {
+      "associate_public_ip_address": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "cloud_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID of instance cloud resource, exclusive with 'server_array_href'",
+        "ConflictsWith": [
+          "server_array_href"
+        ]
+      },
+      "cloud_specific_attributes": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Cloud specific attributes that have no generic rightscale abstraction",
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "admin_username": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The user that will be granted administrative privileges. Supported by AzureRM cloud only. For more information, review the documentation."
+            },
+            "automatic_instance_store_mapping": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "A flag indicating whether instance store mapping should be enabled. Not supported in all Clouds."
+            },
+            "availability_set": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Availability set for raw instance. Supported by Azure v2 cloud only."
+            },
+            "create_boot_volume": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "If enabled, the instance will launch into volume storage. Otherwise, it will boot to local storage."
+            },
+            "create_default_port_forwarding_rules": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Automatically create default port forwarding rules (enabled by default). Supported by Azure cloud only."
+            },
+            "delete_boot_volume": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "If enabled, the associated volume will be deleted when the instance is terminated."
+            },
+            "disk_gb": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The size of root disk. Supported by UCA cloud only."
+            },
+            "ebs_optimized": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Whether the instance is able to connect to IOPS-enabled volumes."
+            },
+            "iam_instance_profile": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The name or ARN of the IAM Instance Profile (IIP) to associate with the instance (Amazon only)"
+            },
+            "keep_alive_id": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The id of keep alive. Supported by UCA cloud only."
+            },
+            "keep_alive_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "he ulr of keep alive. Supported by UCA cloud only."
+            },
+            "local_ssd_count": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Additional local SSDs. Supported by GCE cloud only"
+            },
+            "local_ssd_interface": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The type of SSD(s) to be created. Supported by GCE cloud only"
+            },
+            "max_spot_price": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specify the max spot price you will pay for. Required when 'pricing_type' is 'spot'. Only applies to clouds which support spot-pricing and when 'spot' is chosen as the 'pricing_type'. Should be a Float value \u003e= 0.001, eg: 0.095, 0.123, 1.23, etc..."
+            },
+            "memory_mb": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The size of instance memory. Supported by UCA cloud only."
+            },
+            "metadata": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Extra data used for configuration, in query string format."
+            },
+            "num_cores": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The number of instance cores. Supported by UCA cloud only."
+            },
+            "placement_tenancy": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The tenancy of the server you want to launch. A server with a tenancy of dedicated runs on single-tenant hardware and can only be launched into a VPC."
+            },
+            "preemptible": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Launch a preemptible instance. A preemptible instance costs much less, but lasts only 24 hours. It can be terminated sooner due to system demands. Supported by GCE cloud only."
+            },
+            "pricing_type": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specify whether or not you want to utilize 'fixed' (on-demand) or 'spot' pricing. Defaults to 'fixed' and only applies to clouds which support spot instances. Can only be set on when creating a new Instance, Server, or ServerArray, or when updating a Server or ServerArray's next_instance.WARNING: By using spot pricing, you acknowledge that your instance/server/array may not be able to be launched (and arrays may be unable to grow) as newly launched instances might be stuck in bidding, and/or existing instances may be terminated at any time, due to the cloud's spot pricing changes and availability."
+            },
+            "root_volume_performance": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The number of IOPS (I/O Operations Per Second) this root volume should support. Only available on clouds supporting performance provisioning."
+            },
+            "root_volume_size": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The size for root disk. Not supported in all Clouds."
+            },
+            "root_volume_type_uid": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The type of root volume for instance. Only available on clouds supporting root volume type."
+            },
+            "service_account": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Email of service account for instance. Scope will default to cloud-platform. Supported by GCE cloud only."
+            }
+          }
+        }
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "datacenter_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of the instance datacenter resource"
+            },
+            "deployment_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of deployment resource that owns instance"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of instance, uses partial match"
+            },
+            "os_platform": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "OS platform of instance"
+            },
+            "parent_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of instance server or server array parent resource"
+            },
+            "placement_group_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of instance placement group resource"
+            },
+            "private_dns_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Private DNS name of instance"
+            },
+            "private_ip": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Private IP instance"
+            },
+            "public_dns_name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Public DNS name of instance"
+            },
+            "public_ip": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Public IP of instance"
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "cloud ID - if this filter is set additional retry logic will fire to allow for cloud resource discovery"
+            },
+            "server_template_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of instance server template resource"
+            },
+            "state": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "state of instance"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "locked": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "pricing_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "private_ip_addresses": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "public_ip_addresses": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "server_array_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID of instance server array resource, exclusive with 'cloud_href'",
+        "ConflictsWith": [
+          "cloud_href"
+        ]
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_instance_type": {
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of instance cloud resource"
+      },
+      "cpu_architecture": {
+        "Type": "String",
+        "Computed": true
+      },
+      "cpu_count": {
+        "Type": "String",
+        "Computed": true
+      },
+      "cpu_speed": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cpu_architecture": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "CPU architecture of instance type, e.g. 'x86_64'"
+            },
+            "description": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "description of instance type, uses partial match"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of instance type, uses partial match"
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "cloud ID - if this filter is set additional retry logic will fire to allow for cloud resource discovery"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "memory": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_multi_cloud_image": {
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "description of multi-cloud image, partial match"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of multi-cloud image, partial match"
+            },
+            "revision": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "revision of multi-cloud image, use 0 to match latest non-committed version"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "revision": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "server_template_href": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID of image's server template resource"
+      }
+    },
+    "rightscale_network": {
+      "cidr_block": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cidr_block": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "CIDR of the network resource"
+            },
+            "cloud_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of the network cloud"
+            },
+            "deployment_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of deployment resource that owns network"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of network, uses partial match"
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "cloud ID - if this filter is set additional retry logic will fire to allow for cloud resource discovery"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "instance_tenancy": {
+        "Type": "String",
+        "Computed": true
+      },
+      "is_default": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_network_gateway": {
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cloud_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "filter by href of the specified cloud"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "filter by name of network gateway, uses partial match"
+            },
+            "network_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "filter by network href"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_route_table": {
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cloud_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Href of the route table's cloud"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of route table, uses partial match"
+            },
+            "network_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Href of the route table's network"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "routes": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      }
+    },
+    "rightscale_security_group": {
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of the security group cloud"
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "deployment_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of deployment resource that owns security group"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of security group, uses partial match"
+            },
+            "network_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of the security group network resource"
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "cloud ID - if this filter is set additional retry logic will fire to allow for cloud resource discovery"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_server": {
+      "description": {
+        "Type": "String",
+        "Description": "description of server",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cloud_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of cloud the server is in"
+            },
+            "deployment_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of deployment the server is in"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of server"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "instance": {
+        "Type": "List",
+        "Description": "server instance details",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "associate_public_ip_address": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specify whether or not you want a public IP assigned when this Instance is launched. Only applies to Network-enabled Instances. If this is not specified, it will default to true."
+            },
+            "cloud_href": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The ID of the instance cloud"
+            },
+            "cloud_specific_attributes": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Cloud specific attributes that have no generic rightscale abstraction",
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "admin_username": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The user that will be granted administrative privileges. Supported by AzureRM cloud only. For more information, review the documentation."
+                  },
+                  "automatic_instance_store_mapping": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "A flag indicating whether instance store mapping should be enabled. Not supported in all Clouds."
+                  },
+                  "availability_set": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Availability set for raw instance. Supported by Azure v2 cloud only."
+                  },
+                  "create_boot_volume": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "If enabled, the instance will launch into volume storage. Otherwise, it will boot to local storage."
+                  },
+                  "create_default_port_forwarding_rules": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Automatically create default port forwarding rules (enabled by default). Supported by Azure cloud only."
+                  },
+                  "delete_boot_volume": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "If enabled, the associated volume will be deleted when the instance is terminated."
+                  },
+                  "disk_gb": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The size of root disk. Supported by UCA cloud only."
+                  },
+                  "ebs_optimized": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Whether the instance is able to connect to IOPS-enabled volumes."
+                  },
+                  "iam_instance_profile": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The name or ARN of the IAM Instance Profile (IIP) to associate with the instance (Amazon only)"
+                  },
+                  "keep_alive_id": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The id of keep alive. Supported by UCA cloud only."
+                  },
+                  "keep_alive_url": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "he ulr of keep alive. Supported by UCA cloud only."
+                  },
+                  "local_ssd_count": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Additional local SSDs. Supported by GCE cloud only"
+                  },
+                  "local_ssd_interface": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The type of SSD(s) to be created. Supported by GCE cloud only"
+                  },
+                  "max_spot_price": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Specify the max spot price you will pay for. Required when 'pricing_type' is 'spot'. Only applies to clouds which support spot-pricing and when 'spot' is chosen as the 'pricing_type'. Should be a Float value \u003e= 0.001, eg: 0.095, 0.123, 1.23, etc..."
+                  },
+                  "memory_mb": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The size of instance memory. Supported by UCA cloud only."
+                  },
+                  "metadata": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Extra data used for configuration, in query string format."
+                  },
+                  "num_cores": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The number of instance cores. Supported by UCA cloud only."
+                  },
+                  "placement_tenancy": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The tenancy of the server you want to launch. A server with a tenancy of dedicated runs on single-tenant hardware and can only be launched into a VPC."
+                  },
+                  "preemptible": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Launch a preemptible instance. A preemptible instance costs much less, but lasts only 24 hours. It can be terminated sooner due to system demands. Supported by GCE cloud only."
+                  },
+                  "pricing_type": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Specify whether or not you want to utilize 'fixed' (on-demand) or 'spot' pricing. Defaults to 'fixed' and only applies to clouds which support spot instances. Can only be set on when creating a new Instance, Server, or ServerArray, or when updating a Server or ServerArray's next_instance.WARNING: By using spot pricing, you acknowledge that your instance/server/array may not be able to be launched (and arrays may be unable to grow) as newly launched instances might be stuck in bidding, and/or existing instances may be terminated at any time, due to the cloud's spot pricing changes and availability."
+                  },
+                  "root_volume_performance": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The number of IOPS (I/O Operations Per Second) this root volume should support. Only available on clouds supporting performance provisioning."
+                  },
+                  "root_volume_size": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The size for root disk. Not supported in all Clouds."
+                  },
+                  "root_volume_type_uid": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "The type of root volume for instance. Only available on clouds supporting root volume type."
+                  },
+                  "service_account": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Email of service account for instance. Scope will default to cloud-platform. Supported by GCE cloud only."
+                  }
+                }
+              }
+            },
+            "created_at": {
+              "Type": "String",
+              "Computed": true
+            },
+            "datacenter_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the instance datacenter"
+            },
+            "deployment_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the instance deployment"
+            },
+            "image_href": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The ID of the instance image"
+            },
+            "inputs": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Inputs associated with an instance when incarnated from a server or server array",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "Map"
+              }
+            },
+            "instance_type_href": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The ID of the instance type"
+            },
+            "ip_forwarding_enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Allows this Instance to send and receive network traffic when the source and destination IP addresses do not match the IP address of this Instance."
+            },
+            "kernel_image_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the instance kernel image."
+            },
+            "links": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "Map"
+              }
+            },
+            "locked": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "whether instance is locked, a locked instance cannot be terminated or deleted"
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The name of the instance"
+            },
+            "placement_group_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The placement group to launch the instance in. Not supported by all clouds \u0026 instance types."
+            },
+            "pricing_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "private_ip_address": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The private ip address for the instance"
+            },
+            "private_ip_addresses": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "public_ip_addresses": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "ramdisk_image_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the ramdisk image"
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Computed": true
+            },
+            "security_group_hrefs": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The IDs of the security groups",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "server_template_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the server template."
+            },
+            "ssh_key_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The ID of the SSH key to use"
+            },
+            "state": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnet_hrefs": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "The IDs of the instance subnets",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "updated_at": {
+              "Type": "String",
+              "Computed": true
+            },
+            "user_data": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "User data that RightScale automatically passes to your instance at boot time"
+            }
+          }
+        }
+      },
+      "links": {
+        "Type": "List",
+        "Description": "Hrefs of related API resources",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "name of server"
+      },
+      "optimized": {
+        "Type": "Bool",
+        "Description": "A flag indicating whether Instances of this Server should be optimized for high-performance volumes (e.g. Volumes supporting a specified number of IOPS). Not supported in all Clouds.",
+        "Computed": true
+      }
+    },
+    "rightscale_server_template": {
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "description of ServerTemplate, partial match"
+            },
+            "lineage": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "lineage of ServerTemplate"
+            },
+            "multi_cloud_image_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of ServerTemplate multi cloud image resource"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of ServerTemplate, partial match"
+            },
+            "revision": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "revision of ServerTemplate, use 0 to match latest non-committed version"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "lineage": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "revision": {
+        "Type": "Int",
+        "Computed": true
+      }
+    },
+    "rightscale_ssh_key": {
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of the SSH key cloud"
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of SSH key, uses partial match"
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "cloud ID - if this filter is set additional retry logic will fire to allow for cloud resource discovery"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "material": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "view": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Filter at api level for the view: 'default' or 'sensitive' are valid options"
+      }
+    },
+    "rightscale_subnet": {
+      "cidr_block": {
+        "Type": "String",
+        "Computed": true
+      },
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of the subnet cloud"
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "datacenter_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Href of the subnet datacenter resource"
+            },
+            "instance_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Href of instance resource attached to subnet"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of subnet, uses partial match"
+            },
+            "network_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Href of network resource that owns subnet"
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "cloud ID - if this filter is set additional retry logic will fire to allow for cloud resource discovery"
+            },
+            "visibility": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Visibility of the subnet to filter by (private, shared, etc)"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "is_default": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "visibility": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_volume": {
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of the volume cloud"
+      },
+      "cloud_specific_attributes": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "datacenter_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of the volume datacenter resource"
+            },
+            "deployment_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of deployment resource that owns volume"
+            },
+            "description": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "description of volume, uses partial match"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of volume, uses partial match"
+            },
+            "parent_volume_snapshot_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of volume snapshot that volume was created from"
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "cloud ID - if this filter is set additional retry logic will fire to allow for cloud resource discovery"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_volume_snapshot": {
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of the volume snapshot cloud"
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "deployment_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of deployment resource that owns volume snapshot"
+            },
+            "description": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "description of volume snapshot, uses partial match"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of volume snapshot, uses partial match"
+            },
+            "parent_volume_href": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of volume resource from which volume snapshot was created"
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "cloud ID - if this filter is set additional retry logic will fire to allow for cloud resource discovery"
+            },
+            "state": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "state of the volume snapshot"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "rightscale_volume_type": {
+      "cloud_href": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of the volume type cloud"
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "name of volume type, uses partial match"
+            },
+            "resource_uid": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "cloud ID - if this filter is set additional retry logic will fire to allow for cloud resource discovery"
+            }
+          }
+        }
+      },
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "links": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      }
+    }
+  }
+}

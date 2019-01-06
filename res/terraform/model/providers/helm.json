@@ -1,0 +1,428 @@
+{
+  "name": "helm",
+  "type": "provider",
+  "version": "v0.7.0-2-g91657cb28",
+  "provider": {
+    "automount_service_account_token": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "Auto-mount the given service account to tiller."
+    },
+    "ca_certificate": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "PEM-encoded root certificates bundle for TLS authentication."
+    },
+    "client_certificate": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "PEM-encoded client certificate for TLS authentication."
+    },
+    "client_key": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "PEM-encoded client certificate key for TLS authentication."
+    },
+    "debug": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "Debug indicates whether or not Helm is running in Debug mode."
+    },
+    "enable_tls": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "Enables TLS communications with the Tiller."
+    },
+    "home": {
+      "Type": "String",
+      "Required": true,
+      "Description": "Set an alternative location for Helm files. By default, these are stored in '~/.helm'.",
+      "Default": {
+        "Type": "string",
+        "Value": "/home/ubuntu/.helm"
+      }
+    },
+    "host": {
+      "Type": "String",
+      "Required": true,
+      "Description": "Set an alternative Tiller host. The format is host:port.",
+      "Default": {
+        "Type": "string"
+      }
+    },
+    "insecure": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "Whether server should be accessed without verifying the TLS certificate."
+    },
+    "install_tiller": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "Install Tiller if it is not already installed."
+    },
+    "kubernetes": {
+      "Type": "List",
+      "Optional": true,
+      "Description": "Kubernetes configuration.",
+      "MaxItems": 1,
+      "Elem": {
+        "Type": "SchemaInfo",
+        "Info": {
+          "client_certificate": {
+            "Type": "String",
+            "Optional": true,
+            "Description": "PEM-encoded client certificate for TLS authentication. Can be sourced from `KUBE_CLIENT_CERT_DATA`.",
+            "Default": {
+              "Type": "string"
+            }
+          },
+          "client_key": {
+            "Type": "String",
+            "Optional": true,
+            "Description": "PEM-encoded client certificate key for TLS authentication. Can be sourced from `KUBE_CLIENT_KEY_DATA`.",
+            "Default": {
+              "Type": "string"
+            }
+          },
+          "cluster_ca_certificate": {
+            "Type": "String",
+            "Optional": true,
+            "Description": "PEM-encoded root certificates bundle for TLS authentication. Can be sourced from `KUBE_CLUSTER_CA_CERT_DATA`.",
+            "Default": {
+              "Type": "string"
+            }
+          },
+          "config_context": {
+            "Type": "String",
+            "Optional": true,
+            "Description": "Context to choose from the config file. Can be sourced from `KUBE_CTX`.",
+            "Default": {
+              "Type": "string"
+            }
+          },
+          "config_path": {
+            "Type": "String",
+            "Optional": true,
+            "Description": "Path to the kube config file, defaults to ~/.kube/config. Can be sourced from `KUBE_CONFIG`.",
+            "Default": {
+              "Type": "string",
+              "Value": "~/.kube/config"
+            }
+          },
+          "host": {
+            "Type": "String",
+            "Optional": true,
+            "Description": "The hostname (in form of URI) of Kubernetes master. Can be sourced from `KUBE_HOST`.",
+            "Default": {
+              "Type": "string"
+            }
+          },
+          "in_cluster": {
+            "Type": "Bool",
+            "Optional": true,
+            "Description": "Retrieve config from Kubernetes cluster."
+          },
+          "insecure": {
+            "Type": "Bool",
+            "Optional": true,
+            "Description": "Whether server should be accessed without verifying the TLS certificate. Can be sourced from `KUBE_INSECURE`.",
+            "Default": {
+              "Type": "bool",
+              "Value": "false"
+            }
+          },
+          "password": {
+            "Type": "String",
+            "Optional": true,
+            "Description": "The password to use for HTTP basic authentication when accessing the Kubernetes master endpoint. Can be sourced from `KUBE_PASSWORD`.",
+            "Default": {
+              "Type": "string"
+            }
+          },
+          "token": {
+            "Type": "String",
+            "Optional": true,
+            "Description": "The bearer token to use for authentication when accessing the Kubernetes master endpoint. Can be sourced from `KUBE_BEARER_TOKEN`.",
+            "Default": {
+              "Type": "string"
+            }
+          },
+          "username": {
+            "Type": "String",
+            "Optional": true,
+            "Description": "The username to use for HTTP basic authentication when accessing the Kubernetes master endpoint. Can be sourced from `KUBE_USER`.",
+            "Default": {
+              "Type": "string"
+            }
+          }
+        }
+      }
+    },
+    "max_history": {
+      "Type": "Int",
+      "Optional": true,
+      "Description": "Maximum number of release versions stored per release."
+    },
+    "namespace": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Set an alternative Tiller namespace."
+    },
+    "override": {
+      "Type": "List",
+      "Optional": true,
+      "Description": "Override values for the Tiller Deployment manifest.",
+      "Elem": {
+        "Type": "SchemaElements",
+        "ElementsType": "String"
+      }
+    },
+    "plugins_disable": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "Disable plugins. Set HELM_NO_PLUGINS=1 to disable plugins.",
+      "Default": {
+        "Type": "string",
+        "Value": "true"
+      }
+    },
+    "service_account": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Service account to install Tiller with."
+    },
+    "tiller_image": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Tiller image to install."
+    }
+  },
+  "resources": {
+    "helm_release": {
+      "chart": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Chart name to be installed."
+      },
+      "devel": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Use chart development versions, too. Equivalent to version '\u003e0.0.0-0'. If version is set, this is ignored"
+      },
+      "disable_webhooks": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Prevent hooks from running."
+      },
+      "force_update": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Force resource update through delete/recreate if needed."
+      },
+      "keyring": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Location of public keys used for verification."
+      },
+      "metadata": {
+        "Type": "Set",
+        "Description": "Status of the deployed release.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "chart": {
+              "Type": "String",
+              "Description": "The name of the chart.",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Description": "Name is the name of the release.",
+              "Computed": true
+            },
+            "namespace": {
+              "Type": "String",
+              "Description": "Namespace is the kubernetes namespace of the release.",
+              "Computed": true
+            },
+            "revision": {
+              "Type": "Int",
+              "Description": "Version is an int32 which represents the version of the release.",
+              "Computed": true
+            },
+            "status": {
+              "Type": "String",
+              "Description": "Status of the release.",
+              "Computed": true
+            },
+            "values": {
+              "Type": "String",
+              "Description": "The raw yaml values used for the chart.",
+              "Computed": true
+            },
+            "version": {
+              "Type": "String",
+              "Description": "A SemVer 2 conformant version string of the chart.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Release name."
+      },
+      "namespace": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Namespace to install the release into."
+      },
+      "recreate_pods": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Perform pods restart during upgrade/rollback"
+      },
+      "repository": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Repository where to locate the requested chart. If is an URL the chart is installed without installing the repository."
+      },
+      "reuse": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Instruct Tiller to re-use an existing name."
+      },
+      "reuse_values": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Reuse values when upgrading the release."
+      },
+      "set": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Custom values to be merge with the values.",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "value": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "set_string": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Custom string values to be merge with the values.",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "value": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Time in seconds to wait for any individual kubernetes operation."
+      },
+      "values": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "List of values in raw yaml file to pass to helm.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "verify": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Verify the package before installing it."
+      },
+      "version": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specify the exact chart version to install. If this is not specified, the latest version is installed.",
+        "Computed": true
+      },
+      "wait": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Will wait until all resources are in a ready state before marking the release as successful."
+      }
+    },
+    "helm_repository": {
+      "ca_file": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Verify certificates of HTTPS-enabled servers using this CA bundle."
+      },
+      "cert_file": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Identify HTTPS client using this SSL certificate file."
+      },
+      "key_file": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Identify HTTPS client using this SSL key file."
+      },
+      "metadata": {
+        "Type": "Set",
+        "Description": "Status of the deployed release.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Description": "Name of the repository read from the home.",
+              "Computed": true
+            },
+            "url": {
+              "Type": "String",
+              "Description": "URL of the repository read from the home.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Chart repository name."
+      },
+      "password": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Password for HTTP basic authentication."
+      },
+      "url": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Chart repository URL."
+      },
+      "username": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Username for HTTP basic authentication."
+      }
+    }
+  },
+  "data-sources": {}
+}

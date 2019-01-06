@@ -1,7 +1,7 @@
 {
   "name": "hcloud",
   "type": "provider",
-  "version": "v1.2.0-9-g546ccdf",
+  "version": "v1.7.0-1-gf4031b0",
   "provider": {
     "endpoint": {
       "Type": "String",
@@ -32,12 +32,27 @@
         "Type": "String",
         "Computed": true
       },
+      "labels": {
+        "Type": "Map",
+        "Optional": true
+      },
       "server_id": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "type": {
         "Type": "String",
+        "Required": true
+      }
+    },
+    "hcloud_floating_ip_assignment": {
+      "floating_ip_id": {
+        "Type": "Int",
+        "Required": true
+      },
+      "server_id": {
+        "Type": "Int",
         "Required": true
       }
     },
@@ -62,6 +77,11 @@
     "hcloud_server": {
       "backup_window": {
         "Type": "String",
+        "Computed": true,
+        "Deprecated": "You should remove this property from your terraform configuration."
+      },
+      "backups": {
+        "Type": "Bool",
         "Optional": true
       },
       "datacenter": {
@@ -91,6 +111,10 @@
       },
       "keep_disk": {
         "Type": "Bool",
+        "Optional": true
+      },
+      "labels": {
+        "Type": "Map",
         "Optional": true
       },
       "location": {
@@ -132,6 +156,10 @@
         "Type": "String",
         "Computed": true
       },
+      "labels": {
+        "Type": "Map",
+        "Optional": true
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -140,7 +168,332 @@
         "Type": "String",
         "Required": true
       }
+    },
+    "hcloud_volume": {
+      "automount": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "format": {
+        "Type": "String",
+        "Optional": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "linux_device": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "server_id": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "size": {
+        "Type": "Int",
+        "Required": true
+      }
+    },
+    "hcloud_volume_attachment": {
+      "automount": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "server_id": {
+        "Type": "Int",
+        "Required": true
+      },
+      "volume_id": {
+        "Type": "Int",
+        "Required": true
+      }
     }
   },
-  "data-sources": {}
+  "data-sources": {
+    "hcloud_datacenter": {
+      "available_server_type_ids": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "id": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "location": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "supported_server_type_ids": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
+        }
+      }
+    },
+    "hcloud_datacenters": {
+      "datacenter_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "descriptions": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "names": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "hcloud_floating_ip": {
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "home_location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "id": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "ip_address": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "ip_network": {
+        "Type": "String",
+        "Computed": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "selector": {
+        "Type": "String",
+        "Optional": true
+      },
+      "server_id": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "hcloud_image": {
+      "created": {
+        "Type": "String",
+        "Computed": true
+      },
+      "deprecated": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "id": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "most_recent": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "os_flavor": {
+        "Type": "String",
+        "Computed": true
+      },
+      "os_version": {
+        "Type": "String",
+        "Computed": true
+      },
+      "rapid_deploy": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "selector": {
+        "Type": "String",
+        "Optional": true
+      },
+      "type": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "hcloud_location": {
+      "city": {
+        "Type": "String",
+        "Computed": true
+      },
+      "country": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "id": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "latitude": {
+        "Type": "Float",
+        "Computed": true
+      },
+      "longitude": {
+        "Type": "Float",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "hcloud_locations": {
+      "descriptions": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "location_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "names": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "hcloud_ssh_key": {
+      "fingerprint": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "id": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "public_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "selector": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "hcloud_volume": {
+      "id": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "linux_device": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "selector": {
+        "Type": "String",
+        "Optional": true
+      },
+      "server": {
+        "Type": "String",
+        "Optional": true
+      },
+      "size": {
+        "Type": "Int",
+        "Computed": true
+      }
+    }
+  }
 }

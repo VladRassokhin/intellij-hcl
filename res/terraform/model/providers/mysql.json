@@ -1,7 +1,7 @@
 {
   "name": "mysql",
   "type": "provider",
-  "version": "v1.1.0-4-g7234a32",
+  "version": "v1.5.0-2-gffcbe5a",
   "provider": {
     "endpoint": {
       "Type": "String",
@@ -10,6 +10,14 @@
     "password": {
       "Type": "String",
       "Optional": true
+    },
+    "tls": {
+      "Type": "String",
+      "Optional": true,
+      "Default": {
+        "Type": "string",
+        "Value": "false"
+      }
     },
     "username": {
       "Type": "String",
@@ -42,17 +50,56 @@
       },
       "host": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "role"
+        ]
       },
       "privileges": {
         "Type": "Set",
-        "Required": true,
+        "Optional": true,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
       },
+      "role": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "user",
+          "host"
+        ]
+      },
+      "roles": {
+        "Type": "Set",
+        "Optional": true,
+        "ConflictsWith": [
+          "privileges"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "table": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tls_option": {
+        "Type": "String",
+        "Optional": true
+      },
       "user": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "role"
+        ]
+      }
+    },
+    "mysql_role": {
+      "name": {
         "Type": "String",
         "Required": true
       }
@@ -81,6 +128,32 @@
       "plaintext_password": {
         "Type": "String",
         "Optional": true
+      },
+      "tls_option": {
+        "Type": "String",
+        "Optional": true
+      },
+      "user": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "mysql_user_password": {
+      "encrypted_password": {
+        "Type": "String",
+        "Computed": true
+      },
+      "host": {
+        "Type": "String",
+        "Optional": true
+      },
+      "key_fingerprint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "pgp_key": {
+        "Type": "String",
+        "Required": true
       },
       "user": {
         "Type": "String",
