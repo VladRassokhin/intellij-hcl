@@ -46,14 +46,19 @@ open class InterpolationHint(hint: String) : SimpleHint(hint)
 open class SimpleValueHint(vararg hint: String) : SimpleHint(*hint)
 
 // TODO: Support 'default' values for certain types
-open class PropertyType(val name: String, val type: Type,
+open class PropertyType(override val name: String, val type: Type,
                         val hint: Hint? = null,
                         val injectionAllowed: Boolean = true,
                         description: String? = null,
                         required: Boolean = false, deprecated: String? = null, computed: Boolean = false,
                         conflictsWith: List<String> = emptyList(),
                         val has_default: Boolean = false
-) : BaseModelType(description = description, required = required, deprecated = deprecated, computed = computed, conflictsWith = conflictsWith) {
+) : BaseModelType(description = description, required = required, deprecated = deprecated, computed = computed, conflictsWith = conflictsWith), PropertyOrBlockType {
+  override val property: PropertyType
+    get() = this
+  override val block: BlockType?
+    get() = null
+
   override fun toString(): String {
     return "PropertyType(name='$name', type='$type')"
   }
@@ -64,41 +69,36 @@ open class BlockType(val literal: String, val args: Int = 0,
                      required: Boolean = false, deprecated: String? = null, computed: Boolean = false,
                      conflictsWith: List<String> = emptyList(),
                      vararg val properties: PropertyOrBlockType = arrayOf()
-) : BaseModelType(description = description, required = required, deprecated = deprecated, computed = computed, conflictsWith = conflictsWith) {
+) : BaseModelType(description = description, required = required, deprecated = deprecated, computed = computed, conflictsWith = conflictsWith), PropertyOrBlockType {
+  override val property: PropertyType?
+    get() = null
+  override val block: BlockType
+    get() = this
+  override val name: String
+    get() = literal
+
   override fun toString(): String {
     return "BlockType(literal='$literal', args=$args, properties=${Arrays.toString(properties)})"
   }
 }
 
-class PropertyOrBlockType private constructor(val property: PropertyType? = null, val block: BlockType? = null) {
-  val name: String get() = property?.name ?: block!!.literal
-  val required: Boolean get() = property?.required ?: block!!.required
-  val deprecated: String? get() = if (property != null) property.deprecated else block!!.deprecated
-  val computed: Boolean get() = property?.computed ?: block!!.computed
-  val conflictsWith: List<String> get() = property?.conflictsWith ?: block!!.conflictsWith
+interface PropertyOrBlockType {
+  val name: String
+  val required: Boolean
+  val deprecated: String?
+  val computed: Boolean
+  val conflictsWith: List<String>
 
-  init {
-    assert(property != null || block != null) { "Either property or block expected" }
-  }
-
-  constructor(property: PropertyType) : this(property, null)
-
-  constructor(block: BlockType) : this(null, block)
-
-  override fun toString(): String {
-    if (property != null)
-      return "POBT-Property(name='$name', required=$required, deprecated=$deprecated)"
-    else
-      return "POBT-Block(name='$name', required=$required, deprecated=$deprecated)"
-  }
+  val property: PropertyType?
+  val block: BlockType?
 }
 
 fun PropertyType.toPOBT(): PropertyOrBlockType {
-  return PropertyOrBlockType(this)
+  return this
 }
 
 fun BlockType.toPOBT(): PropertyOrBlockType {
-  return PropertyOrBlockType(this)
+  return this
 }
 
 object Types {
