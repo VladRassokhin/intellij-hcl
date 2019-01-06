@@ -158,7 +158,7 @@ class HILCompletionContributor : CompletionContributor() {
       val parent = position.parent as? ILExpression ?: return
       val leftNWS = position.getPrevSiblingNonWhiteSpace()
       LOG.debug { "HIL.MethodsCompletionProvider{position=$position, parent=$parent, left=${position.prevSibling}, lnws=$leftNWS}" }
-      result.addAllElements(TypeModelProvider.getModel(position.project).functions.map { create(it) })
+      result.addAllElements(TypeModelProvider.getModel(position.project).functions.values.map { create(it) })
       result.addAllElements(GLOBAL_SCOPES.map { createScope(it) })
       if (getProvisionerResource(parent) != null) result.addElement(createScope("self"))
       if (getResource(parent) != null || getDataSource(parent) != null) result.addElement(createScope("count"))
@@ -269,7 +269,7 @@ class HILCompletionContributor : CompletionContributor() {
 
       if (parameters.isExtendedCompletion) {
         @Suppress("NAME_SHADOWING")
-        var dataSources = ModelHelper.getTypeModel(parameters.position.project).dataSources
+        var dataSources = ModelHelper.getTypeModel(parameters.position.project).dataSources.values
         val cache = HashMap<String, Boolean>()
         if (parameters.invocationCount == 2) {
           dataSources = dataSources.filter { isProviderUsed(module, it.provider.type, cache) }
@@ -394,7 +394,7 @@ class HILCompletionContributor : CompletionContributor() {
 
       if (parameters.isExtendedCompletion) {
         @Suppress("NAME_SHADOWING")
-        var resources = getTypeModel(position.project).resources
+        var resources = getTypeModel(position.project).resources.values
         val cache = HashMap<String, Boolean>()
         if (parameters.invocationCount == 2) {
           resources = resources.filter { isProviderUsed(module, it.provider.type, cache) }

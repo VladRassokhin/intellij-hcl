@@ -77,14 +77,14 @@ public class TerraformModelProviderTest extends LightPlatformTestCase {
     final TypeModel model = TypeModelProvider.Companion.getModel(getProject());
     assertNotNull(model);
     final List<BlockType> failed = new ArrayList<BlockType>();
-    for (ResourceType block : model.getResources()) {
+    for (ResourceType block : model.getResources().values()) {
       final String rt = block.getType();
       final String pt = block.getProvider().getType();
       if (rt.equals(pt)) continue;
       if (rt.startsWith(pt + '_')) continue;
       failed.add(block);
     }
-    for (DataSourceType block : model.getDataSources()) {
+    for (DataSourceType block : model.getDataSources().values()) {
       final String rt = block.getType();
       final String pt = block.getProvider().getType();
       if (rt.equals(pt)) continue;

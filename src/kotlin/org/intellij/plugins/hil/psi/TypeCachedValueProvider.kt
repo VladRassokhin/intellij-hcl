@@ -117,7 +117,7 @@ class TypeCachedValueProvider private constructor(private val e: ILExpression) :
       is ILMethodCallExpression -> {
         val method = e.method?.name
         if (method != null && e.callee === e.method) {
-          TypeModelProvider.getModel(e.project).functions.firstOrNull { it.name == method }?.ret?.let { CachedValueProvider.Result.create(it, e.method) }
+          TypeModelProvider.getModel(e.project).getFunction(method)?.ret?.let { CachedValueProvider.Result.create(it, e.method) }
         } else null
       }
 

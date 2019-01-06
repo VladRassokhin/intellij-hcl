@@ -16,12 +16,12 @@
 package org.intellij.plugins.hcl.terraform.config.model
 
 class TypeModel(
-    val resources: List<ResourceType> = arrayListOf(),
-    val dataSources: List<DataSourceType> = arrayListOf(),
-    val providers: List<ProviderType> = arrayListOf(),
-    val provisioners: List<ProvisionerType> = arrayListOf(),
-    val backends: MutableList<BackendType> = arrayListOf(),
-    val functions: List<Function> = arrayListOf()
+    val resources: Map<String, ResourceType> = LinkedHashMap(),
+    val dataSources: Map<String, DataSourceType> = LinkedHashMap(),
+    val providers: Map<String, ProviderType> = LinkedHashMap(),
+    val provisioners: Map<String, ProvisionerType> = LinkedHashMap(),
+    val backends: Map<String, BackendType> = LinkedHashMap(),
+    val functions: Map<String, Function> = LinkedHashMap()
 ) {
   @Suppress("MemberVisibilityCanBePrivate")
   companion object {
@@ -88,7 +88,8 @@ class TypeModel(
         Connection
     ))
 
-    @JvmField val AbstractResource: BlockType = BlockType("resource", 2, properties = *arrayOf(
+    @JvmField
+    val AbstractResource: BlockType = BlockType("resource", 2, properties = *arrayOf(
         PropertyType("id", Types.String, injectionAllowed = false, description = "A unique ID for this resource", required = false),
         PropertyType("count", Types.Number),
         PropertyType("depends_on", Types.Array, hint = ReferenceHint("resource.#name", "data_source.#name")),
@@ -98,7 +99,8 @@ class TypeModel(
         Connection,
         AbstractResourceProvisioner
     ))
-    @JvmField val AbstractDataSource: BlockType = BlockType("data", 2, properties = *arrayOf(
+    @JvmField
+    val AbstractDataSource: BlockType = BlockType("data", 2, properties = *arrayOf(
         PropertyType("id", Types.String, injectionAllowed = false, description = "A unique ID for this data source", required = false),
         PropertyType("count", Types.Number),
         PropertyType("depends_on", Types.Array, hint = ReferenceHint("resource.#name", "data_source.#name")),
@@ -119,23 +121,27 @@ class TypeModel(
   }
 
   fun getResourceType(name: String): ResourceType? {
-    return resources.firstOrNull { it.type == name }
+    return resources[name]
   }
 
   fun getDataSourceType(name: String): DataSourceType? {
-    return dataSources.firstOrNull { it.type == name }
+    return dataSources[name]
   }
 
   fun getProviderType(name: String): ProviderType? {
-    return providers.firstOrNull { it.type == name }
+    return providers[name]
   }
 
   fun getProvisionerType(name: String): ProvisionerType? {
-    return provisioners.firstOrNull { it.type == name }
+    return provisioners[name]
   }
 
   fun getBackendType(name: String): BackendType? {
-    return backends.firstOrNull { it.type == name }
+    return backends[name]
+  }
+
+  fun getFunction(name: String): Function? {
+    return functions[name]
   }
 
   fun getByFQN(fqn: String): Any? {

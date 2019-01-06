@@ -64,8 +64,22 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
         loadOne(application, file.absolutePath, stream)
       }
 
+      this.resources.sortBy { it.type }
+      this.dataSources.sortBy { it.type }
+      this.providers.sortBy { it.type }
+      this.provisioners.sortBy { it.type }
+      this.backends.sortBy { it.type }
+      this.functions.sortBy { it.name }
+
       // TODO: Fetch latest model from github (?)
-      return TypeModel(this.resources, this.dataSources, this.providers, this.provisioners, this.backends, this.functions)
+      return TypeModel(
+          this.resources.associateBy { it.type },
+          this.dataSources.associateBy { it.type },
+          this.providers.associateBy { it.type },
+          this.provisioners.associateBy { it.type },
+          this.backends.associateBy { it.type },
+          this.functions.associateBy { it.name }
+      )
     } catch(e: Exception) {
       logErrorAndFailInInternalMode(application, "Failed to load Terraform Model", e)
       return null
