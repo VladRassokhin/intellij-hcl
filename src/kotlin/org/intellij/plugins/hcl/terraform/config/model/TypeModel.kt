@@ -158,10 +158,10 @@ class TypeModel(
   private fun find(block: BlockType, parts: List<String>): Any? {
     if (parts.isEmpty()) return null
     val pobt = block.properties.find { it.name == parts[0] } ?: return null
-    if (pobt.property != null) {
+    if (pobt is PropertyType) {
       return if (parts.size == 1) pobt else null
-    } else if (pobt.block != null) {
-      return if (parts.size == 1) pobt else find(pobt.block, parts.subList(1, parts.size))
+    } else if (pobt is BlockType) {
+      return if (parts.size == 1) pobt else find(pobt, parts.subList(1, parts.size))
     }
     return null
   }

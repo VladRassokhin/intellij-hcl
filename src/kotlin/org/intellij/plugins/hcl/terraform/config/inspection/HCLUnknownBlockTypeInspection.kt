@@ -35,6 +35,7 @@ import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor
+import org.intellij.plugins.hcl.terraform.config.model.BlockType
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 
@@ -71,7 +72,7 @@ class HCLUnknownBlockTypeInspection : LocalInspectionTool() {
             parent.`object` ?: return
             val properties = ModelHelper.getBlockProperties(parent)
             // TODO: (?) For some reason single name block could be represented as 'property' in model
-            if (properties.any { it.block != null && it.name == type }) return
+            if (properties.any { it is BlockType && it.name == type }) return
 
             // Check for non-closed root block (issue #93)
             if (TerraformPatterns.RootBlock.accepts(parent) && TerraformConfigCompletionContributor.ROOT_BLOCK_KEYWORDS.contains(type)) {

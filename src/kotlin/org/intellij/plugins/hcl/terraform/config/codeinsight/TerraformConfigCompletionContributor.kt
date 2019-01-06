@@ -223,9 +223,9 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
     fun create(value: PropertyOrBlockType, lookupString: String? = null): LookupElementBuilder {
       var builder = LookupElementBuilder.create(value, lookupString ?: value.name)
       builder = builder.withRenderer(TerraformLookupElementRenderer())
-      if (value.block != null) {
-        builder = builder.withInsertHandler(ResourceBlockNameInsertHandler(value.block))
-      } else if (value.property != null) {
+      if (value is BlockType) {
+        builder = builder.withInsertHandler(ResourceBlockNameInsertHandler(value))
+      } else if (value is PropertyType) {
         builder = builder.withInsertHandler(ResourcePropertyInsertHandler)
       }
       return builder
@@ -438,20 +438,20 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
       }
       addResultsWithCustomSorter(result, parameters, properties
           .filter { it.name != Constants.HAS_DYNAMIC_ATTRIBUTES }
-          .filter { isRightOfPropertyWithCompatibleType(isProperty, it, right) || (isBlock && it.block != null) || (!isProperty && !isBlock) }
+          .filter { isRightOfPropertyWithCompatibleType(isProperty, it, right) || (isBlock && it is BlockType) || (!isProperty && !isBlock) }
           // TODO: Filter should be based on 'max-count' model property (?)
-          .filter { (it.property != null && (parent.findProperty(it.name) == null || (incomplete != null && it.name.contains(incomplete)))) || (it.block != null) }
+          .filter { (it is PropertyType && (parent.findProperty(it.name) == null || (incomplete != null && it.name.contains(incomplete)))) || (it is BlockType) }
           .map { create(it) })
     }
 
     private fun isRightOfPropertyWithCompatibleType(isProperty: Boolean, it: PropertyOrBlockType, right: Type?): Boolean {
       if (!isProperty) return false
-      if (it.property == null) return false
+      if (it !is PropertyType) return false
       if (right == Types.StringWithInjection) {
         // StringWithInjection means TypeCachedValueProvider was unable to understand type of interpolation
         return true
       }
-      return it.property.type == right
+      return it.type == right
     }
   }
 
@@ -482,7 +482,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         result.addAllElements(resources.plus(datas).minus(current).map { create(it) })
         return
       }
-      val props = ModelHelper.getBlockProperties(block).map { it.property }.filterNotNull()
+      val props = ModelHelper.getBlockProperties(block).filterIsInstance(PropertyType::class.java)
       val hints = props.filter { it.name == property.name && it.hint != null }.map { it.hint }
       val hint = hints.firstOrNull() ?: return
       if (hint is SimpleValueHint) {
@@ -595,7 +595,7 @@ object ModelHelper {
       val bpp = bp.parent
       if (bpp is HCLBlock) {
         val properties = getBlockProperties(bpp)
-        val candidates = properties.mapNotNull { it.block }.filter { it.literal == type }
+        val candidates = properties.filterIsInstance(BlockType::class.java).filter { it.literal == type }
         return candidates.map { it.properties.toList() }.flatMap { it }.toTypedArray()
       } else return emptyArray()
     }

@@ -417,7 +417,7 @@ class HILCompletionContributor : CompletionContributor() {
       val property = PsiTreeUtil.getParentOfType(host, HCLProperty::class.java) ?: return
       val block = PsiTreeUtil.getParentOfType(property, HCLBlock::class.java) ?: return
 
-      val props = ModelHelper.getBlockProperties(block).map { it.property }.filterNotNull()
+      val props = ModelHelper.getBlockProperties(block).filterIsInstance(PropertyType::class.java)
       val hints = props.filter { it.name == property.name && it.hint != null }.map { it.hint }
       val hint = hints.firstOrNull() ?: return
       if (hint is ReferenceHint) {

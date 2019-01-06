@@ -32,6 +32,7 @@ import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ResourcePropertyInsertHandler
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
+import org.intellij.plugins.hcl.terraform.config.model.PropertyType
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.ModuleWithEmptySource
@@ -88,7 +89,7 @@ class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
     val obj = block.`object` ?: return
     ProgressIndicatorProvider.checkCanceled()
 
-    val candidates = ArrayList<PropertyOrBlockType>(properties.filter { it.required && !(it.property?.has_default ?: false) })
+    val candidates = ArrayList<PropertyOrBlockType>(properties.filter { it.required && !(it is PropertyType && it.has_default) })
     if (candidates.isEmpty()) return
     val all = ArrayList<String>()
     all.addAll(obj.propertyList.map { it.name })
@@ -116,8 +117,8 @@ class AddResourcePropertiesFix(val add: Collection<PropertyOrBlockType>) : Local
       override fun run(result: Result<Any?>) {
         val generator = TerraformElementGenerator(project)
         val elements = add.map {
-          if (it.property != null) {
-            val type = it.property.type
+          if (it is PropertyType) {
+            val type = it.type
             // TODO: Use property 'default' value
             var value: String = ResourcePropertyInsertHandler.getPlaceholderValue(type)?.first ?:
                 if (type == Types.Boolean) "false"
@@ -125,7 +126,7 @@ class AddResourcePropertiesFix(val add: Collection<PropertyOrBlockType>) : Local
                 else if (type == Types.Null) "null"
                 else "\"\""
 
-            value = ResourcePropertyInsertHandler.getProposedValueFromModelAndHint(it.property, element.getTerraformModule())?.first ?: value
+            value = ResourcePropertyInsertHandler.getProposedValueFromModelAndHint(it, element.getTerraformModule())?.first ?: value
 
             generator.createProperty(it.name, value)
           } else generator.createBlock(it.name)

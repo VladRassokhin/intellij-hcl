@@ -54,10 +54,6 @@ open class PropertyType(override val name: String, val type: Type,
                         conflictsWith: List<String> = emptyList(),
                         val has_default: Boolean = false
 ) : BaseModelType(description = description, required = required, deprecated = deprecated, computed = computed, conflictsWith = conflictsWith), PropertyOrBlockType {
-  override val property: PropertyType
-    get() = this
-  override val block: BlockType?
-    get() = null
 
   override fun toString(): String {
     return "PropertyType(name='$name', type='$type')"
@@ -70,10 +66,6 @@ open class BlockType(val literal: String, val args: Int = 0,
                      conflictsWith: List<String> = emptyList(),
                      vararg val properties: PropertyOrBlockType = arrayOf()
 ) : BaseModelType(description = description, required = required, deprecated = deprecated, computed = computed, conflictsWith = conflictsWith), PropertyOrBlockType {
-  override val property: PropertyType?
-    get() = null
-  override val block: BlockType
-    get() = this
   override val name: String
     get() = literal
 
@@ -88,9 +80,6 @@ interface PropertyOrBlockType {
   val deprecated: String?
   val computed: Boolean
   val conflictsWith: List<String>
-
-  val property: PropertyType?
-  val block: BlockType?
 }
 
 fun PropertyType.toPOBT(): PropertyOrBlockType {
