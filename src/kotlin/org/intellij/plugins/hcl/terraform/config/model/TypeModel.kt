@@ -27,90 +27,90 @@ class TypeModel(
   companion object {
     private val VersionProperty = PropertyType("version", Types.String, hint = SimpleHint("VersionRange"), injectionAllowed = false)
 
-    val Atlas: BlockType = BlockType("atlas", 0, properties = PropertyType("name", Types.String, injectionAllowed = false, required = true).toPOBT())
+    val Atlas: BlockType = BlockType("atlas", 0, properties = PropertyType("name", Types.String, injectionAllowed = false, required = true))
     val Module: BlockType = BlockType("module", 1, properties = *arrayOf(
-        PropertyType("source", Types.String, hint = SimpleHint("Url"), required = true).toPOBT(),
-        VersionProperty.toPOBT(),
-        PropertyType("providers", Types.Object).toPOBT()
+        PropertyType("source", Types.String, hint = SimpleHint("Url"), required = true),
+        VersionProperty,
+        PropertyType("providers", Types.Object)
     ))
     val Output: BlockType = BlockType("output", 1, properties = *arrayOf(
-        PropertyType("value", Types.String, hint = InterpolationHint("Any"), required = true).toPOBT(),
-        PropertyType("sensitive", Types.Boolean).toPOBT()
+        PropertyType("value", Types.String, hint = InterpolationHint("Any"), required = true),
+        PropertyType("sensitive", Types.Boolean)
     ))
 
     val Variable_Type = PropertyType("type", Types.String, SimpleValueHint("string", "list", "map"), false)
     val Variable_Default = PropertyType("default", Type("String|Array|Object"))
     val Variable_Description = PropertyType("description", Types.String)
     val Variable: BlockType = BlockType("variable", 1, properties = *arrayOf(
-        Variable_Type.toPOBT(),
-        Variable_Default.toPOBT(),
-        Variable_Description.toPOBT()
+        Variable_Type,
+        Variable_Default,
+        Variable_Description
     ))
 
     val Connection: BlockType = BlockType("connection", 0, properties = *arrayOf(
-        PropertyType("type", Types.String, description = "The connection type that should be used. Valid types are \"ssh\" and \"winrm\" This defaults to \"ssh\".").toPOBT(),
-        PropertyType("user", Types.String).toPOBT(),
-        PropertyType("password", Types.String).toPOBT(),
-        PropertyType("host", Types.String).toPOBT(),
-        PropertyType("port", Types.Number).toPOBT(),
-        PropertyType("timeout", Types.String).toPOBT(),
-        PropertyType("script_path", Types.String).toPOBT()
+        PropertyType("type", Types.String, description = "The connection type that should be used. Valid types are \"ssh\" and \"winrm\" This defaults to \"ssh\"."),
+        PropertyType("user", Types.String),
+        PropertyType("password", Types.String),
+        PropertyType("host", Types.String),
+        PropertyType("port", Types.Number),
+        PropertyType("timeout", Types.String),
+        PropertyType("script_path", Types.String)
     ))
     val ConnectionPropertiesSSH: Array<out PropertyOrBlockType> = arrayOf(
         // ssh
-        PropertyType("key_file", Types.String, deprecated = "Use 'private_key'").toPOBT(),
-        PropertyType("private_key", Types.String).toPOBT(),
-        PropertyType("agent", Types.Boolean).toPOBT(),
+        PropertyType("key_file", Types.String, deprecated = "Use 'private_key'"),
+        PropertyType("private_key", Types.String),
+        PropertyType("agent", Types.Boolean),
 
         // bastion ssh
-        PropertyType("bastion_host", Types.String).toPOBT(),
-        PropertyType("bastion_port", Types.Number).toPOBT(),
-        PropertyType("bastion_user", Types.String).toPOBT(),
-        PropertyType("bastion_password", Types.String).toPOBT(),
-        PropertyType("bastion_private_key", Types.String).toPOBT(),
-        PropertyType("bastion_key_file", Types.String, deprecated = "Use 'bastion_private_key'").toPOBT()
+        PropertyType("bastion_host", Types.String),
+        PropertyType("bastion_port", Types.Number),
+        PropertyType("bastion_user", Types.String),
+        PropertyType("bastion_password", Types.String),
+        PropertyType("bastion_private_key", Types.String),
+        PropertyType("bastion_key_file", Types.String, deprecated = "Use 'bastion_private_key'")
     )
     val ConnectionPropertiesWinRM: Array<out PropertyOrBlockType> = arrayOf(
         // winrm
-        PropertyType("https", Types.Boolean).toPOBT(),
-        PropertyType("insecure", Types.Boolean).toPOBT(),
-        PropertyType("cacert", Types.String).toPOBT()
+        PropertyType("https", Types.Boolean),
+        PropertyType("insecure", Types.Boolean),
+        PropertyType("cacert", Types.String)
     )
 
     val ResourceLifecycle: BlockType = BlockType("lifecycle", 0,
         description = "Describe to Terraform how to connect to the resource for provisioning", // TODO: Improve description
         properties = *arrayOf(
-            PropertyType("create_before_destroy", Types.Boolean).toPOBT(),
-            PropertyType("prevent_destroy", Types.Boolean).toPOBT(),
-            PropertyType("ignore_changes", Types.Array, hint = TypeHint(Types.String)).toPOBT()
+            PropertyType("create_before_destroy", Types.Boolean),
+            PropertyType("prevent_destroy", Types.Boolean),
+            PropertyType("ignore_changes", Types.Array, hint = TypeHint(Types.String))
         ))
     val AbstractResourceProvisioner: BlockType = BlockType("provisioner", 1, properties = *arrayOf(
-        Connection.toPOBT()
+        Connection
     ))
 
     @JvmField val AbstractResource: BlockType = BlockType("resource", 2, properties = *arrayOf(
-        PropertyType("id", Types.String, injectionAllowed = false, description = "A unique ID for this resource", required = false).toPOBT(),
-        PropertyType("count", Types.Number).toPOBT(),
-        PropertyType("depends_on", Types.Array, hint = ReferenceHint("resource.#name", "data_source.#name")).toPOBT(),
-        PropertyType("provider", Types.String, hint = ReferenceHint("provider.#type", "provider.#alias")).toPOBT(),
-        ResourceLifecycle.toPOBT(),
+        PropertyType("id", Types.String, injectionAllowed = false, description = "A unique ID for this resource", required = false),
+        PropertyType("count", Types.Number),
+        PropertyType("depends_on", Types.Array, hint = ReferenceHint("resource.#name", "data_source.#name")),
+        PropertyType("provider", Types.String, hint = ReferenceHint("provider.#type", "provider.#alias")),
+        ResourceLifecycle,
         // Also may have connection? and provisioner+ blocks
-        Connection.toPOBT(),
-        AbstractResourceProvisioner.toPOBT()
+        Connection,
+        AbstractResourceProvisioner
     ))
     @JvmField val AbstractDataSource: BlockType = BlockType("data", 2, properties = *arrayOf(
-        PropertyType("id", Types.String, injectionAllowed = false, description = "A unique ID for this data source", required = false).toPOBT(),
-        PropertyType("count", Types.Number).toPOBT(),
-        PropertyType("depends_on", Types.Array, hint = ReferenceHint("resource.#name", "data_source.#name")).toPOBT(),
-        PropertyType("provider", Types.String, hint = ReferenceHint("provider.#type", "provider.#alias")).toPOBT()
+        PropertyType("id", Types.String, injectionAllowed = false, description = "A unique ID for this data source", required = false),
+        PropertyType("count", Types.Number),
+        PropertyType("depends_on", Types.Array, hint = ReferenceHint("resource.#name", "data_source.#name")),
+        PropertyType("provider", Types.String, hint = ReferenceHint("provider.#type", "provider.#alias"))
     ))
     val AbstractProvider: BlockType = BlockType("provider", 1, required = false, properties = *arrayOf(
-        PropertyType("alias", Types.String, injectionAllowed = false).toPOBT(),
-        VersionProperty.toPOBT()
+        PropertyType("alias", Types.String, injectionAllowed = false),
+        VersionProperty
     ))
     val AbstractBackend: BlockType = BlockType("backend", 1)
     val Terraform: BlockType = BlockType("terraform", properties = *arrayOf(
-        PropertyType("required_version", Types.String, injectionAllowed = false).toPOBT()
+        PropertyType("required_version", Types.String, injectionAllowed = false)
     ))
     val Locals: BlockType = BlockType("locals")
 

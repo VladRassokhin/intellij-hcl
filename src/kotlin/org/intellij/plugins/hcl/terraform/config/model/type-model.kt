@@ -82,14 +82,6 @@ interface PropertyOrBlockType {
   val conflictsWith: List<String>
 }
 
-fun PropertyType.toPOBT(): PropertyOrBlockType {
-  return this
-}
-
-fun BlockType.toPOBT(): PropertyOrBlockType {
-  return this
-}
-
 object Types {
   val Identifier = Type("Identifier")
   val String = Type("String")

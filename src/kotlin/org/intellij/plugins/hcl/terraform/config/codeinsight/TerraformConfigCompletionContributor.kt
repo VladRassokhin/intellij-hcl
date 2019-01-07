@@ -204,8 +204,8 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
   }
 
   companion object {
-    @JvmField val ROOT_BLOCK_KEYWORDS: SortedSet<String> = TypeModel.RootBlocks.map(BlockType::literal).toSortedSet()
-    val ROOT_BLOCKS_SORTED: List<PropertyOrBlockType> = TypeModel.RootBlocks.map { it.toPOBT() }.sortedBy { it.name }
+    @JvmField val ROOT_BLOCK_KEYWORDS: Set<String> = TypeModel.RootBlocks.map(BlockType::literal).toHashSet()
+    val ROOT_BLOCKS_SORTED: List<BlockType> = TypeModel.RootBlocks.sortedBy { it.literal }
 
     private val LOG = Logger.getInstance(TerraformConfigCompletionContributor::class.java)
     fun DumpPsiFileModel(element: PsiElement): () -> String {
@@ -633,7 +633,7 @@ object ModelHelper {
   @Suppress("UNUSED_PARAMETER")
   fun getTerraformProperties(block: HCLBlock): Array<PropertyOrBlockType> {
     val base: Array<out PropertyOrBlockType> = TypeModel.Terraform.properties
-    return (base.toList() + TypeModel.AbstractBackend.toPOBT()).toTypedArray()
+    return (base.toList() + TypeModel.AbstractBackend).toTypedArray()
   }
 
   fun getConnectionProperties(block: HCLBlock): Array<out PropertyOrBlockType> {
@@ -689,7 +689,7 @@ object ModelHelper {
         val name = v.first.name
         val hasDefault = v.second.`object`?.findProperty(TypeModel.Variable_Default.name) != null
         // TODO: Add 'string' hint, AFAIK only strings coud be passed to module parameters
-        properties.add(PropertyType(name, Types.String, required = !hasDefault).toPOBT())
+        properties.add(PropertyType(name, Types.String, required = !hasDefault))
       }
     }
     return (properties.toTypedArray())

@@ -283,9 +283,9 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     if (timeouts.isEmpty()) return null
     return BlockType("timeouts", 0,
         description = "Amount of time a specific operation is allowed to take before being considered an error", // TODO: Improve description
-        properties = *timeouts.map { PropertyType(it, Types.String).toPOBT() }.toTypedArray()
+        properties = *timeouts.map { PropertyType(it, Types.String) }.toTypedArray()
         // TODO: ^ Check type, should be Time? (allowed suffixes are s, m, h)
-    ).toPOBT()
+    )
   }
 
   private fun parseSchemaElement(entry: Map.Entry<String, Any?>, providerName: String): PropertyOrBlockType {
@@ -374,7 +374,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
           computed = computed,
           description = description,
           conflictsWith = conflicts,
-          properties = *bh).toPOBT()
+          properties = *bh)
     }
     return PropertyType(name, type, hint = additional.hint ?: hint,
         description = description,
@@ -382,7 +382,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
         deprecated = deprecated,
         computed = computed,
         conflictsWith = conflicts,
-        has_default = has_default).toPOBT()
+        has_default = has_default)
   }
 
   private fun parseType(string: String?): Type {
