@@ -15,4 +15,4 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
-class Resource(type: ResourceType, val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(type, *properties)
+class Resource(type: ResourceType, val name: String, vararg properties: PropertyOrBlock = emptyArray()) : Block(type, *properties)

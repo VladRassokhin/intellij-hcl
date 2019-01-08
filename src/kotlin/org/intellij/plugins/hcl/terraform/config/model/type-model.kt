@@ -64,10 +64,12 @@ open class BlockType(val literal: String, val args: Int = 0,
                      description: String? = null,
                      required: Boolean = false, deprecated: String? = null, computed: Boolean = false,
                      conflictsWith: List<String> = emptyList(),
-                     vararg val properties: PropertyOrBlockType = arrayOf()
+                     vararg properties: PropertyOrBlockType = emptyArray()
 ) : BaseModelType(description = description, required = required, deprecated = deprecated, computed = computed, conflictsWith = conflictsWith), PropertyOrBlockType {
   override val name: String
     get() = literal
+
+  val properties: Array<out PropertyOrBlockType> = if (properties.isEmpty()) PropertyOrBlockType.EMPTY_ARRAY else properties
 
   override fun toString(): String {
     return "BlockType(literal='$literal', args=$args, properties=${Arrays.toString(properties)})"
@@ -75,6 +77,10 @@ open class BlockType(val literal: String, val args: Int = 0,
 }
 
 interface PropertyOrBlockType {
+  companion object {
+    val EMPTY_ARRAY: Array<out PropertyOrBlockType> = emptyArray()
+  }
+
   val name: String
   val required: Boolean
   val deprecated: String?
@@ -100,31 +106,31 @@ object Types {
   val SimpleValueTypes = setOf(Types.String, Types.Number, Types.Boolean)
 }
 
-class ResourceType(val type: String, val provider: ProviderType, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("resource", 2, properties = *properties) {
+class ResourceType(val type: String, val provider: ProviderType, vararg properties: PropertyOrBlockType) : BlockType("resource", 2, properties = *properties) {
   override fun toString(): String {
     return "ResourceType(type='$type', provider=${provider.type}) ${super.toString()}"
   }
 }
 
-class DataSourceType(val type: String, val provider: ProviderType, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("data", 2, properties = *properties) {
+class DataSourceType(val type: String, val provider: ProviderType, vararg properties: PropertyOrBlockType) : BlockType("data", 2, properties = *properties) {
   override fun toString(): String {
     return "DataSourceType(type='$type', provider=${provider.type}) ${super.toString()}"
   }
 }
 
-class ProviderType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provider", 1, properties = *properties) {
+class ProviderType(val type: String, vararg properties: PropertyOrBlockType) : BlockType("provider", 1, properties = *properties) {
   override fun toString(): String {
     return "ProviderType(type='$type') ${super.toString()}"
   }
 }
 
-class ProvisionerType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("provisioner", 1, properties = *properties) {
+class ProvisionerType(val type: String, vararg properties: PropertyOrBlockType) : BlockType("provisioner", 1, properties = *properties) {
   override fun toString(): String {
     return "ProvisionerType(type='$type') ${super.toString()}"
   }
 }
 
-class BackendType(val type: String, vararg properties: PropertyOrBlockType = arrayOf()) : BlockType("backend", 1, properties = *properties) {
+class BackendType(val type: String, vararg properties: PropertyOrBlockType) : BlockType("backend", 1, properties = *properties) {
   override fun toString(): String {
     return "BackendType(type='$type') ${super.toString()}"
   }

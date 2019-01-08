@@ -18,7 +18,7 @@ package org.intellij.plugins.hcl.terraform.config.model
 open class Argument(val type: Type, val name: String? = null)
 open class VariadicArgument(type: Type, name: String? = null) : Argument(type, name)
 
-class Function(val name: String, val ret: Type, vararg val arguments: Argument = arrayOf(), val variadic: VariadicArgument? = null) {
+class Function(val name: String, val ret: Type, vararg val arguments: Argument = emptyArray(), val variadic: VariadicArgument? = null) {
   init {
     val count = arguments.count { it is VariadicArgument }
     assert (count == 0 || (count == 1 && arguments.last() is VariadicArgument)) { "Only one (last) argument could be variadic" }
