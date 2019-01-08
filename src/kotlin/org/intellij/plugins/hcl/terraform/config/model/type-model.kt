@@ -29,13 +29,35 @@ open class BaseModelType(val description: String? = null,
                          val required: Boolean = false,
                          val deprecated: String? = null,
                          val computed: Boolean = false,
-                         val conflictsWith: List<String> = emptyList()
-)
+                         val conflictsWith: List<String>? = null
+) {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is BaseModelType) return false
+
+    if (description != other.description) return false
+    if (required != other.required) return false
+    if (deprecated != other.deprecated) return false
+    if (computed != other.computed) return false
+    if (conflictsWith != other.conflictsWith) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = description?.hashCode() ?: 0
+    result = 31 * result + required.hashCode()
+    result = 31 * result + (deprecated?.hashCode() ?: 0)
+    result = 31 * result + computed.hashCode()
+    result = 31 * result + (conflictsWith?.hashCode() ?: 0)
+    return result
+  }
+}
 
 interface Hint
 open class SimpleHint(vararg val hint: String) : Hint
-open class TypeHint(val hint: Type) : Hint
-open class ListHint(val hint: List<PropertyOrBlockType>) : Hint
+data class TypeHint(val hint: Type) : Hint
+data class ListHint(val hint: List<PropertyOrBlockType>) : Hint
 
 // TODO: Use some 'Reference' class
 open class ReferenceHint(vararg val hint: String) : Hint
@@ -51,19 +73,46 @@ open class PropertyType(override val name: String, val type: Type,
                         val injectionAllowed: Boolean = true,
                         description: String? = null,
                         required: Boolean = false, deprecated: String? = null, computed: Boolean = false,
-                        conflictsWith: List<String> = emptyList(),
+                        conflictsWith: List<String>? = null,
                         val has_default: Boolean = false
 ) : BaseModelType(description = description, required = required, deprecated = deprecated, computed = computed, conflictsWith = conflictsWith), PropertyOrBlockType {
 
   override fun toString(): String {
     return "PropertyType(name='$name', type='$type')"
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    if (!super.equals(other)) return false
+
+    other as PropertyType
+
+    if (name != other.name) return false
+    if (type != other.type) return false
+    if (hint != other.hint) return false
+    if (injectionAllowed != other.injectionAllowed) return false
+    if (has_default != other.has_default) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = super.hashCode()
+    result = 31 * result + name.hashCode()
+    result = 31 * result + type.hashCode()
+    result = 31 * result + (hint?.hashCode() ?: 0)
+    result = 31 * result + injectionAllowed.hashCode()
+    result = 31 * result + has_default.hashCode()
+    return result
+  }
+
 }
 
 open class BlockType(val literal: String, val args: Int = 0,
                      description: String? = null,
                      required: Boolean = false, deprecated: String? = null, computed: Boolean = false,
-                     conflictsWith: List<String> = emptyList(),
+                     conflictsWith: List<String>? = null,
                      vararg properties: PropertyOrBlockType = emptyArray()
 ) : BaseModelType(description = description, required = required, deprecated = deprecated, computed = computed, conflictsWith = conflictsWith), PropertyOrBlockType {
   override val name: String
@@ -74,6 +123,29 @@ open class BlockType(val literal: String, val args: Int = 0,
   override fun toString(): String {
     return "BlockType(literal='$literal', args=$args, properties=${Arrays.toString(properties)})"
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+    if (!super.equals(other)) return false
+
+    other as BlockType
+
+    if (literal != other.literal) return false
+    if (args != other.args) return false
+    if (!properties.contentEquals(other.properties)) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = super.hashCode()
+    result = 31 * result + literal.hashCode()
+    result = 31 * result + args
+    result = 31 * result + properties.contentHashCode()
+    return result
+  }
+
 }
 
 interface PropertyOrBlockType {
@@ -85,7 +157,7 @@ interface PropertyOrBlockType {
   val required: Boolean
   val deprecated: String?
   val computed: Boolean
-  val conflictsWith: List<String>
+  val conflictsWith: List<String>?
 }
 
 object Types {
