@@ -30,6 +30,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.psi.*
+import org.intellij.plugins.hcl.terraform.config.inspection.AddResourcePropertiesFix
 import org.intellij.plugins.hcl.terraform.config.inspection.HCLBlockMissingPropertyInspection
 
 object InsertHandlersUtil {
@@ -74,7 +75,7 @@ object InsertHandlersUtil {
         val fixes = result.fixes
         if (fixes != null && fixes.isNotEmpty()) {
           changed = true
-          fixes.forEach { it.applyFix(project, result) }
+          fixes.filterIsInstance<AddResourcePropertiesFix>().forEach { it.applyFix(project, result) }
         }
       }
     } while (changed)
