@@ -91,6 +91,14 @@ sourceSets {
         }
     }
 }
+processResources {
+    // Minify json resources
+    doLast {
+        fileTree(dir: outputs.files.asPath, include: "**/*.json").each {
+            File file -> file.text = groovy.json.JsonOutput.toJson(new groovy.json.JsonSlurper().parse(file))
+        }
+    }
+}
 
 if (System.getenv('TEAMCITY_VERSION') != null) {
     test.ignoreFailures = true
