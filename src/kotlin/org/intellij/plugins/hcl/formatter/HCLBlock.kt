@@ -108,7 +108,11 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
             wrap = myAlwaysWrap
             indent = Indent.getNormalIndent()
           } else {
-            alignment = getLastCommentAlignment()
+            if (isOnSameLineAsFirstChildrenOfParent(childNode)) {
+              alignment = Alignment.createAlignment(true)
+            } else {
+              alignment = getLastCommentAlignment()
+            }
           }
         } else if (!isStandaloneComment(childNode)){
           alignment = getLastCommentAlignment()
