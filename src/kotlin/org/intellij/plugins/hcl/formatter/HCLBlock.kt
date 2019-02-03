@@ -29,7 +29,6 @@ import org.intellij.plugins.hcl.psi.HCLPsiUtil
 
 class HCLBlock(node: ASTNode, wrap: Wrap?, alignment: Alignment?, val spacingBuilder: SpacingBuilder, val _indent: Indent?, val settings: HCLCodeStyleSettings, private val valueAlignment: Alignment? = null) : AbstractBlock(node, wrap, alignment) {
   val myChildWrap: Wrap?
-  val myAlwaysWrap: Wrap?
   var myLastValueAlignment: Alignment? = null
   var myLastValueCommentAlignment: Alignment? = null
 
@@ -39,7 +38,6 @@ class HCLBlock(node: ASTNode, wrap: Wrap?, alignment: Alignment?, val spacingBui
       ARRAY -> Wrap.createWrap(settings.ARRAY_WRAPPING, true)
       else -> null
     }
-    myAlwaysWrap = Wrap.createWrap(WrapType.ALWAYS, true)
   }
 
   override fun buildChildren(): MutableList<Block>? {
@@ -107,7 +105,7 @@ class HCLBlock(node: ASTNode, wrap: Wrap?, alignment: Alignment?, val spacingBui
         if (isElementType(myNode, ARRAY)) {
           // Check if comment either standalone or attached to element
           if (isStandaloneComment(childNode)) {
-            wrap = myAlwaysWrap
+            wrap = Wrap.createWrap(WrapType.ALWAYS, true)
             indent = Indent.getNormalIndent()
           } else {
             if (isOnSameLineAsFirstChildrenOfParent(childNode)) {
@@ -127,7 +125,7 @@ class HCLBlock(node: ASTNode, wrap: Wrap?, alignment: Alignment?, val spacingBui
         if (myNode.elementType == ARRAY) {
           // Check whether that children located on the same line as open bracket
           if (!isOnSameLineAsFirstChildrenOfParent(childNode)) {
-            wrap = myAlwaysWrap
+            wrap = Wrap.createWrap(WrapType.ALWAYS, true)
           }
         }
         indent = Indent.getNormalIndent()
@@ -140,7 +138,7 @@ class HCLBlock(node: ASTNode, wrap: Wrap?, alignment: Alignment?, val spacingBui
         if (isEmptyObject(myNode)) {
           wrap = Wrap.createWrap(WrapType.NONE, false)
         } else if (!isOnSameLineAsFirstChildrenOfParent(childNode)) {
-          wrap = myAlwaysWrap
+          wrap = Wrap.createWrap(WrapType.ALWAYS, true)
         }
       }
     } else if (isElementType(myNode, PROPERTY)) {
