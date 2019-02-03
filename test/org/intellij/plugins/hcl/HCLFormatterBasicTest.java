@@ -116,7 +116,7 @@ public class HCLFormatterBasicTest extends HCLFormatterBaseTestCase {
         "  <<DATA\n" +
         "This is some data string\n" +
         "DATA\n" +
-        ",\n" +
+        "  ,\n" +
         "  \"some other data\",\n" +
         "]");
     doSimpleTest("a_local = [\n" +
@@ -129,7 +129,7 @@ public class HCLFormatterBasicTest extends HCLFormatterBaseTestCase {
         "  <<DATA\n" +
         "This is some data string\n" +
         "DATA\n" +
-        ",\n" +
+        "  ,\n" +
         "  \"some other data\",\n" +
         "]");
   }
