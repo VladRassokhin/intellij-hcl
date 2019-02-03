@@ -41,10 +41,6 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     myAlwaysWrap = Wrap.createWrap(WrapType.ALWAYS, true)
   }
 
-  val OPEN_BRACES: TokenSet = TokenSet.create(L_CURLY, L_BRACKET)
-  val CLOSE_BRACES: TokenSet = TokenSet.create(R_CURLY, R_BRACKET)
-  val ALL_BRACES: TokenSet = TokenSet.orSet(OPEN_BRACES, CLOSE_BRACES)
-
   override fun buildChildren(): MutableList<Block>? {
     var propertyValueAlignment: Alignment? =
         if (settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.DO_NOT_ALIGN_PROPERTY) null
@@ -135,7 +131,9 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
           alignment = valueAlignment
         }
       } else if (isElementType(childNode, CLOSE_BRACES)) {
-        if (!isOnSameLineAsFirstChildrenOfParent(childNode)) {
+        if (isEmptyObject(myNode)) {
+          wrap = Wrap.createWrap(WrapType.NONE, false)
+        } else if (!isOnSameLineAsFirstChildrenOfParent(childNode)) {
           wrap = myAlwaysWrap
         }
       }
@@ -170,30 +168,6 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     }
     val block = HCLBlock(this, childNode, wrap, alignment, spacingBuilder, indent, settings, pva ?: valueAlignment)
     return block
-  }
-
-  private fun isStandaloneComment(childNode: ASTNode): Boolean {
-    var node: ASTNode? = childNode.treePrev
-    while (node != null) {
-      if (node.elementType == TokenType.WHITE_SPACE) {
-        if (node.textContains('\n')) return true
-      } else {
-        return isElementType(node, TokenSet.orSet(OPEN_BRACES, HCLParserDefinition.HCL_COMMENTARIES))
-      }
-      node = node.treePrev
-    }
-    return false
-  }
-
-  private fun isOnSameLineAsFirstChildrenOfParent(childNode: ASTNode): Boolean {
-    var node: ASTNode? = childNode.treePrev
-    while (node != null) {
-      if (node.elementType == TokenType.WHITE_SPACE) {
-        if (node.textContains('\n')) return false
-      }
-      node = node.treePrev
-    }
-    return true
   }
 
   override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
@@ -233,22 +207,63 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     return null
   }
 
-  private fun isElementType(node: ASTNode, set: TokenSet): Boolean {
-    return set.contains(node.elementType)
-  }
+  companion object {
+    private val OPEN_BRACES: TokenSet = TokenSet.create(L_CURLY, L_BRACKET)
+    private val CLOSE_BRACES: TokenSet = TokenSet.create(R_CURLY, R_BRACKET)
+    private val ALL_BRACES: TokenSet = TokenSet.orSet(OPEN_BRACES, CLOSE_BRACES)
 
-  private fun isElementType(node: ASTNode, vararg types: IElementType): Boolean {
-    return types.contains(node.elementType)
-  }
+    private fun isEmptyObject(node: ASTNode): Boolean {
+      if (!isElementType(node, OBJECT)) {
+        return false
+      }
+      var it: ASTNode? = node.firstChildNode
+      while (it != null) {
+        if (!isElementType(it, L_CURLY, R_CURLY, TokenType.WHITE_SPACE)) return false
+        it = it.treeNext
+      }
+      return true
+    }
 
-  private fun isFile(node: ASTNode): Boolean {
-    return node.elementType is IFileElementType
-  }
+    private fun isStandaloneComment(childNode: ASTNode): Boolean {
+      var node: ASTNode? = childNode.treePrev
+      while (node != null) {
+        if (node.elementType == TokenType.WHITE_SPACE) {
+          if (node.textContains('\n')) return true
+        } else {
+          return isElementType(node, TokenSet.orSet(OPEN_BRACES, HCLParserDefinition.HCL_COMMENTARIES))
+        }
+        node = node.treePrev
+      }
+      return false
+    }
 
-  private fun isWhitespaceOrEmpty(node: ASTNode): Boolean {
-    return node.elementType == TokenType.WHITE_SPACE || node.textLength == 0
-  }
+    private fun isOnSameLineAsFirstChildrenOfParent(childNode: ASTNode): Boolean {
+      var node: ASTNode? = childNode.treePrev
+      while (node != null) {
+        if (node.elementType == TokenType.WHITE_SPACE) {
+          if (node.textContains('\n')) return false
+        }
+        node = node.treePrev
+      }
+      return true
+    }
 
+    private fun isElementType(node: ASTNode, set: TokenSet): Boolean {
+      return set.contains(node.elementType)
+    }
+
+    private fun isElementType(node: ASTNode, vararg types: IElementType): Boolean {
+      return types.contains(node.elementType)
+    }
+
+    private fun isFile(node: ASTNode): Boolean {
+      return node.elementType is IFileElementType
+    }
+
+    private fun isWhitespaceOrEmpty(node: ASTNode): Boolean {
+      return node.elementType == TokenType.WHITE_SPACE || node.textLength == 0
+    }
+  }
   override fun getIndent(): Indent? {
     return _indent
   }

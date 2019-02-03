@@ -65,14 +65,14 @@ public class HCLFormatterBasicTest extends HCLFormatterBaseTestCase {
     doSimpleTest("a b c {\n  a = true}", "a b c {\n  a = true\n}");
     doSimpleTest("block x {a=true}", "block x {\n  a = true\n}");
     doSimpleTest("block x {}", "block x {}");
-    doSimpleTest("block x {\n}", "block x {\n}");
+    doSimpleTest("block x {\n}", "block x {}");
   }
 
   @Test
   public void testFormatBlock_Space() throws Exception {
     doSimpleTest("block x{}", "block x {}");
     doSimpleTest("block 'x'{}", "block 'x' {}");
-    doSimpleTest("block 'x'{\n}", "block 'x' {\n}");
+    doSimpleTest("block 'x'{\n}", "block 'x' {}");
     doSimpleTest("block x{a=true}", "block x {\n  a = true\n}");
   }
 
