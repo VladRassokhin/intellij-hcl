@@ -30,7 +30,7 @@ import org.intellij.plugins.hcl.HCLParserDefinition
 open class HCLFormattingBuilderModel(val language: Language = HCLLanguage) : FormattingModelBuilder {
   override fun createModel(element: PsiElement, settings: CodeStyleSettings): FormattingModel {
     val builder = createSpacingBuilder(settings)
-    val block = HCLBlock(null, element.node, null, null, builder, Indent.getNoneIndent(), settings.getCustomSettings(HCLCodeStyleSettings::class.java))
+    val block = HCLBlock(element.node, null, null, builder, Indent.getNoneIndent(), settings.getCustomSettings(HCLCodeStyleSettings::class.java))
     return FormattingModelProvider.createFormattingModelForPsiFile(element.containingFile, block, settings)
   }
 

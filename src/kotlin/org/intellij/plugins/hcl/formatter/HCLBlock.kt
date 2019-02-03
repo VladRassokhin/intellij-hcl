@@ -22,11 +22,12 @@ import com.intellij.psi.formatter.common.AbstractBlock
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
+import com.intellij.util.SmartList
 import org.intellij.plugins.hcl.HCLElementTypes.*
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.psi.HCLPsiUtil
 
-class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Alignment?, val spacingBuilder: SpacingBuilder, val _indent: Indent?, val settings: HCLCodeStyleSettings, private val valueAlignment: Alignment? = null) : AbstractBlock(node, wrap, alignment) {
+class HCLBlock(node: ASTNode, wrap: Wrap?, alignment: Alignment?, val spacingBuilder: SpacingBuilder, val _indent: Indent?, val settings: HCLCodeStyleSettings, private val valueAlignment: Alignment? = null) : AbstractBlock(node, wrap, alignment) {
   val myChildWrap: Wrap?
   val myAlwaysWrap: Wrap?
   var myLastValueAlignment: Alignment? = null
@@ -42,50 +43,55 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
   }
 
   override fun buildChildren(): MutableList<Block>? {
-    var propertyValueAlignment: Alignment? =
-        if (settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.DO_NOT_ALIGN_PROPERTY) null
-        else if (isElementType(node, OBJECT) || isFile(node)) Alignment.createAlignment(true)
-        else null
-    return myNode.getChildren(null).mapNotNull {
-      if (it.elementType == TokenType.WHITE_SPACE && propertyValueAlignment != null) {
-        val text = it.text
-        val first = text.indexOf('\n')
-        if (first >= 0 && text.indexOf('\n', first + 1) > 0) {
-          propertyValueAlignment = Alignment.createAlignment(true)
-          myLastValueAlignment = null
-          myLastValueCommentAlignment = null
+    val result = SmartList<Block>()
+    var it: ASTNode? = myNode.firstChildNode
+    while (it != null) {
+      if (settings.PROPERTY_ALIGNMENT != HCLCodeStyleSettings.DO_NOT_ALIGN_PROPERTY) {
+        if (it.elementType == TokenType.WHITE_SPACE) {
+          val text = it.text
+          val first = text.indexOf('\n')
+          if (first >= 0 && text.indexOf('\n', first + 1) > 0) {
+            resetAlignments()
+          }
+        } else {
+          if (it.textContains('\n') || (isElementType(it, HCLParserDefinition.HCL_COMMENTARIES) && it.treePrev?.textContains('\n') == true)) {
+            resetAlignments()
+          }
         }
       }
-      if (it.elementType !== TokenType.WHITE_SPACE) {
-        if (it.textContains('\n') || (isElementType(it, HCLParserDefinition.HCL_COMMENTARIES) && it.treePrev?.textContains('\n') == true)) {
-          myLastValueAlignment = null
-          myLastValueCommentAlignment = null
-        }
+      if (!isWhitespaceOrEmpty(it)) {
+        result.add(makeSubBlock(it))
       }
-      if (isWhitespaceOrEmpty(it)) null
-      else makeSubBlock(it, propertyValueAlignment)
-    }.toMutableList()
+      it = it.treeNext
+    }
+    return result
+  }
+
+  private fun resetAlignments() {
+    myLastValueAlignment = null
+    myLastValueCommentAlignment = null
   }
 
   private fun getLastPropertyAlignment(): Alignment? {
+    if (settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.DO_NOT_ALIGN_PROPERTY) return null
+    if (!isElementType(node, OBJECT) && !isFile(node)) return null
     if (myLastValueAlignment == null) {
-      myLastValueAlignment =
-          if (settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.DO_NOT_ALIGN_PROPERTY) null
-          else if (isElementType(node, OBJECT) || isFile(node)) Alignment.createAlignment(true)
-          else null
+      myLastValueAlignment = Alignment.createAlignment(true)
     }
     return myLastValueAlignment
   }
 
   private fun getLastCommentAlignment(): Alignment? {
+    if (settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.DO_NOT_ALIGN_PROPERTY) return null
+    if (!isElementType(myNode, HCLParserDefinition.HCL_CONTAINERS)) return null
     if (myLastValueCommentAlignment == null) {
-      myLastValueCommentAlignment = if (isElementType(myNode, OBJECT, ARRAY)) Alignment.createAlignment(true) else null
+      myLastValueCommentAlignment = Alignment.createAlignment(true)
     }
     return myLastValueCommentAlignment
   }
 
 
-  private fun makeSubBlock(childNode: ASTNode, propertyValueAlignment: Alignment?): HCLBlock {
+  private fun makeSubBlock(childNode: ASTNode): HCLBlock {
     var indent = Indent.getNoneIndent()
     var alignment: Alignment? = null
     var wrap: Wrap? = null
@@ -140,15 +146,12 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     } else if (isElementType(myNode, PROPERTY)) {
       // Handle properties alignment
       assert(valueAlignment != null)
-      val pva = valueAlignment
       if (isElementType(childNode, EQUALS) && settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_EQUALS) {
-        assert(pva != null) { "Expected not null PVA, node ${node.elementType}, parent ${parent?.node?.elementType}" }
-        alignment = pva
+        alignment = valueAlignment
       } else if (HCLPsiUtil.isPropertyValue(childNode.psi) && settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_VALUE) {
-        assert(pva != null) { "Expected not null PVA, node ${node.elementType}, parent ${parent?.node?.elementType}" }
         if (!isElementType(childNode, HCLParserDefinition.HCL_CONTAINERS)) {
           // WEB-13587 Align compound values on opening brace/bracket, not the whole block
-          alignment = pva
+          alignment = valueAlignment
         }
       }
     } else if (isElementType(myNode, HEREDOC_LITERAL)) {
@@ -162,11 +165,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
         }
       }
     }
-    var pva = propertyValueAlignment
-    if (isElementType(childNode, PROPERTY)) {
-      pva = getLastPropertyAlignment()
-    }
-    val block = HCLBlock(this, childNode, wrap, alignment, spacingBuilder, indent, settings, pva ?: valueAlignment)
+    val block = HCLBlock(childNode, wrap, alignment, spacingBuilder, indent, settings, getLastPropertyAlignment())
     return block
   }
 
@@ -178,10 +177,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     if (isElementType(myNode, HEREDOC_LITERAL, HEREDOC_MARKER, HEREDOC_CONTENT, HD_MARKER, HD_LINE, HD_START)) {
       return Indent.getAbsoluteNoneIndent()
     }
-    if (isElementType(myNode, OBJECT)) {
-      return Indent.getNormalIndent()
-    }
-    if (isElementType(myNode, ARRAY)) {
+    if (isElementType(myNode, HCLParserDefinition.HCL_CONTAINERS)) {
       return Indent.getNormalIndent()
     }
     if (isFile(myNode)) {
@@ -260,9 +256,9 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     private fun isOnSameLineAsFirstChildrenOfParent(childNode: ASTNode): Boolean {
       var node: ASTNode? = childNode.treePrev
       while (node != null) {
-        if (node.elementType == TokenType.WHITE_SPACE) {
+//        if (node.elementType == TokenType.WHITE_SPACE) {
           if (node.textContains('\n')) return false
-        }
+//        }
         node = node.treePrev
       }
       return true
