@@ -212,6 +212,22 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     private val CLOSE_BRACES: TokenSet = TokenSet.create(R_CURLY, R_BRACKET)
     private val ALL_BRACES: TokenSet = TokenSet.orSet(OPEN_BRACES, CLOSE_BRACES)
 
+    private fun isEmptyBlock(node: ASTNode): Boolean {
+      if (!isElementType(node, BLOCK)) {
+        return false
+      }
+      var it: ASTNode? = node.firstChildNode
+      while (it != null) {
+        if (isElementType(it, TokenType.WHITE_SPACE)) {
+          if (it.textContains('\n')) return false
+        } else if (!isElementType(it, OBJECT)) {
+          if (!isEmptyObject(it)) return false
+        } else if (!isElementType(it, IDENTIFIER, STRING_LITERAL)) return false
+        it = it.treeNext
+      }
+      return true
+    }
+
     private fun isEmptyObject(node: ASTNode): Boolean {
       if (!isElementType(node, OBJECT)) {
         return false
@@ -223,6 +239,10 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
       }
       return true
     }
+
+    private fun isMultilineBlock(node: ASTBlock) = isElementType(node.node, BLOCK) && node.node.textContains('\n')
+
+    private fun isMultilineProperty(node: ASTBlock) = isElementType(node.node, PROPERTY) && node.node.textContains('\n')
 
     private fun isStandaloneComment(childNode: ASTNode): Boolean {
       var node: ASTNode? = childNode.treePrev
@@ -275,11 +295,10 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
 
   override fun getSpacing(child1: Block?, child2: Block): Spacing? {
     if (child1 !is ASTBlock || child2 !is ASTBlock) return null
-    val first = isElementType(child1.node, PROPERTY) && child1.node.textContains('\n')
+    val first = isMultilineProperty(child1)
         || isElementType(child1.node, HCLParserDefinition.HCL_COMMENTARIES) && !isStandaloneComment(child1.node)
-    val child2IsMultiLineProperty = isElementType(child2.node, PROPERTY) && child2.node.textContains('\n')
-    val child2IsMultiLineBlock = isElementType(child2.node, BLOCK) && child2.node.textContains('\n')
-    val second = child2IsMultiLineProperty || child2IsMultiLineBlock
+    val child2IsMultiLineProperty = isMultilineProperty(child2)
+    val second = child2IsMultiLineProperty || isMultilineBlock(child2)
         || isElementType(child2.node, HCLParserDefinition.HCL_COMMENTARIES) && isStandaloneComment(child2.node)
     val third = child2IsMultiLineProperty && !isElementType(child1.node, L_CURLY)
     if (!isFile(myNode) && first && second || third) {
