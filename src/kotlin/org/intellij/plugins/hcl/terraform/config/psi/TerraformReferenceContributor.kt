@@ -34,9 +34,6 @@ import org.intellij.plugins.hil.psi.HCLElementLazyReference
 import org.intellij.plugins.hil.psi.HCLElementLazyReferenceBase
 
 class TerraformReferenceContributor : PsiReferenceContributor() {
-  companion object {
-  }
-
   override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
 
 

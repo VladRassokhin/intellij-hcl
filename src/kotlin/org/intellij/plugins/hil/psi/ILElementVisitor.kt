@@ -16,5 +16,4 @@
 package org.intellij.plugins.hil.psi
 
 
-open class ILElementVisitor : ILGeneratedVisitor() {
-}
+open class ILElementVisitor : ILGeneratedVisitor()

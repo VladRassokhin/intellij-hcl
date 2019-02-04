@@ -40,7 +40,7 @@ class Module private constructor(val item: PsiFileSystemItem) {
     }
 
     fun getAsModuleBlock(moduleBlock: HCLBlock): Module? {
-      return ModuleDetectionUtil.getAsModuleBlock(moduleBlock);
+      return ModuleDetectionUtil.getAsModuleBlock(moduleBlock)
     }
 
     private class CollectVariablesVisitor : HCLElementVisitor() {

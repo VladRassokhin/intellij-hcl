@@ -98,20 +98,20 @@ class HILCompletionContributor : CompletionContributor() {
         .andNot(PlatformPatterns.psiElement().withSuperParent(2, ILSelectExpression::class.java))
 
     val ILSE_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
-        .with(getScopeSelectPatternCondition(SCOPES))!!
+        .with(getScopeSelectPatternCondition(SCOPES))
     val ILSE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
-        .without(getScopeSelectPatternCondition(SCOPES))!!
+        .without(getScopeSelectPatternCondition(SCOPES))
     val ILISE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILIndexSelectExpression::class.java)
-        .without(getScopeSelectPatternCondition(SCOPES))!!
+        .without(getScopeSelectPatternCondition(SCOPES))
     val ILSE_FROM_DATA_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
-        .with(getScopeSelectPatternCondition(setOf("data")))!!
+        .with(getScopeSelectPatternCondition(setOf("data")))
     val ILSE_DATA_SOURCE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
         .with(object : PatternCondition<ILSelectExpression?>("ILSE_Data_Source()") {
           override fun accepts(t: ILSelectExpression, context: ProcessingContext?): Boolean {
             val from = t.from as? ILSelectExpression ?: return false
             return ILSE_FROM_DATA_SCOPE.accepts(from)
           }
-        })!!
+        })
 
 
     private val LOG = Logger.getInstance(HILCompletionContributor::class.java)

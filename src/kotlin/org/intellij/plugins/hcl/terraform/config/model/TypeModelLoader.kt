@@ -123,7 +123,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       val appdata = System.getenv("APPDATA") ?: return emptyList()
       terraform_d = File(appdata, "terraform.d")
     } else {
-      val userHome = SystemProperties.getUserHome() ?: return emptyList()
+      val userHome = SystemProperties.getUserHome()
       terraform_d = File(userHome, ".terraform.d")
     }
     if (!terraform_d.exists() || !terraform_d.isDirectory) return emptyList()

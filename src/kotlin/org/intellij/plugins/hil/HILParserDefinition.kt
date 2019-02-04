@@ -83,7 +83,7 @@ class HILParserDefinition : ParserDefinition {
     val TIL_LITERALS: TokenSet = TokenSet.create(HILElementTypes.IL_LITERAL_EXPRESSION, HILElementTypes.TRUE, HILElementTypes.FALSE)
     val TIL_VALUES: TokenSet = TokenSet.orSet(TIL_LITERALS)
 
-    private val ourContextNodeKey: Key<ASTNode> = Key.create("Terraform-IL.context.node");
+    private val ourContextNodeKey: Key<ASTNode> = Key.create("Terraform-IL.context.node")
 
     val IL_HOLDER: ILazyParseableElementType = object : ILazyParseableElementType("IL_HOLDER", HILLanguage) {
       override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
@@ -94,7 +94,7 @@ class HILParserDefinition : ParserDefinition {
         builder.putUserData(ourContextNodeKey, chameleon.treeParent)
         val node = parser.parse(this, builder).firstChildNode
         builder.putUserData(ourContextNodeKey, null)
-        return node;
+        return node
       }
     }
   }
