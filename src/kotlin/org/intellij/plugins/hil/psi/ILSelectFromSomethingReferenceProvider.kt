@@ -113,7 +113,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
       }
       is HCLObject -> {
         val property = r.findProperty(name)
-        val blocks = r.blockList.filter { it.nameElements.any { it.name == name } }.orEmpty()
+        val blocks = r.blockList.filter { it.nameElements.any { it.name == name } }
         if (property != null) {
           found.add(property)
         } else if (!blocks.isEmpty()) {

@@ -34,10 +34,10 @@ object ReferenceCompletionHelper {
     }
     val second: List<HCLBlock> = when (root) {
       "resource" -> {
-        return module.findResources(parts[1], null).mapNotNull { "${parts[1]}.${it.name}.${parts.subList(2, parts.size).joinToString(".")}" }
+        return module.findResources(parts[1], null).map { "${parts[1]}.${it.name}.${parts.subList(2, parts.size).joinToString(".")}" }
       }
       "data" -> {
-        return module.findDataSource(parts[1], null).mapNotNull { "data.${parts[1]}.${it.name}.${parts.subList(2, parts.size).joinToString(".")}" }
+        return module.findDataSource(parts[1], null).map { "data.${parts[1]}.${it.name}.${parts.subList(2, parts.size).joinToString(".")}" }
       }
       "provider" -> {
         // TODO: Check it would found any providers given type with other aliases

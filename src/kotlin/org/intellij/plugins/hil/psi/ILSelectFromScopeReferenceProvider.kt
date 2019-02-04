@@ -91,7 +91,7 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
       "local" -> {
         return arrayOf(HCLElementLazyReference(element, false) { _, _ ->
           this.element.getHCLHost()?.getTerraformModule()?.getAllLocals()
-              ?.filter { this.element.name == it.first }?.mapNotNull { it.second.nameElement }
+              ?.filter { this.element.name == it.first }?.map { it.second.nameElement }
               ?: emptyList()
         })
       }
