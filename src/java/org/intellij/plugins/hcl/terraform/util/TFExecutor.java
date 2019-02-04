@@ -200,12 +200,7 @@ public class TFExecutor {
               showNotification("Interrupted", NotificationType.WARNING);
             }
           } else if (myShowOutputOnError) {
-            ApplicationManager.getApplication().invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                showOutput(myProcessHandler, historyProcessListener);
-              }
-            });
+            ApplicationManager.getApplication().invokeLater(() -> showOutput(myProcessHandler, historyProcessListener));
           }
         }
       };
@@ -276,12 +271,9 @@ public class TFExecutor {
 
   private void showNotification(@NotNull final String message, final NotificationType type) {
     ApplicationManager.getApplication().invokeLater(
-        new Runnable() {
-          @Override
-          public void run() {
-            String title = getPresentableName();
-            Notifications.Bus.notify(TerraformConstants.EXECUTION_NOTIFICATION_GROUP.createNotification(title, message, type, null), myProject);
-          }
+        () -> {
+          String title = getPresentableName();
+          Notifications.Bus.notify(TerraformConstants.EXECUTION_NOTIFICATION_GROUP.createNotification(title, message, type, null), myProject);
         });
   }
 

@@ -281,7 +281,7 @@ public class HCLStatementMover extends LineMover {
     //endregion
 
     // Get all children in between
-    ArrayList<PsiElement> array = new ArrayList<PsiElement>();
+    ArrayList<PsiElement> array = new ArrayList<>();
     PsiElement next = element1;
     while (next != null) {
       if (!(next instanceof PsiWhiteSpace)) {

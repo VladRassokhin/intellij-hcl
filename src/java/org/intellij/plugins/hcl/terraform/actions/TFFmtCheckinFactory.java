@@ -88,11 +88,8 @@ public class TFFmtCheckinFactory extends CheckinHandlerFactory {
           for (PsiFile file : getPsiFiles()) {
             VirtualFile virtualFile = file.getVirtualFile();
             new TFFmtFileAction().doSomething(virtualFile, ModuleUtilCore.findModuleForPsiElement(file), file.getProject(), "Terraform fmt", true,
-                new Consumer<Boolean>() {
-                  @Override
-                  public void consume(Boolean result) {
-                    if (!result) success.set(false);
-                  }
+                result -> {
+                  if (!result) success.set(false);
                 });
           }
           if (!success.get()) {

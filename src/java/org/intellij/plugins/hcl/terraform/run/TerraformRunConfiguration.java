@@ -48,7 +48,7 @@ import java.util.Map;
 public class TerraformRunConfiguration extends LocatableConfigurationBase implements CommonProgramRunConfigurationParameters {
   public String PROGRAM_PARAMETERS = "";
   public String WORKING_DIRECTORY = "";
-  private final Map<String, String> myEnvs = new LinkedHashMap<String, String>();
+  private final Map<String, String> myEnvs = new LinkedHashMap<>();
   public boolean PASS_PARENT_ENVS = true;
 
   public TerraformRunConfiguration(final Project project, final ConfigurationFactory factory, final String name) {
@@ -105,12 +105,7 @@ public class TerraformRunConfiguration extends LocatableConfigurationBase implem
   public void checkConfiguration() throws RuntimeConfigurationException {
     if (StringUtil.isEmptyOrSpaces(WORKING_DIRECTORY)) {
       RuntimeConfigurationException exception = new RuntimeConfigurationException(HCLBundle.message("run.configuration.no.working.directory.specified"));
-      exception.setQuickFix(new Runnable() {
-        @Override
-        public void run() {
-          setWorkingDirectory(getProject().getBasePath());
-        }
-      });
+      exception.setQuickFix(() -> setWorkingDirectory(getProject().getBasePath()));
       throw exception;
     }
 
@@ -177,7 +172,7 @@ public class TerraformRunConfiguration extends LocatableConfigurationBase implem
   }
 
   @Override
-  public void readExternal(final Element element) throws InvalidDataException {
+  public void readExternal(@NotNull final Element element) throws InvalidDataException {
     super.readExternal(element);
     //noinspection deprecation
     DefaultJDOMExternalizer.readExternal(this, element);

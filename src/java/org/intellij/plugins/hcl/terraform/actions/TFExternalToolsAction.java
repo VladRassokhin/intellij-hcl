@@ -112,12 +112,9 @@ public abstract class TFExternalToolsAction extends DumbAwareAction {
     }
 
     createExecutor(project, module, title, virtualFile).executeWithProgress(withProgress,
-        new Consumer<Boolean>() {
-          @Override
-          public void consume(Boolean aBoolean) {
-            consumer.consume(aBoolean);
-            VfsUtil.markDirtyAndRefresh(true, true, true, virtualFile);
-          }
+        aBoolean -> {
+          consumer.consume(aBoolean);
+          VfsUtil.markDirtyAndRefresh(true, true, true, virtualFile);
         });
     return true;
   }

@@ -45,7 +45,7 @@ public class TerraformToolProjectSettings implements PersistentStateComponent<Te
   }
 
   @Override
-  public void loadState(State state) {
+  public void loadState(@NotNull State state) {
     myState.myTerraformPath = state.myTerraformPath;
   }
 
