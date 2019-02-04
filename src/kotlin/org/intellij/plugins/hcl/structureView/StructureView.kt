@@ -26,8 +26,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.intellij.plugins.hcl.psi.*
 
 class HCLStructureViewFactory : PsiStructureViewFactory {
-  override fun getStructureViewBuilder(psiFile: PsiFile?): StructureViewBuilder? {
-    if (psiFile == null) return null
+  override fun getStructureViewBuilder(psiFile: PsiFile): StructureViewBuilder? {
     return object : TreeBasedStructureViewBuilder() {
       override fun createStructureViewModel(editor: Editor?): StructureViewModel {
         return HCLStructureViewModel(psiFile as HCLFile, editor)

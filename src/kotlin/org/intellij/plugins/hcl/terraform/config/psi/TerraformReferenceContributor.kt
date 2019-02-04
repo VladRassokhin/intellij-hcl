@@ -199,7 +199,7 @@ class DependsOnLazyReference(element: HCLStringLiteral) : HCLElementLazyReferenc
     return rangeInElement
   }
 
-  override fun handleElementRename(newElementName: String?): PsiElement {
+  override fun handleElementRename(newElementName: String?): PsiElement? {
     return ElementManipulators.getManipulator(element).handleContentChange(element, getRangeInElementForRename(), newElementName)
   }
 }

@@ -35,8 +35,7 @@ class HILElementRenameValidator : RenameInputValidator {
 
   private val lexer = HILLexer()
 
-  override fun isInputValid(name: String?, element: PsiElement?, context: ProcessingContext?): Boolean {
-    if (name == null || element == null) return false
+  override fun isInputValid(name: String, element: PsiElement, context: ProcessingContext): Boolean {
     if (!pattern.accepts(element)) return false
     synchronized(lexer) {
       lexer.start(name)

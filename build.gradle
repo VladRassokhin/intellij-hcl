@@ -45,7 +45,7 @@ apply plugin: 'kotlin'
 apply plugin: 'idea'
 
 intellij {
-    version '15.0.6'
+    version '2018.1'
     pluginName 'intellij-hcl'
     sandboxDirectory="${project.projectDir}/idea-sandbox"
     updateSinceUntilBuild = false
@@ -67,8 +67,8 @@ dependencies {
     testCompile 'org.assertj:assertj-core:2.6.0'
 }
 
-sourceCompatibility = '1.6'
-targetCompatibility = '1.6'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 sourceSets {
     main {
@@ -119,6 +119,9 @@ task wrapper(type: Wrapper) {
 String getFileWatcherPluginVersion(String ideaVersion) {
     def version = GradleVersion.version(ideaVersion)
 
+    if (version >= GradleVersion.version("2018.1") || ideaVersion.startsWith("181.")) {
+        return "181.4096.12"
+    }
     if (version >= GradleVersion.version("2017.3") || ideaVersion.startsWith("173.")) {
         return "173.3188.31"
     }

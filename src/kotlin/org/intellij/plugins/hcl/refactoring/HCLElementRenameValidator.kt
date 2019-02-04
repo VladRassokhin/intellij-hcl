@@ -37,8 +37,7 @@ class HCLElementRenameValidator : RenameInputValidator {
 
   private val lexer = HCLLexer()
 
-  override fun isInputValid(name: String?, element: PsiElement?, context: ProcessingContext?): Boolean {
-    if (name == null || element == null) return false
+  override fun isInputValid(name: String, element: PsiElement, context: ProcessingContext): Boolean {
     if (!pattern.accepts(element)) return false
     @Suppress("NAME_SHADOWING")
     var name: String = name

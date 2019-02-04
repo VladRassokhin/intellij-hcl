@@ -29,7 +29,7 @@ import java.io.File;
 
 @State(
     name = "TerraformToolProjectSettings",
-    storages = @Storage(id = "terraform.xml", file = "terraform.xml")
+    storages = @Storage("terraform.xml")
 )
 public class TerraformToolProjectSettings implements PersistentStateComponent<TerraformToolProjectSettings.State> {
   private State myState = new State();
