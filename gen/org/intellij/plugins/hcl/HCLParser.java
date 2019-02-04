@@ -11,7 +11,7 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
 import com.intellij.lang.LightPsiParser;
 
-@SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
+@SuppressWarnings("ALL")
 public class HCLParser implements PsiParser, LightPsiParser {
 
   public ASTNode parse(IElementType t, PsiBuilder b) {
