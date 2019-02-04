@@ -35,11 +35,10 @@ public class TerraformSettingsPanel implements ConfigurableUi<TerraformToolProje
 
     myTerraformPathField.addBrowseFolderListener(
         "",
-        "Terraform Executable Path",
+        "Terraform executable path",
         null,
         fileChooserDescriptor,
-        TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT,
-        false
+        TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT
     );
 
     return myWholePanel;

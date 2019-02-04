@@ -73,7 +73,7 @@ public class TerraformRunConfiguration extends LocatableConfigurationBase implem
       @Override
       protected ProcessHandler startProcess() throws ExecutionException {
         OSProcessHandler handler;
-        handler = KillableColoredProcessHandler.create(createCommandLine());
+        handler = new KillableColoredProcessHandler(createCommandLine(), true);
         ProcessTerminatedListener.attach(handler);
         return handler;
       }
