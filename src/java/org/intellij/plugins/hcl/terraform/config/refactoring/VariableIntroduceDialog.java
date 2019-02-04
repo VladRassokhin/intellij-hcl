@@ -67,6 +67,7 @@ public class VariableIntroduceDialog extends DialogWrapper {
     final EditorComboBoxEditor comboEditor = new StringComboboxEditor(myProject, TerraformFileType.INSTANCE, myNameComboBox);
 
     myNameComboBox.setEditor(comboEditor);
+    //noinspection GtkPreferredJComboBoxRenderer,unchecked
     myNameComboBox.setRenderer(new EditorComboBoxRenderer(comboEditor));
     myNameComboBox.setEditable(true);
     myNameComboBox.setMaximumRowCount(8);

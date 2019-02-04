@@ -141,6 +141,7 @@ public class HCLStatementMover extends LineMover {
     return true;
   }
 
+  @SuppressWarnings("RedundantIfStatement")
   private static boolean statementCanBePlacedAlong(@NotNull final PsiElement element, final PsiElement movingParent) {
     final PsiElement parent = element.getParent();
     if (parent instanceof PsiFile) return true;
