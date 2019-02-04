@@ -84,7 +84,7 @@ object ILRefactoringUtil {
     }
     // prefer shorter names
     val reversed = possibleNames.reversed()
-    return ContainerUtil.map(reversed) { it ->
+    return ContainerUtil.map(reversed) {
       var name1 = it
       if (name1.indexOf('_') == -1) {
         return@map name1

@@ -47,7 +47,7 @@ class TerraformRunLineMarkerContributor : RunLineMarkerContributor() {
     val actions = ExecutorAction.getActions(0)
     val tooltipProvider: Function<PsiElement, String> = Function { psiElement ->
       @Suppress("UselessCallOnCollection")
-      actions.filterNotNull().map { getText(it, psiElement) }.filterNotNull().joinToString("\n")
+      actions.filterNotNull().mapNotNull { getText(it, psiElement) }.joinToString("\n")
     }
     return Info(AllIcons.RunConfigurations.TestState.Run, tooltipProvider, *actions)
   }

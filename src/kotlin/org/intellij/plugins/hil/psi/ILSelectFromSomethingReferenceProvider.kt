@@ -66,9 +66,9 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
         refs.add(HCLElementLazyReference(element, false) { incompleteCode, fake ->
           val resolved = SmartList<PsiElement>()
           if (reference is PsiFakeAwarePolyVariantReference) {
-            resolved.addAll(reference.multiResolve(incompleteCode, fake).map { it.element }.filterNotNull())
+            resolved.addAll(reference.multiResolve(incompleteCode, fake).mapNotNull { it.element })
           } else if (reference is PsiPolyVariantReference) {
-            resolved.addAll(reference.multiResolve(incompleteCode).map { it.element }.filterNotNull())
+            resolved.addAll(reference.multiResolve(incompleteCode).mapNotNull { it.element })
           } else {
             reference.resolve()?.let { resolved.add(it) }
           }

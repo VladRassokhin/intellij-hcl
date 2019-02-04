@@ -84,7 +84,7 @@ class Module private constructor(val item: PsiFileSystemItem) {
   fun findVariable(name: String): Pair<Variable, HCLBlock>? {
     val visitor = CollectVariablesVisitor()
     process(PsiElementProcessor { file -> file.acceptChildren(visitor); true })
-    return visitor.collected.filter { it.first.name == name }.firstOrNull()
+    return visitor.collected.firstOrNull { it.first.name == name }
   }
 
   fun getAllLocals(): List<Pair<String, HCLProperty>> {

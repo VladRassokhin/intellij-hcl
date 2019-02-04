@@ -92,7 +92,7 @@ class HCLStructureViewElement(val element: HCLElement) : StructureViewTreeElemen
       value = element
     }
 
-    val list: List<HCLStructureViewElement> = value.children.map {
+    val list: List<HCLStructureViewElement> = value.children.mapNotNull {
       when (it) {
         is HCLObject -> HCLStructureViewElement(it)
         is HCLArray -> HCLStructureViewElement(it)
@@ -100,7 +100,7 @@ class HCLStructureViewElement(val element: HCLElement) : StructureViewTreeElemen
         is HCLBlock -> HCLStructureViewElement(it)
         else -> null
       }
-    }.filterNotNull()
+    }
 
     return list.toTypedArray()
   }

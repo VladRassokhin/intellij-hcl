@@ -45,7 +45,7 @@ open class HCLElementGenerator(private val project: Project) {
 
    * @param content properly escaped text of HCL value, e.g. Java literal `&quot;\&quot;new\\nline\&quot;&quot;` if you want to create string literal
    * *
-   * @param type of the HCL value desired
+   * @param T type of the HCL value desired
    * *
    * @return element created from given text
    * *
@@ -128,7 +128,7 @@ open class HCLElementGenerator(private val project: Project) {
           append('\n')
         }
       }
-      0.rangeTo(endIndent).forEach { append(' ') }
+      append(" ".repeat(endIndent))
       append("___EOF___")
     }
     val file = createDummyFile(text)

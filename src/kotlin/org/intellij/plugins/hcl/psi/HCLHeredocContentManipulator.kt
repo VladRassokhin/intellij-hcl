@@ -47,7 +47,7 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
     //////////
     // Calculate affected elements (strings) (based on offsets)
 
-    var offset: Int = 0
+    var offset = 0
     val lines = HCLPsiImplUtils.getLinesWithEOL(element)
     val ranges = lines.map {
       val r: TextRange = TextRange.from(offset, it.length)
@@ -167,15 +167,14 @@ class HCLHeredocContentManipulator : AbstractElementManipulator<HCLHeredocConten
     fun getReplacementLines(newText: String): List<Pair<String, Boolean>> {
       if (newText == "") (return emptyList())
       // TODO: Convert line separators to \n ?
-      val list = StringUtil.splitByLinesKeepSeparators(newText).toList().map {
+      return StringUtil.splitByLinesKeepSeparators(newText).toList().map {
         it.removeSuffix("\n") to it.endsWith("\n")
       }
-      return list
     }
 
     private fun lookupLine(node: TreeElement, n: Int): ASTNode? {
       var cn: ASTNode? = node.firstChildNode
-      var counter: Int = 0
+      var counter = 0
       while (cn != null) {
         if (counter == n) return cn
         if (cn.elementType == HCLElementTypes.HD_EOL) counter++

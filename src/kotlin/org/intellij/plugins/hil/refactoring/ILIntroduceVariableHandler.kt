@@ -76,13 +76,13 @@ open class ILIntroduceVariableHandler : BaseIntroduceVariableHandler<ILExpressio
 
     fun findAnchor(occurrences: List<PsiElement>): PsiElement? {
 
-      val hosts = occurrences.map {
+      val hosts = occurrences.mapNotNull {
         if (it is ILExpression) {
           it.getHCLHost()
         } else {
           it
         }
-      }.filterNotNull()
+      }
 
 
       val minOffset = hosts

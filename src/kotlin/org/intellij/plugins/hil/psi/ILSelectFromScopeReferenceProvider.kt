@@ -48,10 +48,10 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
       }
       "count" -> {
         return arrayOf(HCLElementLazyReference(from, true) { _, _ ->
-          listOf(
+          listOfNotNull(
               getResource(this.element)?.`object`?.findProperty("count"),
               getDataSource(this.element)?.`object`?.findProperty("count")
-          ).filterNotNull()
+          )
         })
       }
       "self" -> {
@@ -91,7 +91,7 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
       "local" -> {
         return arrayOf(HCLElementLazyReference(element, false) { _, _ ->
           this.element.getHCLHost()?.getTerraformModule()?.getAllLocals()
-              ?.filter { this.element.name == it.first }?.map { it.second.nameElement }?.filterNotNull()
+              ?.filter { this.element.name == it.first }?.mapNotNull { it.second.nameElement }
               ?: emptyList()
         })
       }
@@ -100,7 +100,7 @@ object ILSelectFromScopeReferenceProvider : PsiReferenceProvider() {
   }
 
   class VariableReference(element: ILVariableMixin) : HCLElementLazyReference<ILVariableMixin>(element, false, { _, _ ->
-    listOf(this.element.getHCLHost()?.getTerraformModule()?.findVariable(this.element.name)?.second?.nameIdentifier as HCLElement?).filterNotNull()
+    listOfNotNull(this.element.getHCLHost()?.getTerraformModule()?.findVariable(this.element.name)?.second?.nameIdentifier as HCLElement?)
   }), LocalQuickFixProvider {
     override fun getQuickFixes() = arrayOf(AddVariableFix(this.element))
   }

@@ -54,7 +54,7 @@ class TypeModelProvider {
         ourModels.remove(project)
         return
       }
-      ourModels.put(project, model)
+      ourModels[project] = model
       val disposable = Disposable {
         ourModels.remove(project)
         ourDisposers.remove(project)
@@ -84,7 +84,7 @@ class TypeModelProvider {
           else -> null
         }
         val additional = Additional(fqn, obj.string("description"), hint, obj.boolean("required"))
-        map.put(fqn, additional)
+        map[fqn] = additional
       }
     }
     return map

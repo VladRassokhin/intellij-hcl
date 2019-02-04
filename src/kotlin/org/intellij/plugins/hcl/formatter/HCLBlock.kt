@@ -46,7 +46,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
         if (settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.DO_NOT_ALIGN_PROPERTY) null
         else if (isElementType(node, OBJECT) || isFile(node)) Alignment.createAlignment(true)
         else null
-    return myNode.getChildren(null).map {
+    return myNode.getChildren(null).mapNotNull {
       if (it.elementType == TokenType.WHITE_SPACE && propertyValueAlignment != null) {
         val text = it.text
         val first = text.indexOf('\n')
@@ -56,7 +56,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
       }
       if (isWhitespaceOrEmpty(it)) null
       else makeSubBlock(it, propertyValueAlignment)
-    }.filterNotNull().toMutableList()
+    }.toMutableList()
   }
 
   private fun makeSubBlock(childNode: ASTNode, propertyValueAlignment: Alignment?): HCLBlock {

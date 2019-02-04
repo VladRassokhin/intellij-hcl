@@ -214,7 +214,7 @@ object VariableReferenceProvider : PsiReferenceProvider() {
       } else {
         @Suppress("NAME_SHADOWING")
         val value = element.id
-        listOf(element.getTerraformModule().findVariable(value.substringBefore('.'))?.second?.nameIdentifier as HCLElement?).filterNotNull()
+        listOfNotNull(element.getTerraformModule().findVariable(value.substringBefore('.'))?.second?.nameIdentifier as HCLElement?)
       }
     }
 
@@ -233,7 +233,7 @@ object VariableReferenceProvider : PsiReferenceProvider() {
         if (incomplete) {
           default.propertyList.map { it.nameElement }
         } else {
-          listOf(default.findProperty(value.substringAfter('.'))?.nameElement).filterNotNull()
+          listOfNotNull(default.findProperty(value.substringAfter('.'))?.nameElement)
         }
       }
       varReference.rangeInElement = TextRange(0, dotIndex)

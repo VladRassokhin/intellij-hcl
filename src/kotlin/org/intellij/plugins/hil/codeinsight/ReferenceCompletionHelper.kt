@@ -46,7 +46,7 @@ object ReferenceCompletionHelper {
       else -> null
     } ?: return null
     if (parts.size == 2) return second
-    return second.map { find(it, parts.subList(2, parts.size), fqn) }.filterNotNull()
+    return second.mapNotNull { find(it, parts.subList(2, parts.size), fqn) }
   }
 
   /**

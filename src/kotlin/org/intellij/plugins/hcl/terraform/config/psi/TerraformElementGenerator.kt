@@ -36,9 +36,8 @@ class TerraformElementGenerator(val project: Project) : HCLElementGenerator(proj
   }
 
   fun createVariable(name: String, type: Type?, initializer: ILExpression): HCLBlock {
-    val value: String
     // TODO: Improve
-    value = when (initializer) {
+    val value = when (initializer) {
       is ILLiteralExpression -> initializer.text
       else -> "\"\${${initializer.text}}\""
     }
@@ -64,9 +63,8 @@ class TerraformElementGenerator(val project: Project) : HCLElementGenerator(proj
   }
 
   fun createVariable(name: String, type: Type?, initializer: HCLElement): PsiElement? {
-    val value: String
     // TODO: Improve
-    value = when (initializer) {
+    val value = when (initializer) {
       is HCLLiteral -> initializer.text
       else -> initializer.text
     }
