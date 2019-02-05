@@ -37,4 +37,6 @@ object HILFileType : LanguageFileType(HILLanguage) {
   override fun getName(): String {
     return "HIL"
   }
+
+  override fun toString() = name
 }
