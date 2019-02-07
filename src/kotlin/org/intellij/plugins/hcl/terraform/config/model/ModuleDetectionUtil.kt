@@ -22,10 +22,8 @@ import com.beust.klaxon.string
 import com.intellij.openapi.application.Application
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiManager
 import com.intellij.psi.util.CachedValueProvider
@@ -33,6 +31,7 @@ import com.intellij.psi.util.CachedValuesManager
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.psi.getNameElementUnquoted
+import org.intellij.plugins.hcl.terraform.config.TerraformDirFinder
 
 object ModuleDetectionUtil {
   private val LOG = Logger.getInstance(ModuleDetectionUtil::class.java)
@@ -68,14 +67,14 @@ object ModuleDetectionUtil {
     val directory = file.containingDirectory ?: return CachedValueProvider.Result(null to null, moduleBlock)
     var err: String? = null
 
-    val dotTerraform = ModuleDetectionUtil.getTerraformDirSomewhere(directory)
+    val dotTerraform = TerraformDirFinder.findTerraformDir(directory)
     if (dotTerraform != null) {
       LOG.debug("Found .terraform directory: $dotTerraform")
-      val manifest = ModuleDetectionUtil.getTerraformModulesManifest(directory)
+      val manifest = ModuleDetectionUtil.getTerraformModulesManifest(dotTerraform)
       val keyPrefix: String
       if (manifest != null) {
         LOG.debug("All modules from modules.json: ${manifest.modules}")
-        val pair = getKeyPrefix(directory, dotTerraform, manifest, name, source)
+        val pair = getKeyPrefix(directory, dotTerraform.virtualFile, manifest, name, source)
         if (pair.first == null) {
           return CachedValueProvider.Result(findRelativeModule(directory, moduleBlock, source) to (pair.second
               ?: "Can't determine key prefix"), moduleBlock, directory, dotTerraform)
@@ -108,7 +107,7 @@ object ModuleDetectionUtil {
         }
       }
     } else {
-      err = "No .terraform found under project directory, please run `terraform get` in appropriate place"
+      err = "No .terraform found, please run `terraform get` in appropriate place"
       LOG.warn(err)
       return CachedValueProvider.Result(findRelativeModule(directory, moduleBlock, source) to err, moduleBlock, directory)
     }
@@ -120,37 +119,15 @@ object ModuleDetectionUtil {
     return CachedValueProvider.Result(findRelativeModule(directory, moduleBlock, source) to err, moduleBlock, directory)
   }
 
+  private fun getTerraformModulesManifest(dotTerraform: PsiDirectory): ModulesManifest? =
+      CachedValuesManager.getCachedValue(dotTerraform, ManifestCachedValueProvider(dotTerraform))
 
-  private val TerraformModulesManifestFileUrlKey = Key<String>("TerraformModulesManifestFileUrl")
-
-  fun getTerraformModulesManifest(directory: PsiDirectory): ModulesManifest? {
-    var url = directory.getUserData(TerraformModulesManifestFileUrlKey)
-    var manifestFile: VirtualFile? = null
-
-    if (url != null) {
-      manifestFile = VirtualFileManager.getInstance().findFileByUrl(url)
-      if (manifestFile == null || !manifestFile.isValid) {
-        manifestFile = null
-        directory.putUserData(TerraformModulesManifestFileUrlKey, null)
-      }
-    }
-
-    if (manifestFile == null) {
-      val dotTerraformDir = getTerraformDirSomewhere(directory) ?: return null
-      manifestFile = dotTerraformDir.findFileByRelativePath("modules/modules.json") ?: return null
-      if (!manifestFile.exists() || manifestFile.isDirectory) return null
-
-      url = manifestFile.url
-      directory.putUserData(TerraformModulesManifestFileUrlKey, url)
-    }
-
-    return CachedValuesManager.getCachedValue(directory, ManifestCachedValueProvider(manifestFile))
-  }
-
-  class ManifestCachedValueProvider(private val file: VirtualFile) : CachedValueProvider<ModulesManifest> {
-    override fun compute(): CachedValueProvider.Result<ModulesManifest>? {
-      val parsed = parseManifest(file)
-      return CachedValueProvider.Result(parsed, file)
+  class ManifestCachedValueProvider(private val dotTerraform: PsiDirectory) : CachedValueProvider<ModulesManifest?> {
+    override fun compute(): CachedValueProvider.Result<ModulesManifest?> {
+      val modulesDir = dotTerraform.findSubdirectory("modules") ?: return CachedValueProvider.Result(null, dotTerraform)
+      val modulesFile = modulesDir.findFile("modules.json") ?: return CachedValueProvider.Result(null, modulesDir)
+      val parsed = parseManifest(modulesFile.virtualFile)
+      return CachedValueProvider.Result(parsed, modulesFile)
     }
   }
 
@@ -218,26 +195,5 @@ object ModuleDetectionUtil {
       // Module referenced from root key would be '1.$NAME;$SOURCE' or '1.$NAME;$SOURCE.$VERSION'
       return "1.$name;$source" to null
     }
-  }
-
-  private fun getTerraformDirSomewhere(file: PsiDirectory): VirtualFile? {
-    val base = file.project.baseDir ?: return null
-    val start = file.virtualFile
-    if (!VfsUtilCore.isAncestor(base, start, false)) {
-      LOG.warn("File $file is not under project root")
-      return null
-    }
-    var parent: VirtualFile? = start
-    while (true) {
-      if (parent == null) return null
-      if (parent == base) break
-
-      val child = parent.findChild(".terraform")
-      if (child != null && child.isDirectory) {
-        return child
-      }
-      parent = parent.parent
-    }
-    return null
   }
 }
