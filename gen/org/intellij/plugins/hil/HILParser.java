@@ -239,9 +239,9 @@ public class HILParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ILExpression
+  // ILExpressionHolder
   static boolean root(PsiBuilder b, int l) {
-    return ILExpression(b, l + 1, -1);
+    return ILExpressionHolder(b, l + 1);
   }
 
   /* ********************************************************** */

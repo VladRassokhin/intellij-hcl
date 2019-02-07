@@ -187,10 +187,9 @@ public class HILParserTest extends ParsingTestCase {
 
   public void testUnfinishedConditional6() throws Exception {
     doCodeTest("?:", "HILFile: a.hil\n" +
-        "  ILExpressionHolder\n" +
-        "    PsiErrorElement:<expression> expected, got '?'\n" +
-        "      PsiElement(?)('?')\n" +
-        "    PsiElement(:)(':')");
+        "  PsiErrorElement:'?' unexpected\n" +
+        "    PsiElement(?)('?')\n" +
+        "  PsiElement(:)(':')");
   }
 
   public void testClosingCurlyBraceInString() throws Exception {
@@ -211,6 +210,13 @@ public class HILParserTest extends ParsingTestCase {
 
   public void testConditionalOverUnary() throws IOException {
     doCodeTest("!false?!false:!false");
+  }
+
+  protected void doCodeTest(String code) throws IOException {
+    if (!code.startsWith("${") && !code.endsWith("}")) {
+      code = "${" + code + "}";
+    }
+    super.doCodeTest(code);
   }
 
   protected void doCodeTest(@NotNull final String code, @NotNull final String expected) throws IOException {

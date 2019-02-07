@@ -17,21 +17,16 @@ package org.intellij.plugins.hil
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
-import com.intellij.lang.LanguageParserDefinitions
 import com.intellij.lang.ParserDefinition
-import com.intellij.lang.PsiBuilderFactory
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Key
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IFileElementType
-import com.intellij.psi.tree.ILazyParseableElementType
 import com.intellij.psi.tree.TokenSet
 import org.intellij.plugins.hil.psi.HILLexer
 import org.intellij.plugins.hil.psi.ILPsiFile
-import org.intellij.plugins.hil.psi.impl.ILExpressionHolderImpl
 
 class HILParserDefinition : ParserDefinition {
 
@@ -51,9 +46,6 @@ class HILParserDefinition : ParserDefinition {
 
   override fun createElement(node: ASTNode): PsiElement {
     val type = node.elementType
-    if (type == IL_HOLDER) {
-      return ILExpressionHolderImpl(node)
-    }
     if (type is HILElementType) {
       return HILElementTypes.Factory.createElement(node)
     }
@@ -82,20 +74,5 @@ class HILParserDefinition : ParserDefinition {
     val TIL_KEYWORDS: TokenSet = TokenSet.create(HILElementTypes.TRUE, HILElementTypes.FALSE, HILElementTypes.NULL)
     val TIL_LITERALS: TokenSet = TokenSet.create(HILElementTypes.IL_LITERAL_EXPRESSION, HILElementTypes.TRUE, HILElementTypes.FALSE)
     val TIL_VALUES: TokenSet = TokenSet.orSet(TIL_LITERALS)
-
-    private val ourContextNodeKey: Key<ASTNode> = Key.create("Terraform-IL.context.node")
-
-    val IL_HOLDER: ILazyParseableElementType = object : ILazyParseableElementType("IL_HOLDER", HILLanguage) {
-      override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
-        val project = psi.project
-        val builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, HILLexer(), HILLanguage, chameleon.chars)
-        val parser = LanguageParserDefinitions.INSTANCE.forLanguage(language).createParser(project)
-
-        builder.putUserData(ourContextNodeKey, chameleon.treeParent)
-        val node = parser.parse(this, builder).firstChildNode
-        builder.putUserData(ourContextNodeKey, null)
-        return node
-      }
-    }
   }
 }

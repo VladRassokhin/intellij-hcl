@@ -20,13 +20,8 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
 import org.intellij.plugins.hil.HILFileType
 import org.intellij.plugins.hil.HILLanguage
-import org.intellij.plugins.hil.HILParserDefinition
 
 class ILPsiFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, HILLanguage) {
-  init {
-    init(HILParserDefinition.FILE, HILParserDefinition.IL_HOLDER)
-  }
-
   override fun getFileType(): FileType {
     return HILFileType
   }
