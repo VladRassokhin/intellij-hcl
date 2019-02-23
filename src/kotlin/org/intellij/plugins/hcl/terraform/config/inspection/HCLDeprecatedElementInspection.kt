@@ -25,7 +25,9 @@ import org.intellij.plugins.hcl.psi.HCLElementVisitor
 import org.intellij.plugins.hcl.psi.getNameElementUnquoted
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
+import org.intellij.plugins.hcl.terraform.config.model.BlockType
 import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
+import org.intellij.plugins.hcl.terraform.config.model.PropertyType
 import java.util.*
 
 class HCLDeprecatedElementInspection : LocalInspectionTool() {
@@ -59,7 +61,7 @@ class HCLDeprecatedElementInspection : LocalInspectionTool() {
 
     val reasons = candidates.map { it.name to it.deprecated!! }.toMap(HashMap())
     ProgressIndicatorProvider.checkCanceled()
-    if (candidates.filter { it.property != null }.isNotEmpty()) for (hclProperty in obj.propertyList) {
+    if (candidates.any { it is PropertyType }) for (hclProperty in obj.propertyList) {
       val name = hclProperty.name
       val reason = reasons[name]
       if (reason != null) {
@@ -68,7 +70,7 @@ class HCLDeprecatedElementInspection : LocalInspectionTool() {
     }
 
     ProgressIndicatorProvider.checkCanceled()
-    if (candidates.filter { it.block != null }.isNotEmpty()) for (hclBlock in obj.blockList) {
+    if (candidates.any { it is BlockType }) for (hclBlock in obj.blockList) {
       val name = hclBlock.name
       val reason = reasons[name]
       if (reason != null) {

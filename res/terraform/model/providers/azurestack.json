@@ -1,9 +1,23 @@
 {
   "name": "azurestack",
   "type": "provider",
-  "version": "v0.3.0-32-g9a1902b1",
+  "version": "v0.4.0-54-gfc672946",
   "provider": {
     "arm_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "Default": {
+        "Type": "string"
+      }
+    },
+    "client_certificate_password": {
+      "Type": "String",
+      "Optional": true,
+      "Default": {
+        "Type": "string"
+      }
+    },
+    "client_certificate_path": {
       "Type": "String",
       "Optional": true,
       "Default": {
@@ -1140,6 +1154,43 @@
         "Required": true
       }
     },
+    "azurestack_template_deployment": {
+      "deployment_mode": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "outputs": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "parameters": {
+        "Type": "Map",
+        "Optional": true,
+        "ConflictsWith": [
+          "parameters_body"
+        ]
+      },
+      "parameters_body": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "parameters"
+        ]
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "template_body": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "azurestack_virtual_machine": {
       "availability_set_id": {
         "Type": "String",
@@ -1591,6 +1642,481 @@
         "Required": true
       }
     },
+    "azurestack_virtual_machine_scale_set": {
+      "extension": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "auto_upgrade_minor_version": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "protected_settings": {
+              "Type": "String",
+              "Optional": true
+            },
+            "publisher": {
+              "Type": "String",
+              "Required": true
+            },
+            "settings": {
+              "Type": "String",
+              "Optional": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            },
+            "type_handler_version": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "identity": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "principal_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "license_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "network_profile": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_configuration": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "application_gateway_backend_address_pool_ids": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "load_balancer_backend_address_pool_ids": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "load_balancer_inbound_nat_rules_ids": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "primary": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "public_ip_address_configuration": {
+                    "Type": "List",
+                    "Optional": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "domain_name_label": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "idle_timeout": {
+                          "Type": "Int",
+                          "Required": true
+                        },
+                        "name": {
+                          "Type": "String",
+                          "Required": true
+                        }
+                      }
+                    }
+                  },
+                  "subnet_id": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "network_security_group_id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "primary": {
+              "Type": "Bool",
+              "Required": true
+            }
+          }
+        }
+      },
+      "os_profile": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "admin_password": {
+              "Type": "String",
+              "Optional": true
+            },
+            "admin_username": {
+              "Type": "String",
+              "Required": true
+            },
+            "computer_name_prefix": {
+              "Type": "String",
+              "Required": true
+            },
+            "custom_data": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "os_profile_linux_config": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "disable_password_authentication": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "ssh_keys": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "key_data": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "path": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "os_profile_secrets": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "source_vault_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "vault_certificates": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "certificate_store": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "certificate_url": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "os_profile_windows_config": {
+        "Type": "Set",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "additional_unattend_config": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "component": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "content": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "pass": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "setting_name": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "enable_automatic_upgrades": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "provision_vm_agent": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "winrm": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "certificate_url": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "protocol": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "overprovision": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "plan": {
+        "Type": "Set",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "product": {
+              "Type": "String",
+              "Required": true
+            },
+            "publisher": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "priority": {
+        "Type": "String",
+        "Optional": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "single_placement_group": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "sku": {
+        "Type": "Set",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "capacity": {
+              "Type": "Int",
+              "Required": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "tier": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
+      "storage_profile_data_disk": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "caching": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "create_option": {
+              "Type": "String",
+              "Required": true
+            },
+            "disk_size_gb": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            },
+            "lun": {
+              "Type": "Int",
+              "Required": true
+            }
+          }
+        }
+      },
+      "storage_profile_image_reference": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "offer": {
+              "Type": "String",
+              "Optional": true
+            },
+            "publisher": {
+              "Type": "String",
+              "Optional": true
+            },
+            "sku": {
+              "Type": "String",
+              "Optional": true
+            },
+            "version": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "storage_profile_os_disk": {
+        "Type": "Set",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "caching": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "create_option": {
+              "Type": "String",
+              "Required": true
+            },
+            "image": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true
+            },
+            "os_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "vhd_containers": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true
+      },
+      "upgrade_policy_mode": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurestack_virtual_network": {
       "address_space": {
         "Type": "List",
@@ -1646,6 +2172,215 @@
         "Type": "Map",
         "Optional": true,
         "Computed": true
+      }
+    },
+    "azurestack_virtual_network_gateway": {
+      "bgp_settings": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "asn": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "peer_weight": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "peering_address": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
+      "default_local_network_gateway_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enable_bgp": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "ip_configuration": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 2,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Optional": true
+            },
+            "private_ip_address_allocation": {
+              "Type": "String",
+              "Optional": true
+            },
+            "public_ip_address_id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "subnet_id": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "sku": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      },
+      "vpn_client_configuration": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address_space": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "revoked_certificate": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "thumbprint": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "root_certificate": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "public_cert_data": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "vpn_client_protocols": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "vpn_type": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "azurestack_virtual_network_gateway_connection": {
+      "authorization_key": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enable_bgp": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "express_route_circuit_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "local_network_gateway_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "peer_virtual_network_gateway_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "routing_weight": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "shared_key": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      },
+      "virtual_network_gateway_id": {
+        "Type": "String",
+        "Required": true
       }
     }
   },
@@ -1874,6 +2609,37 @@
         "Computed": true
       }
     },
+    "azurestack_public_ip": {
+      "domain_name_label": {
+        "Type": "String",
+        "Computed": true
+      },
+      "fqdn": {
+        "Type": "String",
+        "Computed": true
+      },
+      "idle_timeout_in_minutes": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "ip_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "azurestack_resource_group": {
       "location": {
         "Type": "String",
@@ -2051,6 +2817,40 @@
         "Computed": true
       }
     },
+    "azurestack_subnet": {
+      "address_prefix": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ip_configurations": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "network_security_group_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "route_table_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "virtual_network_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "azurestack_virtual_network": {
       "address_spaces": {
         "Type": "List",
@@ -2083,6 +2883,157 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "azurestack_virtual_network_gateway": {
+      "bgp_settings": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "asn": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "peer_weight": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "peering_address": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "default_local_network_gateway_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "enable_bgp": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "ip_configuration": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "private_ip_address_allocation": {
+              "Type": "String",
+              "Computed": true
+            },
+            "public_ip_address_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnet_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "sku": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "vpn_client_configuration": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address_space": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "radius_server_address": {
+              "Type": "String",
+              "Computed": true
+            },
+            "radius_server_secret": {
+              "Type": "String",
+              "Computed": true
+            },
+            "revoked_certificate": {
+              "Type": "Set",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "thumbprint": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "root_certificate": {
+              "Type": "Set",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "public_cert_data": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "vpn_client_protocols": {
+              "Type": "Set",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "vpn_type": {
+        "Type": "String",
+        "Computed": true
       }
     }
   }

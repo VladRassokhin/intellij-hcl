@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLIdentifierImpl extends HCLIdentifierMixin implements HCLIdentifier {
 
-  public HCLIdentifierImpl(ASTNode node) {
+  public HCLIdentifierImpl(@NotNull ASTNode node) {
     super(node);
   }
 

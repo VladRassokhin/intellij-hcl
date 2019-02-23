@@ -72,7 +72,8 @@ class HCLBlockConflictingPropertiesInspection : LocalInspectionTool() {
     if (properties.isEmpty()) return
     ProgressIndicatorProvider.checkCanceled()
     val pobt = properties.find { it.name == name } ?: return
-    val conflictsWith = pobt.conflictsWith - name
+    var conflictsWith = pobt.conflictsWith ?: return
+    conflictsWith -= name
     if (conflictsWith.isEmpty()) return
 
 

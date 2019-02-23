@@ -22,7 +22,7 @@ import com.intellij.psi.PsiLanguageInjectionHost
 import org.intellij.plugins.hcl.psi.HCLHeredocContent
 import org.intellij.plugins.hcl.psi.HCLHeredocContentManipulator
 
-abstract class HCLHeredocContentMixin(node: ASTNode?) : HCLLiteralImpl(node), PsiLanguageInjectionHost, HCLHeredocContent {
+abstract class HCLHeredocContentMixin(node: ASTNode) : HCLLiteralImpl(node), PsiLanguageInjectionHost, HCLHeredocContent {
   override fun isValidHost() = true
 
   override fun updateText(text: String): PsiLanguageInjectionHost {

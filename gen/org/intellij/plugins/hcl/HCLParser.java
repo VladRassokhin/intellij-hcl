@@ -99,11 +99,10 @@ public class HCLParser implements PsiParser, LightPsiParser {
   // array_element*
   private static boolean array_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "array_1")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!array_element(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "array_1", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -125,11 +124,9 @@ public class HCLParser implements PsiParser, LightPsiParser {
   private static boolean array_element_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "array_element_0")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = literal(b, l + 1);
     if (!r) r = array(b, l + 1);
     if (!r) r = object(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -169,11 +166,10 @@ public class HCLParser implements PsiParser, LightPsiParser {
   // property_name*
   private static boolean block_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block_0")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!property_name(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "block_0", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -223,11 +219,10 @@ public class HCLParser implements PsiParser, LightPsiParser {
   public static boolean heredoc_content(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "heredoc_content")) return false;
     Marker m = enter_section_(b, l, _NONE_, HEREDOC_CONTENT, "<heredoc content>");
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!heredoc_line(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "heredoc_content", c)) break;
-      c = current_position_(b);
     }
     exit_section_(b, l, m, true, false, null);
     return true;
@@ -344,11 +339,9 @@ public class HCLParser implements PsiParser, LightPsiParser {
   private static boolean not_bracket_or_next_value_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "not_bracket_or_next_value_0_1")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = literal(b, l + 1);
     if (!r) r = array(b, l + 1);
     if (!r) r = object(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -394,11 +387,10 @@ public class HCLParser implements PsiParser, LightPsiParser {
   // object_element*
   private static boolean object_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "object_1")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!object_element(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "object_1", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -420,10 +412,8 @@ public class HCLParser implements PsiParser, LightPsiParser {
   private static boolean object_element_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "object_element_0")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = block_outer(b, l + 1);
     if (!r) r = property_outer(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -474,10 +464,8 @@ public class HCLParser implements PsiParser, LightPsiParser {
   static boolean property_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_name")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = identifier(b, l + 1);
     if (!r) r = string_literal(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -497,11 +485,10 @@ public class HCLParser implements PsiParser, LightPsiParser {
   // root_element*
   static boolean root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root")) return false;
-    int c = current_position_(b);
     while (true) {
+      int c = current_position_(b);
       if (!root_element(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "root", c)) break;
-      c = current_position_(b);
     }
     return true;
   }
@@ -511,11 +498,9 @@ public class HCLParser implements PsiParser, LightPsiParser {
   static boolean root_element(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_element")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = object(b, l + 1);
     if (!r) r = block_outer(b, l + 1);
     if (!r) r = property_outer(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -546,12 +531,12 @@ public class HCLParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  final static Parser not_brace_or_next_value_parser_ = new Parser() {
+  static final Parser not_brace_or_next_value_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return not_brace_or_next_value(b, l + 1);
     }
   };
-  final static Parser not_bracket_or_next_value_parser_ = new Parser() {
+  static final Parser not_bracket_or_next_value_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return not_bracket_or_next_value(b, l + 1);
     }

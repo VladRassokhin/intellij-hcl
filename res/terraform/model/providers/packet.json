@@ -1,7 +1,7 @@
 {
   "name": "packet",
   "type": "provider",
-  "version": "v1.2.4-4-gfa10f91",
+  "version": "v1.2.5-9-ge92a9c0",
   "provider": {
     "auth_token": {
       "Type": "String",
@@ -289,6 +289,112 @@
         "Required": true
       }
     },
+    "packet_spot_market_request": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete",
+        "default"
+      ],
+      "devices_max": {
+        "Type": "Int",
+        "Required": true
+      },
+      "devices_min": {
+        "Type": "Int",
+        "Required": true
+      },
+      "facilities": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "instance_parameters": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "always_pxe": {
+              "Type": "String",
+              "Optional": true
+            },
+            "billing_cycle": {
+              "Type": "String",
+              "Required": true
+            },
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "features": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "hostname": {
+              "Type": "String",
+              "Required": true
+            },
+            "locked": {
+              "Type": "String",
+              "Optional": true
+            },
+            "operating_system": {
+              "Type": "String",
+              "Required": true
+            },
+            "plan": {
+              "Type": "String",
+              "Required": true
+            },
+            "project_ssh_keys": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "termintation_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "user_ssh_keys": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "userdata": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "max_bid_price": {
+        "Type": "Float",
+        "Required": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "wait_for_devices": {
+        "Type": "Bool",
+        "Optional": true
+      }
+    },
     "packet_ssh_key": {
       "created": {
         "Type": "String",
@@ -400,6 +506,28 @@
     }
   },
   "data-sources": {
+    "packet_operating_system": {
+      "distro": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "provisionable_on": {
+        "Type": "String",
+        "Optional": true
+      },
+      "slug": {
+        "Type": "String",
+        "Computed": true
+      },
+      "version": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
     "packet_precreated_ip_block": {
       "address": {
         "Type": "String",
@@ -451,6 +579,20 @@
       },
       "quantity": {
         "Type": "Int",
+        "Computed": true
+      }
+    },
+    "packet_spot_market_price": {
+      "facility": {
+        "Type": "String",
+        "Required": true
+      },
+      "plan": {
+        "Type": "String",
+        "Required": true
+      },
+      "price": {
+        "Type": "Float",
         "Computed": true
       }
     }

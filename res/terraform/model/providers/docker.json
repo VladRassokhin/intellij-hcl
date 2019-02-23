@@ -1,7 +1,7 @@
 {
   "name": "docker",
   "type": "provider",
-  "version": "v1.0.1-1-g79c198a",
+  "version": "v1.1.0-3-g334d6ae",
   "provider": {
     "ca_material": {
       "Type": "String",
@@ -108,6 +108,10 @@
       }
     },
     "docker_container": {
+      "attach": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "bridge": {
         "Type": "String",
         "Computed": true
@@ -145,6 +149,14 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "container_logs": {
+        "Type": "String",
+        "Computed": true
+      },
+      "cpu_set": {
+        "Type": "String",
+        "Optional": true
       },
       "cpu_shares": {
         "Type": "Int",
@@ -219,9 +231,54 @@
           "ElementsType": "String"
         }
       },
+      "exit_code": {
+        "Type": "Int",
+        "Computed": true
+      },
       "gateway": {
         "Type": "String",
-        "Computed": true
+        "Computed": true,
+        "Deprecated": "Use gateway from ip_adresses_data instead. This field exposes the data of the container's first network."
+      },
+      "healthcheck": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "A test to perform to check that the container is healthy",
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "interval": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Time between running the check (ms|s|m|h)"
+            },
+            "retries": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Consecutive failures needed to report unhealthy"
+            },
+            "start_period": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)"
+            },
+            "test": {
+              "Type": "List",
+              "Required": true,
+              "Description": "The test to perform as list",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "timeout": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Maximum time to allow one check to run (ms|s|m|h)"
+            }
+          }
+        }
       },
       "host": {
         "Type": "Set",
@@ -250,11 +307,13 @@
       },
       "ip_address": {
         "Type": "String",
-        "Computed": true
+        "Computed": true,
+        "Deprecated": "Use ip_adresses_data instead. This field exposes the data of the container's first network."
       },
       "ip_prefix_length": {
         "Type": "Int",
-        "Computed": true
+        "Computed": true,
+        "Deprecated": "Use ip_prefix_length from ip_adresses_data instead. This field exposes the data of the container's first network."
       },
       "labels": {
         "Type": "Map",
@@ -275,6 +334,10 @@
       },
       "log_opts": {
         "Type": "Map",
+        "Optional": true
+      },
+      "logs": {
+        "Type": "Bool",
         "Optional": true
       },
       "max_retry_count": {
@@ -300,9 +363,36 @@
       "network_alias": {
         "Type": "Set",
         "Optional": true,
+        "Description": "Set an alias for the container in all specified networks",
+        "Deprecated": "Use networks_advanced instead. Will be removed in v2.0.0",
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
+        }
+      },
+      "network_data": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "gateway": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ip_address": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ip_prefix_length": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "network_name": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
         }
       },
       "network_mode": {
@@ -312,20 +402,55 @@
       "networks": {
         "Type": "Set",
         "Optional": true,
+        "Deprecated": "Use networks_advanced instead. Will be removed in v2.0.0",
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
       },
-      "ports": {
+      "networks_advanced": {
         "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "aliases": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "ipv4_address": {
+              "Type": "String",
+              "Optional": true
+            },
+            "ipv6_address": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "pid_mode": {
+        "Type": "String",
+        "Optional": true
+      },
+      "ports": {
+        "Type": "List",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
             "external": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Computed": true
             },
             "internal": {
               "Type": "Int",
@@ -352,6 +477,14 @@
       },
       "restart": {
         "Type": "String",
+        "Optional": true
+      },
+      "rm": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "start": {
+        "Type": "Bool",
         "Optional": true
       },
       "ulimit": {
@@ -403,6 +536,10 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "userns_mode": {
+        "Type": "String",
+        "Optional": true
       },
       "volumes": {
         "Type": "Set",
@@ -465,6 +602,10 @@
       }
     },
     "docker_network": {
+      "attachable": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "check_duplicate": {
         "Type": "Bool",
         "Optional": true
@@ -473,6 +614,10 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "ingress": {
+        "Type": "Bool",
+        "Optional": true
       },
       "internal": {
         "Type": "Bool",
@@ -508,6 +653,14 @@
         "Type": "String",
         "Optional": true
       },
+      "ipv6": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -527,6 +680,10 @@
         "Type": "String",
         "Required": true,
         "Description": "User-defined name of the secret"
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -1454,6 +1611,10 @@
         "Computed": true
       },
       "driver_opts": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "labels": {
         "Type": "Map",
         "Optional": true
       },

@@ -1,7 +1,7 @@
 {
   "name": "nsxt",
   "type": "provider",
-  "version": "v1.0.0-269-gd95c020",
+  "version": "v1.0.0-294-ga1524af",
   "provider": {
     "allow_unverified_ssl": {
       "Type": "Bool",
@@ -219,6 +219,129 @@
         }
       }
     },
+    "nsxt_dhcp_server_ip_pool": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of this resource"
+      },
+      "dhcp_generic_option": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Generic DHCP options",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "code": {
+              "Type": "Int",
+              "Required": true,
+              "Description": "DHCP option code, [0-255]"
+            },
+            "values": {
+              "Type": "List",
+              "Required": true,
+              "Description": "DHCP option values",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "dhcp_option_121": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "DHCP classless static routes",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "network": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Destination in cidr"
+            },
+            "next_hop": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Next hop IP"
+            }
+          }
+        }
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The display name of this resource. Defaults to ID if not set",
+        "Computed": true
+      },
+      "error_threshold": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Error threshold"
+      },
+      "gateway_ip": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Gateway ip"
+      },
+      "ip_range": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "List of IP Ranges",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "end": {
+              "Type": "String",
+              "Required": true
+            },
+            "start": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "lease_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Lease time, in seconds"
+      },
+      "logical_dhcp_server_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Id of dhcp server this pool is serving"
+      },
+      "revision": {
+        "Type": "Int",
+        "Description": "The _revision property describes the current revision of the resource. To prevent clients from overwriting each other's changes, PUT operations must include the current _revision of the resource, which clients should obtain by issuing a GET operation. If the _revision provided in a PUT request is missing or stale, the operation will be rejected",
+        "Computed": true
+      },
+      "tag": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of opaque identifiers meaningful to the user",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "scope": {
+              "Type": "String",
+              "Required": true
+            },
+            "tag": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "warning_threshold": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Warning threshold"
+      }
+    },
     "nsxt_dhcp_server_profile": {
       "description": {
         "Type": "String",
@@ -381,9 +504,9 @@
               "Description": "Action enforced on the packets which matches the firewall rule"
             },
             "applied_to": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
-              "Description": "List of object where rule will be enforced. The section level field overrides this one. Null will be treated as any",
+              "Description": "List of objects where rule will be enforced. The section level field overrides this one. Null will be treated as any",
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
@@ -416,7 +539,7 @@
               "Description": "Description of this resource"
             },
             "destination": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
               "Description": "List of the destinations. Null will be treated as any",
               "Elem": {
@@ -526,7 +649,7 @@
               }
             },
             "source": {
-              "Type": "List",
+              "Type": "Set",
               "Optional": true,
               "Description": "List of sources. Null will be treated as any",
               "Elem": {
@@ -3061,10 +3184,15 @@
               "Optional": true,
               "Description": "Ip revision filter is used to filter IPv4 or IPv6 addresses from the grouping object. If the filter is not specified, both IPv4 and IPv6 addresses would be used as server IPs"
             },
+            "limit_ip_list_size": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Specifies whether to limit pool members. If false, dynamic pool can grow up to the load balancer max pool member capacity."
+            },
             "max_ip_list_size": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Define the maximum number of grouping object IP address list. These IP addresses would be used as pool members"
+              "Description": "Limits the max number of pool members to the specified value if limit_ip_list_size is set to true, ignored otherwise."
             },
             "port": {
               "Type": "Int",

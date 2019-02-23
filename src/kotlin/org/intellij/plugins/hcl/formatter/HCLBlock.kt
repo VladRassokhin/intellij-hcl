@@ -26,15 +26,10 @@ import org.intellij.plugins.hcl.HCLElementTypes.*
 import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.psi.HCLPsiUtil
 
-class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Alignment?, val spacingBuilder: SpacingBuilder, val _indent: Indent?, val settings: HCLCodeStyleSettings) : AbstractBlock(node, wrap, alignment) {
+class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Alignment?, val spacingBuilder: SpacingBuilder, val _indent: Indent?, val settings: HCLCodeStyleSettings, private val valueAlignment: Alignment? = null) : AbstractBlock(node, wrap, alignment) {
   val myChildWrap: Wrap?
-  val myPropertyValueAlignment: Alignment?
 
   init {
-    myPropertyValueAlignment =
-        if (settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.DO_NOT_ALIGN_PROPERTY) null
-        else if (isElementType(node, OBJECT) || isFile(node)) Alignment.createAlignment(true)
-        else null
     myChildWrap = when (node.elementType) {
       OBJECT -> Wrap.createWrap(settings.OBJECT_WRAPPING, true)
       ARRAY -> Wrap.createWrap(settings.ARRAY_WRAPPING, true)
@@ -47,13 +42,24 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
   val ALL_BRACES: TokenSet = TokenSet.orSet(OPEN_BRACES, CLOSE_BRACES)
 
   override fun buildChildren(): MutableList<Block>? {
+    var propertyValueAlignment: Alignment? =
+        if (settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.DO_NOT_ALIGN_PROPERTY) null
+        else if (isElementType(node, OBJECT) || isFile(node)) Alignment.createAlignment(true)
+        else null
     return myNode.getChildren(null).map {
+      if (it.elementType == TokenType.WHITE_SPACE && propertyValueAlignment != null) {
+        val text = it.text
+        val first = text.indexOf('\n')
+        if (first >= 0 && text.indexOf('\n', first + 1) > 0) {
+          propertyValueAlignment = Alignment.createAlignment(true)
+        }
+      }
       if (isWhitespaceOrEmpty(it)) null
-      else makeSubBlock(it)
+      else makeSubBlock(it, propertyValueAlignment)
     }.filterNotNull().toMutableList()
   }
 
-  private fun makeSubBlock(childNode: ASTNode): HCLBlock {
+  private fun makeSubBlock(childNode: ASTNode, propertyValueAlignment: Alignment?): HCLBlock {
     var indent = Indent.getNoneIndent()
     var alignment: Alignment? = null
     var wrap: Wrap? = null
@@ -69,20 +75,18 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
       } else if (isElementType(childNode, OPEN_BRACES)) {
         if (HCLPsiUtil.isPropertyValue(myNode.psi) && settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_VALUE) {
           // WEB-13587 Align compound values on opening brace/bracket, not the whole block
-          assert(parent != null && parent.parent != null && parent.parent.myPropertyValueAlignment != null)
-          alignment = parent!!.parent!!.myPropertyValueAlignment
+          assert(valueAlignment != null)
+          alignment = valueAlignment
         }
       }
     } else if (isElementType(myNode, PROPERTY)) {
       // Handle properties alignment
-      assert(parent != null)
-      parent!!
-      val pva = parent.myPropertyValueAlignment
+      val pva = valueAlignment
       if (isElementType(childNode, EQUALS) && settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_EQUALS) {
-        assert(pva != null) { "Expected not null PVA, node ${node.elementType}, parent ${parent.node.elementType}" }
+        assert(pva != null) { "Expected not null PVA, node ${node.elementType}, parent ${parent?.node?.elementType}" }
         alignment = pva
       } else if (HCLPsiUtil.isPropertyValue(childNode.psi) && settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_VALUE) {
-        assert(pva != null) { "Expected not null PVA, node ${node.elementType}, parent ${parent.node.elementType}" }
+        assert(pva != null) { "Expected not null PVA, node ${node.elementType}, parent ${parent?.node?.elementType}" }
         if (!isElementType(childNode, HCLParserDefinition.HCL_CONTAINERS)) {
           // WEB-13587 Align compound values on opening brace/bracket, not the whole block
           alignment = pva
@@ -99,7 +103,7 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
         }
       }
     }
-    return HCLBlock(this, childNode, wrap, alignment, spacingBuilder, indent, settings)
+    return HCLBlock(this, childNode, wrap, alignment, spacingBuilder, indent, settings, propertyValueAlignment ?: valueAlignment)
   }
 
   override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
@@ -129,11 +133,11 @@ class HCLBlock(val parent: HCLBlock?, node: ASTNode, wrap: Wrap?, alignment: Ali
     if (isElementType(myNode, PROPERTY)) {
       if (newChildIndex == 1 && settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_EQUALS) {
         // equals
-        return myPropertyValueAlignment
+        return valueAlignment
       }
       if (newChildIndex == 2 && settings.PROPERTY_ALIGNMENT == HCLCodeStyleSettings.ALIGN_PROPERTY_ON_VALUE) {
         // Property value
-        return myPropertyValueAlignment
+        return valueAlignment
       }
     }
     return null

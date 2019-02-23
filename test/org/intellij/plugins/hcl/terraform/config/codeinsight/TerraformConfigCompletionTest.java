@@ -51,7 +51,7 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
   //<editor-fold desc="Resources completion tests">
   public void testResourceTypeCompletion() throws Exception {
     final TreeSet<String> set = new TreeSet<String>();
-    for (ResourceType resource : TypeModelProvider.Companion.getModel(getProject()).getResources()) {
+    for (ResourceType resource : TypeModelProvider.Companion.getModel(getProject()).getResources().values()) {
       set.add(resource.getType());
     }
     final BooleanFunction<Collection<String>> matcher = getPartialMatcher(new ArrayList<String>(set).subList(0, 500));
@@ -65,7 +65,7 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
 
   public void testResourceQuotedTypeCompletion() throws Exception {
     final TreeSet<String> set = new TreeSet<String>();
-    for (ResourceType resource : TypeModelProvider.Companion.getModel(getProject()).getResources()) {
+    for (ResourceType resource : TypeModelProvider.Companion.getModel(getProject()).getResources().values()) {
       set.add(resource.getType());
     }
     final BooleanFunction<Collection<String>> matcher = getPartialMatcher(new ArrayList<String>(set).subList(0, 500));
@@ -196,7 +196,7 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
 
   public void testResourceTypeCompletionGivenDefinedProvidersOrForNoPropsProviders() throws Exception {
     final TreeSet<String> set = new TreeSet<String>();
-    for (ResourceType resource : TypeModelProvider.Companion.getModel(getProject()).getResources()) {
+    for (ResourceType resource : TypeModelProvider.Companion.getModel(getProject()).getResources().values()) {
       ProviderType provider = resource.getProvider();
       if (!provider.getType().equals("aws") && provider.getProperties().length != 0) continue;
       set.add(resource.getType());
@@ -212,7 +212,7 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
   //<editor-fold desc="Data Sources completion tests">
   public void testDataSourceTypeCompletion() throws Exception {
     final TreeSet<String> set = new TreeSet<String>();
-    for (DataSourceType ds : TypeModelProvider.Companion.getModel(getProject()).getDataSources()) {
+    for (DataSourceType ds : TypeModelProvider.Companion.getModel(getProject()).getDataSources().values()) {
       set.add(ds.getType());
     }
     doBasicCompletionTest("data <caret>", set);
@@ -222,7 +222,7 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
 
   public void testDataSourceQuotedTypeCompletion() throws Exception {
     final TreeSet<String> set = new TreeSet<String>();
-    for (DataSourceType ds : TypeModelProvider.Companion.getModel(getProject()).getDataSources()) {
+    for (DataSourceType ds : TypeModelProvider.Companion.getModel(getProject()).getDataSources().values()) {
       set.add(ds.getType());
     }
     doBasicCompletionTest("data \"<caret>", set);
@@ -296,7 +296,7 @@ public class TerraformConfigCompletionTest extends TFBaseCompletionTestCase {
 
   public void testDataSourceTypeCompletionGivenDefinedProviders() throws Exception {
     final TreeSet<String> set = new TreeSet<String>();
-    for (DataSourceType ds : TypeModelProvider.Companion.getModel(getProject()).getDataSources()) {
+    for (DataSourceType ds : TypeModelProvider.Companion.getModel(getProject()).getDataSources().values()) {
       ProviderType provider = ds.getProvider();
       if (!provider.getType().equals("aws") && provider.getProperties().length != 0) continue;
       set.add(ds.getType());

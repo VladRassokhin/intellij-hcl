@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLHeredocLiteralImpl extends HCLLiteralImpl implements HCLHeredocLiteral {
 
-  public HCLHeredocLiteralImpl(ASTNode node) {
+  public HCLHeredocLiteralImpl(@NotNull ASTNode node) {
     super(node);
   }
 

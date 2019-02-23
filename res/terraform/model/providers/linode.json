@@ -1,0 +1,1654 @@
+{
+  "name": "linode",
+  "type": "provider",
+  "version": "v1.3.0-1-g9a9052d",
+  "provider": {
+    "token": {
+      "Type": "String",
+      "Required": true,
+      "Description": "The token that allows you access to your Linode account"
+    }
+  },
+  "resources": {
+    "linode_domain": {
+      "axfr_ips": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "The list of IPs that may perform a zone transfer for this Domain. This is potentially dangerous, and should be set to an empty list unless you intend to use it.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A description for this Domain. This is for display purposes only."
+      },
+      "domain": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The domain this Domain represents. These must be unique in our system; you cannot have two Domains representing the same domain."
+      },
+      "expire_sec": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The amount of time in seconds that may pass before this Domain is no longer authoritative. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
+      },
+      "group": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The group this Domain belongs to. This is for display purposes only."
+      },
+      "master_ips": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "The IP addresses representing the master DNS for this Domain.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "refresh_sec": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The amount of time in seconds before this Domain should be refreshed. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
+      },
+      "retry_sec": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The interval, in seconds, at which a failed refresh should be retried. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
+      },
+      "soa_email": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Start of Authority email address. This is required for master Domains."
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Used to control whether this Domain is currently being rendered.",
+        "InputDefault": "active",
+        "Computed": true
+      },
+      "ttl_sec": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "'Time to Live' - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
+      },
+      "type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "If this Domain represents the authoritative source of information for the domain it describes, or if it is a read-only copy of a master (also called a slave).",
+        "InputDefault": "master"
+      }
+    },
+    "linode_domain_record": {
+      "domain_id": {
+        "Type": "Int",
+        "Required": true,
+        "Description": "The ID of the Domain to access."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of this Record. This field's actual usage depends on the type of record this represents. For A and AAAA records, this is the subdomain being associated with an IP address."
+      },
+      "port": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The port this Record points to."
+      },
+      "priority": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The priority of the target host. Lower values are preferred."
+      },
+      "protocol": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The protocol this Record's service communicates with. Only valid for SRV records."
+      },
+      "record_type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The type of Record this is in the DNS system. For example, A records associate a domain name with an IPv4 address, and AAAA records associate a domain name with an IPv6 address."
+      },
+      "service": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The service this Record identified. Only valid for SRV records."
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The tag portion of a CAA record. It is invalid to set this on other record types."
+      },
+      "target": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The target for this Record. This field's actual usage depends on the type of record this represents. For A and AAAA records, this is the address the named Domain should resolve to."
+      },
+      "ttl_sec": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "'Time to Live' - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
+      },
+      "weight": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The relative weight of this Record. Higher values are preferred."
+      }
+    },
+    "linode_image": {
+      "__timeouts__": [
+        "create"
+      ],
+      "created": {
+        "Type": "String",
+        "Description": "When this Image was created.",
+        "Computed": true
+      },
+      "created_by": {
+        "Type": "String",
+        "Description": "The name of the User who created this Image.",
+        "Computed": true
+      },
+      "deprecated": {
+        "Type": "Bool",
+        "Description": "Whether or not this Image is deprecated. Will only be True for deprecated public Images.",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A detailed description of this Image."
+      },
+      "disk_id": {
+        "Type": "Int",
+        "Required": true,
+        "Description": "The ID of the Linode Disk that this Image will be created from."
+      },
+      "expiry": {
+        "Type": "String",
+        "Description": "Only Images created automatically (from a deleted Linode; type=automatic) will expire.",
+        "Computed": true
+      },
+      "is_public": {
+        "Type": "Bool",
+        "Description": "True if the Image is public.",
+        "Computed": true
+      },
+      "label": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A short description of the Image. Labels cannot contain special characters."
+      },
+      "linode_id": {
+        "Type": "Int",
+        "Required": true,
+        "Description": "The ID of the Linode that this Image will be created from."
+      },
+      "size": {
+        "Type": "Int",
+        "Description": "The minimum size this Image needs to deploy. Size is in MB.",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Description": "How the Image was created. 'Manual' Images can be created at any time. 'Automatic' images are created automatically from a deleted Linode.",
+        "Computed": true
+      },
+      "vendor": {
+        "Type": "String",
+        "Description": "The upstream distribution vendor. Nil for private Images.",
+        "Computed": true
+      }
+    },
+    "linode_instance": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "alerts": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cpu": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The percentage of CPU usage required to trigger an alert. If the average CPU usage over two hours exceeds this value, we'll send you an alert. If this is set to 0, the alert is disabled.",
+              "Computed": true
+            },
+            "io": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The amount of disk IO operation per second required to trigger an alert. If the average disk IO over two hours exceeds this value, we'll send you an alert. If set to 0, this alert is disabled.",
+              "Computed": true
+            },
+            "network_in": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The amount of incoming traffic, in Mbit/s, required to trigger an alert. If the average incoming traffic over two hours exceeds this value, we'll send you an alert. If this is set to 0 (zero), the alert is disabled.",
+              "Computed": true
+            },
+            "network_out": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The amount of outbound traffic, in Mbit/s, required to trigger an alert. If the average outbound traffic over two hours exceeds this value, we'll send you an alert. If this is set to 0 (zero), the alert is disabled.",
+              "Computed": true
+            },
+            "transfer_quota": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The percentage of network transfer that may be used before an alert is triggered. When this value is exceeded, we'll alert you. If this is set to 0 (zero), the alert is disabled.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "authorized_keys": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "A list of SSH public keys to deploy for the root user on the newly created Linode. Only accepted if 'image' is provided.",
+        "ConflictsWith": [
+          "disk",
+          "config"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "authorized_users": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "A list of Linode usernames. If the usernames have associated SSH keys, the keys will be appended to the `root` user's `~/.ssh/authorized_keys` file automatically. Only accepted if 'image' is provided.",
+        "ConflictsWith": [
+          "disk",
+          "config"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "backup_id": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "A Backup ID from another Linode's available backups. Your User must have read_write access to that Linode, the Backup must have a status of successful, and the Linode must be deployed to the same region as the Backup. See /linode/instances/{linodeId}/backups for a Linode's available backups. This field and the image field are mutually exclusive.",
+        "ConflictsWith": [
+          "image",
+          "disk",
+          "config"
+        ]
+      },
+      "backups": {
+        "Type": "List",
+        "Description": "Information about this Linode's backups status.",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "Bool",
+              "Description": "If this Linode has the Backup service enabled.",
+              "Computed": true
+            },
+            "schedule": {
+              "Type": "List",
+              "Computed": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "day": {
+                    "Type": "String",
+                    "Description": "The day ('Sunday'-'Saturday') of the week that your Linode's weekly Backup is taken. If not set manually, a day will be chosen for you. Backups are taken every day, but backups taken on this day are preferred when selecting backups to retain for a longer period.  If not set manually, then when backups are initially enabled, this may come back as 'Scheduling' until the day is automatically selected.",
+                    "Computed": true
+                  },
+                  "window": {
+                    "Type": "String",
+                    "Description": "The window ('W0'-'W22') in which your backups will be taken, in UTC. A backups window is a two-hour span of time in which the backup may occur. For example, 'W10' indicates that your backups should be taken between 10:00 and 12:00. If you do not choose a backup window, one will be selected for you automatically.  If not set manually, when backups are initially enabled this may come back as Scheduling until the window is automatically selected.",
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "backups_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If this field is set to true, the created Linode will automatically be enrolled in the Linode Backup service. This will incur an additional charge. The cost for the Backup service is dependent on the Type of Linode deployed.",
+        "Computed": true
+      },
+      "boot_config_label": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Label of the Instance Config that should be used to boot the Linode instance.",
+        "Computed": true
+      },
+      "config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Configuration profiles define the VM settings and boot behavior of the Linode Instance.",
+        "ConflictsWith": [
+          "image",
+          "root_pass",
+          "authorized_keys",
+          "authorized_users",
+          "swap_size",
+          "backup_id",
+          "stackscript_id"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "comments": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Optional field for arbitrary User comments on this Config."
+            },
+            "devices": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Device sda-sdh can be either a Disk or Volume identified by disk_label or volume_id. Only one type per slot allowed.",
+              "Computed": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "sda": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Computed": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "disk_id": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Description": "The Disk ID to map to this disk slot",
+                          "Computed": true
+                        },
+                        "disk_label": {
+                          "Type": "String",
+                          "Optional": true,
+                          "Description": "The `label` of the `disk` to map to this `device` slot."
+                        },
+                        "volume_id": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Description": "The Block Storage volume ID to map to this disk slot"
+                        }
+                      }
+                    }
+                  },
+                  "sdb": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Computed": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "disk_id": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Computed": true
+                        },
+                        "disk_label": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "volume_id": {
+                          "Type": "Int",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
+                  "sdc": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Computed": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "disk_id": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Computed": true
+                        },
+                        "disk_label": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "volume_id": {
+                          "Type": "Int",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
+                  "sdd": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Computed": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "disk_id": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Computed": true
+                        },
+                        "disk_label": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "volume_id": {
+                          "Type": "Int",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
+                  "sde": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Computed": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "disk_id": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Computed": true
+                        },
+                        "disk_label": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "volume_id": {
+                          "Type": "Int",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
+                  "sdf": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Computed": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "disk_id": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Computed": true
+                        },
+                        "disk_label": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "volume_id": {
+                          "Type": "Int",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
+                  "sdg": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Computed": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "disk_id": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Computed": true
+                        },
+                        "disk_label": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "volume_id": {
+                          "Type": "Int",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
+                  "sdh": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Computed": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "disk_id": {
+                          "Type": "Int",
+                          "Optional": true,
+                          "Computed": true
+                        },
+                        "disk_label": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "volume_id": {
+                          "Type": "Int",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "helpers": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Helpers enabled when booting to this Linode Config.",
+              "Computed": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "devtmpfs_automount": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Populates the /dev directory early during boot without udev. Defaults to false."
+                  },
+                  "distro": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Controls the behavior of the Linode Config's Distribution Helper setting."
+                  },
+                  "modules_dep": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Creates a modules dependency file for the Kernel you run."
+                  },
+                  "network": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Controls the behavior of the Linode Config's Network Helper setting, used to automatically configure additional IP addresses assigned to this instance."
+                  },
+                  "updatedb_disabled": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Disables updatedb cron job to avoid disk thrashing."
+                  }
+                }
+              }
+            },
+            "kernel": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "A Kernel ID to boot a Linode with. Default is based on image choice. (examples: linode/latest-64bit, linode/grub2, linode/direct-disk)"
+            },
+            "label": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The Config's label for display purposes.  Also used by `boot_config_label`."
+            },
+            "memory_limit": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Defaults to the total RAM of the Linode"
+            },
+            "root_device": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The root device to boot. The corresponding disk must be attached.",
+              "Computed": true
+            },
+            "run_level": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Defines the state of your Linode after booting. Defaults to default."
+            },
+            "virt_mode": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Controls the virtualization mode. Defaults to paravirt."
+            }
+          }
+        }
+      },
+      "disk": {
+        "Type": "List",
+        "Optional": true,
+        "ConflictsWith": [
+          "image",
+          "root_pass",
+          "authorized_keys",
+          "authorized_users",
+          "swap_size",
+          "backup_id",
+          "stackscript_id"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "authorized_keys": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of SSH public keys to deploy for the root user on the newly created Linode. Only accepted if 'image' is provided.",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "authorized_users": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of Linode usernames. If the usernames have associated SSH keys, the keys will be appended to the `root` user's `~/.ssh/authorized_keys` file automatically. Only accepted if 'image' is provided.",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "filesystem": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The Disk filesystem can be one of: raw, swap, ext3, ext4, initrd (max 32mb)",
+              "Computed": true
+            },
+            "id": {
+              "Type": "Int",
+              "Description": "The ID of the Disk (for use in Linode Image resources and Linode Instance Config Devices)",
+              "Computed": true
+            },
+            "image": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "An Image ID to deploy the Disk from. Official Linode Images start with linode/, while your Images start with private/.",
+              "Computed": true
+            },
+            "label": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The disks label, which acts as an identifier in Terraform."
+            },
+            "read_only": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "If true, this Disk is read-only.",
+              "Computed": true
+            },
+            "root_pass": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The password that will be initialially assigned to the 'root' user account."
+            },
+            "size": {
+              "Type": "Int",
+              "Required": true,
+              "Description": "The size of the Disk in MB."
+            },
+            "stackscript_data": {
+              "Type": "Map",
+              "Optional": true,
+              "Description": "An object containing responses to any User Defined Fields present in the StackScript being deployed to this Linode. Only accepted if 'stackscript_id' is given. The required values depend on the StackScript being deployed.",
+              "Computed": true
+            },
+            "stackscript_id": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The StackScript to deploy to the newly created Linode. If provided, 'image' must also be provided, and must be an Image that is compatible with this StackScript.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "group": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The display group of the Linode instance."
+      },
+      "image": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "An Image ID to deploy the Disk from. Official Linode Images start with linode/, while your Images start with private/. See /images for more information on the Images available for you to use.",
+        "ConflictsWith": [
+          "disk",
+          "config",
+          "backup_id"
+        ]
+      },
+      "ip_address": {
+        "Type": "String",
+        "Description": "This Linode's Public IPv4 Address. If there are multiple public IPv4 addresses on this Instance, an arbitrary address will be used for this field.",
+        "Computed": true
+      },
+      "ipv4": {
+        "Type": "Set",
+        "Description": "This Linode's IPv4 Addresses. Each Linode is assigned a single public IPv4 address upon creation, and may get a single private IPv4 address if needed. You may need to open a support ticket to get additional IPv4 addresses.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "ipv6": {
+        "Type": "String",
+        "Description": "This Linode's IPv6 SLAAC addresses. This address is specific to a Linode, and may not be shared.",
+        "Computed": true
+      },
+      "label": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Linode's label is for display purposes only. If no label is provided for a Linode, a default will be assigned",
+        "Computed": true
+      },
+      "private_ip": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If true, the created Linode will have private networking enabled, allowing use of the 192.168.128.0/17 network within the Linode's region."
+      },
+      "private_ip_address": {
+        "Type": "String",
+        "Description": "This Linode's Private IPv4 Address.  The regional private IP address range is 192.168.128/17 address shared by all Linode Instances in a region.",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Required": true,
+        "Description": "This is the location where the Linode was deployed. This cannot be changed without opening a support ticket.",
+        "InputDefault": "us-east"
+      },
+      "root_pass": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The password that will be initialially assigned to the 'root' user account.",
+        "ConflictsWith": [
+          "disk",
+          "config"
+        ]
+      },
+      "specs": {
+        "Type": "List",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "disk": {
+              "Type": "Int",
+              "Description": "The amount of storage space, in GB. this Linode has access to. A typical Linode will divide this space between a primary disk with an image deployed to it, and a swap disk, usually 512 MB. This is the default configuration created when deploying a Linode with an image without specifying disks.",
+              "Computed": true
+            },
+            "memory": {
+              "Type": "Int",
+              "Description": "The amount of RAM, in MB, this Linode has access to. Typically a Linode will choose to boot with all of its available RAM, but this can be configured in a Config profile.",
+              "Computed": true
+            },
+            "transfer": {
+              "Type": "Int",
+              "Description": "The amount of network transfer this Linode is allotted each month.",
+              "Computed": true
+            },
+            "vcpus": {
+              "Type": "Int",
+              "Description": "The number of vcpus this Linode has access to. Typically a Linode will choose to boot with all of its available vcpus, but this can be configured in a Config Profile.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "stackscript_data": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "An object containing responses to any User Defined Fields present in the StackScript being deployed to this Linode. Only accepted if 'stackscript_id' is given. The required values depend on the StackScript being deployed.",
+        "ConflictsWith": [
+          "disk",
+          "config"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "stackscript_id": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The StackScript to deploy to the newly created Linode. If provided, 'image' must also be provided, and must be an Image that is compatible with this StackScript.",
+        "ConflictsWith": [
+          "disk",
+          "config"
+        ]
+      },
+      "status": {
+        "Type": "String",
+        "Description": "The status of the instance, indicating the current readiness state.",
+        "Computed": true
+      },
+      "swap_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "When deploying from an Image, this field is optional with a Linode API default of 512mb, otherwise it is ignored. This is used to set the swap disk size for the newly-created Linode.",
+        "Computed": true,
+        "ConflictsWith": [
+          "disk",
+          "config"
+        ]
+      },
+      "tags": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "An array of tags applied to this object. Tags are for organizational purposes only.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The type of instance to be deployed, determining the price and size."
+      },
+      "watchdog_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "The watchdog, named Lassie, is a Shutdown Watchdog that monitors your Linode and will reboot it if it powers off unexpectedly. It works by issuing a boot job when your Linode powers off without a shutdown job being responsible. To prevent a loop, Lassie will give up if there have been more than 5 boot jobs issued within 15 minutes."
+      }
+    },
+    "linode_nodebalancer": {
+      "client_conn_throttle": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Throttle connections per second (0-20). Set to 0 (zero) to disable throttling."
+      },
+      "created": {
+        "Type": "String",
+        "Computed": true
+      },
+      "hostname": {
+        "Type": "String",
+        "Description": "This NodeBalancer's hostname, ending with .nodebalancer.linode.com",
+        "Computed": true
+      },
+      "ipv4": {
+        "Type": "String",
+        "Description": "The Public IPv4 Address of this NodeBalancer",
+        "Computed": true
+      },
+      "ipv6": {
+        "Type": "String",
+        "Description": "The Public IPv6 Address of this NodeBalancer",
+        "Computed": true
+      },
+      "label": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The label of the Linode NodeBalancer."
+      },
+      "region": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The region where this NodeBalancer will be deployed.",
+        "InputDefault": "us-east"
+      },
+      "transfer": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "in": {
+              "Type": "Float",
+              "Description": "The total transfer, in MB, used by this NodeBalancer this month",
+              "Computed": true
+            },
+            "out": {
+              "Type": "Float",
+              "Description": "The total inbound transfer, in MB, used for this NodeBalancer this month",
+              "Computed": true
+            },
+            "total": {
+              "Type": "Float",
+              "Description": "The total outbound transfer, in MB, used for this NodeBalancer this month",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "updated": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "linode_nodebalancer_config": {
+      "algorithm": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "What algorithm this NodeBalancer should use for routing traffic to backends: roundrobin, leastconn, source",
+        "Computed": true
+      },
+      "check": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The type of check to perform against backends to ensure they are serving requests. This is used to determine if backends are up or down. If none no check is performed. connection requires only a connection to the backend to succeed. http and http_body rely on the backend serving HTTP, and that the response returned matches what is expected.",
+        "Computed": true
+      },
+      "check_attempts": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "How many times to attempt a check before considering a backend to be down. (1-30)",
+        "Computed": true
+      },
+      "check_body": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "This value must be present in the response body of the check in order for it to pass. If this value is not present in the response body of a check request, the backend is considered to be down",
+        "Computed": true
+      },
+      "check_interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "How often, in seconds, to check that backends are up and serving requests.",
+        "Computed": true
+      },
+      "check_passive": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If true, any response from this backend with a 5xx status code will be enough for it to be considered unhealthy and taken out of rotation.",
+        "Computed": true
+      },
+      "check_path": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The URL path to check on each backend. If the backend does not respond to this request it is considered to be down.",
+        "Computed": true
+      },
+      "check_timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "How long, in seconds, to wait for a check attempt before considering it failed. (1-30)",
+        "Computed": true
+      },
+      "cipher_suite": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "What ciphers to use for SSL connections served by this NodeBalancer. `legacy` is considered insecure and should only be used if necessary.",
+        "Computed": true
+      },
+      "node_status": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "status_down": {
+              "Type": "Int",
+              "Description": "The number of backends considered to be 'DOWN' and unhealthy. These are not in rotation, and not serving requests.",
+              "Computed": true
+            },
+            "status_up": {
+              "Type": "Int",
+              "Description": "The number of backends considered to be 'UP' and healthy, and that are serving requests.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "nodebalancer_id": {
+        "Type": "Int",
+        "Required": true,
+        "Description": "The ID of the NodeBalancer to access."
+      },
+      "port": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The TCP port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example). While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443."
+      },
+      "protocol": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The protocol this port is configured to serve. If this is set to https you must include an ssl_cert and an ssl_key."
+      },
+      "ssl_cert": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The certificate this port is serving. This is not returned. If set, this field will come back as `\u003cREDACTED\u003e`. Please use the ssl_commonname and ssl_fingerprint to identify the certificate."
+      },
+      "ssl_commonname": {
+        "Type": "String",
+        "Description": "The common name for the SSL certification this port is serving if this port is not configured to use SSL.",
+        "Computed": true
+      },
+      "ssl_fingerprint": {
+        "Type": "String",
+        "Description": "The fingerprint for the SSL certification this port is serving if this port is not configured to use SSL.",
+        "Computed": true
+      },
+      "ssl_key": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The private key corresponding to this port's certificate. This is not returned. If set, this field will come back as `\u003cREDACTED\u003e`. Please use the ssl_commonname and ssl_fingerprint to identify the certificate."
+      },
+      "stickiness": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Controls how session stickiness is handled on this port: 'none', 'table', 'http_cookie'",
+        "Computed": true
+      }
+    },
+    "linode_nodebalancer_node": {
+      "address": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The private IP Address and port (IP:PORT) where this backend can be reached. This must be a private IP address."
+      },
+      "config_id": {
+        "Type": "Int",
+        "Required": true,
+        "Description": "The ID of the NodeBalancerConfig to access."
+      },
+      "label": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The label for this node. This is for display purposes only."
+      },
+      "mode": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The mode this NodeBalancer should use when sending traffic to this backend. If set to `accept` this backend is accepting traffic. If set to `reject` this backend will not receive traffic. If set to `drain` this backend will not receive new traffic, but connections already pinned to it will continue to be routed to it.",
+        "Computed": true
+      },
+      "nodebalancer_id": {
+        "Type": "Int",
+        "Required": true,
+        "Description": "The ID of the NodeBalancer to access."
+      },
+      "status": {
+        "Type": "String",
+        "Description": "The current status of this node, based on the configured checks of its NodeBalancer Config. (unknown, UP, DOWN)",
+        "Computed": true
+      },
+      "weight": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Used when picking a backend to serve a request and is not pinned to a single backend yet. Nodes with a higher weight will receive more traffic. (1-255)",
+        "Computed": true
+      }
+    },
+    "linode_sshkey": {
+      "created": {
+        "Type": "String",
+        "Description": "The date this key was added.",
+        "Computed": true
+      },
+      "label": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The label of the Linode SSH Key."
+      },
+      "ssh_key": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The public SSH Key, which is used to authenticate to the root user of the Linodes you deploy."
+      }
+    },
+    "linode_stackscript": {
+      "created": {
+        "Type": "String",
+        "Description": "The date this StackScript was created.",
+        "Computed": true
+      },
+      "deployments_active": {
+        "Type": "Int",
+        "Description": "Count of currently active, deployed Linodes created from this StackScript.",
+        "Computed": true
+      },
+      "deployments_total": {
+        "Type": "Int",
+        "Description": "The total number of times this StackScript has been deployed.",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A description for the StackScript."
+      },
+      "images": {
+        "Type": "List",
+        "Required": true,
+        "Description": "An array of Image IDs representing the Images that this StackScript is compatible for deploying with.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "is_public": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "This determines whether other users can use your StackScript. Once a StackScript is made public, it cannot be made private."
+      },
+      "label": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The StackScript's label is for display purposes only."
+      },
+      "rev_note": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "This field allows you to add notes for the set of revisions made to this StackScript."
+      },
+      "script": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The script to execute when provisioning a new Linode with this StackScript."
+      },
+      "updated": {
+        "Type": "String",
+        "Description": "The date this StackScript was updated.",
+        "Computed": true
+      },
+      "user_defined_fields": {
+        "Type": "Set",
+        "Description": "This is a list of fields defined with a special syntax inside this StackScript that allow for supplying customized parameters during deployment.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "default": {
+              "Type": "String",
+              "Computed": true
+            },
+            "example": {
+              "Type": "String",
+              "Computed": true
+            },
+            "label": {
+              "Type": "String",
+              "Computed": true
+            },
+            "many_of": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "one_of": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "user_gravatar_id": {
+        "Type": "String",
+        "Description": "The Gravatar ID for the User who created the StackScript.",
+        "Computed": true
+      },
+      "username": {
+        "Type": "String",
+        "Description": "The User who created the StackScript.",
+        "Computed": true
+      }
+    },
+    "linode_token": {
+      "created": {
+        "Type": "String",
+        "Description": "The date and time this token was created.",
+        "Computed": true
+      },
+      "expiry": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "When this token will expire. Personal Access Tokens cannot be renewed, so after this time the token will be completely unusable and a new token will need to be generated. Tokens may be created with 'null' as their expiry and will never expire unless revoked."
+      },
+      "label": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The label of the Linode Token."
+      },
+      "scopes": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The scopes this token was created with. These define what parts of the Account the token can be used to access. Many command-line tools, such as the Linode CLI, require tokens with access to *. Tokens with more restrictive scopes are generally more secure."
+      },
+      "token": {
+        "Type": "String",
+        "Description": "The token used to access the API.",
+        "Computed": true
+      }
+    },
+    "linode_volume": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "filesystem_path": {
+        "Type": "String",
+        "Description": "The full filesystem path for the Volume based on the Volume's label. Path is /dev/disk/by-id/scsi-0Linode_Volume_ + Volume label.",
+        "Computed": true
+      },
+      "label": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The label of the Linode Volume."
+      },
+      "linode_id": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The Linode ID where the Volume should be attached.",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The region where this volume will be deployed.",
+        "InputDefault": "us-east"
+      },
+      "size": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Size of the Volume in GB",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Description": "The status of the volume, indicating the current readiness state.",
+        "Computed": true
+      }
+    }
+  },
+  "data-sources": {
+    "linode_account": {
+      "address_1": {
+        "Type": "String",
+        "Description": "First line of this Account's billing address.",
+        "Computed": true
+      },
+      "address_2": {
+        "Type": "String",
+        "Description": "Second line of this Account's billing address.",
+        "Computed": true
+      },
+      "balance": {
+        "Type": "Int",
+        "Description": "This Account's balance, in US dollars.",
+        "Computed": true
+      },
+      "city": {
+        "Type": "String",
+        "Description": "The city for this Account's billing address.",
+        "Computed": true
+      },
+      "company": {
+        "Type": "String",
+        "Description": "The company name associated with this Account.",
+        "Computed": true
+      },
+      "country": {
+        "Type": "String",
+        "Description": "The two-letter country code of this Account's billing address.",
+        "Computed": true
+      },
+      "email": {
+        "Type": "String",
+        "Description": "The email address for this Account, for account management communications, and may be used for other communications as configured.",
+        "Computed": true
+      },
+      "first_name": {
+        "Type": "String",
+        "Description": "The first name of the person associated with this Account.",
+        "Computed": true
+      },
+      "last_name": {
+        "Type": "String",
+        "Description": "The last name of the person associated with this Account.",
+        "Computed": true
+      },
+      "phone": {
+        "Type": "String",
+        "Description": "The phone number associated with this Account.",
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Description": "If billing address is in the United States, this is the State portion of the Account's billing address. If the address is outside the US, this is the Province associated with the Account's billing address.",
+        "Computed": true
+      },
+      "zip": {
+        "Type": "String",
+        "Description": "The zip code of this Account's billing address.",
+        "Computed": true
+      }
+    },
+    "linode_image": {
+      "created": {
+        "Type": "String",
+        "Description": "When this Image was created.",
+        "Computed": true
+      },
+      "created_by": {
+        "Type": "String",
+        "Description": "The name of the User who created this Image.",
+        "Computed": true
+      },
+      "deprecated": {
+        "Type": "Bool",
+        "Description": "Whether or not this Image is deprecated. Will only be True for deprecated public Images.",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Description": "A detailed description of this Image.",
+        "Computed": true
+      },
+      "expiry": {
+        "Type": "String",
+        "Description": "Only Images created automatically (from a deleted Linode; type=automatic) will expire.",
+        "Computed": true
+      },
+      "id": {
+        "Type": "String",
+        "Required": true
+      },
+      "is_public": {
+        "Type": "Bool",
+        "Description": "True if the Image is public.",
+        "Computed": true
+      },
+      "label": {
+        "Type": "String",
+        "Description": "A short description of the Image. Labels cannot contain special characters.",
+        "Computed": true
+      },
+      "size": {
+        "Type": "Int",
+        "Description": "The minimum size this Image needs to deploy. Size is in MB.",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Description": "How the Image was created. 'Manual' Images can be created at any time. 'Automatic' images are created automatically from a deleted Linode.",
+        "Computed": true
+      },
+      "vendor": {
+        "Type": "String",
+        "Description": "The upstream distribution vendor. Nil for private Images.",
+        "Computed": true
+      }
+    },
+    "linode_instance_type": {
+      "addons": {
+        "Type": "List",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "backups": {
+              "Type": "List",
+              "Description": "Information about the optional Backup service offered for Linodes.",
+              "Computed": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "price": {
+                    "Type": "List",
+                    "Description": "Cost of enabling Backups for this Linode Type.",
+                    "Computed": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "hourly": {
+                          "Type": "Float",
+                          "Description": "The cost (in US dollars) per hour to add Backups service.",
+                          "Computed": true
+                        },
+                        "monthly": {
+                          "Type": "Float",
+                          "Description": "The cost (in US dollars) per month to add Backups service.",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "class": {
+        "Type": "String",
+        "Description": "The class of the Linode Type. There are currently three classes of Linodes: nanode, standard, highmem",
+        "Computed": true
+      },
+      "disk": {
+        "Type": "Int",
+        "Description": "The Disk size, in MB, of the Linode Type.",
+        "Computed": true
+      },
+      "id": {
+        "Type": "String",
+        "Required": true
+      },
+      "label": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The Linode Type's label is for display purposes only.",
+        "Computed": true
+      },
+      "memory": {
+        "Type": "Int",
+        "Description": "Amount of RAM included in this Linode Type.",
+        "Computed": true
+      },
+      "network_out": {
+        "Type": "Int",
+        "Description": "The Mbits outbound bandwidth allocation.",
+        "Computed": true
+      },
+      "price": {
+        "Type": "List",
+        "Description": "Cost in US dollars, broken down into hourly and monthly charges.",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "hourly": {
+              "Type": "Float",
+              "Description": "Cost (in US dollars) per hour.",
+              "Computed": true
+            },
+            "monthly": {
+              "Type": "Float",
+              "Description": "Cost (in US dollars) per month.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "transfer": {
+        "Type": "Int",
+        "Description": "The monthly outbound transfer amount, in MB.",
+        "Computed": true
+      },
+      "vcpus": {
+        "Type": "Int",
+        "Description": "The number of VCPU cores this Linode Type offers.",
+        "Computed": true
+      }
+    },
+    "linode_profile": {
+      "authorized_keys": {
+        "Type": "List",
+        "Description": "The list of SSH Keys authorized to use Lish for this user. This value is ignored if lish_auth_method is 'disabled'.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "email": {
+        "Type": "String",
+        "Description": "The profile email address. This address will be used for communication with Linode as necessary.",
+        "Computed": true
+      },
+      "email_notifications": {
+        "Type": "Bool",
+        "Description": "If true, email notifications will be sent about account activity. If false, when false business-critical communications may still be sent through email.",
+        "Computed": true
+      },
+      "ip_whitelist_enabled": {
+        "Type": "Bool",
+        "Description": "If true, logins for the user will only be allowed from whitelisted IPs. This setting is currently deprecated, and cannot be enabled.",
+        "Computed": true
+      },
+      "lish_auth_method": {
+        "Type": "String",
+        "Description": "The methods of authentication allowed when connecting via Lish. 'keys_only' is the most secure with the intent to use Lish, and 'disabled' is recommended for users that will not use Lish at all.",
+        "Computed": true
+      },
+      "referrals": {
+        "Type": "List",
+        "Description": "Credit Card information associated with this Account.",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "code": {
+              "Type": "String",
+              "Description": "The Profile referral code.  If new accounts use this when signing up for Linode, referring account will receive credit.",
+              "Computed": true
+            },
+            "completed": {
+              "Type": "Int",
+              "Description": "The number of completed signups with the referral code.",
+              "Computed": true
+            },
+            "credit": {
+              "Type": "Float",
+              "Description": "The amount of account credit in US Dollars issued to the account through the referral program.",
+              "Computed": true
+            },
+            "pending": {
+              "Type": "Int",
+              "Description": "The number of pending signups for the referral code. To receive credit the signups must be completed.",
+              "Computed": true
+            },
+            "total": {
+              "Type": "Int",
+              "Description": "The number of users who have signed up with the referral code.",
+              "Computed": true
+            },
+            "url": {
+              "Type": "String",
+              "Description": "The referral URL.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "restricted": {
+        "Type": "Bool",
+        "Description": "If true, the user has restrictions on what can be accessed on the Account.",
+        "Computed": true
+      },
+      "timezone": {
+        "Type": "String",
+        "Description": "The profile's preferred timezone. This is not used by the API, and is for the benefit of clients only. All times the API returns are in UTC.",
+        "Computed": true
+      },
+      "two_factor_auth": {
+        "Type": "Bool",
+        "Description": "If true, logins from untrusted computers will require Two Factor Authentication.",
+        "Computed": true
+      },
+      "username": {
+        "Type": "String",
+        "Description": "The username for logging in to Linode services.",
+        "Computed": true
+      }
+    },
+    "linode_region": {
+      "country": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The country where this Region resides.",
+        "Computed": true
+      },
+      "id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The unique ID of this Region."
+      }
+    },
+    "linode_sshkey": {
+      "created": {
+        "Type": "String",
+        "Description": "The date this key was added.",
+        "Computed": true
+      },
+      "label": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The label of the Linode SSH Key."
+      },
+      "ssh_key": {
+        "Type": "String",
+        "Description": "The public SSH Key, which is used to authenticate to the root user of the Linodes you deploy.",
+        "Computed": true
+      }
+    },
+    "linode_user": {
+      "email": {
+        "Type": "String",
+        "Description": "The email address for this User, for account management communications, and may be used for other communications as configured.",
+        "Computed": true
+      },
+      "restricted": {
+        "Type": "Bool",
+        "Description": "If true, this User must be granted access to perform actions or access entities on this Account.",
+        "Computed": true
+      },
+      "ssh_keys": {
+        "Type": "List",
+        "Description": "A list of SSH Key labels added by this User. These are the keys that will be deployed if this User is included in the authorized_users field of a create Linode, rebuild Linode, or create Disk request.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "username": {
+        "Type": "String",
+        "Required": true,
+        "Description": "This User's username. This is used for logging in, and may also be displayed alongside actions the User performs (for example, in Events or public StackScripts)."
+      }
+    }
+  }
+}

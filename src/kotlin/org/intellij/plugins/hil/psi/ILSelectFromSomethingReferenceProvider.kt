@@ -28,10 +28,7 @@ import org.intellij.plugins.hcl.navigation.HCLQualifiedNameProvider
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.Constants
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
-import org.intellij.plugins.hcl.terraform.config.model.Module
-import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
-import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
-import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
+import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
 import org.intellij.plugins.hil.inspection.PsiFakeAwarePolyVariantReference
 import org.intellij.plugins.hil.psi.impl.getHCLHost
@@ -130,13 +127,6 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
         val blockType = r.getNameElementUnquoted(0)
 
         val fqn = HCLQualifiedNameProvider.getQualifiedModelName(r)
-        if (fqn != null) {
-          val type = ModelHelper.getTypeModel(r.project).getByFQN(fqn)
-          if (type is PropertyOrBlockType && type.block != null && type.computed) {
-            found.add(FakeHCLProperty(name, r))
-            return
-          }
-        }
         if (ServiceManager.getService(TypeModelProvider::class.java).ignored_references.contains(fqn)) {
           if (fake) found.add(FakeHCLProperty(name, r))
         } else if ("module" == blockType) {
@@ -163,9 +153,18 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
           found.add(property)
         } else if (!blocks.isEmpty()) {
           found.addAll(blocks.map { it.nameIdentifier as HCLElement })
-        } else if (fake) {
-          val properties = ModelHelper.getBlockProperties(r)
-          addBlockProperty(properties, name, r, found)
+        } else {
+          if (fqn != null) {
+            val type = ModelHelper.getTypeModel(r.project).getByFQN(fqn)
+            if (type is PropertyOrBlockType && type is BlockType && type.computed) {
+              found.add(FakeHCLProperty(name, r))
+              return
+            }
+          }
+          if (fake) {
+            val properties = ModelHelper.getBlockProperties(r)
+            addBlockProperty(properties, name, r, found)
+          }
         }
       }
       is HCLProperty -> {
@@ -178,7 +177,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
             val fqn = HCLQualifiedNameProvider.getQualifiedModelName(r)
             if (fqn != null) {
               val type = ModelHelper.getTypeModel(r.project).getByFQN(fqn)
-              if (type is PropertyOrBlockType && type.block != null && type.computed) {
+              if (type is PropertyOrBlockType && type is BlockType && type.computed) {
                 found.add(FakeHCLProperty(name, r))
                 return
               }
@@ -198,9 +197,9 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
             if (fake) {
               val fqn = HCLQualifiedNameProvider.getQualifiedModelName(r)
               val type = fqn?.let { ModelHelper.getTypeModel(r.project).getByFQN(it) }
-              if (type is PropertyOrBlockType && type.block != null) {
+              if (type is PropertyOrBlockType && type is BlockType) {
                 // It's actually an incorrectly defined block, e.g. 'test = {}' instead of 'test {}'
-                val properties = type.block.properties
+                val properties = type.properties
                 addBlockProperty(properties, name, r, found)
               }
             }

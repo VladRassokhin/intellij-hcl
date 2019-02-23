@@ -29,7 +29,7 @@ plugins {
     id 'org.jetbrains.intellij' version '0.2.18'
 }
 
-version = '0.6.12'
+version = '0.6.13'
 if (System.hasProperty('build.number')) {
     version = "$version.${System.getProperty('build.number')}"
 }
@@ -88,6 +88,14 @@ sourceSets {
         }
         resources {
             srcDir 'test-data'
+        }
+    }
+}
+processResources {
+    // Minify json resources
+    doLast {
+        fileTree(dir: outputs.files.asPath, include: "**/*.json").each {
+            File file -> file.text = groovy.json.JsonOutput.toJson(new groovy.json.JsonSlurper().parse(file))
         }
     }
 }

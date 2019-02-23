@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public abstract class HCLLiteralImpl extends HCLLiteralMixin implements HCLLiteral {
 
-  public HCLLiteralImpl(ASTNode node) {
+  public HCLLiteralImpl(@NotNull ASTNode node) {
     super(node);
   }
 

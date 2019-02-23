@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLContainerImpl extends HCLValueImpl implements HCLContainer {
 
-  public HCLContainerImpl(ASTNode node) {
+  public HCLContainerImpl(@NotNull ASTNode node) {
     super(node);
   }
 

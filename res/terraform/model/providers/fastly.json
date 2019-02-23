@@ -1,7 +1,7 @@
 {
   "name": "fastly",
   "type": "provider",
-  "version": "v0.3.0-7-g3e42a54",
+  "version": "v0.4.0-9-g08523af",
   "provider": {
     "api_key": {
       "Type": "String",
@@ -183,6 +183,11 @@
               "Required": true,
               "Description": "Unique name to refer to this logging setup"
             },
+            "placement": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Where in the generated VCL the logging call should be placed."
+            },
             "project_id": {
               "Type": "String",
               "Required": true,
@@ -205,6 +210,11 @@
               "Type": "String",
               "Required": true,
               "Description": "The ID of your BigQuery table"
+            },
+            "template": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Big query table name suffix template"
             }
           }
         }
@@ -282,6 +292,58 @@
         "Optional": true,
         "Description": "The default Time-to-live (TTL) for the version"
       },
+      "director": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "backends": {
+              "Type": "Set",
+              "Required": true,
+              "Description": "List of backends associated with this director",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "capacity": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Load balancing weight for the backends"
+            },
+            "comment": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "A name to refer to this director"
+            },
+            "quorum": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Percentage of capacity that needs to be up for the director itself to be considered up"
+            },
+            "retries": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "How many backends to search if it fails"
+            },
+            "shield": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Selected POP to serve as a 'shield' for origin servers."
+            },
+            "type": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Type of load balance group to use. Integer, 1 to 4. Values: 1 (random), 3 (hash), 4 (client)"
+            }
+          }
+        }
+      },
       "domain": {
         "Type": "Set",
         "Required": true,
@@ -352,6 +414,11 @@
               "Type": "Int",
               "Optional": true,
               "Description": "How frequently the logs should be transferred, in seconds (Default 3600)"
+            },
+            "placement": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Where in the generated VCL the logging call should be placed."
             },
             "response_condition": {
               "Type": "String",
@@ -568,6 +635,11 @@
               "Required": true,
               "Description": "Unique name to refer to this logging setup"
             },
+            "placement": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Where in the generated VCL the logging call should be placed."
+            },
             "port": {
               "Type": "Int",
               "Optional": true,
@@ -616,6 +688,11 @@
               "Type": "String",
               "Required": true,
               "Description": "Unique name to refer to this logging setup"
+            },
+            "placement": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Where in the generated VCL the logging call should be placed."
             },
             "port": {
               "Type": "Int",
@@ -794,6 +871,11 @@
               "Optional": true,
               "Description": "How frequently the logs should be transferred, in seconds (Default 3600)"
             },
+            "placement": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Where in the generated VCL the logging call should be placed."
+            },
             "redundancy": {
               "Type": "String",
               "Optional": true,
@@ -828,6 +910,35 @@
           }
         }
       },
+      "snippet": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "content": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The contents of the VCL snippet"
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "A unique name to refer to this VCL snippet"
+            },
+            "priority": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Determines ordering for multiple snippets. Lower priorities execute first. (Default: 100)"
+            },
+            "type": {
+              "Type": "String",
+              "Required": true,
+              "Description": "One of init, recv, hit, miss, pass, fetch, error, deliver, log, none"
+            }
+          }
+        }
+      },
       "sumologic": {
         "Type": "Set",
         "Optional": true,
@@ -853,6 +964,11 @@
               "Type": "String",
               "Required": true,
               "Description": "Unique name to refer to this logging setup"
+            },
+            "placement": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Where in the generated VCL the logging call should be placed."
             },
             "response_condition": {
               "Type": "String",
@@ -897,6 +1013,11 @@
               "Type": "String",
               "Required": true,
               "Description": "Unique name to refer to this logging setup"
+            },
+            "placement": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Where in the generated VCL the logging call should be placed."
             },
             "port": {
               "Type": "Int",

@@ -56,7 +56,7 @@ object ResourcePropertyInsertHandler : BasicInsertHandler<LookupElement>() {
     // Add value placeholder: "" for string; 0 for int, "${}" for string with IL, etc
     val obj = item.`object`
     if (obj is PropertyOrBlockType) {
-      val property = obj.property
+      val property = obj as? PropertyType
       if (property != null) {
         val module = PsiTreeUtil.getParentOfType(element, HCLElement::class.java)?.getTerraformModule()
         val pair = module?.let { getProposedValueFromModelAndHint(property, module) } ?: getPlaceholderValue(property.type)
