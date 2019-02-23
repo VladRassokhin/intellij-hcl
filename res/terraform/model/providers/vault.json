@@ -1,7 +1,7 @@
 {
   "name": "vault",
   "type": "provider",
-  "version": "v1.1.1-3-g1079580",
+  "version": "v1.4.1-4-g91a9af5",
   "provider": {
     "address": {
       "Type": "String",
@@ -245,11 +245,65 @@
         "Computed": true
       }
     },
+    "vault_audit": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Human-friendly description of the audit device"
+      },
+      "options": {
+        "Type": "Map",
+        "Required": true,
+        "Description": "Configuration options to pass to the audit device itself",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "path": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Path in which to enable the audit device",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Type of the audit device, such as 'file'"
+      }
+    },
     "vault_auth_backend": {
+      "accessor": {
+        "Type": "String",
+        "Description": "The accessor of the auth backend",
+        "Computed": true
+      },
+      "default_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Default lease duration in seconds",
+        "Computed": true
+      },
       "description": {
         "Type": "String",
         "Optional": true,
         "Description": "The description of the auth backend"
+      },
+      "listing_visibility": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Speficies whether to show this mount in the UI-specific listing endpoint"
+      },
+      "local": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Specifies if the auth method is local only"
+      },
+      "max_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Maximum possible lease duration in seconds",
+        "Computed": true
       },
       "path": {
         "Type": "String",
@@ -444,8 +498,7 @@
       "allow_instance_migration": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "When true, allows migration of the underlying instance where the client resides. Use with caution.",
-        "Computed": true
+        "Description": "When true, allows migration of the underlying instance where the client resides. Use with caution."
       },
       "auth_type": {
         "Type": "String",
@@ -460,42 +513,195 @@
       "bound_account_id": {
         "Type": "String",
         "Optional": true,
-        "Description": "Only EC2 instances with this account ID in their identity document will be permitted to log in."
+        "Description": "Only EC2 instances with this account ID in their identity document will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_account_ids"
+        ],
+        "Deprecated": "\"bound_account_id\" is deprecated, please use \"bound_account_ids\" as a list."
+      },
+      "bound_account_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Only EC2 instances with this account ID in their identity document will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_account_id"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "bound_ami_id": {
         "Type": "String",
         "Optional": true,
-        "Description": "Only EC2 instances using this AMI ID will be permitted to log in."
+        "Description": "Only EC2 instances using this AMI ID will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_ami_ids"
+        ],
+        "Deprecated": "\"bound_ami_id\" is deprecated, please use \"bound_ami_ids\" as a list."
+      },
+      "bound_ami_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Only EC2 instances using this AMI ID will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_ami_id"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "bound_ec2_instance_id": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Only EC2 instances that match this instance ID will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_ec2_instance_ids"
+        ],
+        "Deprecated": "\"bound_ec2_instance_id\" is deprecated, please use \"bound_ec2_instance_ids\".",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "bound_ec2_instance_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Only EC2 instances that match this instance ID will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_ec2_instance_id"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "bound_iam_instance_profile_arn": {
         "Type": "String",
         "Optional": true,
-        "Description": "Only EC2 instances associated with an IAM instance profile ARN that matches this value will be permitted to log in."
+        "Description": "Only EC2 instances associated with an IAM instance profile ARN that matches this value will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_iam_instance_profile_arns"
+        ],
+        "Deprecated": "\"bound_iam_instance_profile_arn\" is deprecated, please use \"bound_iam_instance_profile_arns\" as a list."
+      },
+      "bound_iam_instance_profile_arns": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Only EC2 instances associated with an IAM instance profile ARN that matches this value will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_iam_instance_profile_arn"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "bound_iam_principal_arn": {
         "Type": "String",
         "Optional": true,
-        "Description": "The IAM principal that must be authenticated using the iam auth method."
+        "Description": "The IAM principal that must be authenticated using the iam auth method.",
+        "ConflictsWith": [
+          "bound_iam_principal_arns"
+        ],
+        "Deprecated": "\"bound_iam_principal_arn\" is deprecated, please use \"bound_iam_principal_arns\" as a list."
+      },
+      "bound_iam_principal_arns": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The IAM principal that must be authenticated using the iam auth method.",
+        "ConflictsWith": [
+          "bound_iam_principal_arn"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "bound_iam_role_arn": {
         "Type": "String",
         "Optional": true,
-        "Description": "Only EC2 instances that match this IAM role ARN will be permitted to log in."
+        "Description": "Only EC2 instances that match this IAM role ARN will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_iam_role_arns"
+        ],
+        "Deprecated": "\"bound_iam_role_arn\" is deprecated, please use \"bound_iam_role_arns\" as a list."
+      },
+      "bound_iam_role_arns": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Only EC2 instances that match this IAM role ARN will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_iam_role_arn"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "bound_region": {
         "Type": "String",
         "Optional": true,
-        "Description": "Only EC2 instances in this region will be permitted to log in."
+        "Description": "Only EC2 instances in this region will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_regions"
+        ],
+        "Deprecated": "\"bound_region\" is deprecated, please use \"bound_regions\" as a list."
+      },
+      "bound_regions": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Only EC2 instances in this region will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_region"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "bound_subnet_id": {
         "Type": "String",
         "Optional": true,
-        "Description": "Only EC2 instances associated with this subnet ID will be permitted to log in."
+        "Description": "Only EC2 instances associated with this subnet ID will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_subnet_ids"
+        ],
+        "Deprecated": "\"bound_subnet_id\" is deprecated, please use \"bound_subnet_ids\" as a list."
+      },
+      "bound_subnet_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Only EC2 instances associated with this subnet ID will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_subnet_id"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "bound_vpc_id": {
         "Type": "String",
         "Optional": true,
-        "Description": "Only EC2 instances associated with this VPC ID will be permitted to log in."
+        "Description": "Only EC2 instances associated with this VPC ID will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_vpc_ids"
+        ],
+        "Deprecated": "\"bound_vpc_id\" is deprecated, please use \"bound_vpc_ids\" as a list."
+      },
+      "bound_vpc_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Only EC2 instances associated with this VPC ID will be permitted to log in.",
+        "ConflictsWith": [
+          "bound_vpc_id"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "disallow_reauthentication": {
         "Type": "Bool",
@@ -515,12 +721,12 @@
       "max_ttl": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The maximum allowed lifetime of tokens issued using this role."
+        "Description": "The maximum allowed lifetime of tokens issued using this role, provided as the number of seconds."
       },
       "period": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The duration in which a token should be renewed. At each renewal, the token's TTL will be set to the value of this parameter."
+        "Description": "If set, indicates that the token generated using this role should never expire. The token should be renewed within the duration specified by this value. At each renewal, the token's TTL will be set to the value of this field. The maximum allowed lifetime of token issued using this role. Specified as a number of seconds."
       },
       "policies": {
         "Type": "List",
@@ -534,8 +740,7 @@
       "resolve_aws_unique_ids": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Whether or not Vault should resolve the bound_iam_principal_arn to an AWS Unique ID. When true, deleting a principal and recreating it with the same name won't automatically grant the new principal the same roles in Vault that the old principal had.",
-        "Computed": true
+        "Description": "Whether or not Vault should resolve the bound_iam_principal_arn to an AWS Unique ID. When true, deleting a principal and recreating it with the same name won't automatically grant the new principal the same roles in Vault that the old principal had."
       },
       "role": {
         "Type": "String",
@@ -550,7 +755,7 @@
       "ttl": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The TTL period of tokens issued using this role, provided as the number of minutes."
+        "Description": "The TTL period of tokens issued using this role, provided as the number of seconds."
       }
     },
     "vault_aws_auth_backend_role_tag": {
@@ -600,6 +805,23 @@
       "tag_value": {
         "Type": "String",
         "Computed": true
+      }
+    },
+    "vault_aws_auth_backend_roletag_blacklist": {
+      "backend": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Unique name of the auth backend to configure."
+      },
+      "disable_periodic_tidy": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If true, disables the periodic tidying of the roletag blacklist entries."
+      },
+      "safety_buffer": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The amount of extra time that must have passed beyond the roletag expiration, before it's removed from backend storage."
       }
     },
     "vault_aws_auth_backend_sts_role": {
@@ -687,6 +909,104 @@
         ]
       }
     },
+    "vault_cert_auth_backend_role": {
+      "allowed_names": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "backend": {
+        "Type": "String",
+        "Optional": true
+      },
+      "certificate": {
+        "Type": "String",
+        "Required": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "max_ttl": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "period": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "policies": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "required_extensions": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "ttl": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "vault_consul_secret_backend": {
+      "address": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Specifies the address of the Consul instance, provided as \"host:port\" like \"127.0.0.1:8500\"."
+      },
+      "default_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Default lease duration for secrets in seconds"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Human-friendly description of the mount for the backend."
+      },
+      "max_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Maximum possible lease duration for secrets in seconds"
+      },
+      "path": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Unique name of the Vault Consul mount to configure"
+      },
+      "scheme": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the URL scheme to use. Defaults to \"http\"."
+      },
+      "token": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Specifies the Consul ACL token to use. This must be a management type token."
+      }
+    },
     "vault_database_secret_backend_connection": {
       "allowed_roles": {
         "Type": "List",
@@ -712,6 +1032,9 @@
           "mongodb",
           "mssql",
           "mysql",
+          "mysql_rds",
+          "mysql_aurora",
+          "mysql_legacy",
           "postgresql",
           "oracle"
         ],
@@ -775,6 +1098,11 @@
           }
         }
       },
+      "data": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "A map of sensitive data to pass to the endpoint. Usefule for templated connection strings."
+      },
       "hana": {
         "Type": "List",
         "Optional": true,
@@ -785,6 +1113,9 @@
           "mongodb",
           "mssql",
           "mysql",
+          "mysql_rds",
+          "mysql_aurora",
+          "mysql_legacy",
           "postgresql",
           "oracle"
         ],
@@ -824,6 +1155,9 @@
           "hana",
           "mssql",
           "mysql",
+          "mysql_rds",
+          "mysql_aurora",
+          "mysql_legacy",
           "postgresql",
           "oracle"
         ],
@@ -848,6 +1182,9 @@
           "hana",
           "mongodb",
           "mysql",
+          "mysql_rds",
+          "mysql_aurora",
+          "mysql_legacy",
           "postgresql",
           "oracle"
         ],
@@ -887,6 +1224,135 @@
           "hana",
           "mongodb",
           "mssql",
+          "mysql_rds",
+          "mysql_aurora",
+          "mysql_legacy",
+          "postgresql",
+          "oracle"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database."
+            }
+          }
+        }
+      },
+      "mysql_aurora": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mysql-aurora-database-plugin plugin.",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "cassandra",
+          "hana",
+          "mongodb",
+          "mssql",
+          "mysql",
+          "mysql_rds",
+          "mysql_legacy",
+          "postgresql",
+          "oracle"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database."
+            }
+          }
+        }
+      },
+      "mysql_legacy": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mysql-legacy-database-plugin plugin.",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "cassandra",
+          "hana",
+          "mongodb",
+          "mssql",
+          "mysql",
+          "mysql_rds",
+          "mysql_aurora",
+          "postgresql",
+          "oracle"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "connection_url": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Connection string to use to connect to the database."
+            },
+            "max_connection_lifetime": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of seconds a connection may be reused."
+            },
+            "max_idle_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of idle connections to the database."
+            },
+            "max_open_connections": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum number of open connections to the database."
+            }
+          }
+        }
+      },
+      "mysql_rds": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Connection parameters for the mysql-rds-database-plugin plugin.",
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "cassandra",
+          "hana",
+          "mongodb",
+          "mssql",
+          "mysql",
+          "mysql_aurora",
+          "mysql_legacy",
           "postgresql",
           "oracle"
         ],
@@ -932,6 +1398,9 @@
           "mongodb",
           "mssql",
           "mysql",
+          "mysql_rds",
+          "mysql_aurora",
+          "mysql_legacy",
           "postgresql"
         ],
         "Elem": {
@@ -971,6 +1440,9 @@
           "mongodb",
           "mssql",
           "mysql",
+          "mysql_rds",
+          "mysql_aurora",
+          "mysql_legacy",
           "oracle"
         ],
         "Elem": {
@@ -1052,6 +1524,154 @@
         "Description": "Database statements to execute to rollback a create operation in the event of an error."
       }
     },
+    "vault_gcp_auth_backend": {
+      "client_email": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "client_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "credentials": {
+        "Type": "String",
+        "Required": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "path": {
+        "Type": "String",
+        "Optional": true
+      },
+      "private_key_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "vault_gcp_auth_backend_role": {
+      "backend": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bound_instance_groups": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "bound_labels": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "bound_regions": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "bound_service_accounts": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "bound_zones": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "max_ttl": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "period": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "policies": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      },
+      "ttl": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "vault_gcp_secret_backend": {
+      "credentials": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "JSON-encoded credentials to use to connect to GCP"
+      },
+      "default_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Default lease duration for secrets in seconds"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Human-friendly description of the mount for the backend."
+      },
+      "max_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Maximum possible lease duration for secrets in seconds"
+      },
+      "path": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Path to mount the backend at."
+      }
+    },
     "vault_generic_secret": {
       "allow_read": {
         "Type": "Bool",
@@ -1075,7 +1695,394 @@
         "Description": "Full path where the generic secret will be written."
       }
     },
+    "vault_identity_group": {
+      "id": {
+        "Type": "String",
+        "Description": "ID of the group.",
+        "Computed": true
+      },
+      "member_entity_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Entity IDs to be assigned as group members.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "member_group_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Group IDs to be assigned as group members.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "metadata": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Metadata to be associated with the group.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the group."
+      },
+      "policies": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Policies to be tied to the group.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Type of the group, internal or external. Defaults to internal."
+      }
+    },
+    "vault_identity_group_alias": {
+      "canonical_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of the group to which this is an alias.uType of the group, internal or external. Defaults to internal."
+      },
+      "id": {
+        "Type": "String",
+        "Description": "ID of the group alias.",
+        "Computed": true
+      },
+      "mount_accessor": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Mount accessor to which this alias belongs toMount accessor to which this alias belongs to."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the group alias."
+      }
+    },
+    "vault_jwt_auth_backend_role": {
+      "backend": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Unique name of the auth backend to configure."
+      },
+      "bound_audiences": {
+        "Type": "Set",
+        "Required": true,
+        "Description": "List of aud claims to match against. Any match is sufficient.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "bound_cidrs": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "List of CIDRs valid as the source address for login requests. This value is also encoded into any resulting token.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "bound_subject": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "If set, requires that the sub claim matches this value."
+      },
+      "groups_claim": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The claim to use to uniquely identify the set of groups to which the user belongs; this will be used as the names for the Identity group aliases created due to a successful login. The claim value must be a list of strings."
+      },
+      "max_ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Number of seconds after which issued tokens can no longer be renewed."
+      },
+      "num_uses": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Number of times issued tokens can be used. Setting this to 0 or leaving it unset means unlimited uses."
+      },
+      "period": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Number of seconds to set the TTL to for issued tokens upon renewal. Makes the token a periodic token, which will never expire as long as it is renewed before the TTL each period.",
+        "ConflictsWith": [
+          "ttl"
+        ]
+      },
+      "policies": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Policies to be set on tokens issued using this role.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "role_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the role."
+      },
+      "ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Default number of seconds to set as the TTL for issued tokens and at renewal time.",
+        "ConflictsWith": [
+          "period"
+        ]
+      },
+      "user_claim": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The claim to use to uniquely identify the user; this will be used as the name for the Identity entity alias created due to a successful login."
+      }
+    },
+    "vault_kubernetes_auth_backend_config": {
+      "backend": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Unique name of the kubernetes backend to configure."
+      },
+      "kubernetes_ca_cert": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "PEM encoded CA cert for use by the TLS client used to talk with the Kubernetes API."
+      },
+      "kubernetes_host": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Host must be a host string, a host:port pair, or a URL to the base of the Kubernetes API server."
+      },
+      "pem_keys": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Optional list of PEM-formatted public keys or certificates used to verify the signatures of Kubernetes service account JWTs. If a certificate is given, its public key will be extracted. Not every installation of Kubernetes exposes these keys.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "token_reviewer_jwt": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A service account JWT used to access the TokenReview API to validate other JWTs during login. If not set the JWT used for login will be used to access the API."
+      }
+    },
+    "vault_kubernetes_auth_backend_role": {
+      "backend": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Unique name of the kubernetes backend to configure."
+      },
+      "bound_service_account_names": {
+        "Type": "List",
+        "Required": true,
+        "Description": "List of service account names able to access this role. If set to \"*\" all names are allowed, both this and bound_service_account_namespaces can not be \"*\".",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "bound_service_account_namespaces": {
+        "Type": "List",
+        "Required": true,
+        "Description": "List of namespaces allowed to access this role. If set to \"*\" all namespaces are allowed, both this and bound_service_account_names can not be set to \"*\".",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "max_ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The maximum allowed lifetime of tokens issued in seconds using this role."
+      },
+      "period": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "If set, indicates that the token generated using this role should never expire. The token should be renewed within the duration specified by this value. At each renewal, the token's TTL will be set to the value of this parameter."
+      },
+      "policies": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Policies to be set on tokens issued using this role.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "role_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the role."
+      },
+      "ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The TTL period of tokens issued using this role in seconds."
+      }
+    },
+    "vault_ldap_auth_backend": {
+      "accessor": {
+        "Type": "String",
+        "Description": "The accessor of the LDAP auth backend",
+        "Computed": true
+      },
+      "binddn": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "bindpass": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "certificate": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "deny_null_bind": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "discoverdn": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "groupattr": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "groupdn": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "groupfilter": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "insecure_tls": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "path": {
+        "Type": "String",
+        "Optional": true
+      },
+      "starttls": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "tls_max_version": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tls_min_version": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "upndomain": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "url": {
+        "Type": "String",
+        "Required": true
+      },
+      "userattr": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "userdn": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "vault_ldap_auth_backend_group": {
+      "backend": {
+        "Type": "String",
+        "Optional": true
+      },
+      "groupname": {
+        "Type": "String",
+        "Required": true
+      },
+      "policies": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "vault_ldap_auth_backend_user": {
+      "backend": {
+        "Type": "String",
+        "Optional": true
+      },
+      "groups": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "policies": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "username": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "vault_mount": {
+      "accessor": {
+        "Type": "String",
+        "Description": "Accessor of the mount",
+        "Computed": true
+      },
       "default_lease_ttl_seconds": {
         "Type": "Int",
         "Optional": true,
@@ -1093,6 +2100,11 @@
         "Description": "Maximum possible lease duration for tokens and secrets in seconds",
         "Computed": true
       },
+      "options": {
+        "Type": "Map",
+        "Optional": true,
+        "Description": "Specifies mount type specific options that are passed to the backend"
+      },
       "path": {
         "Type": "String",
         "Required": true,
@@ -1109,6 +2121,11 @@
         "Type": "String",
         "Optional": true,
         "Description": "The Okta url. Examples: oktapreview.com, okta.com (default)"
+      },
+      "bypass_okta_mfa": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "When true, requests by Okta for a MFA check will be bypassed. This also disallows certain status checks on the account, such as whether the password is expired."
       },
       "description": {
         "Type": "String",
@@ -1260,6 +2277,160 @@
         "Required": true,
         "Description": "The policy document"
       }
+    },
+    "vault_rabbitmq_secret_backend": {
+      "connection_uri": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Specifies the RabbitMQ connection URI."
+      },
+      "default_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Default lease duration for secrets in seconds",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Human-friendly description of the mount for the backend."
+      },
+      "max_lease_ttl_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Maximum possible lease duration for secrets in seconds",
+        "Computed": true
+      },
+      "password": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Specifies the RabbitMQ management administrator password"
+      },
+      "path": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The path of the RabbitMQ Secret Backend where the connection should be configured"
+      },
+      "username": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Specifies the RabbitMQ management administrator username"
+      },
+      "verify_connection": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Specifies whether to verify connection URI, username, and password."
+      }
+    },
+    "vault_rabbitmq_secret_backend_role": {
+      "backend": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The path of the Rabbitmq Secret Backend the role belongs to."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Unique name for the role."
+      },
+      "tags": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies a comma-separated RabbitMQ management tags."
+      },
+      "vhosts": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies a map of virtual hosts to permissions."
+      }
+    },
+    "vault_ssh_secret_backend_ca": {
+      "backend": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The path of the SSH Secret Backend where the CA should be configured"
+      },
+      "generate_signing_key": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Whether Vault should generate the signing key pair internally."
+      },
+      "private_key": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Private key part the SSH CA key pair; required if generate_signing_key is false.",
+        "Computed": true
+      },
+      "public_key": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Public key part the SSH CA key pair; required if generate_signing_key is false.",
+        "Computed": true
+      }
+    },
+    "vault_token_auth_backend_role": {
+      "allowed_policies": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "List of allowed policies for given role.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "disallowed_policies": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "List of disallowed policies for given role.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "explicit_max_ttl": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "If set, the token will have an explicit max TTL set upon it.",
+        "Computed": true
+      },
+      "max_ttl": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The maximum allowed lifetime of tokens issued using this role.",
+        "Computed": true
+      },
+      "orphan": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If true, tokens created against this policy will be orphan tokens."
+      },
+      "path_suffix": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Tokens created against this role will have the given suffix as part of their path in addition to the role name."
+      },
+      "period": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The duration in which a token should be renewed. At each renewal, the token's TTL will be set to the value of this parameter.",
+        "Computed": true
+      },
+      "renewable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Wether to disable the ability of the token to be renewed past its initial TTL."
+      },
+      "role_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the role."
+      },
+      "ttl": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The TTL period of tokens issued using this role, provided as the number of minutes.",
+        "Computed": true
+      }
     }
   },
   "data-sources": {
@@ -1367,6 +2538,103 @@
         "Type": "String",
         "Required": true,
         "Description": "Full path from which a secret will be read."
+      },
+      "version": {
+        "Type": "Int",
+        "Optional": true
+      }
+    },
+    "vault_kubernetes_auth_backend_config": {
+      "backend": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Unique name of the kubernetes backend to configure."
+      },
+      "kubernetes_ca_cert": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "PEM encoded CA cert for use by the TLS client used to talk with the Kubernetes API.",
+        "Computed": true
+      },
+      "kubernetes_host": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Host must be a host string, a host:port pair, or a URL to the base of the Kubernetes API server.",
+        "Computed": true
+      },
+      "pem_keys": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Optional list of PEM-formatted public keys or certificates used to verify the signatures of Kubernetes service account JWTs. If a certificate is given, its public key will be extracted. Not every installation of Kubernetes exposes these keys.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "vault_kubernetes_auth_backend_role": {
+      "backend": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Unique name of the kubernetes backend to configure."
+      },
+      "bound_service_account_names": {
+        "Type": "List",
+        "Description": "List of service account names able to access this role. If set to \"*\" all names are allowed, both this and bound_service_account_namespaces can not be \"*\".",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "bound_service_account_namespaces": {
+        "Type": "List",
+        "Description": "List of namespaces allowed to access this role. If set to \"*\" all namespaces are allowed, both this and bound_service_account_names can not be set to \"*\".",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "max_ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The maximum allowed lifetime of tokens issued in seconds using this role.",
+        "Computed": true
+      },
+      "num_uses": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Number of times issued tokens can be used. Setting this to 0 or leaving it unset means unlimited uses.",
+        "Computed": true
+      },
+      "period": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "If set, indicates that the token generated using this role should never expire. The token should be renewed within the duration specified by this value. At each renewal, the token's TTL will be set to the value of this parameter.",
+        "Computed": true
+      },
+      "policies": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Policies to be set on tokens issued using this role.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "role_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the role."
+      },
+      "ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The TTL period of tokens issued using this role in seconds.",
+        "Computed": true
       }
     }
   }

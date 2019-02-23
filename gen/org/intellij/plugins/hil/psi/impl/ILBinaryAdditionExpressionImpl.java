@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public class ILBinaryAdditionExpressionImpl extends ILBinaryExpressionImpl implements ILBinaryAdditionExpression {
 
-  public ILBinaryAdditionExpressionImpl(ASTNode node) {
+  public ILBinaryAdditionExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

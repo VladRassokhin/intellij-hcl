@@ -13,7 +13,7 @@ import com.intellij.navigation.ItemPresentation;
 
 public class HCLBlockImpl extends HCLBlockMixin implements HCLBlock {
 
-  public HCLBlockImpl(ASTNode node) {
+  public HCLBlockImpl(@NotNull ASTNode node) {
     super(node);
   }
 

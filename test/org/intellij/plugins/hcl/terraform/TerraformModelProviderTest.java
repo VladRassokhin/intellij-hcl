@@ -37,11 +37,11 @@ public class TerraformModelProviderTest extends LightPlatformTestCase {
     final PropertyOrBlockType[] properties = google_compute_instance.getProperties();
     final PropertyOrBlockType network_interface = findProperty(properties, "network_interface");
     assertNotNull(network_interface);
-    final BlockType network_interfaceBlock = network_interface.getBlock();
+    final BlockType network_interfaceBlock = (BlockType) network_interface;
     assertNotNull(network_interfaceBlock);
     final PropertyOrBlockType access_config = findProperty(network_interfaceBlock.getProperties(), "access_config");
     assertNotNull(access_config);
-    final BlockType access_configBlock = access_config.getBlock();
+    final BlockType access_configBlock = (BlockType) access_config;
     assertNotNull(access_configBlock);
     assertNotNull(findProperty(access_configBlock.getProperties(), "assigned_nat_ip"));
     assertNotNull(findProperty(access_configBlock.getProperties(), "nat_ip"));
@@ -58,12 +58,12 @@ public class TerraformModelProviderTest extends LightPlatformTestCase {
 
     final PropertyOrBlockType default_cache_behavior = findProperty(properties, "default_cache_behavior");
     assertNotNull(default_cache_behavior);
-    final BlockType default_cache_behavior_block = default_cache_behavior.getBlock();
+    final BlockType default_cache_behavior_block = (BlockType) default_cache_behavior;
     assertNotNull(default_cache_behavior_block);
 
     final PropertyOrBlockType forwarded_values = findProperty(default_cache_behavior_block.getProperties(), "forwarded_values");
     assertNotNull(forwarded_values);
-    final BlockType forwarded_values_block = forwarded_values.getBlock();
+    final BlockType forwarded_values_block = (BlockType) forwarded_values;
     assertNotNull(forwarded_values_block);
 
     assertNotNull(findProperty(forwarded_values_block.getProperties(), "query_string"));
@@ -77,14 +77,14 @@ public class TerraformModelProviderTest extends LightPlatformTestCase {
     final TypeModel model = TypeModelProvider.Companion.getModel(getProject());
     assertNotNull(model);
     final List<BlockType> failed = new ArrayList<BlockType>();
-    for (ResourceType block : model.getResources()) {
+    for (ResourceType block : model.getResources().values()) {
       final String rt = block.getType();
       final String pt = block.getProvider().getType();
       if (rt.equals(pt)) continue;
       if (rt.startsWith(pt + '_')) continue;
       failed.add(block);
     }
-    for (DataSourceType block : model.getDataSources()) {
+    for (DataSourceType block : model.getDataSources().values()) {
       final String rt = block.getType();
       final String pt = block.getProvider().getType();
       if (rt.equals(pt)) continue;

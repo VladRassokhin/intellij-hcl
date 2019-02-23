@@ -63,8 +63,22 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
         loadOne(file.absolutePath, stream)
       }
 
+      this.resources.sortBy { it.type }
+      this.dataSources.sortBy { it.type }
+      this.providers.sortBy { it.type }
+      this.provisioners.sortBy { it.type }
+      this.backends.sortBy { it.type }
+      this.functions.sortBy { it.name }
+
       // TODO: Fetch latest model from github (?)
-      return TypeModel(this.resources, this.dataSources, this.providers, this.provisioners, this.backends, this.functions)
+      return TypeModel(
+          this.resources.associateBy { it.type },
+          this.dataSources.associateBy { it.type },
+          this.providers.associateBy { it.type },
+          this.provisioners.associateBy { it.type },
+          this.backends.associateBy { it.type },
+          this.functions.associateBy { it.name }
+      )
     } catch(e: Exception) {
       logErrorAndFailInInternalMode("Failed to load Terraform Model", e)
       return null
@@ -184,7 +198,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   }
 
   private fun parseProviderFile(json: JsonObject, file: String) {
-    val name = json.string("name")!!
+    val name = json.string("name")!!.pool()
     val provider = json.obj("provider")
     if (provider == null) {
       LOG.warn("No provider schema in file '$file'")
@@ -202,7 +216,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   }
 
   private fun parseProvisionerFile(json: JsonObject, file: String) {
-    val name = json.string("name")!!
+    val name = json.string("name")!!.pool()
     val provisioner = json.obj("schema")
     if (provisioner == null) {
       LOG.warn("No provisioner schema in file '$file'")
@@ -213,7 +227,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   }
 
   private fun parseBackendFile(json: JsonObject, file: String) {
-    val name = json.string("name")!!
+    val name = json.string("name")!!.pool()
     val provisioner = json.obj("schema")
     if (provisioner == null) {
       LOG.warn("No provisioner schema in file '$file'")
@@ -239,7 +253,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       if (variadic) {
         va = VariadicArgument(parseType(v.string("VariadicType")))
       }
-      this.functions.add(Function(k, returnType, *args.toTypedArray(), variadic = va))
+      this.functions.add(Function(k.pool(), returnType, *args.toTypedArray(), variadic = va))
     }
   }
 
@@ -256,7 +270,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   }
 
   private fun parseResourceInfo(entry: Map.Entry<String, Any?>, info: ProviderType): ResourceType {
-    val name = entry.key
+    val name = entry.key.pool()
     assert(entry.value is JsonObject, { "Right part of resource should be object" })
     val obj = entry.value as JsonObject
     val timeouts = getTimeoutsBlock(obj)
@@ -264,7 +278,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   }
 
   private fun parseDataSourceInfo(entry: Map.Entry<String, Any?>, info: ProviderType): DataSourceType {
-    val name = entry.key
+    val name = entry.key.pool()
     assert(entry.value is JsonObject, { "Right part of data-source should be object" })
     val obj = entry.value as JsonObject
     val timeouts = getTimeoutsBlock(obj)
@@ -278,13 +292,13 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     for (element in array) {
       assert(element is String, {"${Constants.TIMEOUTS} array elements should be string, got ${element?.javaClass?.name}"})
     }
-    val timeouts = array.map { it.toString() }
+    val timeouts = array.map { it.toString().pool() }
     if (timeouts.isEmpty()) return null
     return BlockType("timeouts", 0,
         description = "Amount of time a specific operation is allowed to take before being considered an error", // TODO: Improve description
-        properties = *timeouts.map { PropertyType(it, Types.String).toPOBT() }.toTypedArray()
+        properties = *timeouts.map { PropertyType(it, Types.String).pool() }.toTypedArray()
         // TODO: ^ Check type, should be Time? (allowed suffixes are s, m, h)
-    ).toPOBT()
+    ).pool()
   }
 
   private fun parseSchemaElement(entry: Map.Entry<String, Any?>, providerName: String): PropertyOrBlockType {
@@ -317,13 +331,13 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       if (et == "SchemaElements") {
         val elements_type = elem.string("ElementsType") ?: elem.string("elements-type")
         if (elements_type != null) {
-          hint = TypeHint(parseType(elements_type))
+          hint = TypeHint(parseType(elements_type)).pool()
         }
       } else if (et == "SchemaInfo") {
         val o = elem.obj("Info") ?: elem.obj("info")
         if (o != null) {
           val innerTypeProperties = o.map { parseSchemaElement(it, fqn) }
-          hint = ListHint(innerTypeProperties)
+          hint = ListHint(innerTypeProperties).pool()
           if (type == Types.Array) {
             isBlock = true
           }
@@ -344,7 +358,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       // ?? return BlockType(name).toPOBT()
     }
 
-    val conflicts: List<String> = value.array<String>("ConflictsWith")?.map { it } ?: emptyList()
+    val conflicts: List<String>? = value.array<String>("ConflictsWith")?.map { it.pool() }
 
     val deprecated = value.string("Deprecated")
     val defaultValue: Any? = value.obj("Default")?.string("Value")?.let {
@@ -375,24 +389,24 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     // External description and hint overrides one from model
     if (isBlock) {
       // TODO: Do something with a additional.hint
-      var bh: Array<out PropertyOrBlockType> = emptyArray()
-      if (hint is ListHint) {
+      var bh: Array<out PropertyOrBlockType> = PropertyOrBlockType.EMPTY_ARRAY
+      if (hint is ListHint && hint.hint.isNotEmpty()) {
         bh = hint.hint.toTypedArray()
       }
-      return BlockType(name, required = required,
-          deprecated = deprecated,
+      return BlockType(name.pool(), required = required,
+          deprecated = deprecated?.pool(),
           computed = computed,
-          description = description,
+          description = description?.pool(),
           conflictsWith = conflicts,
-          properties = *bh).toPOBT()
+          properties = *bh).pool()
     }
-    return PropertyType(name, type, hint = additional.hint ?: hint,
-        description = description,
+    return PropertyType(name.pool(), type, hint = additional.hint ?: hint,
+        description = description?.pool(),
         required = required,
-        deprecated = deprecated,
+        deprecated = deprecated?.pool(),
         computed = computed,
         conflictsWith = conflicts,
-        defaultValue = defaultValue).toPOBT()
+        defaultValue = defaultValue).pool()
   }
 
   private fun parseType(string: String?): Type {
@@ -423,4 +437,43 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       else -> Types.Invalid
     }
   }
+
+  //region object pools
+  private val strings: MutableMap<String, String> = HashMap()
+  private val properties: MutableMap<PropertyType, PropertyType> = HashMap()
+  private val blocks: MutableMap<BlockType, BlockType> = HashMap()
+  private val hints: MutableMap<Hint, Hint> = HashMap()
+
+  private fun String.pool(): String {
+    var ret = strings[this]
+    if (ret != null) return ret
+    ret = this
+    strings[ret] = ret
+    return ret
+  }
+
+  private fun PropertyType.pool(): PropertyType {
+    var ret = properties[this]
+    if (ret != null) return ret
+    ret = this
+    properties[ret] = ret
+    return ret
+  }
+
+  private fun BlockType.pool(): BlockType {
+    var ret = blocks[this]
+    if (ret != null) return ret
+    ret = this
+    blocks[ret] = ret
+    return ret
+  }
+
+  private fun Hint.pool(): Hint {
+    var ret = hints[this]
+    if (ret != null) return ret
+    ret = this
+    hints[ret] = ret
+    return ret
+  }
+  //endregion
 }

@@ -1,7 +1,7 @@
 {
   "name": "nomad",
   "type": "provider",
-  "version": "v1.2.0-4-g0fe3561",
+  "version": "v1.3.0-1-gfb393c3",
   "provider": {
     "address": {
       "Type": "String",
@@ -127,6 +127,11 @@
         "Required": true,
         "Description": "Job specification. If you want to point to a file use the file() function."
       },
+      "json": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If true, the `jobspec` will be parsed as json instead of HCL."
+      },
       "policy_override": {
         "Type": "Bool",
         "Optional": true,
@@ -225,6 +230,393 @@
     }
   },
   "data-sources": {
+    "nomad_deployments": {
+      "deployments": {
+        "Type": "List",
+        "Description": "Deployments",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      }
+    },
+    "nomad_job": {
+      "all_at_once": {
+        "Type": "Bool",
+        "Description": "Job All At Once",
+        "Computed": true
+      },
+      "constraints": {
+        "Type": "List",
+        "Description": "Job Constraints",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ltarget": {
+              "Type": "String",
+              "Computed": true
+            },
+            "operand": {
+              "Type": "String",
+              "Computed": true
+            },
+            "rtarget": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "create_index": {
+        "Type": "Int",
+        "Description": "Create Index",
+        "Computed": true
+      },
+      "datacenters": {
+        "Type": "List",
+        "Description": "Job Datacenters",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "job_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Job ID"
+      },
+      "job_modify_index": {
+        "Type": "Int",
+        "Description": "Job Modify Index",
+        "Computed": true
+      },
+      "modify_index": {
+        "Type": "Int",
+        "Description": "Modify Index",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Description": "Job Name",
+        "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Description": "Job Namespace",
+        "Computed": true
+      },
+      "parent_id": {
+        "Type": "String",
+        "Description": "Job Parent ID",
+        "Computed": true
+      },
+      "periodic_config": {
+        "Type": "List",
+        "Description": "Job Periodic Configuration",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enabled": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "prohibit_overlap": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "spec": {
+              "Type": "String",
+              "Computed": true
+            },
+            "spec_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "timezone": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "priority": {
+        "Type": "Int",
+        "Description": "Job Priority",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Description": "Job Region",
+        "Computed": true
+      },
+      "stable": {
+        "Type": "Bool",
+        "Description": "Job Stable",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Description": "Deployment Status",
+        "Computed": true
+      },
+      "status_description": {
+        "Type": "String",
+        "Description": "Deployment Status Description",
+        "Computed": true
+      },
+      "stop": {
+        "Type": "Bool",
+        "Description": "Job Stopped",
+        "Computed": true
+      },
+      "submit_time": {
+        "Type": "Int",
+        "Description": "Job Submit Time",
+        "Computed": true
+      },
+      "task_groups": {
+        "Type": "List",
+        "Description": "Job Task Groups",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "constraints": {
+              "Type": "Map",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "ltarget": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "operand": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "rtarget": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "count": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "ephemeral_disk": {
+              "Type": "Map",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "migrate": {
+                    "Type": "Bool",
+                    "Computed": true
+                  },
+                  "size_mb": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "sticky": {
+                    "Type": "Bool",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "migrate_strategy": {
+              "Type": "Map",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "health_check": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "healthy_deadline": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "max_parallel": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "min_healthy_time": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "reschedule_policy": {
+              "Type": "Map",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "attempts": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "delay": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "delay_function": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "interval": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "max_delay": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "unlimited": {
+                    "Type": "Bool",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "restart_policy": {
+              "Type": "Map",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "attempts": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "delay": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "interval": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "mode": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "update_strategy": {
+              "Type": "Map",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "auto_revert": {
+                    "Type": "Bool",
+                    "Computed": true
+                  },
+                  "canary": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "health_check": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "healthy_deadline": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "max_parallel": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "min_healthy_time": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "stagger": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": {
+        "Type": "String",
+        "Description": "Job Type",
+        "Computed": true
+      },
+      "update_strategy": {
+        "Type": "List",
+        "Description": "Job Update Policy",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "auto_revert": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "canary": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "health_check": {
+              "Type": "String",
+              "Computed": true
+            },
+            "healthy_deadline": {
+              "Type": "String",
+              "Computed": true
+            },
+            "max_parallel": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "min_healthy_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "stagger": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "version": {
+        "Type": "Int",
+        "Description": "Job Version",
+        "Computed": true
+      }
+    },
+    "nomad_namespaces": {
+      "namespaces": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "nomad_regions": {
       "regions": {
         "Type": "List",

@@ -13,7 +13,7 @@ import org.intellij.plugins.hcl.terraform.config.model.Type;
 
 public class ILLiteralExpressionImpl extends ILExpressionWithReference implements ILLiteralExpression {
 
-  public ILLiteralExpressionImpl(ASTNode node) {
+  public ILLiteralExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

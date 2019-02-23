@@ -1,7 +1,7 @@
 {
   "name": "scaleway",
   "type": "provider",
-  "version": "v1.5.1-33-gc22beed",
+  "version": "v1.8.0-3-g10c7334",
   "provider": {
     "access_key": {
       "Type": "String",
@@ -30,6 +30,13 @@
     }
   },
   "resources": {
+    "scaleway_bucket": {
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the bucket"
+      }
+    },
     "scaleway_ip": {
       "ip": {
         "Type": "String",
@@ -39,13 +46,27 @@
       "reverse": {
         "Type": "String",
         "Optional": true,
-        "Description": "The ipv4 reverse dns"
+        "Description": "The ipv4 reverse dns",
+        "Computed": true,
+        "Deprecated": "use scaleway_ip_reverse_dns resource instead"
       },
       "server": {
         "Type": "String",
         "Optional": true,
         "Description": "The server associated with the ip",
         "Computed": true
+      }
+    },
+    "scaleway_ip_reverse_dns": {
+      "ip": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ipv4 address of the ip, or IP ID"
+      },
+      "reverse": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ipv4 reverse dns"
       }
     },
     "scaleway_security_group": {
@@ -59,10 +80,25 @@
         "Optional": true,
         "Description": "Add default security group rules"
       },
+      "inbound_default_policy": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Default inbound traffic policy for this security group"
+      },
       "name": {
         "Type": "String",
         "Required": true,
         "Description": "The name of the security group"
+      },
+      "outbound_default_policy": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Default outbound traffic policy for this security group"
+      },
+      "stateful": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Mark security group as stateful"
       }
     },
     "scaleway_security_group_rule": {
@@ -108,6 +144,12 @@
         "Type": "String",
         "Optional": true,
         "Description": "The boot configuration of the server"
+      },
+      "cloudinit": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "the cloudinit script associated with this server",
+        "Computed": true
       },
       "dynamic_ip_required": {
         "Type": "Bool",

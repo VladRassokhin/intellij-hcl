@@ -1,7 +1,7 @@
 {
   "name": "newrelic",
   "type": "provider",
-  "version": "v1.0.1-1-g51875a5",
+  "version": "v1.2.0-4-g8136b61",
   "provider": {
     "api_key": {
       "Type": "String",
@@ -122,7 +122,7 @@
     },
     "newrelic_alert_policy": {
       "created_at": {
-        "Type": "Int",
+        "Type": "String",
         "Computed": true
       },
       "incident_preference": {
@@ -134,7 +134,7 @@
         "Required": true
       },
       "updated_at": {
-        "Type": "Int",
+        "Type": "String",
         "Computed": true
       }
     },
@@ -156,6 +156,32 @@
       "editable": {
         "Type": "String",
         "Optional": true
+      },
+      "filter": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "attributes": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "event_types": {
+              "Type": "Set",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
       },
       "icon": {
         "Type": "String",
@@ -249,6 +275,10 @@
         "Optional": true
       },
       "event": {
+        "Type": "String",
+        "Optional": true
+      },
+      "integration_provider": {
         "Type": "String",
         "Optional": true
       },
@@ -374,9 +404,53 @@
         "Type": "String",
         "Optional": true
       }
+    },
+    "newrelic_synthetics_alert_condition": {
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "monitor_id": {
+        "Type": "String",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_id": {
+        "Type": "Int",
+        "Required": true
+      },
+      "runbook_url": {
+        "Type": "String",
+        "Optional": true
+      }
     }
   },
   "data-sources": {
+    "newrelic_alert_channel": {
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_ids": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
+        }
+      },
+      "type": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "newrelic_application": {
       "host_ids": {
         "Type": "List",
@@ -400,6 +474,16 @@
       }
     },
     "newrelic_key_transaction": {
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "newrelic_synthetics_monitor": {
+      "monitor_id": {
+        "Type": "String",
+        "Computed": true
+      },
       "name": {
         "Type": "String",
         "Required": true

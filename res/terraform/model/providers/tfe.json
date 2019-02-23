@@ -1,7 +1,7 @@
 {
   "name": "tfe",
   "type": "provider",
-  "version": "v0.1.0-1-gf183244",
+  "version": "v0.5.0-1-gfbca172",
   "provider": {
     "hostname": {
       "Type": "String",
@@ -51,7 +51,53 @@
         "Computed": true
       }
     },
+    "tfe_policy_set": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "global": {
+        "Type": "Bool",
+        "Optional": true,
+        "ConflictsWith": [
+          "workspace_external_ids"
+        ]
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_ids": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "workspace_external_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "ConflictsWith": [
+          "global"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "tfe_sentinel_policy": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "enforce_mode": {
         "Type": "String",
         "Optional": true
@@ -174,7 +220,10 @@
     "tfe_workspace": {
       "auto_apply": {
         "Type": "Bool",
-        "Optional": true,
+        "Optional": true
+      },
+      "external_id": {
+        "Type": "String",
         "Computed": true
       },
       "name": {
@@ -184,6 +233,15 @@
       "organization": {
         "Type": "String",
         "Required": true
+      },
+      "queue_all_runs": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "ssh_key_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       },
       "terraform_version": {
         "Type": "String",

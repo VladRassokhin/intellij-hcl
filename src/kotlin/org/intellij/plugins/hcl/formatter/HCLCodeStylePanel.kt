@@ -63,8 +63,9 @@ class HCLCodeStylePanel(private val language: Language, settings: CodeStyleSetti
   companion object {
     val ALIGNMENT_SAMPLE = "simple = true\n" +
         "pa.int = false\n" +
-        "under_score = 1\n" +
-        "mi-nus = 'yep'\n" +
+        "under_scr = 1\n" +
+        "mi-nus = 'yep'\n\n" +
+        "#another logical block\n" +
         "_5 = true\n" +
         "w1th.num8er5 = 'acceptable'"
   }

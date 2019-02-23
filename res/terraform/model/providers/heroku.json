@@ -1,11 +1,33 @@
 {
   "name": "heroku",
   "type": "provider",
-  "version": "v1.3.0-5-g694ad19",
+  "version": "v1.7.1-3-g50d706f",
   "provider": {
     "api_key": {
       "Type": "String",
       "Optional": true
+    },
+    "delays": {
+      "Type": "List",
+      "Optional": true,
+      "MaxItems": 1,
+      "Elem": {
+        "Type": "SchemaInfo",
+        "Info": {
+          "post_app_create_delay": {
+            "Type": "Int",
+            "Optional": true
+          },
+          "post_domain_create_delay": {
+            "Type": "Int",
+            "Optional": true
+          },
+          "post_space_create_delay": {
+            "Type": "Int",
+            "Optional": true
+          }
+        }
+      }
     },
     "email": {
       "Type": "String",
@@ -14,9 +36,35 @@
     "headers": {
       "Type": "String",
       "Optional": true
+    },
+    "url": {
+      "Type": "String",
+      "Optional": true,
+      "Default": {
+        "Type": "string",
+        "Value": "https://api.heroku.com"
+      }
     }
   },
   "resources": {
+    "heroku_account_feature": {
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "heroku_addon": {
       "app": {
         "Type": "String",
@@ -143,6 +191,11 @@
         "Optional": true,
         "Computed": true
       },
+      "uuid": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "web_url": {
         "Type": "String",
         "Computed": true
@@ -175,6 +228,95 @@
       "slug_id": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "heroku_build": {
+      "app": {
+        "Type": "String",
+        "Required": true
+      },
+      "buildpacks": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "local_checksum": {
+        "Type": "String",
+        "Computed": true
+      },
+      "output_stream_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "release_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "slug_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "source": {
+        "Type": "Map",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "checksum": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "path": {
+              "Type": "String",
+              "Optional": true,
+              "ConflictsWith": [
+                "url"
+              ]
+            },
+            "url": {
+              "Type": "String",
+              "Optional": true
+            },
+            "version": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "stack": {
+        "Type": "String",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "user": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "email": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "uuid": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "heroku_cert": {
@@ -267,6 +409,78 @@
       "stage": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "heroku_slug": {
+      "app": {
+        "Type": "String",
+        "Required": true
+      },
+      "blob": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "method": {
+              "Type": "String",
+              "Computed": true
+            },
+            "url": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "buildpack_provided_description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "checksum": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "commit": {
+        "Type": "String",
+        "Optional": true
+      },
+      "commit_description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "file_path": {
+        "Type": "String",
+        "Optional": true
+      },
+      "file_url": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "file_path"
+        ]
+      },
+      "process_types": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "stack": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "stack_id": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "heroku_space": {
@@ -434,9 +648,57 @@
           "ElementsType": "String"
         }
       }
+    },
+    "heroku_team_member": {
+      "email": {
+        "Type": "String",
+        "Required": true
+      },
+      "federated": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "role": {
+        "Type": "String",
+        "Required": true
+      },
+      "team": {
+        "Type": "String",
+        "Required": true
+      }
     }
   },
   "data-sources": {
+    "heroku_addon": {
+      "app": {
+        "Type": "String",
+        "Computed": true
+      },
+      "config_vars": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "plan": {
+        "Type": "String",
+        "Computed": true
+      },
+      "provider_id": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "heroku_app": {
       "acm": {
         "Type": "Bool",

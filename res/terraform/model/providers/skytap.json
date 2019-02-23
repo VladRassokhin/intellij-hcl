@@ -1,0 +1,288 @@
+{
+  "name": "skytap",
+  "type": "provider",
+  "version": "v0.9.0-13-gfb1a70f",
+  "provider": {
+    "api_token": {
+      "Type": "String",
+      "Required": true,
+      "Description": "API Token for the skytap account."
+    },
+    "username": {
+      "Type": "String",
+      "Required": true,
+      "Description": "Username for the skytap account."
+    }
+  },
+  "resources": {
+    "skytap_environment": {
+      "description": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "outbound_traffic": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "routable": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "shutdown_at_time": {
+        "Type": "String",
+        "Optional": true
+      },
+      "shutdown_on_idle": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "suspend_at_time": {
+        "Type": "String",
+        "Optional": true
+      },
+      "suspend_on_idle": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "template_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "skytap_network": {
+      "domain": {
+        "Type": "String",
+        "Required": true
+      },
+      "environment_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "gateway": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "subnet": {
+        "Type": "String",
+        "Required": true
+      },
+      "tunnelable": {
+        "Type": "Bool",
+        "Optional": true
+      }
+    },
+    "skytap_project": {
+      "auto_add_role_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "show_project_members": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "summary": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "skytap_vm": {
+      "cpus": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "disk": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "controller": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "lun": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "size": {
+              "Type": "Int",
+              "Required": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "environment_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "max_cpus": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "max_ram": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "network_interface": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "hostname": {
+              "Type": "String",
+              "Required": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "interface_type": {
+              "Type": "String",
+              "Required": true
+            },
+            "ip": {
+              "Type": "String",
+              "Required": true
+            },
+            "network_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "published_service": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "external_ip": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "external_port": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "id": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "internal_port": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "os_disk_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "ram": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "service_ips": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "service_ports": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
+        }
+      },
+      "template_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "vm_id": {
+        "Type": "String",
+        "Required": true
+      }
+    }
+  },
+  "data-sources": {
+    "skytap_project": {
+      "auto_add_role_name": {
+        "Type": "String",
+        "Description": "role automatically assigned to every new user added to the project",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "name of the project"
+      },
+      "show_project_members": {
+        "Type": "Bool",
+        "Description": "whether project members can view a list of the other project members",
+        "Computed": true
+      },
+      "summary": {
+        "Type": "String",
+        "Description": "summary description of the project",
+        "Computed": true
+      }
+    },
+    "skytap_template": {
+      "most_recent": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "used when multiple items will be returned"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "regex expression to name of the template"
+      }
+    }
+  }
+}

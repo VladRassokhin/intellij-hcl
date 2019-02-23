@@ -1,0 +1,2621 @@
+{
+  "name": "bigip",
+  "type": "provider",
+  "version": "v0.12.0-62-g594064f",
+  "provider": {
+    "address": {
+      "Type": "String",
+      "Required": true,
+      "Description": "Domain name/IP of the BigIP"
+    },
+    "login_ref": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Login reference for token authentication (see BIG-IP REST docs for details)"
+    },
+    "password": {
+      "Type": "String",
+      "Required": true,
+      "Description": "The user's password"
+    },
+    "token_auth": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "Enable to use an external authentication source (LDAP, TACACS, etc)"
+    },
+    "username": {
+      "Type": "String",
+      "Required": true,
+      "Description": "Username with API access to the BigIP"
+    }
+  },
+  "resources": {
+    "bigip_cm_device": {
+      "configsync_ip": {
+        "Type": "String",
+        "Required": true,
+        "Description": "IP address used for config sync"
+      },
+      "mirror_ip": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "IP address used for state mirroring"
+      },
+      "mirror_secondary_ip": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Secondary IP address used for state mirroring"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Address of the Device which needs to be Deviceensed"
+      }
+    },
+    "bigip_cm_devicegroup": {
+      "auto_sync": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies if the device-group will automatically sync configuration data to its members"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of Device group"
+      },
+      "device": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of origin"
+            },
+            "set_sync_leader": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Name of origin"
+            }
+          }
+        }
+      },
+      "full_load_on_sync": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies if the device-group will perform a full-load upon sync"
+      },
+      "incremental_config": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Specifies the maximum size (in KB) to devote to incremental config sync cached transactions. The default is 1024 KB."
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Name of the Device group"
+      },
+      "network_failover": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies if the device-group will use a network connection for failover"
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Device administrative partition"
+      },
+      "save_on_auto_sync": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies whether the configuration should be saved upon auto-sync."
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies if the device-group will be used for failover or resource syncing"
+      }
+    },
+    "bigip_ltm_datagroup": {
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the Data Group List"
+      },
+      "record": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "data": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The Data Group type (string, ip, integer)"
+      }
+    },
+    "bigip_ltm_irule": {
+      "irule": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The iRule body"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the iRule"
+      }
+    },
+    "bigip_ltm_monitor": {
+      "defaults_from": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Existing monitor to inherit from. Must be one of /Common/http, /Common/https, /Common/icmp or /Common/gateway-icmp."
+      },
+      "destination": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Alias for the destination"
+      },
+      "interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Check interval in seconds"
+      },
+      "ip_dscp": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "manual_resume": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the monitor"
+      },
+      "parent": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Existing monitor to inherit from. Must be one of /Common/http, /Common/https, /Common/icmp or /Common/gateway-icmp."
+      },
+      "receive": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Expected response string."
+      },
+      "receive_disable": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Expected response string."
+      },
+      "reverse": {
+        "Type": "String",
+        "Optional": true
+      },
+      "send": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Request string to send."
+      },
+      "time_until_up": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Time in seconds"
+      },
+      "timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Timeout in seconds"
+      },
+      "transparent": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "bigip_ltm_node": {
+      "address": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Address of the node"
+      },
+      "connection_limit": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Specifies the maximum number of connections allowed for the node or node address."
+      },
+      "dynamic_ratio": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Sets the dynamic ratio number for the node. Used for dynamic ratio load balancing. "
+      },
+      "fqdn": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address_family": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the node's address family. The default is 'unspecified', or IP-agnostic"
+            },
+            "autopopulate": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies whether the node should scale to the IP address set returned by DNS."
+            },
+            "downinterval": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Specifies the number of attempts to resolve a domain name. The default is 5."
+            },
+            "interval": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the amount of time before sending the next DNS query."
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Specifies the fully qualified domain name of the node."
+            }
+          }
+        }
+      },
+      "monitor": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the name of the monitor or monitor rule that you want to associate with the node."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the node"
+      },
+      "rate_limit": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the maximum number of connections per second allowed for a node or node address. The default value is 'disabled'."
+      },
+      "state": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Marks the node up or down. The default value is user-up."
+      }
+    },
+    "bigip_ltm_persistence_profile_cookie": {
+      "always_send": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable always sending cookies"
+      },
+      "app_service": {
+        "Type": "String",
+        "Optional": true
+      },
+      "cookie_encryption": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To required, preferred, or disabled policy for cookie encryption"
+      },
+      "cookie_encryption_passphrase": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Passphrase for encrypted cookies"
+      },
+      "cookie_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Name of the cookie to track persistence"
+      },
+      "defaults_from": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Inherit defaults from parent profile"
+      },
+      "expiration": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Expiration TTL for cookie specified in D:H:M:S or in seconds"
+      },
+      "hash_length": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Length of hash to apply to cookie"
+      },
+      "hash_offset": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Number of characters to skip in the cookie for the hash"
+      },
+      "httponly": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable sending only over http"
+      },
+      "match_across_pools": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable match across pools with given persistence record"
+      },
+      "match_across_services": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable match across services with given persistence record"
+      },
+      "match_across_virtuals": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable match across virtual servers with given persistence record"
+      },
+      "mirror": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the persistence profile"
+      },
+      "override_conn_limit": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable that pool member connection limits are overridden for persisted clients. Per-virtual connection limits remain hard limits and are not overridden."
+      },
+      "timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Timeout for persistence of the session"
+      }
+    },
+    "bigip_ltm_persistence_profile_dstaddr": {
+      "app_service": {
+        "Type": "String",
+        "Optional": true
+      },
+      "defaults_from": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Inherit defaults from parent profile"
+      },
+      "hash_algorithm": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specify the hash algorithm"
+      },
+      "mask": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Identify a range of source IP addresses to manage together as a single source address affinity persistent connection when connecting to the pool. Must be a valid IPv4 or IPv6 mask."
+      },
+      "match_across_pools": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable match across pools with given persistence record"
+      },
+      "match_across_services": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable match across services with given persistence record"
+      },
+      "match_across_virtuals": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable match across services with given persistence record"
+      },
+      "mirror": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the persistence profile"
+      },
+      "override_conn_limit": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable that pool member connection limits are overridden for persisted clients. Per-virtual connection limits remain hard limits and are not overridden."
+      },
+      "timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Timeout for persistence of the session"
+      }
+    },
+    "bigip_ltm_persistence_profile_srcaddr": {
+      "app_service": {
+        "Type": "String",
+        "Optional": true
+      },
+      "defaults_from": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Inherit defaults from parent profile"
+      },
+      "hash_algorithm": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specify the hash algorithm"
+      },
+      "map_proxies": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable directs all to the same single pool member"
+      },
+      "mask": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Identify a range of source IP addresses to manage together as a single source address affinity persistent connection when connecting to the pool. Must be a valid IPv4 or IPv6 mask."
+      },
+      "match_across_pools": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable match across pools with given persistence record"
+      },
+      "match_across_services": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable match across services with given persistence record"
+      },
+      "match_across_virtuals": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable match across services with given persistence record"
+      },
+      "mirror": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the persistence profile"
+      },
+      "override_conn_limit": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable that pool member connection limits are overridden for persisted clients. Per-virtual connection limits remain hard limits and are not overridden."
+      },
+      "timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Timeout for persistence of the session"
+      }
+    },
+    "bigip_ltm_persistence_profile_ssl": {
+      "app_service": {
+        "Type": "String",
+        "Optional": true
+      },
+      "defaults_from": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Inherit defaults from parent profile"
+      },
+      "match_across_pools": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable match across pools with given persistence record"
+      },
+      "match_across_services": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable match across services with given persistence record"
+      },
+      "match_across_virtuals": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable match across services with given persistence record"
+      },
+      "mirror": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the persistence profile"
+      },
+      "override_conn_limit": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable that pool member connection limits are overridden for persisted clients. Per-virtual connection limits remain hard limits and are not overridden."
+      },
+      "timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Timeout for persistence of the session"
+      }
+    },
+    "bigip_ltm_policy": {
+      "controls": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the Policy"
+      },
+      "published_copy": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Publish the Policy"
+      },
+      "requires": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "rule": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "app_service": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "application": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "asm": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "avr": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "cache": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "carp": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "category": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "classify": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "clone_pool": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "code": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "compress": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "content": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "cookie_hash": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "cookie_insert": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "cookie_passive": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "cookie_rewrite": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "decompress": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "defer": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "destination_address": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "disable": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "domain": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "enable": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "expiry": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "expiry_secs": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "expression": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "extension": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "facility": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "forward": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "from_profile": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "hash": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "host": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_basic_auth": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_cookie": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_header": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_host": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "http_referer": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_reply": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_set_cookie": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_uri": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "ifile": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "insert": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "internal_virtual": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "ip_address": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "key": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "l7dos": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "length": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "location": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "log": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "ltm_policy": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "member": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "message": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "netmask": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "nexthop": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "node": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "offset": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "path": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "pem": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "persist": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "pin": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "policy": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "pool": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "port": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "priority": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "profile": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "protocol": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "query_string": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "rateclass": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "redirect": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "remove": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "replace": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "request": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "request_adapt": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "reset": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "response": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "response_adapt": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "scheme": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "script": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "select": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "server_ssl": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "set_variable": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "snat": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "snatpool": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "source_address": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "ssl_client_hello": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "ssl_server_handshake": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "ssl_server_hello": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "ssl_session_id": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "status": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "tcl": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "tcp_nagle": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "text": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "timeout": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "tm_name": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "uie": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "universal": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "value": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "virtual": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "vlan": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "vlan_id": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "wam": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "write": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "condition": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "address": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "all": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "app_service": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "browser_type": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "browser_version": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "case_insensitive": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "case_sensitive": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "cipher": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "cipher_bits": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "client_ssl": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "code": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "common_name": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "contains": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "continent": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "country_code": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "country_name": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "cpu_usage": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "device_make": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "device_model": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "domain": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "ends_with": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "equals": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "expiry": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "extension": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "external": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "geoip": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "greater": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "greater_or_equal": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "host": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_basic_auth": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_cookie": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_header": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_host": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_method": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_referer": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_set_cookie": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_status": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_uri": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_user_agent": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "http_version": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "index": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "internal": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "isp": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "last_15secs": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "last_1min": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "last_5mins": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "less": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "less_or_equal": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "local": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "major": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "matches": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "minor": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "missing": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "mss": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "not": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "org": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "password": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "path": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "path_segment": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "port": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "present": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "protocol": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "query_parameter": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "query_string": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "region_code": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "region_name": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "remote": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "request": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "response": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "route_domain": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "rtt": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "scheme": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "server_name": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "ssl_cert": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "ssl_client_hello": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "ssl_extension": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "ssl_server_handshake": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "ssl_server_hello": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "starts_with": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "tcp": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "text": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "tm_name": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "unnamed_query_parameter": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "user_agent_token": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "username": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "value": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "values": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "version": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "vlan": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "vlan_id": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Rule name"
+            }
+          }
+        }
+      },
+      "strategy": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Policy Strategy (i.e. /Common/first-match)"
+      }
+    },
+    "bigip_ltm_pool": {
+      "allow_nat": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Allow NAT"
+      },
+      "allow_snat": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Allow SNAT"
+      },
+      "load_balancing_mode": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Possible values: round-robin, ..."
+      },
+      "monitors": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Assign monitors to a pool.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the pool"
+      },
+      "reselect_tries": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Number of times the system tries to select a new pool member after a failure."
+      },
+      "service_down_action": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Possible values: none, reset, reselect, drop"
+      },
+      "slow_ramp_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Slow ramp time for pool members"
+      }
+    },
+    "bigip_ltm_pool_attachment": {
+      "node": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Node to add/remove to/from the pool. Format /partition/node_name:port. e.g. /Common/node01:443"
+      },
+      "pool": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the pool"
+      }
+    },
+    "bigip_ltm_profile_fasthttp": {
+      "connpool_maxreuse": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "connpool_maxreuse timer"
+      },
+      "connpool_maxsize": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "timer integer"
+      },
+      "connpool_minsize": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Pool min size"
+      },
+      "connpool_replenish": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "enabled or disabled"
+      },
+      "connpool_step": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "integer value"
+      },
+      "connpoolidle_timeoutoverride": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "idle_timeout can be given value"
+      },
+      "defaults_from": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Use the parent Fasthttp profile"
+      },
+      "forcehttp_10response": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "disabled or enabled "
+      },
+      "idle_timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "integer value"
+      },
+      "maxheader_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "integer value"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the Fasthttp Profile"
+      }
+    },
+    "bigip_ltm_profile_fastl4": {
+      "client_timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Use the parent Fastl4 profile"
+      },
+      "defaults_from": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Use the parent Fastl4 profile"
+      },
+      "explicitflow_migration": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Use the parent Fastl4 profile"
+      },
+      "hardware_syncookie": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Use the parent Fastl4 profile"
+      },
+      "idle_timeout": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Use the parent Fastl4 profile"
+      },
+      "iptos_toclient": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Use the parent Fastl4 profile"
+      },
+      "iptos_toserver": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Use the parent Fastl4 profile"
+      },
+      "keepalive_interval": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Use the parent Fastl4 profile"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the Fastl4 Profile"
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "name of partition"
+      }
+    },
+    "bigip_ltm_profile_http2": {
+      "activation_modes": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Servers Address",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "concurrent_streams_per_connection": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Use the parent Http2 profile"
+      },
+      "connection_idle_timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Use the parent Http2 profile"
+      },
+      "defaults_from": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Use the parent Http2 profile"
+      },
+      "header_table_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Use the parent Http2 profile"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the Http2 Profile"
+      }
+    },
+    "bigip_ltm_profile_httpcompress": {
+      "content_type_exclude": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Specifies a list of content types for compression of HTTP Content-Type responses. Use a string list to specify a list of content types you want to exclude.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "content_type_include": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Specifies a list of content types for compression of HTTP Content-Type responses. Use a string list to specify a list of content types you want to compress.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "defaults_from": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Use the parent Httpcompress profile"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the Httpcompress Profile"
+      },
+      "uri_exclude": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Servers Address",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "uri_include": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Servers Address",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "bigip_ltm_profile_oneconnect": {
+      "defaults_from": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Use the parent oneconnect profile"
+      },
+      "idle_timeout_override": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "idleTimeoutOverride can be enabled or disabled"
+      },
+      "max_age": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "max_age has integer value typical 3600 sec"
+      },
+      "max_reuse": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "max_reuse has integer value typical 1000 sec"
+      },
+      "max_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "max_size has integer value typical 1000 sec"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the Oneconnect Profile"
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "name of partition"
+      },
+      "share_pools": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "sharePools can be enabled or disabled"
+      },
+      "source_mask": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "source_mask can be 255.255.255.255"
+      }
+    },
+    "bigip_ltm_profile_tcp": {
+      "close_wait_timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "close wait timer integer"
+      },
+      "defaults_from": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Use the parent tcp profile"
+      },
+      "deferred_accept": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Defferred accept"
+      },
+      "fast_open": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "fast_open value "
+      },
+      "finwait_2timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "timer integer"
+      },
+      "finwait_timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "fin wait timer integer"
+      },
+      "idle_timeout": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "idle_timeout can be given value"
+      },
+      "keepalive_interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "keepalive_interval timer integer"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the TCP Profile"
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "name of partition"
+      }
+    },
+    "bigip_ltm_snat": {
+      "autolasthop": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies whether to automatically map last hop for pools or not. The default is to use next level's defaul"
+      },
+      "full_path": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Fullpath "
+      },
+      "mirror": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Enables or disables mirroring of SNAT connections."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Snat list Name"
+      },
+      "origins": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "app_service": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "app service"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of origin"
+            }
+          }
+        }
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Which partition on BIG-IP"
+      },
+      "snatpool": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the name of a SNAT pool. You can only use this option when automap and translation are not used"
+      },
+      "sourceport": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies whether the system preserves the source port of the connection. "
+      },
+      "translation": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the name of a translated IP address."
+      },
+      "vlansdisabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Disables the SNAT on all VLANs."
+      }
+    },
+    "bigip_ltm_snatpool": {
+      "members": {
+        "Type": "Set",
+        "Required": true,
+        "Description": "Specifies a translation address to add to or delete from a SNAT pool, at least one address is required.",
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "SNAT Pool list Name, format /partition/name. e.g. /Common/snat_pool"
+      }
+    },
+    "bigip_ltm_virtual_address": {
+      "advertize_route": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enabled dynamic routing of the address"
+      },
+      "arp": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable or disable ARP for the virtual address"
+      },
+      "auto_delete": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Automatically delete the virtual address with the virtual server"
+      },
+      "conn_limit": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Max number of connections for virtual address"
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable or disable the virtual address"
+      },
+      "icmp_echo": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable/Disable ICMP response to the virtual address"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the virtual address"
+      },
+      "traffic_group": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specify the partition and traffic group"
+      }
+    },
+    "bigip_ltm_virtual_server": {
+      "client_profiles": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "destination": {
+        "Type": "String",
+        "Required": true
+      },
+      "fallback_persistence_profile": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Fallback persistence profile",
+        "Computed": true
+      },
+      "ip_protocol": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "all, tcp, udp",
+        "Computed": true
+      },
+      "irules": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "mask": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Mask can either be in CIDR notation or decimal, i.e.: \"24\" or \"255.255.255.0\". A CIDR mask of \"0\" is the same as \"0.0.0.0\""
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the virtual server"
+      },
+      "persistence_profiles": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "policies": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "pool": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Default pool for this virtual server"
+      },
+      "port": {
+        "Type": "Int",
+        "Required": true,
+        "Description": "Listen port for the virtual server"
+      },
+      "profiles": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "server_profiles": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "snatpool": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Name of the snatpool to use. Requires source_address_translation to be set to 'snat'.",
+        "Computed": true
+      },
+      "source": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Source IP and mask for the virtual server"
+      },
+      "source_address_translation": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "none, automap, snat",
+        "Computed": true
+      },
+      "translate_address": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable Address translation",
+        "Computed": true
+      },
+      "translate_port": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "To enable _ disable port translation",
+        "Computed": true
+      },
+      "vlans": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "vlans_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enables the virtual server on the VLANs specified by the VLANs option.",
+        "Computed": true
+      }
+    },
+    "bigip_net_route": {
+      "gw": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Gateway address"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the route"
+      },
+      "network": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Destination network"
+      }
+    },
+    "bigip_net_selfip": {
+      "ip": {
+        "Type": "String",
+        "Required": true,
+        "Description": "SelfIP IP address"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the SelfIP"
+      },
+      "traffic_group": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Name of the traffic group, defaults to traffic-group-local-only if not specified"
+      },
+      "vlan": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the vlan"
+      }
+    },
+    "bigip_net_vlan": {
+      "interfaces": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Interface(s) attached to the VLAN",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "tagged": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Interface tagged"
+            },
+            "vlanport": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Vlan name"
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the VLAN"
+      },
+      "tag": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "VLAN ID (tag)"
+      }
+    },
+    "bigip_sys_bigiplicense": {
+      "command": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Tmsh command to execute tmsh commands like install"
+      },
+      "registration_key": {
+        "Type": "String",
+        "Required": true,
+        "Description": "A unique Key F5 provides for Licensing BIG-IP"
+      }
+    },
+    "bigip_sys_dns": {
+      "description": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the Dns Servers"
+      },
+      "name_servers": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Servers Address",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "number_of_dots": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "how many DNS Servers"
+      },
+      "search": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Servers search domain",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "bigip_sys_iapp": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Address of the Iapp which needs to be Iappensed"
+      },
+      "devicegroup": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "BIG-IP password"
+      },
+      "execute_action": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "BIG-IP password"
+      },
+      "inherited_devicegroup": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "BIG-IP password"
+      },
+      "inherited_traffic_group": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "BIG-IP password"
+      },
+      "jsonfile": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Address of the Iapp which needs to be Iappensed"
+      },
+      "lists": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "encrypted": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of origin"
+            },
+            "value": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of origin"
+            }
+          }
+        }
+      },
+      "metadata": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "persists": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of origin"
+            },
+            "value": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of origin"
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Address of the Iapp which needs to be Iappensed"
+      },
+      "partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Address of the Iapp which needs to be Iappensed"
+      },
+      "strict_updates": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "BIG-IP password"
+      },
+      "tables": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "column_names": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "encrypted_columns": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of origin"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of origin"
+            },
+            "rows": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "row": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "BIG-IP password"
+      },
+      "template_modified": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "BIG-IP password"
+      },
+      "template_prerequisite_errors": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "BIG-IP password"
+      },
+      "traffic_group": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "BIG-IP password"
+      },
+      "variables": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "encrypted": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of origin"
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of origin"
+            },
+            "value": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Name of origin"
+            }
+          }
+        }
+      }
+    },
+    "bigip_sys_ntp": {
+      "description": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the ntp Servers"
+      },
+      "servers": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Servers Address",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "timezone": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Servers timezone"
+      }
+    },
+    "bigip_sys_provision": {
+      "cpu_ratio": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "cpu Ratio"
+      },
+      "disk_ratio": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "disk Ratio"
+      },
+      "full_path": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "path"
+      },
+      "level": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "what level nominal or dedicated"
+      },
+      "memory_ratio": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "memory Ratio"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the module to be provisioned"
+      }
+    },
+    "bigip_sys_snmp": {
+      "allowedaddresses": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "List of SNMP addresses",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "sys_contact": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Contact Person email"
+      },
+      "sys_location": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Location of the F5 "
+      }
+    },
+    "bigip_sys_snmp_traps": {
+      "auth_passwordencrypted": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Encrypted password "
+      },
+      "auth_protocol": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the protocol used to authenticate the user."
+      },
+      "community": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the community string used for this trap. "
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "User defined description."
+      },
+      "engine_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the authoritative security engine for SNMPv3."
+      },
+      "host": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The host the trap will be sent to."
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Name"
+      },
+      "port": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The port that the trap will be sent to."
+      },
+      "privacy_password": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the clear text password used to encrypt traffic. This field will not be displayed. "
+      },
+      "privacy_password_encrypted": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the encrypted password used to encrypt traffic. "
+      },
+      "privacy_protocol": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the protocol used to encrypt traffic. "
+      },
+      "security_level": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies whether or not traffic is encrypted and whether or not authentication is required."
+      },
+      "security_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Security name used in conjunction with SNMPv3."
+      },
+      "version": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "SNMP version used for sending the trap. "
+      }
+    }
+  },
+  "data-sources": {}
+}

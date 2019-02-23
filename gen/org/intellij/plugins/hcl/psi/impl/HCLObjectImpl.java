@@ -13,7 +13,7 @@ import com.intellij.navigation.ItemPresentation;
 
 public class HCLObjectImpl extends HCLContainerImpl implements HCLObject {
 
-  public HCLObjectImpl(ASTNode node) {
+  public HCLObjectImpl(@NotNull ASTNode node) {
     super(node);
   }
 
@@ -39,7 +39,7 @@ public class HCLObjectImpl extends HCLContainerImpl implements HCLObject {
   }
 
   @Nullable
-  public HCLProperty findProperty(String name) {
+  public HCLProperty findProperty(@NotNull String name) {
     return HCLPsiImplUtilJ.findProperty(this, name);
   }
 
