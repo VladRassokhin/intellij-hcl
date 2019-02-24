@@ -23,13 +23,6 @@ class TypeModel(
     val backends: Map<String, BackendType> = LinkedHashMap(),
     val functions: Map<String, Function> = LinkedHashMap()
 ) {
-  private val backendsByName = backends.associateBy { it.type }
-  private val dataSourcesByName = dataSources.associateBy { it.type }
-  private val functionsByName = functions.associateBy { it.name }
-  private val providersByName = providers.associateBy { it.type }
-  private val provisionersByName = provisioners.associateBy { it.type }
-  private val resourcesByName = resources.associateBy { it.type }
-
   @Suppress("MemberVisibilityCanBePrivate")
   companion object {
     private val VersionProperty = PropertyType("version", Types.String, hint = SimpleHint("VersionRange"), injectionAllowed = false)

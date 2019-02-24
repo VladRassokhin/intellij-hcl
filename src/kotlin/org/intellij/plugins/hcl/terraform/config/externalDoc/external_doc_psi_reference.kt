@@ -118,7 +118,7 @@ object FunctionReferenceProvider : PsiReferenceProvider() {
   override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
     if (element is ILVariable) {  // TODO do we need this check
       val name = element.text
-      val function = TypeModelProvider.getModel(element.project).getFunctionType(name)
+      val function = TypeModelProvider.getModel(element.project).getFunction(name)
       if (function != null) {
         return arrayOf(ExternalUrlReference(element, TextRange.allOf(name), urlForFunctionDoc(function.name)))
       }

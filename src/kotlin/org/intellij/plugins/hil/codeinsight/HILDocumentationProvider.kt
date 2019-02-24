@@ -40,7 +40,7 @@ class HILDocumentationProvider : AbstractDocumentationProvider() {
           val functionName = element.parent.text
           val signature = functionSignature(functionName)
           if (signature != null) {
-            val function = TypeModelProvider.getModel(element.project).getFunctionType(functionName)
+            val function = TypeModelProvider.getModel(element.project).getFunction(functionName)
             return when (function) {
               null -> signature
               else -> {
