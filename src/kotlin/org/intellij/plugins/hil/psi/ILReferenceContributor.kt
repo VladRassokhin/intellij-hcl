@@ -18,7 +18,7 @@ package org.intellij.plugins.hil.psi
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
-import org.intellij.plugins.hcl.terraform.config.externalDoc.FunctionReferenceProvider
+import org.intellij.plugins.hcl.terraform.config.externaldoc.FunctionReferenceProvider
 import org.intellij.plugins.hil.codeinsight.HILCompletionContributor
 
 class ILReferenceContributor : PsiReferenceContributor() {

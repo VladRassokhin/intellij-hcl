@@ -18,8 +18,8 @@ package org.intellij.plugins.hil.codeinsight
 import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.psi.PsiElement
 import org.intellij.plugins.hcl.HCLBundle
-import org.intellij.plugins.hcl.terraform.config.externalDoc.ExternalUrlReference
-import org.intellij.plugins.hcl.terraform.config.externalDoc.functionSignature
+import org.intellij.plugins.hcl.terraform.config.externaldoc.ExternalUrlReference
+import org.intellij.plugins.hcl.terraform.config.externaldoc.functionSignature
 import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hil.psi.ILMethodCallExpression

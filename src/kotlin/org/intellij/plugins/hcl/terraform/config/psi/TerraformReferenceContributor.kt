@@ -25,7 +25,7 @@ import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.HCLElementTypes
 import org.intellij.plugins.hcl.patterns.HCLPatterns
 import org.intellij.plugins.hcl.psi.*
-import org.intellij.plugins.hcl.terraform.config.externalDoc.*
+import org.intellij.plugins.hcl.terraform.config.externaldoc.*
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformConfigFile

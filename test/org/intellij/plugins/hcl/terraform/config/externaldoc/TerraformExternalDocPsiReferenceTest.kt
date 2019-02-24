@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.terraform.config.externalDoc
+package org.intellij.plugins.hcl.terraform.config.externaldoc
 
 import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.intellij.plugins.hcl.terraform.config.externalDoc
+package org.intellij.plugins.hcl.terraform.config.externaldoc
 
 import com.beust.klaxon.*
 import org.intellij.plugins.hcl.terraform.config.model.TypeModelLoader

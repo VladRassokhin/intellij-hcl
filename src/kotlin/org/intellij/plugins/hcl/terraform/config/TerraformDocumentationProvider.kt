@@ -21,7 +21,7 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import org.intellij.plugins.hcl.HCLBundle
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
-import org.intellij.plugins.hcl.terraform.config.externalDoc.ExternalUrlReference
+import org.intellij.plugins.hcl.terraform.config.externaldoc.ExternalUrlReference
 import org.intellij.plugins.hcl.terraform.config.model.BlockType
 import org.intellij.plugins.hcl.terraform.config.model.PropertyType
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
