@@ -32,54 +32,30 @@ import org.intellij.plugins.hil.psi.ILVariable
 
 class ExternalUrlReference(private val element: PsiElement, private val rangeInElement: TextRange,  val url: String) : PsiReference {
 
-  override fun bindToElement(element: PsiElement): PsiElement {
-    throw IncorrectOperationException()
-  }
+  override fun bindToElement(element: PsiElement): PsiElement = throw IncorrectOperationException()
 
-  override fun getCanonicalText(): String {
-    return url
-  }
+  override fun getCanonicalText(): String = url
 
-  override fun getElement(): PsiElement {
-    return element
-  }
+  override fun getElement(): PsiElement = element
 
-  override fun getRangeInElement(): TextRange {
-    return rangeInElement
-  }
+  override fun getRangeInElement(): TextRange = rangeInElement
 
-  override fun getVariants(): Array<PsiReference> {
-    return PsiReference.EMPTY_ARRAY
-  }
+  override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
 
-  override fun handleElementRename(newElementName: String?): PsiElement {
-    throw IncorrectOperationException()
-  }
+  override fun handleElementRename(newElementName: String?): PsiElement = throw IncorrectOperationException()
 
-  override fun isReferenceTo(element: PsiElement?): Boolean {
-    return false
-  }
+  override fun isReferenceTo(element: PsiElement?): Boolean = false
 
-  override fun isSoft(): Boolean {
-    return true
-  }
+  override fun isSoft(): Boolean = true
 
-  override fun resolve(): PsiElement? {
-    return MyFakePsiElement()
-  }
+  override fun resolve(): PsiElement? = MyFakePsiElement()
 
   internal inner class MyFakePsiElement : FakePsiElement() {
-    override fun getParent(): PsiElement {
-      return element
-    }
+    override fun getParent(): PsiElement = element
 
-    fun getUrl(): String {
-      return url
-    }
+    fun getUrl(): String = url
 
-    override fun navigate(requestFocus: Boolean) {
-      BrowserUtil.browse(url)
-    }
+    override fun navigate(requestFocus: Boolean) = BrowserUtil.browse(url)
   }
 }
 
@@ -90,9 +66,7 @@ abstract class ExternalDocReferenceProvider : PsiReferenceProvider() {
       if (text.length > 2) {
         val textRange = TextRange(1, text.length - 1)
         val url = getUrl(TypeModelProvider.getModel(element.project), textRange.substring(text))
-        if (url != null) {
-          return arrayOf(ExternalUrlReference(element, textRange, url))
-        }
+        if (url != null) return arrayOf(ExternalUrlReference(element, textRange, url))
       }
     }
     return PsiReference.EMPTY_ARRAY
@@ -102,9 +76,7 @@ abstract class ExternalDocReferenceProvider : PsiReferenceProvider() {
 }
 
 object BackendTypeReferenceProvider : ExternalDocReferenceProvider() {
-  override fun getUrl(model: TypeModel, type: String): String? {
-    return if (model.getBackendType(type) == null) null else urlForBackendTypeDoc(type)
-  }
+  override fun getUrl(model: TypeModel, type: String): String? = if (model.getBackendType(type) == null) null else urlForBackendTypeDoc(type)
 }
 
 object DataSourceTypeReferenceProvider : ExternalDocReferenceProvider() {
@@ -119,24 +91,18 @@ object FunctionReferenceProvider : PsiReferenceProvider() {
     if (element is ILVariable) {  // TODO do we need this check
       val name = element.text
       val function = TypeModelProvider.getModel(element.project).getFunction(name)
-      if (function != null) {
-        return arrayOf(ExternalUrlReference(element, TextRange.allOf(name), urlForFunctionDoc(function.name)))
-      }
+      if (function != null) return arrayOf(ExternalUrlReference(element, TextRange.allOf(name), urlForFunctionDoc(function.name)))
     }
     return PsiReference.EMPTY_ARRAY
   }
 }
 
 object ProviderTypeReferenceProvider : ExternalDocReferenceProvider() {
-  override fun getUrl(model: TypeModel, type: String): String? {
-    return if (model.getProviderType(type) == null) null else urlForProviderTypeDoc(type)
-  }
+  override fun getUrl(model: TypeModel, type: String): String? = if (model.getProviderType(type) == null) null else urlForProviderTypeDoc(type)
 }
 
 object ProvisionerTypeReferenceProvider : ExternalDocReferenceProvider() {
-  override fun getUrl(model: TypeModel, type: String): String? {
-    return if (model.getProvisionerType(type) == null) null else urlForProvisionerTypeDoc(type)
-  }
+  override fun getUrl(model: TypeModel, type: String): String? = if (model.getProvisionerType(type) == null) null else urlForProvisionerTypeDoc(type)
 }
 
 object ResourceTypeReferenceProvider : ExternalDocReferenceProvider() {
@@ -152,9 +118,7 @@ object KeywordReferenceProvider : PsiReferenceProvider() {
       val text = element.text
       if (checkKeyword(text, element)) {
         val url = urlForKeywordDoc(text)
-        if (url != null) {
-          return arrayOf(ExternalUrlReference(element, TextRange.allOf(text), url))
-        }
+        if (url != null) return arrayOf(ExternalUrlReference(element, TextRange.allOf(text), url))
       }
     }
     return PsiReference.EMPTY_ARRAY

@@ -31,9 +31,8 @@ private class Data(
   val paths: Map<String, String>
 )
 
-private fun pairsToMap(obj: JsonObject, fieldName: String): MutableMap<String, String> {
-  return obj.array<JsonArray<String>>(fieldName)!!.associate { it[0] to it[1] } as MutableMap<String, String>
-}
+private fun pairsToMap(obj: JsonObject, fieldName: String): MutableMap<String, String> =
+    obj.array<JsonArray<String>>(fieldName)!!.associate { it[0] to it[1] } as MutableMap<String, String>
 
 private val data: Data by lazy {
   val docData = TypeModelLoader.getResourceJson("${TypeModelLoader.ModelResourcesPrefix}-external/doc-data.json") as JsonObject
@@ -60,34 +59,22 @@ private val data: Data by lazy {
   )
 }
 
-fun urlForBackendTypeDoc(type: String): String {
-  return "$BASE_URL/backends/types/${data.paths["backend.$type"] ?: type}.html"
-}
+fun urlForBackendTypeDoc(type: String): String = "$BASE_URL/backends/types/${data.paths["backend.$type"] ?: type}.html"
 
-fun urlForProviderTypeDoc(type: String): String {
-  return "$BASE_URL/providers/${data.paths["provider.$type"] ?: type}/"
-}
+fun urlForProviderTypeDoc(type: String): String = "$BASE_URL/providers/${data.paths["provider.$type"] ?: type}/"
 
-fun urlForProvisionerTypeDoc(type: String): String {
-  return "$BASE_URL/provisioners/$type.html"
-}
+fun urlForProvisionerTypeDoc(type: String): String = "$BASE_URL/provisioners/$type.html"
 
 fun urlForKeywordDoc(keyword: String): String? {
   val path = data.keywords[keyword]
   return if (path == null) null else "$BASE_URL/$path"
 }
 
-fun functionFragment(name: String): String? {
-  return data.functionFragments[name]
-}
+fun functionFragment(name: String): String? = data.functionFragments[name]
 
-fun functionSignature(name: String): String? {
-  return data.functionSignatures[name]
-}
+fun functionSignature(name: String): String? = data.functionSignatures[name]
 
-fun urlForFunctionDoc(name: String): String {
-  return "$FUNCTIONS_URL#${functionFragment(name)}"
-}
+fun urlForFunctionDoc(name: String): String = "$FUNCTIONS_URL#${functionFragment(name)}"
 
 private fun urlForDataSourceOrResourceDoc(providerName: String, dataOrResource: String, type: String): String {
   val base = "${urlForProviderTypeDoc(providerName)}${dataOrResource[0]}/"
@@ -99,10 +86,6 @@ private fun urlForDataSourceOrResourceDoc(providerName: String, dataOrResource: 
   }
 }
 
-fun urlForDataSourceTypeDoc(providerType: String, type: String): String {
-  return urlForDataSourceOrResourceDoc(providerType, "data", type)
-}
+fun urlForDataSourceTypeDoc(providerType: String, type: String): String = urlForDataSourceOrResourceDoc(providerType, "data", type)
 
-fun urlForResourceTypeDoc(providerType: String, type: String): String {
-  return urlForDataSourceOrResourceDoc(providerType, "resource", type)
-}
+fun urlForResourceTypeDoc(providerType: String, type: String): String = urlForDataSourceOrResourceDoc(providerType, "resource", type)
