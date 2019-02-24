@@ -11,9 +11,8 @@ out="$CUR/schemas"
 mkdir -p "$out"
 rm -f "$CUR/failure.txt"
 
-pushd "$GOPATH/src/github.com/terraform-providers" >/dev/null
-
 mkdir -p "$GOPATH/src/github.com/terraform-providers"
+pushd "$GOPATH/src/github.com/terraform-providers" >/dev/null
 
 for p in $(cat "$CUR/providers.list.full"); do
   if [ -d "$p" ]; then
@@ -52,10 +51,10 @@ for p in $(cat "$CUR/providers.list.full"); do
   rm -rf generate-schema
   mkdir generate-schema
   cp -r "$CUR/template/generate-schema.go" generate-schema/generate-schema.go
-  sed -i "s/__FULL_NAME__/$p/g" generate-schema/generate-schema.go
-  sed -i "s/__NAME__/${p:19}/g" generate-schema/generate-schema.go
-  sed -i "s/__REVISION__/$revision/g" generate-schema/generate-schema.go
-  sed -i "s~__OUT__~$out~g" generate-schema/generate-schema.go
+  sed -i -e "s/__FULL_NAME__/$p/g" generate-schema/generate-schema.go
+  sed -i -e "s/__NAME__/${p:19}/g" generate-schema/generate-schema.go
+  sed -i -e "s/__REVISION__/$revision/g" generate-schema/generate-schema.go
+  sed -i -e "s~__OUT__~$out~g" generate-schema/generate-schema.go
 
   #echo "Building $p"
   #make

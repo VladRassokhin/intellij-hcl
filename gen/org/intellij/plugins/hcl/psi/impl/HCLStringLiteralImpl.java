@@ -14,7 +14,7 @@ import com.intellij.openapi.util.TextRange;
 
 public class HCLStringLiteralImpl extends HCLStringLiteralMixin implements HCLStringLiteral {
 
-  public HCLStringLiteralImpl(ASTNode node) {
+  public HCLStringLiteralImpl(@Nullable ASTNode node) {
     super(node);
   }
 

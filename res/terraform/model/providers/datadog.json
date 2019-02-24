@@ -1,11 +1,15 @@
 {
   "name": "datadog",
   "type": "provider",
-  "version": "v1.2.0-1-g24b9a0d",
+  "version": "v1.6.0-1-g274ae61",
   "provider": {
     "api_key": {
       "Type": "String",
       "Required": true
+    },
+    "api_url": {
+      "Type": "String",
+      "Optional": true
     },
     "app_key": {
       "Type": "String",
@@ -25,6 +29,13 @@
       "end": {
         "Type": "Int",
         "Optional": true
+      },
+      "end_date": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "end"
+        ]
       },
       "message": {
         "Type": "String",
@@ -85,6 +96,76 @@
       "start": {
         "Type": "Int",
         "Optional": true
+      },
+      "start_date": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "start"
+        ]
+      }
+    },
+    "datadog_integration_aws": {
+      "account_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "account_specific_namespace_rules": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Value": "Bool"
+        }
+      },
+      "external_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "filter_tags": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "host_tags": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "role_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "datadog_integration_gcp": {
+      "client_email": {
+        "Type": "String",
+        "Required": true
+      },
+      "client_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "host_filters": {
+        "Type": "String",
+        "Optional": true
+      },
+      "private_key": {
+        "Type": "String",
+        "Required": true
+      },
+      "private_key_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
       }
     },
     "datadog_metric_metadata": {
@@ -145,8 +226,7 @@
       },
       "new_host_delay": {
         "Type": "Int",
-        "Optional": true,
-        "Computed": true
+        "Optional": true
       },
       "no_data_timeframe": {
         "Type": "Int",
@@ -229,6 +309,566 @@
         "Required": true
       }
     },
+    "datadog_screenboard": {
+      "height": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Height of the screenboard"
+      },
+      "read_only": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "shared": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Whether the screenboard is shared or not"
+      },
+      "template_variable": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "A list of template variables for using Dashboard templating.",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "default": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The default value for the template variable on dashboard load."
+            },
+            "name": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The name of the variable."
+            },
+            "prefix": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The tag prefix associated with the variable. Only tags with this prefix will appear in the variable dropdown."
+            }
+          }
+        }
+      },
+      "title": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the screenboard"
+      },
+      "widget": {
+        "Type": "List",
+        "Required": true,
+        "Description": "A list of widget definitions.",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "alert_id": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "auto_refresh": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "bgcolor": {
+              "Type": "String",
+              "Optional": true
+            },
+            "check": {
+              "Type": "String",
+              "Optional": true
+            },
+            "color": {
+              "Type": "String",
+              "Optional": true
+            },
+            "color_preference": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "One of: ['background', 'text']"
+            },
+            "columns": {
+              "Type": "String",
+              "Optional": true
+            },
+            "display_format": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "One of: ['counts', 'list', 'countsAndList']"
+            },
+            "env": {
+              "Type": "String",
+              "Optional": true
+            },
+            "event_size": {
+              "Type": "String",
+              "Optional": true
+            },
+            "font_size": {
+              "Type": "String",
+              "Optional": true
+            },
+            "group": {
+              "Type": "String",
+              "Optional": true
+            },
+            "group_by": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "grouping": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "One of: ['cluster', 'check']"
+            },
+            "height": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The height of the widget."
+            },
+            "hide_zero_counts": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "html": {
+              "Type": "String",
+              "Optional": true
+            },
+            "layout_version": {
+              "Type": "String",
+              "Optional": true
+            },
+            "legend": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "legend_size": {
+              "Type": "String",
+              "Optional": true
+            },
+            "logset": {
+              "Type": "String",
+              "Optional": true
+            },
+            "manage_status_show_title": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "manage_status_title_align": {
+              "Type": "String",
+              "Optional": true
+            },
+            "manage_status_title_size": {
+              "Type": "String",
+              "Optional": true
+            },
+            "manage_status_title_text": {
+              "Type": "String",
+              "Optional": true
+            },
+            "margin": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "One of: ['small', 'large']"
+            },
+            "monitor": {
+              "Type": "Map",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "Int"
+              }
+            },
+            "must_show_breakdown": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "must_show_distribution": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "must_show_errors": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "must_show_hits": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "must_show_latency": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "must_show_resource_list": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "params": {
+              "Type": "Map",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "precision": {
+              "Type": "String",
+              "Optional": true
+            },
+            "query": {
+              "Type": "String",
+              "Optional": true
+            },
+            "rule": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "color": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "threshold": {
+                    "Type": "Float",
+                    "Optional": true
+                  },
+                  "timeframe": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "service_name": {
+              "Type": "String",
+              "Optional": true
+            },
+            "service_service": {
+              "Type": "String",
+              "Optional": true
+            },
+            "size_version": {
+              "Type": "String",
+              "Optional": true
+            },
+            "sizing": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "One of: ['center', 'zoom', 'fit']"
+            },
+            "tags": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "text": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "For widgets of type 'free_text', the text to use."
+            },
+            "text_align": {
+              "Type": "String",
+              "Optional": true
+            },
+            "text_size": {
+              "Type": "String",
+              "Optional": true
+            },
+            "tick": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "tick_edge": {
+              "Type": "String",
+              "Optional": true
+            },
+            "tick_pos": {
+              "Type": "String",
+              "Optional": true
+            },
+            "tile_def": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "autoscale": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "custom_unit": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "event": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "q": {
+                          "Type": "String",
+                          "Required": true
+                        }
+                      }
+                    }
+                  },
+                  "group": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "marker": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "label": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "type": {
+                          "Type": "String",
+                          "Required": true
+                        },
+                        "value": {
+                          "Type": "String",
+                          "Required": true
+                        }
+                      }
+                    }
+                  },
+                  "no_group_hosts": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "no_metric_hosts": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "node_type": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "One of: ['host', 'container']"
+                  },
+                  "precision": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "request": {
+                    "Type": "List",
+                    "Required": true,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "aggregator": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "change_type": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "compare_to": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "conditional_format": {
+                          "Type": "List",
+                          "Optional": true,
+                          "Description": "A list of conditional formatting rules.",
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "color": {
+                                "Type": "String",
+                                "Optional": true,
+                                "Description": "Custom color (e.g., #205081)"
+                              },
+                              "comparator": {
+                                "Type": "String",
+                                "Required": true,
+                                "Description": "Comparator (\u003c, \u003e, etc)"
+                              },
+                              "invert": {
+                                "Type": "Bool",
+                                "Optional": true
+                              },
+                              "palette": {
+                                "Type": "String",
+                                "Optional": true,
+                                "Description": "The palette to use if this condition is met."
+                              },
+                              "value": {
+                                "Type": "String",
+                                "Optional": true,
+                                "Description": "Value that is threshold for conditional format"
+                              }
+                            }
+                          }
+                        },
+                        "extra_col": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "increase_good": {
+                          "Type": "Bool",
+                          "Optional": true
+                        },
+                        "limit": {
+                          "Type": "Int",
+                          "Optional": true
+                        },
+                        "metric": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "order_by": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "order_dir": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "q": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "query_type": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "style": {
+                          "Type": "Map",
+                          "Optional": true
+                        },
+                        "tag_filters": {
+                          "Type": "List",
+                          "Optional": true,
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "text_filter": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "type": {
+                          "Type": "String",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
+                  "scope": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "style": {
+                    "Type": "Map",
+                    "Optional": true
+                  },
+                  "text_align": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "viz": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "time": {
+              "Type": "Map",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "timeframes": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "title": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The name of the widget."
+            },
+            "title_align": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The alignment of the widget's title."
+            },
+            "title_size": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The size of the widget's title."
+            },
+            "type": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The type of the widget. One of [ 'free_text', 'timeseries', 'query_value', 'toplist', 'change', 'event_timeline', 'event_stream', 'image', 'note', 'alert_graph', 'alert_value', 'iframe', 'check_status', 'trace_service', 'hostmap', 'manage_status', 'log_stream', 'uptime', 'process']"
+            },
+            "unit": {
+              "Type": "String",
+              "Optional": true
+            },
+            "url": {
+              "Type": "String",
+              "Optional": true
+            },
+            "viz_type": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "One of: ['timeseries', 'toplist']"
+            },
+            "width": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The width of the widget."
+            },
+            "x": {
+              "Type": "Int",
+              "Required": true,
+              "Description": "The position of the widget on the x axis."
+            },
+            "y": {
+              "Type": "Int",
+              "Required": true,
+              "Description": "The position of the widget on the y axis."
+            }
+          }
+        }
+      },
+      "width": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Width of the screenboard"
+      }
+    },
     "datadog_timeboard": {
       "description": {
         "Type": "String",
@@ -300,6 +940,11 @@
                   }
                 }
               }
+            },
+            "node_type": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Type of nodes to show in hostmap graphs (either 'host' or 'container')."
             },
             "precision": {
               "Type": "String",

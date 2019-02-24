@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public class ILBinaryAndExpressionImpl extends ILBinaryExpressionImpl implements ILBinaryAndExpression {
 
-  public ILBinaryAndExpressionImpl(ASTNode node) {
+  public ILBinaryAndExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

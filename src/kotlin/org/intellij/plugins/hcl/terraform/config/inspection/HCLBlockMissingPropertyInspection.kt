@@ -31,9 +31,7 @@ import org.intellij.plugins.hcl.psi.getNameElementUnquoted
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ResourcePropertyInsertHandler
-import org.intellij.plugins.hcl.terraform.config.model.PropertyOrBlockType
-import org.intellij.plugins.hcl.terraform.config.model.Types
-import org.intellij.plugins.hcl.terraform.config.model.getTerraformModule
+import org.intellij.plugins.hcl.terraform.config.model.*
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.ModuleWithEmptySource
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
 import java.util.*
@@ -61,7 +59,7 @@ class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
     return super.getBatchSuppressActions(PsiTreeUtil.getParentOfType(element, HCLBlock::class.java, false))
   }
 
-  inner class MyEV(val holder: ProblemsHolder, val recursive: Boolean) : HCLElementVisitor() {
+  private inner class MyEV(val holder: ProblemsHolder, val recursive: Boolean) : HCLElementVisitor() {
     override fun visitBlock(block: HCLBlock) {
       ProgressIndicatorProvider.checkCanceled()
       block.getNameElementUnquoted(0) ?: return
@@ -88,7 +86,7 @@ class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
     val obj = block.`object` ?: return
     ProgressIndicatorProvider.checkCanceled()
 
-    val candidates = ArrayList<PropertyOrBlockType>(properties.filter { it.required && !(it.property?.has_default ?: false) })
+    val candidates = ArrayList<PropertyOrBlockType>(properties.filter { it.required && !(it is PropertyType && it.has_default) })
     if (candidates.isEmpty()) return
     val all = ArrayList<String>()
     all.addAll(obj.propertyList.map { it.name })
@@ -96,36 +94,41 @@ class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
 
     ProgressIndicatorProvider.checkCanceled()
 
-    val required = candidates.filterNot { it.name in all }
+    var required = candidates.filterNot { it.name in all }
 
     if (required.isEmpty()) return
 
+    val requiredProps = required.filterIsInstance<PropertyType>()
+    val requiredBlocks = required.filterIsInstance<BlockType>()
+
+    required = requiredProps.sortedBy { it.name } + requiredBlocks.sortedBy { it.name }
+
     ProgressIndicatorProvider.checkCanceled()
 
-    holder.registerProblem(block, "Missing required properties: ${required.map { it.name }.joinToString(", ")}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING, AddResourcePropertiesFix(required))
+    holder.registerProblem(block, "Missing required properties: ${required.joinToString(", ") { it.name }}", ProblemHighlightType.GENERIC_ERROR_OR_WARNING, AddResourcePropertiesFix(required))
   }
 
 }
 
-class AddResourcePropertiesFix(val add: Collection<PropertyOrBlockType>) : LocalQuickFixBase("Add properties: ${add.map { it.name }.joinToString(", ")}", "Add missing properties") {
+class AddResourcePropertiesFix(val add: Collection<PropertyOrBlockType>) : LocalQuickFixBase("Add properties: ${add.joinToString(", ") { it.name }}", "Add missing properties") {
   override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
     val element = descriptor.psiElement as? HCLBlock ?: return
-    val block = element
-    val obj = block.`object` ?: return
+    val obj = element.`object` ?: return
     object : WriteCommandAction<Any?>(project) {
       override fun run(result: Result<Any?>) {
         val generator = TerraformElementGenerator(project)
         val elements = add.map {
-          if (it.property != null) {
-            val type = it.property.type
+          if (it is PropertyType) {
+            val type = it.type
             // TODO: Use property 'default' value
-            var value: String = ResourcePropertyInsertHandler.getPlaceholderValue(type)?.first ?:
-                if (type == Types.Boolean) "false"
-                else if (type == Types.Number) "0"
-                else if (type == Types.Null) "null"
-                else "\"\""
+            var value: String = ResourcePropertyInsertHandler.getPlaceholderValue(type)?.first ?: when (type) {
+              Types.Boolean -> "false"
+              Types.Number -> "0"
+              Types.Null -> "null"
+              else -> "\"\""
+            }
 
-            value = ResourcePropertyInsertHandler.getProposedValueFromModelAndHint(it.property, element.getTerraformModule())?.first ?: value
+            value = ResourcePropertyInsertHandler.getProposedValueFromModelAndHint(it, element.getTerraformModule())?.first ?: value
 
             generator.createProperty(it.name, value)
           } else generator.createBlock(it.name)

@@ -50,8 +50,8 @@ class Module private constructor(val item: PsiFileSystemItem) {
         val name = o.getNameElementUnquoted(1) ?: return
 
         val props = TypeModel.Variable.properties.map { p ->
-          if (p.property != null) {
-            return@map o.`object`?.findProperty(p.property.name)?.toProperty(p.property)
+          if (p is PropertyType) {
+            return@map o.`object`?.findProperty(p.name)?.toProperty(p)
           }
           return@map null
         }.filterNotNull().map { it.toPOB() }

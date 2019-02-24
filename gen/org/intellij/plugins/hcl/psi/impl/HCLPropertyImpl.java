@@ -13,7 +13,7 @@ import com.intellij.navigation.ItemPresentation;
 
 public class HCLPropertyImpl extends HCLPropertyMixin implements HCLProperty {
 
-  public HCLPropertyImpl(ASTNode node) {
+  public HCLPropertyImpl(@NotNull ASTNode node) {
     super(node);
   }
 

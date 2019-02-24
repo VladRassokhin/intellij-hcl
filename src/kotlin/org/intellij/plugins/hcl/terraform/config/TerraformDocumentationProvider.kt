@@ -22,6 +22,8 @@ import org.intellij.plugins.hcl.HCLBundle
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
 import org.intellij.plugins.hcl.terraform.config.externalDoc.ExternalUrlReference
+import org.intellij.plugins.hcl.terraform.config.model.BlockType
+import org.intellij.plugins.hcl.terraform.config.model.PropertyType
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 
 class TerraformDocumentationProvider : AbstractDocumentationProvider() {
@@ -47,7 +49,7 @@ class TerraformDocumentationProvider : AbstractDocumentationProvider() {
     if (element is HCLProperty) {
       val pp = element.parent?.parent as? HCLBlock ?: return null
       val properties = ModelHelper.getBlockProperties(pp)
-      val property = properties.firstOrNull { it.property?.name == element.name }?.property ?: return "Unknown property ${element.name}"
+      val property = properties.filterIsInstance(PropertyType::class.java).firstOrNull { it.name == element.name } ?: return "Unknown property ${element.name}"
       return buildString {
         append("Property ")
         append(element.name)
@@ -88,7 +90,7 @@ class TerraformDocumentationProvider : AbstractDocumentationProvider() {
         }
       }
       val properties = ModelHelper.getBlockProperties(pp)
-      val block = properties.firstOrNull { it.block?.literal == element.getNameElementUnquoted(0) }?.block ?: return "Unknown block ${element.name}"
+      val block = properties.filterIsInstance(BlockType::class.java).firstOrNull { it.literal == element.getNameElementUnquoted(0) } ?: return "Unknown block ${element.name}"
       return buildString {
         append("Block ")
         append(element.name)

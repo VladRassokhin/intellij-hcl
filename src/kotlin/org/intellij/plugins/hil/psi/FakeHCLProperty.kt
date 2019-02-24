@@ -16,11 +16,10 @@
 package org.intellij.plugins.hil.psi
 
 import com.intellij.psi.PsiElement
-import com.intellij.psi.impl.FakePsiElement
 import org.intellij.plugins.hcl.psi.HCLProperty
 import org.intellij.plugins.hcl.psi.HCLValue
 
-class FakeHCLProperty(val _name: String, val _parent: PsiElement, val dynamic: Boolean = false) : FakePsiElement(), HCLProperty {
+class FakeHCLProperty(val _name: String, _parent: PsiElement, val dynamic: Boolean = false) : RenameableFakePsiElement(_parent), HCLProperty {
   override fun getName(): String {
     return _name
   }
@@ -33,12 +32,19 @@ class FakeHCLProperty(val _name: String, val _parent: PsiElement, val dynamic: B
     throw UnsupportedOperationException()
   }
 
-  override fun getParent(): PsiElement? {
-    return _parent
-  }
-
   override fun getNameIdentifier(): PsiElement? {
     throw UnsupportedOperationException()
   }
 
+  // It's impossible to navigate to fake non-existing elements
+  override fun canNavigate(): Boolean {
+    return false
+  }
+
+  override fun canNavigateToSource(): Boolean {
+    return false
+  }
+
+  override fun navigate(requestFocus: Boolean) {
+  }
 }

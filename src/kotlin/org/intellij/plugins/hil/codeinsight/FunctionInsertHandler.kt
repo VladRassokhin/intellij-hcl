@@ -50,7 +50,7 @@ object FunctionInsertHandler : BasicInsertHandler<LookupElement>() {
     }
     if (element !is ILVariable) return
 
-    val function = TypeModelProvider.getModel(project).functions.firstOrNull { it.name == item.lookupString } ?: return
+    val function = TypeModelProvider.getModel(project).getFunction(item.lookupString) ?: return
 
 
     var offset: Int? = null

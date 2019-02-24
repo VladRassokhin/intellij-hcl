@@ -12,7 +12,7 @@ import org.intellij.plugins.hcl.psi.*;
 
 public class HCLNullLiteralImpl extends HCLLiteralImpl implements HCLNullLiteral {
 
-  public HCLNullLiteralImpl(ASTNode node) {
+  public HCLNullLiteralImpl(@NotNull ASTNode node) {
     super(node);
   }
 

@@ -15,7 +15,7 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
-class Variable(val name: String, vararg properties: PropertyOrBlock = arrayOf()) : Block(TypeModel.Variable, *properties) {
+class Variable(val name: String, vararg properties: PropertyOrBlock = emptyArray()) : Block(TypeModel.Variable, *properties) {
   fun getDefault(): Any? {
     return properties.firstOrNull { TypeModel.Variable_Default == it.property?.type }?.property?.value
   }

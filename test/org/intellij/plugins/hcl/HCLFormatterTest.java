@@ -47,7 +47,7 @@ public class HCLFormatterTest extends LightPlatformCodeInsightFixtureTestCase {
 
   @SuppressWarnings("WeakerAccess")
   @Parameterized.Parameter
-  public LanguageFileType myFileType;
+  public LanguageFileType myFileType = TerraformFileType.INSTANCE;
 
   @Override
   @Before
@@ -144,6 +144,12 @@ public class HCLFormatterTest extends LightPlatformCodeInsightFixtureTestCase {
         ",\n" +
         "  \"some other data\",\n" +
         "]");
+  }
+
+  @Test
+  public void testAlignPropertiesOnValueAndSplitByBlocks() throws Exception {
+    CodeStyleSettingsManager.getSettings(getProject()).getCustomSettings(HCLCodeStyleSettings.class).PROPERTY_ALIGNMENT = HCLCodeStyleSettings.ALIGN_PROPERTY_ON_VALUE;
+    doSimpleTest("a=true\n\n\nbaz=42", "a = true\n\n\nbaz = 42");
   }
 
   public void doSimpleTest(String input, String expected) throws Exception {

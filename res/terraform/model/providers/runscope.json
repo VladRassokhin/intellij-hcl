@@ -1,7 +1,7 @@
 {
   "name": "runscope",
   "type": "provider",
-  "version": "v0.3.0-1-ge0e8aa4",
+  "version": "v0.5.0-2-gf380a04",
   "provider": {
     "access_token": {
       "Type": "String",
@@ -29,6 +29,49 @@
       "bucket_id": {
         "Type": "String",
         "Required": true
+      },
+      "emails": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "notify_all": {
+              "Type": "Bool",
+              "Required": true
+            },
+            "notify_on": {
+              "Type": "String",
+              "Required": true
+            },
+            "notify_threshold": {
+              "Type": "Int",
+              "Required": true
+            },
+            "recipients": {
+              "Type": "Set",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "email": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "id": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       "initial_variables": {
         "Type": "Map",
@@ -94,6 +137,14 @@
       "verify_ssl": {
         "Type": "Bool",
         "Optional": true
+      },
+      "webhooks": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "runscope_schedule": {
@@ -199,6 +250,10 @@
         }
       },
       "method": {
+        "Type": "String",
+        "Optional": true
+      },
+      "note": {
         "Type": "String",
         "Optional": true
       },

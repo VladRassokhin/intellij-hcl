@@ -60,7 +60,7 @@ public interface HILElementTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == IL_BINARY_ADDITION_EXPRESSION) {
+      if (type == IL_BINARY_ADDITION_EXPRESSION) {
         return new ILBinaryAdditionExpressionImpl(node);
       }
       else if (type == IL_BINARY_AND_EXPRESSION) {

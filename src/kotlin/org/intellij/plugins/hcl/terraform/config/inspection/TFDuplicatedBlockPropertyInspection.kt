@@ -24,6 +24,7 @@ import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLElementVisitor
 import org.intellij.plugins.hcl.psi.HCLProperty
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
+import org.intellij.plugins.hcl.terraform.config.model.PropertyType
 
 // TODO: Support overrides in separate files
 class TFDuplicatedBlockPropertyInspection : TFDuplicatedInspectionBase() {
@@ -42,7 +43,7 @@ class TFDuplicatedBlockPropertyInspection : TFDuplicatedInspectionBase() {
       val model = ModelHelper.getBlockProperties(block).associateBy { it.name }
       val groupedDuplicates = properties.groupBy { it.name }
           .filterValues { it.size >= 2 }
-          .filterKeys { model[it]?.property != null }
+          .filterKeys { model[it] is PropertyType }
       for ((name, props) in groupedDuplicates) {
         for (prop in props) {
           holder.registerProblem(prop.nameElement, "Property '$name' declared multiple times inside one block", ProblemHighlightType.GENERIC_ERROR, *getFixes(prop, props))

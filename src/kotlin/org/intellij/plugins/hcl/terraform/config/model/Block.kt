@@ -15,7 +15,7 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
-open class Block(val type: BlockType, vararg val properties: PropertyOrBlock = arrayOf()) {
+open class Block(val type: BlockType, vararg val properties: PropertyOrBlock = emptyArray()) {
   fun toPOB(): PropertyOrBlock {
     return PropertyOrBlock(block = this)
   }

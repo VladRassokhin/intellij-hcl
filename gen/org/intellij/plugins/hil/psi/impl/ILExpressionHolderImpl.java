@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public class ILExpressionHolderImpl extends ILExpressionImpl implements ILExpressionHolder {
 
-  public ILExpressionHolderImpl(ASTNode node) {
+  public ILExpressionHolderImpl(@NotNull ASTNode node) {
     super(node);
   }
 

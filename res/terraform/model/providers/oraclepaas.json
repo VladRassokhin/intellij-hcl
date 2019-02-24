@@ -1,7 +1,7 @@
 {
   "name": "oraclepaas",
   "type": "provider",
-  "version": "v1.3.0-1-g5979bcd",
+  "version": "v1.4.1-1-ga9af6ec",
   "provider": {
     "application_endpoint": {
       "Type": "String",
@@ -74,6 +74,14 @@
       "auth_type": {
         "Type": "String",
         "Optional": true
+      },
+      "availability_domain": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "deployment": {
         "Type": "List",
@@ -163,6 +171,16 @@
       "git_username": {
         "Type": "String",
         "Optional": true
+      },
+      "load_balancer_subnets": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 2,
+        "MinItems": 2,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "manifest": {
         "Type": "List",
@@ -268,6 +286,10 @@
         "Type": "String",
         "Optional": true
       },
+      "region": {
+        "Type": "String",
+        "Optional": true
+      },
       "runtime": {
         "Type": "String",
         "Optional": true
@@ -322,6 +344,7 @@
     "oraclepaas_database_service_instance": {
       "__timeouts__": [
         "create",
+        "update",
         "delete"
       ],
       "availability_domain": {
@@ -383,6 +406,10 @@
               "Type": "String",
               "Optional": true
             },
+            "backup_storage_volume_size": {
+              "Type": "Int",
+              "Optional": true
+            },
             "character_set": {
               "Type": "String",
               "Optional": true,
@@ -391,6 +418,10 @@
                 "instantiate_from_backup",
                 "hybrid_disaster_recovery"
               ]
+            },
+            "data_storage_volume_size": {
+              "Type": "Int",
+              "Optional": true
             },
             "db_demo": {
               "Type": "String",
@@ -749,6 +780,7 @@
     "oraclepaas_java_service_instance": {
       "__timeouts__": [
         "create",
+        "update",
         "delete"
       ],
       "assign_public_ip": {
@@ -787,6 +819,10 @@
               "Type": "String",
               "Optional": true,
               "Computed": true
+            },
+            "use_oauth_for_storage": {
+              "Type": "Bool",
+              "Optional": true
             }
           }
         }
@@ -824,6 +860,45 @@
         "Type": "String",
         "Optional": true
       },
+      "load_balancer": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "oracle_traffic_director"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "admin_url": {
+              "Type": "String",
+              "Computed": true
+            },
+            "console_url": {
+              "Type": "String",
+              "Computed": true
+            },
+            "load_balancing_policy": {
+              "Type": "String",
+              "Optional": true
+            },
+            "subnets": {
+              "Type": "Set",
+              "Optional": true,
+              "MaxItems": 2,
+              "MinItems": 2,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "url": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "metering_frequency": {
         "Type": "String",
         "Optional": true
@@ -840,6 +915,9 @@
         "Type": "List",
         "Optional": true,
         "MaxItems": 1,
+        "ConflictsWith": [
+          "load_balancer"
+        ],
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {

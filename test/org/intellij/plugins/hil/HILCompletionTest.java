@@ -58,7 +58,7 @@ public class HILCompletionTest extends CompletionTestCase {
   @NotNull
   private SortedSet<String> getGlobalAvailable() {
     final TreeSet<String> result = new TreeSet<String>();
-    final List<Function> functions = TypeModelProvider.getModel(getProject()).getFunctions();
+    final Collection<Function> functions = TypeModelProvider.getModel(getProject()).getFunctions().values();
     for (Function function : functions) {
       result.add(function.getName());
     }
@@ -222,4 +222,23 @@ public class HILCompletionTest extends CompletionTestCase {
     doBasicCompletionTest("locals {x='y' a=true} foo='${local.<caret>}'", "x", "a");
   }
 
+  public void testDefinedComputedBlockCompletion() {
+    doBasicCompletionTest("resource \"google_dataproc_cluster\" \"x\" {\n" +
+        "  cluster_config {\n" +
+        "    master_config {\n" +
+        "      num_instances = 1\n" +
+        "      machine_type = \"n1-standard-1\"\n" +
+        "      disk_config {\n" +
+        "        boot_disk_size_gb = 10\n" +
+        "        num_local_ssds = 0\n" +
+        "      }\n" +
+        "    }\n" +
+        "   \n" +
+        "  }\n" +
+        "}\n" +
+        "\n" +
+        "output \"x\" {\n" +
+        "  value = \"${google_dataproc_cluster.x.cluster_config.master_config.<caret>}\"\n" +
+        "}", "disk_config", "instance_names", "machine_type", "num_instances");
+  }
 }

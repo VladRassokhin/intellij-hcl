@@ -1,7 +1,7 @@
 {
   "name": "spotinst",
   "type": "provider",
-  "version": "v1.3.0-1-gdf52edc",
+  "version": "v1.4.0-17-g22c1e6f",
   "provider": {
     "account": {
       "Type": "String",
@@ -233,6 +233,68 @@
           }
         }
       },
+      "integration_docker_swarm": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "autoscale_cooldown": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "autoscale_down": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "evaluation_periods": {
+                    "Type": "Int",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "autoscale_headroom": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "cpu_per_unit": {
+                    "Type": "Int",
+                    "Optional": true
+                  },
+                  "memory_per_unit": {
+                    "Type": "Int",
+                    "Optional": true
+                  },
+                  "num_of_units": {
+                    "Type": "Int",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "autoscale_is_enabled": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "master_host": {
+              "Type": "String",
+              "Required": true
+            },
+            "master_port": {
+              "Type": "Int",
+              "Required": true
+            }
+          }
+        }
+      },
       "integration_ecs": {
         "Type": "List",
         "Optional": true,
@@ -296,6 +358,10 @@
                   }
                 }
               }
+            },
+            "autoscale_is_auto_config": {
+              "Type": "Bool",
+              "Optional": true
             },
             "autoscale_is_enabled": {
               "Type": "Bool",
@@ -556,6 +622,10 @@
             "secret_key": {
               "Type": "String",
               "Required": true
+            },
+            "version": {
+              "Type": "String",
+              "Optional": true
             }
           }
         }
@@ -778,6 +848,10 @@
               "Optional": true,
               "Computed": true
             },
+            "is_enabled": {
+              "Type": "Bool",
+              "Optional": true
+            },
             "max_target_capacity": {
               "Type": "String",
               "Optional": true
@@ -917,6 +991,10 @@
               "Optional": true,
               "Computed": true
             },
+            "is_enabled": {
+              "Type": "Bool",
+              "Optional": true
+            },
             "max_target_capacity": {
               "Type": "String",
               "Optional": true
@@ -986,6 +1064,10 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "adjustment": {
+              "Type": "String",
+              "Optional": true
+            },
             "batch_size_percentage": {
               "Type": "String",
               "Optional": true
@@ -1048,6 +1130,10 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "shutdown_script": {
+        "Type": "String",
+        "Optional": true
       },
       "signal": {
         "Type": "Set",
@@ -1182,6 +1268,56 @@
       "utilize_reserved_instances": {
         "Type": "Bool",
         "Optional": true
+      },
+      "wait_for_capacity": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "wait_for_capacity_timeout": {
+        "Type": "Int",
+        "Optional": true
+      }
+    },
+    "spotinst_elastigroup_aws_beanstalk": {
+      "beanstalk_environment_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "desired_capacity": {
+        "Type": "Int",
+        "Required": true
+      },
+      "instance_types_spot": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "maintenance": {
+        "Type": "String",
+        "Optional": true
+      },
+      "max_size": {
+        "Type": "Int",
+        "Required": true
+      },
+      "min_size": {
+        "Type": "Int",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "product": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Required": true
       }
     },
     "spotinst_subscription": {

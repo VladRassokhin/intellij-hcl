@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public abstract class ILExpressionImpl extends ILExpressionBase implements ILExpression {
 
-  public ILExpressionImpl(ASTNode node) {
+  public ILExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

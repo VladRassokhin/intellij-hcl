@@ -13,7 +13,7 @@ import com.intellij.psi.tree.IElementType;
 
 public class ILBinaryExpressionImpl extends ILBinaryExpressionMixin implements ILBinaryExpression {
 
-  public ILBinaryExpressionImpl(ASTNode node) {
+  public ILBinaryExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

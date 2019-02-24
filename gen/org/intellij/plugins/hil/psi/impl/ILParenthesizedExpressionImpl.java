@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public class ILParenthesizedExpressionImpl extends ILExpressionImpl implements ILParenthesizedExpression {
 
-  public ILParenthesizedExpressionImpl(ASTNode node) {
+  public ILParenthesizedExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 

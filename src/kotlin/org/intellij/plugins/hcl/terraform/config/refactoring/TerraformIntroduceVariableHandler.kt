@@ -39,6 +39,7 @@ import org.intellij.plugins.hcl.HCLParserDefinition
 import org.intellij.plugins.hcl.navigation.HCLQualifiedNameProvider
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.codeinsight.ModelHelper
+import org.intellij.plugins.hcl.terraform.config.model.PropertyType
 import org.intellij.plugins.hcl.terraform.config.model.Type
 import org.intellij.plugins.hcl.terraform.config.model.Types
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator
@@ -415,7 +416,7 @@ private fun HCLElement.getType(): Type? {
     val pp = parent?.parent
     if (pp is HCLBlock) {
       val properties = ModelHelper.getBlockProperties(pp)
-      return properties.firstOrNull { it.property?.name == name }?.property?.type
+      return properties.filterIsInstance(PropertyType::class.java).firstOrNull { it.name == name }?.type
     }
   } else if (this is HCLLiteral) {
     val parent = parent as? HCLElement

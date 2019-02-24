@@ -12,7 +12,7 @@ import org.intellij.plugins.hil.psi.*;
 
 public class ILParameterListImpl extends ILExpressionBase implements ILParameterList {
 
-  public ILParameterListImpl(ASTNode node) {
+  public ILParameterListImpl(@NotNull ASTNode node) {
     super(node);
   }
 
