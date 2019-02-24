@@ -38,12 +38,12 @@ class TerraformExternalDocUrlTest : LightPlatformTestCase() {
   private fun httpHead(url: String): Boolean {
     try {
       Jsoup.connect(url).method(Connection.Method.HEAD).execute()
-      return true
     }
     catch (e: Exception) {
       logger.warn("${e.message} for $url")
       return false
     }
+    return true
   }
 
   @Test
