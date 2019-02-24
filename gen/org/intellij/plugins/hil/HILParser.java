@@ -11,7 +11,7 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
 import com.intellij.lang.LightPsiParser;
 
-@SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
+@SuppressWarnings("ALL")
 public class HILParser implements PsiParser, LightPsiParser {
 
   public ASTNode parse(IElementType t, PsiBuilder b) {
@@ -239,9 +239,9 @@ public class HILParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ILExpression
+  // ILExpressionHolder
   static boolean root(PsiBuilder b, int l) {
-    return ILExpression(b, l + 1, -1);
+    return ILExpressionHolder(b, l + 1);
   }
 
   /* ********************************************************** */

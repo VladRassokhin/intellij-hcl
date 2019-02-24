@@ -231,8 +231,7 @@ class TerraformIntroduceVariableHandler : BaseIntroduceVariableHandler<HCLElemen
       val target = statement.nameIdentifier!!
       val occurrences = operation.occurrences
       val occurrence = ILIntroduceVariableHandler.findOccurrenceUnderCaret(occurrences, operation.editor)
-      val elementForCaret =  target
-      operation.editor.caretModel.moveToOffset(elementForCaret.textRange.startOffset)
+      operation.editor.caretModel.moveToOffset(target.textRange.startOffset)
       // TODO: Uncomment once have idea hw to change name of variable from it's usage
       val introducer: InplaceVariableIntroducer<PsiElement> = object : InplaceVariableIntroducer<PsiElement>(statement, operation.editor, operation.project, "Introduce Variable", operation.occurrences.toTypedArray(), null) {
         override fun checkLocalScope(): PsiElement? {

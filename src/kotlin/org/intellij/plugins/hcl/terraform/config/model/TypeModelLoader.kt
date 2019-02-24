@@ -123,7 +123,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       val appdata = System.getenv("APPDATA") ?: return emptyList()
       terraform_d = File(appdata, "terraform.d")
     } else {
-      val userHome = SystemProperties.getUserHome() ?: return emptyList()
+      val userHome = SystemProperties.getUserHome()
       terraform_d = File(userHome, ".terraform.d")
     }
     if (!terraform_d.exists() || !terraform_d.isDirectory) return emptyList()
@@ -272,7 +272,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
 
   private fun parseResourceInfo(entry: Map.Entry<String, Any?>, info: ProviderType): ResourceType {
     val name = entry.key.pool()
-    assert(entry.value is JsonObject, { "Right part of resource should be object" })
+    assert(entry.value is JsonObject) { "Right part of resource should be object" }
     val obj = entry.value as JsonObject
     val timeouts = getTimeoutsBlock(obj)
     return ResourceType(name, info, *obj.map { parseSchemaElement(it, name) }.plus(timeouts).filterNotNull().toTypedArray())
@@ -280,7 +280,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
 
   private fun parseDataSourceInfo(entry: Map.Entry<String, Any?>, info: ProviderType): DataSourceType {
     val name = entry.key.pool()
-    assert(entry.value is JsonObject, { "Right part of data-source should be object" })
+    assert(entry.value is JsonObject) { "Right part of data-source should be object" }
     val obj = entry.value as JsonObject
     val timeouts = getTimeoutsBlock(obj)
     return DataSourceType(name, info, *obj.map { parseSchemaElement(it, name) }.plus(timeouts).filterNotNull().toTypedArray())
@@ -288,10 +288,10 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
 
   private fun getTimeoutsBlock(obj: JsonObject): PropertyOrBlockType? {
     val value = obj.remove(Constants.TIMEOUTS) ?: return null
-    assert(value is JsonArray<*>, {"${Constants.TIMEOUTS} should be an array"})
+    assert(value is JsonArray<*>) {"${Constants.TIMEOUTS} should be an array"}
     val array = value as? JsonArray<*> ?: return null
     for (element in array) {
-      assert(element is String, {"${Constants.TIMEOUTS} array elements should be string, got ${element?.javaClass?.name}"})
+      assert(element is String) {"${Constants.TIMEOUTS} array elements should be string, got ${element?.javaClass?.name}"}
     }
     val timeouts = array.map { it.toString().pool() }
     if (timeouts.isEmpty()) return null
@@ -307,7 +307,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   }
 
   private fun parseSchemaElement(name: String, value: Any?, providerName: String): PropertyOrBlockType {
-    assert(value is JsonObject, { "Right part of schema element (field parameters) should be object" })
+    assert(value is JsonObject) { "Right part of schema element (field parameters) should be object" }
     if (value !is JsonObject) {
       throw IllegalStateException()
     }

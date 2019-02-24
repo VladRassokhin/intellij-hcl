@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class JavaUtil {
-  private static final Key<List<Pair<TextRange, String>>> STRING_FRAGMENTS = new Key<List<Pair<TextRange, String>>>("HCL string fragments");
+  private static final Key<List<Pair<TextRange, String>>> STRING_FRAGMENTS = new Key<>("HCL string fragments");
   public static final String ourEscapesTable = "\"\"\\\\//b\bf\fn\nr\rt\tv\013a\007";
   public static final String ourEscapedSymbols = "\"\\/\b\f\n\r\t\013\007";
   @SuppressWarnings("SpellCheckingInspection")
@@ -49,12 +49,9 @@ public class JavaUtil {
 
   @NotNull
   public static List<Pair<TextRange, String>> getTextFragments(@NotNull final HCLHeredocContent content) {
-    return CachedValuesManager.getCachedValue(content, new CachedValueProvider<List<Pair<TextRange, String>>>() {
-      @Override
-      public Result<List<Pair<TextRange, String>>> compute() {
-        List<Pair<TextRange, String>> result = doGetTextFragments(content.getText(), UtilKt.isInHCLFileWithInterpolations(content), false);
-        return Result.create(result, content);
-      }
+    return CachedValuesManager.getCachedValue(content, () -> {
+      List<Pair<TextRange, String>> result = doGetTextFragments(content.getText(), UtilKt.isInHCLFileWithInterpolations(content), false);
+      return CachedValueProvider.Result.create(result, content);
     });
   }
 

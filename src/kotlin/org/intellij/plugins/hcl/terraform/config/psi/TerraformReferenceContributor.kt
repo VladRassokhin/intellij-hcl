@@ -35,9 +35,6 @@ import org.intellij.plugins.hil.psi.HCLElementLazyReference
 import org.intellij.plugins.hil.psi.HCLElementLazyReferenceBase
 
 class TerraformReferenceContributor : PsiReferenceContributor() {
-  companion object {
-  }
-
   override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
 
 
@@ -242,7 +239,7 @@ class DependsOnLazyReference(element: HCLStringLiteral) : HCLElementLazyReferenc
     return rangeInElement
   }
 
-  override fun handleElementRename(newElementName: String?): PsiElement {
+  override fun handleElementRename(newElementName: String?): PsiElement? {
     return ElementManipulators.getManipulator(element).handleContentChange(element, getRangeInElementForRename(), newElementName)
   }
 }
@@ -260,7 +257,7 @@ object VariableReferenceProvider : PsiReferenceProvider() {
       } else {
         @Suppress("NAME_SHADOWING")
         val value = element.id
-        listOf(element.getTerraformModule().findVariable(value.substringBefore('.'))?.second?.nameIdentifier as HCLElement?).filterNotNull()
+        listOfNotNull(element.getTerraformModule().findVariable(value.substringBefore('.'))?.second?.nameIdentifier as HCLElement?)
       }
     }
 
@@ -279,7 +276,7 @@ object VariableReferenceProvider : PsiReferenceProvider() {
         if (incomplete) {
           default.propertyList.map { it.nameElement }
         } else {
-          listOf(default.findProperty(value.substringAfter('.'))?.nameElement).filterNotNull()
+          listOfNotNull(default.findProperty(value.substringAfter('.'))?.nameElement)
         }
       }
       varReference.rangeInElement = TextRange(0, dotIndex)

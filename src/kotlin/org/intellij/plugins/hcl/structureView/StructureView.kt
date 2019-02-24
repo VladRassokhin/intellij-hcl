@@ -26,8 +26,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.intellij.plugins.hcl.psi.*
 
 class HCLStructureViewFactory : PsiStructureViewFactory {
-  override fun getStructureViewBuilder(psiFile: PsiFile?): StructureViewBuilder? {
-    if (psiFile == null) return null
+  override fun getStructureViewBuilder(psiFile: PsiFile): StructureViewBuilder? {
     return object : TreeBasedStructureViewBuilder() {
       override fun createStructureViewModel(editor: Editor?): StructureViewModel {
         return HCLStructureViewModel(psiFile as HCLFile, editor)
@@ -93,7 +92,7 @@ class HCLStructureViewElement(val element: HCLElement) : StructureViewTreeElemen
       value = element
     }
 
-    val list: List<HCLStructureViewElement> = value.children.map {
+    val list: List<HCLStructureViewElement> = value.children.mapNotNull {
       when (it) {
         is HCLObject -> HCLStructureViewElement(it)
         is HCLArray -> HCLStructureViewElement(it)
@@ -101,7 +100,7 @@ class HCLStructureViewElement(val element: HCLElement) : StructureViewTreeElemen
         is HCLBlock -> HCLStructureViewElement(it)
         else -> null
       }
-    }.filterNotNull()
+    }
 
     return list.toTypedArray()
   }

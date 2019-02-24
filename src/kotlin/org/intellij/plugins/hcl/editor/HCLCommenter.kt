@@ -15,13 +15,13 @@
  */
 package org.intellij.plugins.hcl.editor
 
+import com.intellij.application.options.CodeStyle
 import com.intellij.lang.Commenter
 import com.intellij.lang.Language
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.Key
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiFile
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager
 import com.intellij.psi.templateLanguages.MultipleLangCommentProvider
 import org.intellij.plugins.hcl.HCLFileType
 import org.intellij.plugins.hcl.formatter.HCLCodeStyleSettings
@@ -39,7 +39,7 @@ class HCLCommenter : MultipleLangCommentProvider, Commenter {
 
   override fun getLineCommenter(file: PsiFile?, editor: Editor?, lineStartLanguage: Language?, lineEndLanguage: Language?): Commenter? {
     val project = file?.project ?: return this
-    val settings = CodeStyleSettingsManager.getSettings(project).getCustomSettings(HCLCodeStyleSettings::class.java)
+    val settings = CodeStyle.getCustomSettings(file, HCLCodeStyleSettings::class.java)
     var commenter = project.getUserData(COMMENTER_KEY)
     if (commenter != null && settings == commenter.settings) return commenter
     commenter = MyCommenter(settings)
@@ -53,9 +53,9 @@ class HCLCommenter : MultipleLangCommentProvider, Commenter {
 
   override fun getBlockCommentSuffix() = "*/"
 
-  override fun getCommentedBlockCommentPrefix() = null
+  override fun getCommentedBlockCommentPrefix(): String? = null
 
-  override fun getCommentedBlockCommentSuffix() = null
+  override fun getCommentedBlockCommentSuffix(): String? = null
 
   class MyCommenter(val settings: HCLCodeStyleSettings) : Commenter {
     override fun getLineCommentPrefix() = (
@@ -67,8 +67,8 @@ class HCLCommenter : MultipleLangCommentProvider, Commenter {
 
     override fun getBlockCommentSuffix() = "*/"
 
-    override fun getCommentedBlockCommentPrefix() = null
+    override fun getCommentedBlockCommentPrefix(): String? = null
 
-    override fun getCommentedBlockCommentSuffix() = null
+    override fun getCommentedBlockCommentSuffix(): String? = null
   } 
 }

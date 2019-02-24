@@ -40,7 +40,11 @@ open class ILElementGenerator(val project: Project) {
   }
 
   open fun createDummyFile(content: String): PsiFile {
+    var code = content
+    if (!code.startsWith("\${") && !code.endsWith("}")) {
+      code = "\${$code}"
+    }
     val psiFileFactory = PsiFileFactory.getInstance(project)
-    return psiFileFactory.createFileFromText("dummy." + HILFileType.defaultExtension, HILFileType, content)
+    return psiFileFactory.createFileFromText("dummy." + HILFileType.defaultExtension, HILFileType, code)
   }
 }

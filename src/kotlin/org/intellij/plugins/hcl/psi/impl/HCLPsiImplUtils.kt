@@ -88,7 +88,7 @@ object HCLPsiImplUtils {
       }
       child = child.nextSibling
     }
-    return if (result == null) emptyArray<HCLElement>() else ArrayUtil.toObjectArray<HCLElement>(result, HCLElement::class.java)
+    return if (result == null) emptyArray() else ArrayUtil.toObjectArray<HCLElement>(result, HCLElement::class.java)
   }
 
   fun getValue(property: HCLProperty): HCLValue? {
@@ -315,7 +315,7 @@ object HCLPsiImplUtils {
   fun getLinesCount(content: HCLHeredocContent): Int {
     val node = content.node
     var cn: ASTNode? = node.firstChildNode
-    var counter: Int = 0
+    var counter = 0
     while (cn != null) {
       if (cn.elementType == HCLElementTypes.HD_EOL) counter++
       cn = cn.treeNext

@@ -98,26 +98,25 @@ class HILCompletionContributor : CompletionContributor() {
         .andNot(PlatformPatterns.psiElement().withSuperParent(2, ILSelectExpression::class.java))
 
     val ILSE_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
-        .with(getScopeSelectPatternCondition(SCOPES))!!
+        .with(getScopeSelectPatternCondition(SCOPES))
     val ILSE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
-        .without(getScopeSelectPatternCondition(SCOPES))!!
+        .without(getScopeSelectPatternCondition(SCOPES))
     val ILISE_NOT_FROM_KNOWN_SCOPE = PlatformPatterns.psiElement(ILIndexSelectExpression::class.java)
-        .without(getScopeSelectPatternCondition(SCOPES))!!
+        .without(getScopeSelectPatternCondition(SCOPES))
     val ILSE_FROM_DATA_SCOPE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
-        .with(getScopeSelectPatternCondition(setOf("data")))!!
+        .with(getScopeSelectPatternCondition(setOf("data")))
     val ILSE_DATA_SOURCE = PlatformPatterns.psiElement(ILSelectExpression::class.java)
         .with(object : PatternCondition<ILSelectExpression?>("ILSE_Data_Source()") {
           override fun accepts(t: ILSelectExpression, context: ProcessingContext?): Boolean {
             val from = t.from as? ILSelectExpression ?: return false
             return ILSE_FROM_DATA_SCOPE.accepts(from)
           }
-        })!!
+        })
 
 
     private val LOG = Logger.getInstance(HILCompletionContributor::class.java)
     fun create(value: String): LookupElementBuilder {
-      val builder = LookupElementBuilder.create(value)
-      return builder
+      return LookupElementBuilder.create(value)
     }
 
     fun createScope(value: String): LookupElementBuilder {
@@ -264,7 +263,7 @@ class HILCompletionContributor : CompletionContributor() {
       val module = getTerraformModule(variable) ?: return
 
       val dataSources = module.getDeclaredDataSources()
-      val types = dataSources.map { it.getNameElementUnquoted(1) }.filterNotNull().toSortedSet()
+      val types = dataSources.mapNotNull { it.getNameElementUnquoted(1) }.toSortedSet()
       result.addAllElements(types.map { create(it) })
 
       if (parameters.isExtendedCompletion) {
@@ -295,7 +294,7 @@ class HILCompletionContributor : CompletionContributor() {
         val resolved = SmartList<PsiElement>()
         for (reference in references) {
           if (reference is PsiPolyVariantReference) {
-            resolved.addAll(reference.multiResolve(false).map { it.element }.filterNotNull())
+            resolved.addAll(reference.multiResolve(false).mapNotNull { it.element })
           } else {
             reference.resolve()?.let { resolved.add(it) }
           }
@@ -331,10 +330,10 @@ class HILCompletionContributor : CompletionContributor() {
         val names = TreeSet<String>()
         if (HILCompletionContributor.ILSE_DATA_SOURCE.accepts(parent)) {
           val dataSources = module.findDataSource(expression.name, null)
-          dataSources.map { it.getNameElementUnquoted(2) }.filterNotNull().toCollection(names)
+          dataSources.mapNotNull { it.getNameElementUnquoted(2) }.toCollection(names)
         } else {
           val resources = module.findResources(expression.name, null)
-          resources.map { it.getNameElementUnquoted(2) }.filterNotNull().toCollection(names)
+          resources.mapNotNull { it.getNameElementUnquoted(2) }.toCollection(names)
         }
         result.addAllElements(names.map { create(it) })
         // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
@@ -389,7 +388,7 @@ class HILCompletionContributor : CompletionContributor() {
 
       val module = host.getTerraformModule()
       val resources = module.getDeclaredResources()
-      val types = resources.map { it.getNameElementUnquoted(1) }.filterNotNull().toSortedSet()
+      val types = resources.mapNotNull { it.getNameElementUnquoted(1) }.toSortedSet()
       result.addAllElements(types.map { create(it) })
 
       if (parameters.isExtendedCompletion) {
@@ -424,8 +423,8 @@ class HILCompletionContributor : CompletionContributor() {
         val module = property.getTerraformModule()
         hint.hint
             .mapNotNull { findByFQNRef(it, module) }
-            .flatMap { it }
-            .mapNotNull { it ->
+            .flatten()
+            .mapNotNull {
               return@mapNotNull when (it) {
                 is HCLBlock -> HCLQualifiedNameProvider.getQualifiedModelName(it)
                 is HCLProperty -> HCLQualifiedNameProvider.getQualifiedModelName(it)

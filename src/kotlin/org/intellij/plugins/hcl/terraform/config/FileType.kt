@@ -32,6 +32,8 @@ object TerraformFileType : LanguageFileType(TerraformLanguage) {
   override fun getDescription() = "Terraform config files"
 
   override fun getName() = "Terraform"
+
+  override fun toString() = name
 }
 
 class TerraformFileTypeFactory : FileTypeFactory() {

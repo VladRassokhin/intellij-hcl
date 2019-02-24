@@ -85,8 +85,8 @@ object ResourcePropertyInsertHandler : BasicInsertHandler<LookupElement>() {
     if (hint is ReferenceHint) {
       val suggestions = hint.hint
           .mapNotNull { ReferenceCompletionHelper.findByFQNRef(it, module) }
-          .flatMap { it }
-          .mapNotNull { it ->
+          .flatten()
+          .mapNotNull {
             return@mapNotNull when (it) {
             // TODO: Enable or remove next two lines
             // is HCLBlock -> HCLQualifiedNameProvider.getQualifiedModelName(it)

@@ -137,7 +137,10 @@ public class HILTypesResolvingTest extends LightPlatformTestCase {
     doTypeResolveTest("(true || false)", Types.INSTANCE.getBoolean());
   }
 
-  private void doTypeResolveTest(@NotNull final String text, @Nullable final Type expected) {
+  private void doTypeResolveTest(@NotNull String text, @Nullable final Type expected) {
+    if (!text.startsWith("${") && !text.endsWith("}")) {
+      text = "${" + text + "}";
+    }
     final PsiFile psiFile = PsiFileFactory.getInstance(getProject()).createFileFromText("a.hil", HILFileType.INSTANCE, text);
     System.out.println("PsiFile = " + DebugUtil.psiToString(psiFile, true));
     assertEquals(HILLanguage.INSTANCE, psiFile.getLanguage());

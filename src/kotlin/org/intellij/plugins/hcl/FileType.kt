@@ -30,6 +30,7 @@ object HCLFileType : LanguageFileType(HCLLanguage) {
 
   override fun getName() = "HCL"
 
+  override fun toString() = name
 }
 
 class HCLFileTypeFactory : FileTypeFactory() {

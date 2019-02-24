@@ -70,15 +70,12 @@ public class ILIntroduceDialog extends DialogWrapper {
     final EditorComboBoxEditor comboEditor = new StringComboboxEditor(myProject, TerraformFileType.INSTANCE, myNameComboBox);
 
     myNameComboBox.setEditor(comboEditor);
+    //noinspection GtkPreferredJComboBoxRenderer,unchecked
     myNameComboBox.setRenderer(new EditorComboBoxRenderer(comboEditor));
     myNameComboBox.setEditable(true);
     myNameComboBox.setMaximumRowCount(8);
 
-    myNameComboBox.addItemListener(new ItemListener() {
-      public void itemStateChanged(ItemEvent e) {
-        updateControls();
-      }
-    });
+    myNameComboBox.addItemListener(e -> updateControls());
     ((EditorTextField)myNameComboBox.getEditor().getEditorComponent()).addDocumentListener(new DocumentListener() {
       public void beforeDocumentChange(DocumentEvent event) {
       }
@@ -88,17 +85,8 @@ public class ILIntroduceDialog extends DialogWrapper {
       }
     });
 
-    myContentPane.registerKeyboardAction(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        IdeFocusManager.getGlobalInstance().doWhenFocusSettlesDown(
-            new Runnable() {
-              @Override
-              public void run() {
-                IdeFocusManager.getGlobalInstance().requestFocus(myNameComboBox, true);
-              }
-            });
-      }
-    }, KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.ALT_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
+    myContentPane.registerKeyboardAction(e -> IdeFocusManager.getGlobalInstance().doWhenFocusSettlesDown(
+        () -> IdeFocusManager.getGlobalInstance().requestFocus(myNameComboBox, true)), KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.ALT_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
     for (String possibleName : possibleNames) {
       myNameComboBox.addItem(possibleName);

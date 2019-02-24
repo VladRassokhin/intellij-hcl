@@ -141,6 +141,7 @@ public class HCLStatementMover extends LineMover {
     return true;
   }
 
+  @SuppressWarnings("RedundantIfStatement")
   private static boolean statementCanBePlacedAlong(@NotNull final PsiElement element, final PsiElement movingParent) {
     final PsiElement parent = element.getParent();
     if (parent instanceof PsiFile) return true;
@@ -280,7 +281,7 @@ public class HCLStatementMover extends LineMover {
     //endregion
 
     // Get all children in between
-    ArrayList<PsiElement> array = new ArrayList<PsiElement>();
+    ArrayList<PsiElement> array = new ArrayList<>();
     PsiElement next = element1;
     while (next != null) {
       if (!(next instanceof PsiWhiteSpace)) {

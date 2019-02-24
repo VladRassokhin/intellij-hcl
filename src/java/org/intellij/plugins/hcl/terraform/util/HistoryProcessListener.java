@@ -21,14 +21,15 @@ import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class HistoryProcessListener extends ProcessAdapter {
-  private final ConcurrentLinkedQueue<Pair<ProcessEvent, Key>> myHistory = new ConcurrentLinkedQueue<Pair<ProcessEvent, Key>>();
+  private final ConcurrentLinkedQueue<Pair<ProcessEvent, Key>> myHistory = new ConcurrentLinkedQueue<>();
 
   @Override
-  public void onTextAvailable(ProcessEvent event, Key outputType) {
+  public void onTextAvailable(@NotNull ProcessEvent event, @NotNull Key outputType) {
     myHistory.add(Pair.create(event, outputType));
   }
 

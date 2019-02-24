@@ -233,7 +233,7 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
 
     private fun failIfInUnitTestsMode(position: PsiElement, addition: String? = null) {
       LOG.assertTrue(!ApplicationManager.getApplication().isUnitTestMode, {
-        var ret: String = ""
+        var ret = ""
         if (addition != null) {
           ret = "$addition\n"
         }
@@ -493,8 +493,8 @@ class TerraformConfigCompletionContributor : HCLCompletionContributor() {
         val module = property.getTerraformModule()
         hint.hint
             .mapNotNull { findByFQNRef(it, module) }
-            .flatMap { it }
-            .mapNotNull { it ->
+            .flatten()
+            .mapNotNull {
               return@mapNotNull when (it) {
                 // TODO: Enable or remove next two lines
 //                is HCLBlock -> HCLQualifiedNameProvider.getQualifiedModelName(it)
@@ -596,7 +596,7 @@ object ModelHelper {
       if (bpp is HCLBlock) {
         val properties = getBlockProperties(bpp)
         val candidates = properties.filterIsInstance(BlockType::class.java).filter { it.literal == type }
-        return candidates.map { it.properties.toList() }.flatMap { it }.toTypedArray()
+        return candidates.map { it.properties.toList() }.flatten().toTypedArray()
       } else return emptyArray()
     }
     return emptyArray()

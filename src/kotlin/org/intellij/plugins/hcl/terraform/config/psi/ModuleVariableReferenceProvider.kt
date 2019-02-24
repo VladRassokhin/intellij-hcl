@@ -50,7 +50,7 @@ object ModuleVariableReferenceProvider : PsiReferenceProvider() {
         module.getAllVariables().map { it.second.nameIdentifier as HCLElement }
       } else {
         val value = element.id
-        listOf(module.findVariable(value.substringBefore('.'))?.second?.nameIdentifier as HCLElement?).filterNotNull()
+        listOfNotNull(module.findVariable(value.substringBefore('.'))?.second?.nameIdentifier as HCLElement?)
       }
     })
   }
