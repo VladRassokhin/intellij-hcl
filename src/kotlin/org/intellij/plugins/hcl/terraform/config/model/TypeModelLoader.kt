@@ -20,12 +20,14 @@ import com.intellij.openapi.application.Application
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.SystemInfo
+import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.SystemProperties
 import org.intellij.plugins.hcl.terraform.config.Constants
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 import java.util.*
+import kotlin.collections.ArrayList
 
 class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
 
@@ -36,33 +38,13 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   val backends: MutableList<BackendType> = arrayListOf()
   val functions: MutableList<Function> = arrayListOf()
 
+  val loaded: MutableMap<String, String> = linkedMapOf()
+
   fun load(): TypeModel? {
     val application = ApplicationManager.getApplication()
     try {
-      val resources: Collection<String> = getAllResourcesToLoad(ModelResourcesPrefix)
-
-      for (it in resources) {
-        val file = it.ensureHavePrefix("/")
-        val stream = getResource(file)
-        if (stream == null) {
-          LOG.warn("Resource '$file' was not found")
-          continue
-        }
-
-        loadOne(application, file, stream)
-      }
-
-      val schemas = getSharedSchemas()
-      for (file in schemas) {
-        val stream: FileInputStream
-        try {
-          stream = file.inputStream()
-        } catch(e: Exception) {
-          logErrorAndFailInInternalMode(application, "Cannot open stream for file '${file.absolutePath}'", e)
-          continue
-        }
-        loadOne(application, file.absolutePath, stream)
-      }
+      loadExternal(application)
+      loadBundled(application)
 
       this.resources.sortBy { it.type }
       this.dataSources.sortBy { it.type }
@@ -83,6 +65,35 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
     } catch(e: Exception) {
       logErrorAndFailInInternalMode(application, "Failed to load Terraform Model", e)
       return null
+    }
+  }
+
+  private fun loadBundled(application: Application) {
+    val resources: Collection<String> = getAllResourcesToLoad(ModelResourcesPrefix)
+
+    for (it in resources) {
+      val file = it.ensureHavePrefix("/")
+      val stream = getResource(file)
+      if (stream == null) {
+        LOG.warn("Resource '$file' was not found")
+        continue
+      }
+
+      loadOne(application, file, stream)
+    }
+  }
+
+  private fun loadExternal(application: Application) {
+    val schemas = getSharedSchemas()
+    for (file in schemas) {
+      val stream: FileInputStream
+      try {
+        stream = file.inputStream()
+      } catch (e: Exception) {
+        logErrorAndFailInInternalMode(application, "Cannot open stream for file '${file.absolutePath}'", e)
+        continue
+      }
+      loadOne(application, file.absolutePath, stream)
     }
   }
 
@@ -127,12 +138,30 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       terraform_d = File(userHome, ".terraform.d")
     }
     if (!terraform_d.exists() || !terraform_d.isDirectory) return emptyList()
+
+    val result = ArrayList<File>()
+
     val schemas = File(terraform_d, "schemas")
-    if (!schemas.exists() || !schemas.isDirectory) return emptyList()
-    val files = schemas.listFiles { _, name ->
-      name.endsWith(".json", true)
+    if (schemas.exists() && schemas.isDirectory) {
+      FileUtil.processFilesRecursively(schemas) {
+        if (it.isFile && it.name.endsWith(".json", ignoreCase = true)) {
+          result.add(it)
+        }
+        return@processFilesRecursively true
+      }
     }
-    return files?.toList()?.filter { it.exists() && it.isFile } ?: emptyList()
+
+    val metadataRepo = File(terraform_d, "metadata-repo/terraform/model")
+    if (metadataRepo.exists() && metadataRepo.isDirectory) {
+      FileUtil.processFilesRecursively(metadataRepo) {
+        if (it.isFile && it.name.endsWith(".json", ignoreCase = true)) {
+          result.add(it)
+        }
+        return@processFilesRecursively true
+      }
+    }
+
+    return result
   }
 
   companion object {
@@ -205,6 +234,11 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       LOG.warn("No provider schema in file '$file'")
       return
     }
+    if (loaded.containsKey("provider.$name")) {
+      LOG.warn("Provider '$name' is already loaded from '${loaded["provider.$name"]}'")
+      return
+    }
+    loaded["provider.$name"] = file
     val info = parseProviderInfo(name, provider)
     this.providers.add(info)
     val resources = json.obj("resources")
@@ -223,18 +257,28 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       LOG.warn("No provisioner schema in file '$file'")
       return
     }
+    if (loaded.containsKey("provisioner.$name")) {
+      LOG.warn("Provisioner '$name' is already loaded from '${loaded["provisioner.$name"]}'")
+      return
+    }
+    loaded["provisioner.$name"] = file
     val info = parseProvisionerInfo(name, provisioner)
     this.provisioners.add(info)
   }
 
   private fun parseBackendFile(json: JsonObject, file: String) {
     val name = json.string("name")!!.pool()
-    val provisioner = json.obj("schema")
-    if (provisioner == null) {
-      LOG.warn("No provisioner schema in file '$file'")
+    val backend = json.obj("schema")
+    if (backend == null) {
+      LOG.warn("No backend schema in file '$file'")
       return
     }
-    val info = parseBackendInfo(name, provisioner)
+    if (loaded.containsKey("backend.$name")) {
+      LOG.warn("Backend '$name' is already loaded from '${loaded["backend.$name"]}'")
+      return
+    }
+    loaded["backend.$name"] = file
+    val info = parseBackendInfo(name, backend)
     this.backends.add(info)
   }
 
@@ -244,6 +288,11 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       LOG.warn("No functions schema in file '$file'")
       return
     }
+    if (loaded.containsKey("functions")) {
+      LOG.warn("Functions definitions already loaded from '${loaded["functions"]}'")
+      return
+    }
+    loaded["functions"] = file
     for ((k, v) in functions) {
       if (v !is JsonObject) continue
       assert(v.string("Name").equals(k)) { "Name mismatch: $k != ${v.string("Name")}" }
