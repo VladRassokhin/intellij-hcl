@@ -15,10 +15,7 @@
  */
 package org.intellij.plugins.hcl.terraform.config.model
 
-import com.beust.klaxon.JsonArray
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.boolean
-import com.beust.klaxon.string
+import com.beust.klaxon.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
@@ -70,7 +67,13 @@ class TypeModelProvider {
 
   private fun loadExternalInformation(): Map<String, Additional> {
     val map = HashMap<String, Additional>()
-    val json = TypeModelLoader.getModelExternalInformation("external-data.json")
+
+    val stream = TypeModelLoader.loadExternalResource("external-data.json") ?: return map
+    val json = stream.use {
+      val parser = Parser()
+      parser.parse(it)
+    }
+
     if (json is JsonObject) {
       for ((fqn, obj) in json) {
         if (obj !is JsonObject) {
@@ -92,12 +95,12 @@ class TypeModelProvider {
 
   private fun loadIgnoredReferences(): Set<String> {
     try {
-      val stream = TypeModelLoader.getResource("/terraform/model-external/ignored-references.list")
+      val stream = TypeModelLoader.loadExternalResource("ignored-references.list")
       if (stream == null) {
         TypeModelLoader.LOG.warn("Cannot read 'ignored-references.list': resource '/terraform/model-external/ignored-references.list' not found")
         return emptySet()
       }
-      val lines = stream.bufferedReader(Charsets.UTF_8).readLines().map(String::trim).filter { !it.isEmpty() }
+      val lines = stream.use { s -> s.bufferedReader(Charsets.UTF_8).readLines().map(String::trim).filter { !it.isEmpty() } }
       return LinkedHashSet<String>(lines)
     } catch(e: Exception) {
       TypeModelLoader.LOG.warn("Cannot read 'ignored-references.list': ${e.message}")

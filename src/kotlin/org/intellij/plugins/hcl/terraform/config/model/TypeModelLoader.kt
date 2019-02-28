@@ -129,15 +129,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
   }
 
   private fun getSharedSchemas(): List<File> {
-    val terraform_d: File
-    if (SystemInfo.isWindows) {
-      val appdata = System.getenv("APPDATA") ?: return emptyList()
-      terraform_d = File(appdata, "terraform.d")
-    } else {
-      val userHome = SystemProperties.getUserHome()
-      terraform_d = File(userHome, ".terraform.d")
-    }
-    if (!terraform_d.exists() || !terraform_d.isDirectory) return emptyList()
+    val terraform_d: File = getGlobalTerraformDir() ?: return emptyList()
 
     val result = ArrayList<File>()
 
@@ -214,6 +206,33 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
       }
     }
 
+    fun getGlobalTerraformDir(): File? {
+      val terraform_d = if (SystemInfo.isWindows) {
+        System.getenv("APPDATA")?.let { File(it, "terraform.d") }
+      } else {
+        val userHome = SystemProperties.getUserHome()
+        File(userHome, ".terraform.d")
+      }
+      if (terraform_d == null || !terraform_d.exists() || !terraform_d.isDirectory) return null
+      return terraform_d
+    }
+
+    fun loadExternalResource(name: String): InputStream? {
+      val stream: InputStream? = getGlobalTerraformDir()?.let { tf ->
+        listOf(
+            File(tf, "schemas/$name"),
+            File(tf, "metadata-repo/terraform/model-external/$name")
+        ).firstOrNull { it.exists() && it.isFile }?.let {
+          try {
+            it.inputStream()
+          } catch (e: Exception) {
+            LOG.warn("Cannot open stream for file '${it.absolutePath}'", e)
+            null
+          }
+        }
+      } ?: getResource("/terraform/model-external/$name")
+      return stream
+    }
   }
 
   private fun parseFile(json: JsonObject, file: String) {
