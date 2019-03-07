@@ -70,7 +70,7 @@ open class HCLStringLiteralTextEscaperTest : LightPlatformTestCase() {
     val out = StringBuilder()
     val decode = escaper.decode(range, out)
     Assert.assertTrue("Successfully decoded", decode)
-    then(escaper.outSourceOffsets).isEqualTo(offsets)
+    then(getSourceOffsets(escaper)).isEqualTo(offsets)
     then(out.toString()).isEqualTo(expected)
   }
 
@@ -90,5 +90,12 @@ open class HCLStringLiteralTextEscaperTest : LightPlatformTestCase() {
     val literal = myElementGenerator.createValue<HCLStringLiteralMixin>(text)
     val escaper = literal.createLiteralTextEscaper() as HCLStringLiteralTextEscaper
     then(escaper.relevantTextRange).isEqualTo(expected)
+  }
+
+  private fun getSourceOffsets(escaper: HCLStringLiteralTextEscaper): IntArray? {
+    val field = HCLStringLiteralTextEscaper::class.java.getDeclaredField("outSourceOffsets")
+    field.isAccessible = true
+    val value = field.get(escaper)
+    return value as IntArray?
   }
 }
