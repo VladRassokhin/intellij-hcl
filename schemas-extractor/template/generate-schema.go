@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"reflect"
 	"time"
 )
 
@@ -127,8 +126,11 @@ func export(v *schema.Schema) SchemaDefinition {
 	}
 
 	// TODO: Find better solution
-	if defValue, err := v.DefaultValue(); err == nil && defValue != nil && !reflect.DeepEqual(defValue, v.Default) {
-		item.Default = exportValue(defValue, fmt.Sprintf("%T", defValue))
+	if defValue, err := v.DefaultValue(); err == nil && defValue != nil {
+		defValueAsMap, ok := defValue.(map[string]interface{})
+		if !ok || len(defValueAsMap) != 0 {
+			item.Default = exportValue(defValue, fmt.Sprintf("%T", defValue))
+		}
 	}
 	return item
 }
@@ -151,10 +153,12 @@ func exportValue(value interface{}, t string) *SchemaElement {
 	}
 	vt, ok := value.(schema.ValueType)
 	if ok {
-	  return &SchemaElement{Value: shortenType(fmt.Sprintf("%v", vt))}
+		valStr := shortenType(fmt.Sprintf("%v", vt))
+	  return &SchemaElement{Value: &valStr}
 	}
 	// Unknown case
-	return &SchemaElement{Type: t, Value: fmt.Sprintf("%v", value)}
+	valStr := fmt.Sprintf("%v", value)
+	return &SchemaElement{Type: t, Value: &valStr}
 }
 
 func Generate(provider *schema.Provider, name string, outputPath string) {
@@ -190,13 +194,39 @@ func DoGenerate(provider *schema.Provider, providerName string, outputFilePath s
 
 type SchemaElement struct {
 	// One of "schema.ValueType" or "SchemaElements" or "SchemaInfo"
-	Type string `json:",omitempty"`
+	Type string
 	// Set for simple types (from ValueType)
-	Value string `json:",omitempty"`
+	Value *string
 	// Set if Type == "SchemaElements"
-	ElementsType string `json:",omitempty"`
+	ElementsType string
 	// Set if Type == "SchemaInfo"
-	Info SchemaInfo `json:",omitempty"`
+	Info SchemaInfo
+}
+
+func (e *SchemaElement) MarshalJSON() ([]byte, error) {
+	if e.Value == nil {
+		return json.Marshal(&struct {
+			Type string `json:",omitempty"`
+			ElementsType string `json:",omitempty"`
+			Info SchemaInfo `json:",omitempty"`
+		}{
+			Type:         e.Type,
+			ElementsType: e.ElementsType,
+			Info:         e.Info,
+		})
+	} else {
+		return json.Marshal(&struct {
+			Type string `json:",omitempty"`
+			Value string
+			ElementsType string `json:",omitempty"`
+			Info SchemaInfo `json:",omitempty"`
+		}{
+			Type:         e.Type,
+			Value:        *e.Value,
+			ElementsType: e.ElementsType,
+			Info:         e.Info,
+		})
+    }
 }
 
 type SchemaDefinition struct {

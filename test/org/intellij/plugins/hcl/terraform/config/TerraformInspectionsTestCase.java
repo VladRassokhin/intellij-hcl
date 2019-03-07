@@ -99,4 +99,7 @@ public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
     doTest("interpolation_operations_types", new HILOperationTypesMismatchInspection());
   }
 
+  public void testDefaultProperty() throws Exception {
+    doTest("default_property", new TFDefaultPropertyInspection());
+  }
 }

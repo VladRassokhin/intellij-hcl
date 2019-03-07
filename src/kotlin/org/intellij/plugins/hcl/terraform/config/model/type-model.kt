@@ -74,7 +74,7 @@ open class PropertyType(override val name: String, val type: Type,
                         description: String? = null,
                         required: Boolean = false, deprecated: String? = null, computed: Boolean = false,
                         conflictsWith: List<String>? = null,
-                        val has_default: Boolean = false
+                        override val defaultValue: Any? = null
 ) : BaseModelType(description = description, required = required, deprecated = deprecated, computed = computed, conflictsWith = conflictsWith), PropertyOrBlockType {
 
   override fun toString(): String {
@@ -92,7 +92,7 @@ open class PropertyType(override val name: String, val type: Type,
     if (type != other.type) return false
     if (hint != other.hint) return false
     if (injectionAllowed != other.injectionAllowed) return false
-    if (has_default != other.has_default) return false
+    if (defaultValue != other.defaultValue) return false
 
     return true
   }
@@ -103,7 +103,7 @@ open class PropertyType(override val name: String, val type: Type,
     result = 31 * result + type.hashCode()
     result = 31 * result + (hint?.hashCode() ?: 0)
     result = 31 * result + injectionAllowed.hashCode()
-    result = 31 * result + has_default.hashCode()
+    result = 31 * result + (defaultValue?.hashCode() ?: 0)
     return result
   }
 
@@ -123,6 +123,9 @@ open class BlockType(val literal: String, val args: Int = 0,
   override fun toString(): String {
     return "BlockType(literal='$literal', args=$args, properties=${Arrays.toString(properties)})"
   }
+
+  override val defaultValue: Any?
+    get() = null
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -158,6 +161,7 @@ interface PropertyOrBlockType {
   val deprecated: String?
   val computed: Boolean
   val conflictsWith: List<String>?
+  val defaultValue: Any?
 }
 
 object Types {
