@@ -212,6 +212,14 @@ public class HILParserTest extends ParsingTestCase {
     doCodeTest("!false?!false:!false");
   }
 
+  public void testIdStartsWithNumber() throws IOException {
+    doCodeTest("${null_resource.2a.id}");
+  }
+
+  public void testIdWithHyphen() throws IOException {
+    doCodeTest("${null_resource.1-1.id}");
+  }
+
   protected void doCodeTest(String code) throws IOException {
     if (!code.startsWith("${") && !code.endsWith("}")) {
       code = "${" + code + "}";

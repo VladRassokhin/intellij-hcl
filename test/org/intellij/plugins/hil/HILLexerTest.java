@@ -145,4 +145,40 @@ public class HILLexerTest extends BaseLexerTestCase {
         "} ('}')");
   }
 
+  public void testIdStartsWithNumber() throws Exception {
+    doTest("${null_resource.2a.id}", "${ ('${')\n" +
+        "ID ('null_resource')\n" +
+        ". ('.')\n" +
+        "ID ('2a')\n" +
+        ". ('.')\n" +
+        "ID ('id')\n" +
+        "} ('}')");
+  }
+
+  public void testIdIsHexNumber() throws Exception {
+    doTest("${null_resource.0x0.id}", "${ ('${')\n" +
+        "ID ('null_resource')\n" +
+        ". ('.')\n" +
+        "NUMBER ('0x0')\n" +
+        ". ('.')\n" +
+        "ID ('id')\n" +
+        "} ('}')");
+  }
+
+  public void testNumbers() throws Exception {
+    doTest("0", "NUMBER ('0')");
+    doTest("0x0", "NUMBER ('0x0')");
+    doTest("0x0.0", "NUMBER ('0x0.0')");
+    doTest("0x0.0e0", "NUMBER ('0x0.0e0')");
+    doTest("0x0.0e-0", "NUMBER ('0x0.0e-0')");
+    doTest("0x0.0e+0", "NUMBER ('0x0.0e+0')");
+  }
+
+  public void testNumberOps() throws Exception {
+    doTest("1+1", "NUMBER ('1')\n+ ('+')\nNUMBER ('1')\n");
+    doTest("1-1", "NUMBER ('1')\n- ('-')\nNUMBER ('1')\n");
+    doTest("1*1", "NUMBER ('1')\n* ('*')\nNUMBER ('1')\n");
+    doTest("1/1", "NUMBER ('1')\n/ ('/')\nNUMBER ('1')\n");
+  }
+
 }

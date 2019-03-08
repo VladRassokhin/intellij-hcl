@@ -18,8 +18,8 @@ import static com.intellij.psi.TokenType.WHITE_SPACE;
 
 WHITE_SPACE=\s
 
-NUMBER=(0x)?(0|[1-9])[0-9]*(\.[0-9]+)?([eE][-+]?[0-9]+)?
-ID=[a-zA-Z_][0-9a-zA-Z\-_*]*
+NUMBER=(0x)?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?
+ID=([0-9a-zA-Z_][0-9a-zA-Z_]*)|([a-zA-Z_][0-9a-zA-Z\-_*]*)
 
 HIL_START=(\$\{)
 HIL_STOP=(\})
