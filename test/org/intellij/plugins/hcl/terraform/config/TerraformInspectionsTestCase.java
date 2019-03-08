@@ -50,6 +50,11 @@ public class TerraformInspectionsTestCase extends InspectionFixtureTestCase {
     doTest("unknown_block_name", new HCLUnknownBlockTypeInspection());
   }
 
+  // Test for issue #198
+  public void testNoUnknownBlocksForNomad() throws Exception {
+    doTest("no_unknown_blocks_for_nomad", new HCLUnknownBlockTypeInspection());
+  }
+
   public void testIncorrectTFVARS() throws Exception {
     doTest("incorrect_tfvars", new TFVARSIncorrectElementInspection());
   }

@@ -21,7 +21,7 @@ import org.intellij.plugins.hcl.psi.isInHCLFileWithInterpolations
 
 class HCLStringLiteralTextEscaper(host: HCLStringLiteralMixin,
                                   val interpolations: Boolean = host.isInHCLFileWithInterpolations()) : LiteralTextEscaper<HCLStringLiteralMixin>(host) {
-  internal var outSourceOffsets: IntArray? = null
+  private var outSourceOffsets: IntArray? = null
 
   override fun isOneLine(): Boolean = !myHost.text.contains('\n')
 
