@@ -36,6 +36,7 @@ import com.intellij.psi.util.CachedValuesManager
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.psi.getNameElementUnquoted
+import org.intellij.plugins.hcl.terraform.config.DotTerraformUtil
 
 object ModuleDetectionUtil {
   private val LOG = Logger.getInstance(ModuleDetectionUtil::class.java)
@@ -78,7 +79,7 @@ object ModuleDetectionUtil {
 
     val project = moduleBlock.project
 
-    val dotTerraform = ModuleDetectionUtil.getTerraformDirSomewhere(directory)
+    val dotTerraform = DotTerraformUtil.findTerraformDir(directory)
     if (dotTerraform != null) {
       LOG.debug("Found .terraform directory: $dotTerraform")
       val manifestFile = getTerraformModulesManifestFile(project, dotTerraform)
@@ -145,7 +146,7 @@ object ModuleDetectionUtil {
         LOG.warn(err)
       }
     } else {
-      err = "No .terraform found under project directory, please run `terraform get` in appropriate place"
+      err = "No .terraform directory found, please run `terraform get` in appropriate place"
       LOG.warn(err)
     }
 
@@ -198,11 +199,6 @@ object ModuleDetectionUtil {
 
 
   private fun getTerraformModulesManifestFile(project: Project, dotTerraform: VirtualFile): VirtualFile? {
-    val projectRoot = project.baseDir
-    if (projectRoot != null && !VfsUtilCore.isAncestor(projectRoot, dotTerraform, false)) {
-      LOG.warn("Dir $dotTerraform is not under project root")
-      return null
-    }
     if (!dotTerraform.isValid || !dotTerraform.exists()) return null
 
     val file = dotTerraform.findFileByRelativePath("modules/modules.json")
@@ -286,26 +282,5 @@ object ModuleDetectionUtil {
       // Module referenced from root key would be '1.$NAME;$SOURCE' or '1.$NAME;$SOURCE.$VERSION'
       return "1.$name;$source" to null
     }
-  }
-
-  private fun getTerraformDirSomewhere(file: PsiDirectory): VirtualFile? {
-    val base = file.project.baseDir ?: return null
-    val start = file.virtualFile
-    if (!VfsUtilCore.isAncestor(base, start, false)) {
-      LOG.warn("File $file is not under project root")
-      return null
-    }
-    var parent: VirtualFile? = start
-    while (true) {
-      if (parent == null) return null
-      if (parent == base) break
-
-      val child = parent.findChild(".terraform")
-      if (child != null && child.isDirectory) {
-        return child
-      }
-      parent = parent.parent
-    }
-    return null
   }
 }
