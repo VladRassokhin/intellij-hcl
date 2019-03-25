@@ -430,6 +430,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
 
     val deprecated = value.string("Deprecated")
     val has_default: Boolean = value.obj("Default")?.isNotEmpty() ?: false
+    val has_default_function: Boolean = value.obj("DefaultFunc")?.isNotEmpty() ?: false
     // || m["InputDefault"]?.string("value") != null // Not sure about this property TODO: Investigate how it works in terraform
 
     val additional = external[fqn] ?: TypeModelProvider.Additional(name)
@@ -464,7 +465,7 @@ class TypeModelLoader(val external: Map<String, TypeModelProvider.Additional>) {
         deprecated = deprecated?.pool(),
         computed = computed,
         conflictsWith = conflicts,
-        has_default = has_default).pool()
+        has_default = has_default || has_default_function).pool()
   }
 
   private fun parseType(string: String?): Type {
