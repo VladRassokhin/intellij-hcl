@@ -36,6 +36,9 @@ import com.intellij.psi.util.CachedValuesManager
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.psi.getNameElementUnquoted
+import org.intellij.plugins.hcl.terraform.config.model.version.Version
+import org.intellij.plugins.hcl.terraform.config.model.version.VersionConstraint
+import java.util.*
 
 object ModuleDetectionUtil {
   private val LOG = Logger.getInstance(ModuleDetectionUtil::class.java)
@@ -86,19 +89,27 @@ object ModuleDetectionUtil {
         LOG.debug("Found manifest.json: $manifestFile")
         val manifest = CachedValuesManager.getManager(project).getCachedValue(file, ManifestCachedValueProvider(manifestFile))
         if (manifest != null) {
-          val keyPrefix: String
           LOG.debug("All modules from modules.json: ${manifest.modules}")
-          val pair = getKeyPrefix(directory, dotTerraform, manifest, name, source)
-          if (pair.first == null) {
-            val relativeModule = findRelativeModule(directory, moduleBlock, source)
-            return CachedValueProvider.Result(relativeModule to (pair.second
-                ?: "Can't determine key prefix"), moduleBlock, dotTerraform, manifestFile, *getModuleFiles(relativeModule))
-          }
-          keyPrefix = pair.first!!
+          val module: ModuleManifest?
+          if (isRegistrySource(source)) {
+            val version = (moduleBlock.`object`?.findProperty("version")?.value as? HCLStringLiteral)?.value
+            val constraint = getVersionConstraint(version)
+            module = newestModuleManifest(constraint, manifest.modules
+                .filter { it.source == source })
+          } else {
+            val keyPrefix: String
+            val pair = getKeyPrefix(directory, dotTerraform, manifest, name, source)
+            if (pair.first == null) {
+              val relativeModule = findRelativeModule(directory, moduleBlock, source)
+              return CachedValueProvider.Result(relativeModule to (pair.second
+                  ?: "Can't determine key prefix"), moduleBlock, dotTerraform, manifestFile, *getModuleFiles(relativeModule))
+            }
+            keyPrefix = pair.first!!
 
-          LOG.debug("Searching for module with source '$source' and keyPrefix '$keyPrefix'")
-          val module = manifest.modules.find {
-            it.source == source && it.key.startsWith(keyPrefix) && !it.key.removePrefix(keyPrefix).contains('|')
+            LOG.debug("Searching for module with source '$source' and keyPrefix '$keyPrefix'")
+            module = manifest.modules.find {
+              it.source == source && it.key.startsWith(keyPrefix) && !it.key.removePrefix(keyPrefix).contains('|')
+            }
           }
 
           if (module != null) {
@@ -157,11 +168,43 @@ object ModuleDetectionUtil {
     return CachedValueProvider.Result(relativeModule to err, moduleBlock, directory, *getVFSChainOrVFS(directory, project), *getModuleFiles(relativeModule))
   }
 
+  private fun newestModuleManifest(constraint: VersionConstraint, modules: List<ModuleManifest>): ModuleManifest? {
+    if (modules.isEmpty()) return null
+    if (modules.size == 1) {
+      val candidate = modules.first()
+      val version = Version.parseOrNull(candidate.version) ?: return null
+      if (constraint.check(version)) return candidate
+      return null
+    }
+
+    val versions = TreeMap<Version, ModuleManifest>()
+    for (module in modules) {
+      val version = Version.parseOrNull(module.version)
+      if (version == null) {
+        // ignore modules with incorrect versions
+      } else {
+        versions[version] = module
+      }
+    }
+    return versions.entries.findLast { constraint.check(it.key) }?.value
+  }
+
+  private fun getVersionConstraint(constraint: String?): VersionConstraint {
+    if (constraint == null) return VersionConstraint.AnyVersion
+    return VersionConstraint.parse(constraint) ?: return VersionConstraint.AnyVersion
+  }
+
+  // Based on configs/configload/source_addr.go:isLocalSourceAddr
   private fun isRelativeSource(source: String): Boolean {
-    // TODO: Improve
     if (source.startsWith("./")) return true
     if (source.startsWith("../")) return true
+    if (source.startsWith(".\\")) return true
+    if (source.startsWith("..\\")) return true
     return false
+  }
+
+  private fun isRegistrySource(source: String): Boolean {
+    return RegistryModuleUtil.parseRegistryModule(source) != null
   }
 
   private fun getModuleFiles(module: Module?): Array<out PsiElement> {
