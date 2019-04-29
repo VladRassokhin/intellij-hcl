@@ -65,9 +65,9 @@ public class TerraformRenameRefactoringTest extends LightPlatformCodeInsightFixt
     doTestNameValidness(element, "with*star", true);
     doTestNameValidness(element, "with_underscore", true);
     doTestNameValidness(element, "_with_leading_underscore", true);
+    doTestNameValidness(element, "0a", true);
 
     doTestNameValidness(element, "with.dot", false);
-    doTestNameValidness(element, "0a", false);
     doTestNameValidness(element, "*", false);
   }
 

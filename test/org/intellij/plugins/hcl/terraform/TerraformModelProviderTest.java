@@ -73,25 +73,38 @@ public class TerraformModelProviderTest extends LightPlatformTestCase {
     assertTrue(cookies.getRequired());
   }
 
-  public void testAllResourceAndDataSourcesHasProviderNameAsPrefix() throws Exception {
+  public void testAllResourceHasProviderNameAsPrefix() throws Exception {
     final TypeModel model = TypeModelProvider.Companion.getModel(getProject());
     assertNotNull(model);
-    final List<BlockType> failed = new ArrayList<BlockType>();
+    final List<ResourceType> failedResources = new ArrayList<>();
     for (ResourceType block : model.getResources().values()) {
       final String rt = block.getType();
-      final String pt = block.getProvider().getType();
+      String pt = block.getProvider().getType();
+      if (pt.equals("azure-classic")) {
+        pt = "azure";
+      }
       if (rt.equals(pt)) continue;
       if (rt.startsWith(pt + '_')) continue;
-      failed.add(block);
+      failedResources.add(block);
     }
+    then(failedResources).isEmpty();
+  }
+
+  public void testDataSourcesHasProviderNameAsPrefix() throws Exception {
+    final TypeModel model = TypeModelProvider.Companion.getModel(getProject());
+    assertNotNull(model);
+    final List<DataSourceType> failedDataSources = new ArrayList<>();
     for (DataSourceType block : model.getDataSources().values()) {
       final String rt = block.getType();
-      final String pt = block.getProvider().getType();
+      String pt = block.getProvider().getType();
+      if (pt.equals("azure-classic")) {
+        pt = "azure";
+      }
       if (rt.equals(pt)) continue;
       if (rt.startsWith(pt + '_')) continue;
-      failed.add(block);
+      failedDataSources.add(block);
     }
-    then(failed).isEmpty();
+    then(failedDataSources).isEmpty();
   }
 
   private PropertyOrBlockType findProperty(PropertyOrBlockType[] properties, String name) {
