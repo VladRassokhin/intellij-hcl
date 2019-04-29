@@ -1,25 +1,26 @@
 {
+  ".schema_version": "1",
   "name": "dnsimple",
   "type": "provider",
-  "version": "v0.1.0-13-gae3e59e",
+  "version": "v0.1.0",
   "provider": {
     "account": {
       "Type": "String",
       "Required": true,
-      "Description": "The account for API operations."
+      "Description": "The account for API operations.",
+      "DefaultFunc": "ENV(DNSIMPLE_ACCOUNT)"
     },
     "email": {
       "Type": "String",
       "Optional": true,
       "Description": "The DNSimple account email address.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(DNSIMPLE_EMAIL)"
     },
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "The API v2 token for API operations."
+      "Description": "The API v2 token for API operations.",
+      "DefaultFunc": "ENV(DNSIMPLE_TOKEN)"
     }
   },
   "resources": {
@@ -47,7 +48,11 @@
       },
       "ttl": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "3600"
+        }
       },
       "type": {
         "Type": "String",

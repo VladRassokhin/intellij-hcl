@@ -1,17 +1,20 @@
 {
+  ".schema_version": "1",
   "name": "panos",
   "type": "provider",
-  "version": "v1.4.1-4-g72d802e",
+  "version": "v1.5.1",
   "provider": {
     "api_key": {
       "Type": "String",
       "Optional": true,
-      "Description": "The api key of the firewall"
+      "Description": "The api key of the firewall",
+      "DefaultFunc": "ENV(PANOS_API_KEY)"
     },
     "hostname": {
       "Type": "String",
       "Optional": true,
-      "Description": "Hostname/IP address of the Palo Alto Networks firewall to connect to"
+      "Description": "Hostname/IP address of the Palo Alto Networks firewall to connect to",
+      "DefaultFunc": "ENV(PANOS_HOSTNAME)"
     },
     "json_config_file": {
       "Type": "String",
@@ -30,7 +33,8 @@
     "password": {
       "Type": "String",
       "Optional": true,
-      "Description": "The password (not used if the ApiKey is set)"
+      "Description": "The password (not used if the ApiKey is set)",
+      "DefaultFunc": "ENV(PANOS_PASSWORD)"
     },
     "port": {
       "Type": "Int",
@@ -50,7 +54,8 @@
     "username": {
       "Type": "String",
       "Optional": true,
-      "Description": "The username (not used if the ApiKey is set)"
+      "Description": "The username (not used if the ApiKey is set)",
+      "DefaultFunc": "ENV(PANOS_USERNAME)"
     }
   },
   "resources": {
@@ -90,7 +95,11 @@
       "vsys": {
         "Type": "String",
         "Optional": true,
-        "Description": "The vsys to put this address object in"
+        "Description": "The vsys to put this address object in",
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_address_object": {
@@ -115,7 +124,11 @@
       "type": {
         "Type": "String",
         "Optional": true,
-        "Description": "The type of address object (ip-netmask, ip-range, fqdn)"
+        "Description": "The type of address object (ip-netmask, ip-range, fqdn)",
+        "Default": {
+          "Type": "string",
+          "Value": "ip-netmask"
+        }
       },
       "value": {
         "Type": "String",
@@ -124,7 +137,11 @@
       "vsys": {
         "Type": "String",
         "Optional": true,
-        "Description": "The vsys to put this address object in"
+        "Description": "The vsys to put this address object in",
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_administrative_tag": {
@@ -144,7 +161,1241 @@
       "vsys": {
         "Type": "String",
         "Optional": true,
-        "Description": "The vsys to put this administrative tag object in"
+        "Description": "The vsys to put this administrative tag object in",
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
+      }
+    },
+    "panos_bfd_profile": {
+      "detection_multiplier": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
+      },
+      "hold_time": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "minimum_rx_interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1000"
+        }
+      },
+      "minimum_rx_ttl": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "minimum_tx_interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1000"
+        }
+      },
+      "mode": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "active"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_bgp": {
+      "aggregate_med": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "allow_redistribute_default_route": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "always_compare_med": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "as_format": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "2-byte"
+        }
+      },
+      "as_number": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bfd_profile": {
+        "Type": "String",
+        "Optional": true
+      },
+      "confederation_member_as": {
+        "Type": "String",
+        "Optional": true
+      },
+      "default_local_preference": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "100"
+        }
+      },
+      "deterministic_med_comparison": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "ecmp_multi_as": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "enable_graceful_restart": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "enforce_first_as": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "install_route": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "local_restart_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "120"
+        }
+      },
+      "max_peer_restart_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "120"
+        }
+      },
+      "reflector_cluster_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "reject_default_route": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "router_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "stale_route_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "120"
+        }
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_bgp_aggregate": {
+      "as_path_limit": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "as_path_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
+      },
+      "as_path_value": {
+        "Type": "String",
+        "Optional": true
+      },
+      "as_set": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "community_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
+      },
+      "community_value": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "extended_community_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
+      },
+      "extended_community_value": {
+        "Type": "String",
+        "Optional": true
+      },
+      "local_preference": {
+        "Type": "String",
+        "Optional": true
+      },
+      "med": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "next_hop": {
+        "Type": "String",
+        "Optional": true
+      },
+      "origin": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "incomplete"
+        }
+      },
+      "prefix": {
+        "Type": "String",
+        "Required": true
+      },
+      "summary": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      },
+      "weight": {
+        "Type": "Int",
+        "Optional": true
+      }
+    },
+    "panos_bgp_aggregate_advertise_filter": {
+      "address_prefix": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "exact": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "prefix": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "as_path_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bgp_aggregate": {
+        "Type": "String",
+        "Required": true
+      },
+      "community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "extended_community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "from_peers": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "med": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "next_hops": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "route_table": {
+        "Type": "String",
+        "Optional": true
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_bgp_aggregate_suppress_filter": {
+      "address_prefix": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "exact": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "prefix": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "as_path_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bgp_aggregate": {
+        "Type": "String",
+        "Required": true
+      },
+      "community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "extended_community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "from_peers": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "med": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "next_hops": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "route_table": {
+        "Type": "String",
+        "Optional": true
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_bgp_auth_profile": {
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "secret": {
+        "Type": "String",
+        "Optional": true
+      },
+      "secret_enc": {
+        "Type": "String",
+        "Computed": true
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_bgp_conditional_adv": {
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "used_by": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_bgp_conditional_adv_advertise_filter": {
+      "address_prefixes": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "as_path_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bgp_conditional_adv": {
+        "Type": "String",
+        "Required": true
+      },
+      "community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "extended_community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "from_peers": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "med": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "next_hops": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "route_table": {
+        "Type": "String",
+        "Optional": true
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_bgp_conditional_adv_non_exist_filter": {
+      "address_prefixes": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "as_path_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bgp_conditional_adv": {
+        "Type": "String",
+        "Required": true
+      },
+      "community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "extended_community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "from_peers": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "med": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "next_hops": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "route_table": {
+        "Type": "String",
+        "Optional": true
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_bgp_dampening_profile": {
+      "cutoff": {
+        "Type": "Float",
+        "Optional": true,
+        "Default": {
+          "Type": "float64",
+          "Value": "1.25"
+        }
+      },
+      "decay_half_life_reachable": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
+      },
+      "decay_half_life_unreachable": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "900"
+        }
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "max_hold_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "900"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "reuse": {
+        "Type": "Float",
+        "Optional": true,
+        "Default": {
+          "Type": "float64",
+          "Value": "0.5"
+        }
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_bgp_export_rule_group": {
+      "position_keyword": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
+      },
+      "position_reference": {
+        "Type": "String",
+        "Optional": true
+      },
+      "rule": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "allow"
+              }
+            },
+            "as_path_limit": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "as_path_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "as_path_value": {
+              "Type": "String",
+              "Optional": true
+            },
+            "community_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "community_value": {
+              "Type": "String",
+              "Optional": true
+            },
+            "enable": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "extended_community_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "extended_community_value": {
+              "Type": "String",
+              "Optional": true
+            },
+            "local_preference": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_address_prefix": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "exact": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "prefix": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "match_as_path_regex": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_community_regex": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_extended_community_regex": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_from_peers": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "match_med": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_next_hops": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "match_route_table": {
+              "Type": "String",
+              "Optional": true
+            },
+            "med": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "next_hop": {
+              "Type": "String",
+              "Optional": true
+            },
+            "origin": {
+              "Type": "String",
+              "Optional": true
+            },
+            "used_by": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_bgp_import_rule_group": {
+      "position_keyword": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
+      },
+      "position_reference": {
+        "Type": "String",
+        "Optional": true
+      },
+      "rule": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "allow"
+              }
+            },
+            "as_path_limit": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "as_path_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "community_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "community_value": {
+              "Type": "String",
+              "Optional": true
+            },
+            "dampening": {
+              "Type": "String",
+              "Optional": true
+            },
+            "enable": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "extended_community_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "extended_community_value": {
+              "Type": "String",
+              "Optional": true
+            },
+            "local_preference": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_address_prefix": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "exact": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "prefix": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "match_as_path_regex": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_community_regex": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_extended_community_regex": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_from_peers": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "match_med": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_next_hops": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "match_route_table": {
+              "Type": "String",
+              "Optional": true
+            },
+            "med": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "next_hop": {
+              "Type": "String",
+              "Optional": true
+            },
+            "origin": {
+              "Type": "String",
+              "Optional": true
+            },
+            "used_by": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "weight": {
+              "Type": "Int",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_bgp_peer": {
+      "address_family_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "allow_incoming_connections": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "allow_outgoing_connections": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "auth_profile": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bfd_profile": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bgp_peer_group": {
+        "Type": "String",
+        "Required": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "enable_mp_bgp": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "enable_sender_side_loop_detection": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "hold_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "90"
+        }
+      },
+      "idle_hold_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "15"
+        }
+      },
+      "incoming_connections_remote_port": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "keep_alive_interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "30"
+        }
+      },
+      "local_address_interface": {
+        "Type": "String",
+        "Required": true
+      },
+      "local_address_ip": {
+        "Type": "String",
+        "Optional": true
+      },
+      "max_prefixes": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "5000"
+        }
+      },
+      "min_route_advertisement_interval": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "multi_hop": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "open_delay_time": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "outgoing_connections_local_port": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "peer_address_ip": {
+        "Type": "String",
+        "Required": true
+      },
+      "peer_as": {
+        "Type": "String",
+        "Optional": true
+      },
+      "peering_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "unspecified"
+        }
+      },
+      "reflector_client": {
+        "Type": "String",
+        "Optional": true
+      },
+      "subsequent_address_family_multicast": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "subsequent_address_family_unicast": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_bgp_peer_group": {
+      "aggregated_confed_as_path": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "export_next_hop": {
+        "Type": "String",
+        "Optional": true
+      },
+      "import_next_hop": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "remove_private_as": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "soft_reset_with_stored_info": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ebgp"
+        }
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_bgp_redist_rule": {
+      "address_family": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ipv4"
+        }
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "metric": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "route_table": {
+        "Type": "String",
+        "Optional": true
+      },
+      "set_as_path_limit": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "set_communities": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "set_extended_communities": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "set_local_preference": {
+        "Type": "String",
+        "Optional": true
+      },
+      "set_med": {
+        "Type": "String",
+        "Optional": true
+      },
+      "set_origin": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "incomplete"
+        }
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
       }
     },
     "panos_dag_tags": {
@@ -173,7 +1424,11 @@
       "vsys": {
         "Type": "String",
         "Optional": true,
-        "Description": "The vsys to config DAG tags for"
+        "Description": "The vsys to config DAG tags for",
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_edl": {
@@ -207,7 +1462,11 @@
       },
       "repeat": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "hourly"
+        }
       },
       "repeat_at": {
         "Type": "String",
@@ -227,7 +1486,11 @@
       },
       "type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ip"
+        }
       },
       "username": {
         "Type": "String",
@@ -235,7 +1498,11 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_ethernet_interface": {
@@ -327,7 +1594,11 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_general_settings": {
@@ -415,6 +1686,30 @@
         "Description": "NTP symmetric-key key ID",
         "Computed": true
       },
+      "proxy_password": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "proxy_password_enc": {
+        "Type": "String",
+        "Computed": true
+      },
+      "proxy_port": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "proxy_server": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "proxy_user": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "timezone": {
         "Type": "String",
         "Optional": true,
@@ -424,12 +1719,20 @@
       "update_server": {
         "Type": "String",
         "Optional": true,
-        "Description": "PANOS update server"
+        "Description": "PANOS update server",
+        "Default": {
+          "Type": "string",
+          "Value": "updates.paloaltonetworks.com"
+        }
       },
       "verify_update_server": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Verify update server identity"
+        "Description": "Verify update server identity",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       }
     },
     "panos_ike_crypto_profile": {
@@ -466,7 +1769,11 @@
       },
       "lifetime_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "hours"
+        }
       },
       "lifetime_value": {
         "Type": "Int",
@@ -480,7 +1787,11 @@
     "panos_ike_gateway": {
       "auth_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "pre-shared-key"
+        }
       },
       "cert_base_url": {
         "Type": "String",
@@ -612,7 +1923,11 @@
       },
       "peer_ip_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ip"
+        }
       },
       "peer_ip_value": {
         "Type": "String",
@@ -628,7 +1943,11 @@
       },
       "version": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ikev1"
+        }
       }
     },
     "panos_ipsec_crypto_profile": {
@@ -662,7 +1981,11 @@
       },
       "lifetime_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "hours"
+        }
       },
       "lifetime_value": {
         "Type": "Int",
@@ -674,7 +1997,11 @@
       },
       "protocol": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "esp"
+        }
       }
     },
     "panos_ipsec_tunnel": {
@@ -836,7 +2163,11 @@
       },
       "type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "auto-key"
+        }
       }
     },
     "panos_ipsec_tunnel_proxy_id_ipv4": {
@@ -903,7 +2234,11 @@
       },
       "delicense": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "licenses": {
         "Type": "List",
@@ -944,7 +2279,11 @@
       },
       "mode": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "auto"
+        }
       }
     },
     "panos_loopback_interface": {
@@ -991,21 +2330,37 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_management_profile": {
       "http": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "http_ocsp": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "https": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -1021,35 +2376,67 @@
       },
       "ping": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "response_pages": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "snmp": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "ssh": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "telnet": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "userid_service": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "userid_syslog_listener_ssl": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "userid_syslog_listener_udp": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       }
     },
     "panos_nat_policy": {
@@ -1157,11 +2544,19 @@
       "sat_type": {
         "Type": "String",
         "Optional": true,
-        "Description": "none (default), dynamic-ip-and-port, dynamic-ip, or static-ip"
+        "Description": "none (default), dynamic-ip-and-port, dynamic-ip, or static-ip",
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
       },
       "service": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "any"
+        }
       },
       "source_addresses": {
         "Type": "List",
@@ -1191,17 +2586,29 @@
       },
       "to_interface": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "any"
+        }
       },
       "type": {
         "Type": "String",
         "Optional": true,
-        "Description": "NAT type (ipv4 default, nat64, or nptv6)"
+        "Description": "NAT type (ipv4 default, nat64, or nptv6)",
+        "Default": {
+          "Type": "string",
+          "Value": "ipv4"
+        }
       },
       "vsys": {
         "Type": "String",
         "Optional": true,
-        "Description": "The vsys to put this object in (default: vsys1)"
+        "Description": "The vsys to put this object in (default: vsys1)",
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_nat_rule": {
@@ -1309,11 +2716,19 @@
       "sat_type": {
         "Type": "String",
         "Optional": true,
-        "Description": "none (default), dynamic-ip-and-port, dynamic-ip, or static-ip"
+        "Description": "none (default), dynamic-ip-and-port, dynamic-ip, or static-ip",
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
       },
       "service": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "any"
+        }
       },
       "source_addresses": {
         "Type": "List",
@@ -1343,17 +2758,382 @@
       },
       "to_interface": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "any"
+        }
       },
       "type": {
         "Type": "String",
         "Optional": true,
-        "Description": "NAT type (ipv4 default, nat64, or nptv6)"
+        "Description": "NAT type (ipv4 default, nat64, or nptv6)",
+        "Default": {
+          "Type": "string",
+          "Value": "ipv4"
+        }
       },
       "vsys": {
         "Type": "String",
         "Optional": true,
-        "Description": "The vsys to put this object in (default: vsys1)"
+        "Description": "The vsys to put this object in (default: vsys1)",
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
+      }
+    },
+    "panos_nat_rule_group": {
+      "position_keyword": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
+      },
+      "position_reference": {
+        "Type": "String",
+        "Optional": true
+      },
+      "rule": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "disabled": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "original_packet": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "destination_addresses": {
+                    "Type": "List",
+                    "Required": true,
+                    "MinItems": 1,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "destination_interface": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "string",
+                      "Value": "any"
+                    }
+                  },
+                  "destination_zone": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "service": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "string",
+                      "Value": "any"
+                    }
+                  },
+                  "source_addresses": {
+                    "Type": "List",
+                    "Required": true,
+                    "MinItems": 1,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "source_zones": {
+                    "Type": "List",
+                    "Required": true,
+                    "MinItems": 1,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "tags": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "translated_packet": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "destination": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "dynamic": {
+                          "Type": "List",
+                          "Optional": true,
+                          "MaxItems": 1,
+                          "ConflictsWith": [
+                            "rule.translated_packet.destination.static"
+                          ],
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "address": {
+                                "Type": "String",
+                                "Required": true
+                              },
+                              "distribution": {
+                                "Type": "String",
+                                "Optional": true
+                              },
+                              "port": {
+                                "Type": "Int",
+                                "Optional": true
+                              }
+                            }
+                          }
+                        },
+                        "static": {
+                          "Type": "List",
+                          "Optional": true,
+                          "MaxItems": 1,
+                          "ConflictsWith": [
+                            "rule.translated_packet.destination.dynamic"
+                          ],
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "address": {
+                                "Type": "String",
+                                "Required": true
+                              },
+                              "port": {
+                                "Type": "Int",
+                                "Optional": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "source": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "dynamic_ip": {
+                          "Type": "List",
+                          "Optional": true,
+                          "MaxItems": 1,
+                          "ConflictsWith": [
+                            "rule.translated_packet.source.dynamic_ip_and_port",
+                            "rule.translated_packet.source.static_ip"
+                          ],
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "fallback": {
+                                "Type": "List",
+                                "Optional": true,
+                                "MaxItems": 1,
+                                "Elem": {
+                                  "Type": "SchemaInfo",
+                                  "Info": {
+                                    "interface_address": {
+                                      "Type": "List",
+                                      "Optional": true,
+                                      "MaxItems": 1,
+                                      "ConflictsWith": [
+                                        "rule.translated_packet.source.dynamic_ip.fallback.translated_address"
+                                      ],
+                                      "Elem": {
+                                        "Type": "SchemaInfo",
+                                        "Info": {
+                                          "interface": {
+                                            "Type": "String",
+                                            "Required": true
+                                          },
+                                          "ip_address": {
+                                            "Type": "String",
+                                            "Optional": true
+                                          },
+                                          "type": {
+                                            "Type": "String",
+                                            "Optional": true,
+                                            "Default": {
+                                              "Type": "string",
+                                              "Value": "ip"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "translated_address": {
+                                      "Type": "List",
+                                      "Optional": true,
+                                      "MaxItems": 1,
+                                      "ConflictsWith": [
+                                        "rule.translated_packet.source.dynamic_ip.fallback.interface_address"
+                                      ],
+                                      "Elem": {
+                                        "Type": "SchemaInfo",
+                                        "Info": {
+                                          "translated_addresses": {
+                                            "Type": "List",
+                                            "Optional": true,
+                                            "Elem": {
+                                              "Type": "SchemaElements",
+                                              "ElementsType": "String"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "translated_addresses": {
+                                "Type": "List",
+                                "Required": true,
+                                "MinItems": 1,
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "String"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "dynamic_ip_and_port": {
+                          "Type": "List",
+                          "Optional": true,
+                          "MaxItems": 1,
+                          "ConflictsWith": [
+                            "rule.translated_packet.source.dynamic_ip",
+                            "rule.translated_packet.source.static_ip"
+                          ],
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "interface_address": {
+                                "Type": "List",
+                                "Optional": true,
+                                "MaxItems": 1,
+                                "ConflictsWith": [
+                                  "rule.translated_packet.source.dynamic_ip_and_port.translated_address"
+                                ],
+                                "Elem": {
+                                  "Type": "SchemaInfo",
+                                  "Info": {
+                                    "interface": {
+                                      "Type": "String",
+                                      "Required": true
+                                    },
+                                    "ip_address": {
+                                      "Type": "String",
+                                      "Optional": true
+                                    }
+                                  }
+                                }
+                              },
+                              "translated_address": {
+                                "Type": "List",
+                                "Optional": true,
+                                "MaxItems": 1,
+                                "ConflictsWith": [
+                                  "rule.translated_packet.source.dynamic_ip_and_port.interface_address"
+                                ],
+                                "Elem": {
+                                  "Type": "SchemaInfo",
+                                  "Info": {
+                                    "translated_addresses": {
+                                      "Type": "List",
+                                      "Optional": true,
+                                      "Elem": {
+                                        "Type": "SchemaElements",
+                                        "ElementsType": "String"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "static_ip": {
+                          "Type": "List",
+                          "Optional": true,
+                          "MaxItems": 1,
+                          "ConflictsWith": [
+                            "rule.translated_packet.source.dynamic_ip_and_port",
+                            "rule.translated_packet.source.dynamic_ip"
+                          ],
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "bi_directional": {
+                                "Type": "Bool",
+                                "Optional": true
+                              },
+                              "translated_address": {
+                                "Type": "String",
+                                "Required": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "type": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "ipv4"
+              }
+            }
+          }
+        }
+      },
+      "vsys": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_panorama_address_group": {
@@ -1364,7 +3144,11 @@
       "device_group": {
         "Type": "String",
         "Optional": true,
-        "Description": "The device group to put this address object in"
+        "Description": "The device group to put this address object in",
+        "Default": {
+          "Type": "string",
+          "Value": "shared"
+        }
       },
       "dynamic_match": {
         "Type": "String",
@@ -1402,7 +3186,11 @@
       },
       "device_group": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "shared"
+        }
       },
       "name": {
         "Type": "String",
@@ -1421,7 +3209,11 @@
       "type": {
         "Type": "String",
         "Optional": true,
-        "Description": "The type of address object (ip-netmask, ip-range, fqdn)"
+        "Description": "The type of address object (ip-netmask, ip-range, fqdn)",
+        "Default": {
+          "Type": "string",
+          "Value": "ip-netmask"
+        }
       },
       "value": {
         "Type": "String",
@@ -1440,12 +3232,1456 @@
       "device_group": {
         "Type": "String",
         "Optional": true,
-        "Description": "The device group to put this administrative tag object in"
+        "Description": "The device group to put this administrative tag object in",
+        "Default": {
+          "Type": "string",
+          "Value": "shared"
+        }
       },
       "name": {
         "Type": "String",
         "Required": true,
         "Description": "The administrative tag's name"
+      }
+    },
+    "panos_panorama_bfd_profile": {
+      "detection_multiplier": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
+      },
+      "hold_time": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "minimum_rx_interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1000"
+        }
+      },
+      "minimum_rx_ttl": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "minimum_tx_interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1000"
+        }
+      },
+      "mode": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "active"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      }
+    },
+    "panos_panorama_bgp": {
+      "aggregate_med": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "allow_redistribute_default_route": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "always_compare_med": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "as_format": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "2-byte"
+        }
+      },
+      "as_number": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bfd_profile": {
+        "Type": "String",
+        "Optional": true
+      },
+      "confederation_member_as": {
+        "Type": "String",
+        "Optional": true
+      },
+      "default_local_preference": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "100"
+        }
+      },
+      "deterministic_med_comparison": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "ecmp_multi_as": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "enable_graceful_restart": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "enforce_first_as": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "install_route": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "local_restart_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "120"
+        }
+      },
+      "max_peer_restart_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "120"
+        }
+      },
+      "reflector_cluster_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "reject_default_route": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "router_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "stale_route_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "120"
+        }
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_panorama_bgp_aggregate": {
+      "as_path_limit": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "as_path_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
+      },
+      "as_path_value": {
+        "Type": "String",
+        "Optional": true
+      },
+      "as_set": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "community_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
+      },
+      "community_value": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "extended_community_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
+      },
+      "extended_community_value": {
+        "Type": "String",
+        "Optional": true
+      },
+      "local_preference": {
+        "Type": "String",
+        "Optional": true
+      },
+      "med": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "next_hop": {
+        "Type": "String",
+        "Optional": true
+      },
+      "origin": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "incomplete"
+        }
+      },
+      "prefix": {
+        "Type": "String",
+        "Required": true
+      },
+      "summary": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      },
+      "weight": {
+        "Type": "Int",
+        "Optional": true
+      }
+    },
+    "panos_panorama_bgp_aggregate_advertise_filter": {
+      "address_prefix": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "exact": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "prefix": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "as_path_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bgp_aggregate": {
+        "Type": "String",
+        "Required": true
+      },
+      "community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "extended_community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "from_peers": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "med": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "next_hops": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "route_table": {
+        "Type": "String",
+        "Optional": true
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_panorama_bgp_aggregate_suppress_filter": {
+      "address_prefix": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "exact": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "prefix": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "as_path_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bgp_aggregate": {
+        "Type": "String",
+        "Required": true
+      },
+      "community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "extended_community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "from_peers": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "med": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "next_hops": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "route_table": {
+        "Type": "String",
+        "Optional": true
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_panorama_bgp_auth_profile": {
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "secret": {
+        "Type": "String",
+        "Optional": true
+      },
+      "secret_enc": {
+        "Type": "String",
+        "Computed": true
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_panorama_bgp_conditional_adv": {
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "used_by": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_panorama_bgp_conditional_adv_advertise_filter": {
+      "address_prefixes": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "as_path_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bgp_conditional_adv": {
+        "Type": "String",
+        "Required": true
+      },
+      "community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "extended_community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "from_peers": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "med": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "next_hops": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "route_table": {
+        "Type": "String",
+        "Optional": true
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_panorama_bgp_conditional_adv_non_exist_filter": {
+      "address_prefixes": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "as_path_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bgp_conditional_adv": {
+        "Type": "String",
+        "Required": true
+      },
+      "community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "extended_community_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "from_peers": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "med": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "next_hops": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "route_table": {
+        "Type": "String",
+        "Optional": true
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_panorama_bgp_dampening_profile": {
+      "cutoff": {
+        "Type": "Float",
+        "Optional": true,
+        "Default": {
+          "Type": "float64",
+          "Value": "1.25"
+        }
+      },
+      "decay_half_life_reachable": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
+      },
+      "decay_half_life_unreachable": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "900"
+        }
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "max_hold_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "900"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "reuse": {
+        "Type": "Float",
+        "Optional": true,
+        "Default": {
+          "Type": "float64",
+          "Value": "0.5"
+        }
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_panorama_bgp_export_rule_group": {
+      "position_keyword": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
+      },
+      "position_reference": {
+        "Type": "String",
+        "Optional": true
+      },
+      "rule": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "allow"
+              }
+            },
+            "as_path_limit": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "as_path_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "as_path_value": {
+              "Type": "String",
+              "Optional": true
+            },
+            "community_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "community_value": {
+              "Type": "String",
+              "Optional": true
+            },
+            "enable": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "extended_community_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "extended_community_value": {
+              "Type": "String",
+              "Optional": true
+            },
+            "local_preference": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_address_prefix": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "exact": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "prefix": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "match_as_path_regex": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_community_regex": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_extended_community_regex": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_from_peers": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "match_med": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_next_hops": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "match_route_table": {
+              "Type": "String",
+              "Optional": true
+            },
+            "med": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "next_hop": {
+              "Type": "String",
+              "Optional": true
+            },
+            "origin": {
+              "Type": "String",
+              "Optional": true
+            },
+            "used_by": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_panorama_bgp_import_rule_group": {
+      "position_keyword": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
+      },
+      "position_reference": {
+        "Type": "String",
+        "Optional": true
+      },
+      "rule": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "allow"
+              }
+            },
+            "as_path_limit": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "as_path_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "community_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "community_value": {
+              "Type": "String",
+              "Optional": true
+            },
+            "dampening": {
+              "Type": "String",
+              "Optional": true
+            },
+            "enable": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "extended_community_type": {
+              "Type": "String",
+              "Optional": true
+            },
+            "extended_community_value": {
+              "Type": "String",
+              "Optional": true
+            },
+            "local_preference": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_address_prefix": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "exact": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "prefix": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "match_as_path_regex": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_community_regex": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_extended_community_regex": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_from_peers": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "match_med": {
+              "Type": "String",
+              "Optional": true
+            },
+            "match_next_hops": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "match_route_table": {
+              "Type": "String",
+              "Optional": true
+            },
+            "med": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "next_hop": {
+              "Type": "String",
+              "Optional": true
+            },
+            "origin": {
+              "Type": "String",
+              "Optional": true
+            },
+            "used_by": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "weight": {
+              "Type": "Int",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_panorama_bgp_peer": {
+      "address_family_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "allow_incoming_connections": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "allow_outgoing_connections": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "auth_profile": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bfd_profile": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bgp_peer_group": {
+        "Type": "String",
+        "Required": true
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "enable_mp_bgp": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "enable_sender_side_loop_detection": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "hold_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "90"
+        }
+      },
+      "idle_hold_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "15"
+        }
+      },
+      "incoming_connections_remote_port": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "keep_alive_interval": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "30"
+        }
+      },
+      "local_address_interface": {
+        "Type": "String",
+        "Required": true
+      },
+      "local_address_ip": {
+        "Type": "String",
+        "Optional": true
+      },
+      "max_prefixes": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "5000"
+        }
+      },
+      "min_route_advertisement_interval": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "multi_hop": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "open_delay_time": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "outgoing_connections_local_port": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "peer_address_ip": {
+        "Type": "String",
+        "Required": true
+      },
+      "peer_as": {
+        "Type": "String",
+        "Optional": true
+      },
+      "peering_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "unspecified"
+        }
+      },
+      "reflector_client": {
+        "Type": "String",
+        "Optional": true
+      },
+      "subsequent_address_family_multicast": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "subsequent_address_family_unicast": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_panorama_bgp_peer_group": {
+      "aggregated_confed_as_path": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "export_next_hop": {
+        "Type": "String",
+        "Optional": true
+      },
+      "import_next_hop": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "remove_private_as": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "soft_reset_with_stored_info": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ebgp"
+        }
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_panorama_bgp_redist_rule": {
+      "address_family": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ipv4"
+        }
+      },
+      "enable": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "metric": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "route_table": {
+        "Type": "String",
+        "Optional": true
+      },
+      "set_as_path_limit": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "set_communities": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "set_extended_communities": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "set_local_preference": {
+        "Type": "String",
+        "Optional": true
+      },
+      "set_med": {
+        "Type": "String",
+        "Optional": true
+      },
+      "set_origin": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "incomplete"
+        }
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
       }
     },
     "panos_panorama_device_group": {
@@ -1509,7 +4745,11 @@
       },
       "device_group": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "shared"
+        }
       },
       "exceptions": {
         "Type": "List",
@@ -1533,7 +4773,11 @@
       },
       "repeat": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "hourly"
+        }
       },
       "repeat_at": {
         "Type": "String",
@@ -1553,7 +4797,11 @@
       },
       "type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ip"
+        }
       },
       "username": {
         "Type": "String",
@@ -1653,7 +4901,11 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_panorama_ike_crypto_profile": {
@@ -1690,7 +4942,11 @@
       },
       "lifetime_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "hours"
+        }
       },
       "lifetime_value": {
         "Type": "Int",
@@ -1718,7 +4974,11 @@
     "panos_panorama_ike_gateway": {
       "auth_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "pre-shared-key"
+        }
       },
       "cert_base_url": {
         "Type": "String",
@@ -1850,7 +5110,11 @@
       },
       "peer_ip_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ip"
+        }
       },
       "peer_ip_value": {
         "Type": "String",
@@ -1880,7 +5144,11 @@
       },
       "version": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ikev1"
+        }
       }
     },
     "panos_panorama_ipsec_crypto_profile": {
@@ -1914,7 +5182,11 @@
       },
       "lifetime_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "hours"
+        }
       },
       "lifetime_value": {
         "Type": "Int",
@@ -1926,7 +5198,11 @@
       },
       "protocol": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "esp"
+        }
       },
       "template": {
         "Type": "String",
@@ -2106,7 +5382,11 @@
       },
       "type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "auto-key"
+        }
       }
     },
     "panos_panorama_ipsec_tunnel_proxy_id_ipv4": {
@@ -2203,21 +5483,37 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_panorama_management_profile": {
       "http": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "http_ocsp": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "https": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -2233,23 +5529,43 @@
       },
       "ping": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "response_pages": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "snmp": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "ssh": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "telnet": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "template": {
         "Type": "String",
@@ -2267,15 +5583,27 @@
       },
       "userid_service": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "userid_syslog_listener_ssl": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "userid_syslog_listener_udp": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       }
     },
     "panos_panorama_nat_policy": {
@@ -2314,7 +5642,11 @@
       },
       "device_group": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "shared"
+        }
       },
       "disabled": {
         "Type": "Bool",
@@ -2330,7 +5662,11 @@
       },
       "rulebase": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "pre-rulebase"
+        }
       },
       "sat_address_type": {
         "Type": "String",
@@ -2388,11 +5724,19 @@
       "sat_type": {
         "Type": "String",
         "Optional": true,
-        "Description": "none (default), dynamic-ip-and-port, dynamic-ip, or static-ip"
+        "Description": "none (default), dynamic-ip-and-port, dynamic-ip, or static-ip",
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
       },
       "service": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "any"
+        }
       },
       "source_addresses": {
         "Type": "List",
@@ -2443,12 +5787,20 @@
       },
       "to_interface": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "any"
+        }
       },
       "type": {
         "Type": "String",
         "Optional": true,
-        "Description": "NAT type (ipv4 default, nat64, or nptv6)"
+        "Description": "NAT type (ipv4 default, nat64, or nptv6)",
+        "Default": {
+          "Type": "string",
+          "Value": "ipv4"
+        }
       }
     },
     "panos_panorama_nat_rule": {
@@ -2487,7 +5839,11 @@
       },
       "device_group": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "shared"
+        }
       },
       "disabled": {
         "Type": "Bool",
@@ -2503,7 +5859,11 @@
       },
       "rulebase": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "pre-rulebase"
+        }
       },
       "sat_address_type": {
         "Type": "String",
@@ -2561,11 +5921,19 @@
       "sat_type": {
         "Type": "String",
         "Optional": true,
-        "Description": "none (default), dynamic-ip-and-port, dynamic-ip, or static-ip"
+        "Description": "none (default), dynamic-ip-and-port, dynamic-ip, or static-ip",
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
       },
       "service": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "any"
+        }
       },
       "source_addresses": {
         "Type": "List",
@@ -2616,18 +5984,524 @@
       },
       "to_interface": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "any"
+        }
       },
       "type": {
         "Type": "String",
         "Optional": true,
-        "Description": "NAT type (ipv4 default, nat64, or nptv6)"
+        "Description": "NAT type (ipv4 default, nat64, or nptv6)",
+        "Default": {
+          "Type": "string",
+          "Value": "ipv4"
+        }
+      }
+    },
+    "panos_panorama_nat_rule_group": {
+      "device_group": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "shared"
+        }
+      },
+      "position_keyword": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
+      },
+      "position_reference": {
+        "Type": "String",
+        "Optional": true
+      },
+      "rule": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Optional": true
+            },
+            "disabled": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "negate_target": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "original_packet": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "destination_addresses": {
+                    "Type": "List",
+                    "Required": true,
+                    "MinItems": 1,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "destination_interface": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "string",
+                      "Value": "any"
+                    }
+                  },
+                  "destination_zone": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "service": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Default": {
+                      "Type": "string",
+                      "Value": "any"
+                    }
+                  },
+                  "source_addresses": {
+                    "Type": "List",
+                    "Required": true,
+                    "MinItems": 1,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "source_zones": {
+                    "Type": "List",
+                    "Required": true,
+                    "MinItems": 1,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "tags": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "target": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "serial": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "vsys_list": {
+                    "Type": "Set",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "translated_packet": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "destination": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "dynamic": {
+                          "Type": "List",
+                          "Optional": true,
+                          "MaxItems": 1,
+                          "ConflictsWith": [
+                            "rule.translated_packet.destination.static"
+                          ],
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "address": {
+                                "Type": "String",
+                                "Required": true
+                              },
+                              "distribution": {
+                                "Type": "String",
+                                "Optional": true
+                              },
+                              "port": {
+                                "Type": "Int",
+                                "Optional": true
+                              }
+                            }
+                          }
+                        },
+                        "static": {
+                          "Type": "List",
+                          "Optional": true,
+                          "MaxItems": 1,
+                          "ConflictsWith": [
+                            "rule.translated_packet.destination.dynamic"
+                          ],
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "address": {
+                                "Type": "String",
+                                "Required": true
+                              },
+                              "port": {
+                                "Type": "Int",
+                                "Optional": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "source": {
+                    "Type": "List",
+                    "Required": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "dynamic_ip": {
+                          "Type": "List",
+                          "Optional": true,
+                          "MaxItems": 1,
+                          "ConflictsWith": [
+                            "rule.translated_packet.source.dynamic_ip_and_port",
+                            "rule.translated_packet.source.static_ip"
+                          ],
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "fallback": {
+                                "Type": "List",
+                                "Optional": true,
+                                "MaxItems": 1,
+                                "Elem": {
+                                  "Type": "SchemaInfo",
+                                  "Info": {
+                                    "interface_address": {
+                                      "Type": "List",
+                                      "Optional": true,
+                                      "MaxItems": 1,
+                                      "ConflictsWith": [
+                                        "rule.translated_packet.source.dynamic_ip.fallback.translated_address"
+                                      ],
+                                      "Elem": {
+                                        "Type": "SchemaInfo",
+                                        "Info": {
+                                          "interface": {
+                                            "Type": "String",
+                                            "Required": true
+                                          },
+                                          "ip_address": {
+                                            "Type": "String",
+                                            "Optional": true
+                                          },
+                                          "type": {
+                                            "Type": "String",
+                                            "Optional": true,
+                                            "Default": {
+                                              "Type": "string",
+                                              "Value": "ip"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "translated_address": {
+                                      "Type": "List",
+                                      "Optional": true,
+                                      "MaxItems": 1,
+                                      "ConflictsWith": [
+                                        "rule.translated_packet.source.dynamic_ip.fallback.interface_address"
+                                      ],
+                                      "Elem": {
+                                        "Type": "SchemaInfo",
+                                        "Info": {
+                                          "translated_addresses": {
+                                            "Type": "List",
+                                            "Optional": true,
+                                            "Elem": {
+                                              "Type": "SchemaElements",
+                                              "ElementsType": "String"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "translated_addresses": {
+                                "Type": "List",
+                                "Required": true,
+                                "MinItems": 1,
+                                "Elem": {
+                                  "Type": "SchemaElements",
+                                  "ElementsType": "String"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "dynamic_ip_and_port": {
+                          "Type": "List",
+                          "Optional": true,
+                          "MaxItems": 1,
+                          "ConflictsWith": [
+                            "rule.translated_packet.source.dynamic_ip",
+                            "rule.translated_packet.source.static_ip"
+                          ],
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "interface_address": {
+                                "Type": "List",
+                                "Optional": true,
+                                "MaxItems": 1,
+                                "ConflictsWith": [
+                                  "rule.translated_packet.source.dynamic_ip_and_port.translated_address"
+                                ],
+                                "Elem": {
+                                  "Type": "SchemaInfo",
+                                  "Info": {
+                                    "interface": {
+                                      "Type": "String",
+                                      "Required": true
+                                    },
+                                    "ip_address": {
+                                      "Type": "String",
+                                      "Optional": true
+                                    }
+                                  }
+                                }
+                              },
+                              "translated_address": {
+                                "Type": "List",
+                                "Optional": true,
+                                "MaxItems": 1,
+                                "ConflictsWith": [
+                                  "rule.translated_packet.source.dynamic_ip_and_port.interface_address"
+                                ],
+                                "Elem": {
+                                  "Type": "SchemaInfo",
+                                  "Info": {
+                                    "translated_addresses": {
+                                      "Type": "List",
+                                      "Optional": true,
+                                      "Elem": {
+                                        "Type": "SchemaElements",
+                                        "ElementsType": "String"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "static_ip": {
+                          "Type": "List",
+                          "Optional": true,
+                          "MaxItems": 1,
+                          "ConflictsWith": [
+                            "rule.translated_packet.source.dynamic_ip_and_port",
+                            "rule.translated_packet.source.dynamic_ip"
+                          ],
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "bi_directional": {
+                                "Type": "Bool",
+                                "Optional": true
+                              },
+                              "translated_address": {
+                                "Type": "String",
+                                "Required": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "type": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "ipv4"
+              }
+            }
+          }
+        }
+      },
+      "rulebase": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "pre-rulebase"
+        }
+      }
+    },
+    "panos_panorama_redistribution_profile_ipv4": {
+      "action": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "redist"
+        }
+      },
+      "bgp_communities": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "bgp_extended_communities": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "destinations": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "interfaces": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "next_hops": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "ospf_areas": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "ospf_path_types": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "ospf_tags": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "priority": {
+        "Type": "Int",
+        "Required": true
+      },
+      "template": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template_stack"
+        ]
+      },
+      "template_stack": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "template"
+        ]
+      },
+      "types": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "virtual_router": {
+        "Type": "String",
+        "Required": true
       }
     },
     "panos_panorama_security_policies": {
       "device_group": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "shared"
+        }
       },
       "rule": {
         "Type": "List",
@@ -2638,7 +6512,11 @@
             "action": {
               "Type": "String",
               "Optional": true,
-              "Description": "Action (default: allow, deny, drop, reset-client, reset-server, reset-both)"
+              "Description": "Action (default: allow, deny, drop, reset-client, reset-server, reset-both)",
+              "Default": {
+                "Type": "string",
+                "Value": "allow"
+              }
             },
             "applications": {
               "Type": "List",
@@ -2715,7 +6593,11 @@
             },
             "log_end": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "log_setting": {
               "Type": "String",
@@ -2818,7 +6700,11 @@
             "type": {
               "Type": "String",
               "Optional": true,
-              "Description": "Security rule type (default: universal, interzone, intrazone)"
+              "Description": "Security rule type (default: universal, interzone, intrazone)",
+              "Default": {
+                "Type": "string",
+                "Value": "universal"
+              }
             },
             "url_filtering": {
               "Type": "String",
@@ -2841,13 +6727,21 @@
       },
       "rulebase": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "pre-rulebase"
+        }
       }
     },
     "panos_panorama_security_policy": {
       "device_group": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "shared"
+        }
       },
       "rule": {
         "Type": "List",
@@ -2858,7 +6752,11 @@
             "action": {
               "Type": "String",
               "Optional": true,
-              "Description": "Action (default: allow, deny, drop, reset-client, reset-server, reset-both)"
+              "Description": "Action (default: allow, deny, drop, reset-client, reset-server, reset-both)",
+              "Default": {
+                "Type": "string",
+                "Value": "allow"
+              }
             },
             "applications": {
               "Type": "List",
@@ -2935,7 +6833,11 @@
             },
             "log_end": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "log_setting": {
               "Type": "String",
@@ -3038,7 +6940,11 @@
             "type": {
               "Type": "String",
               "Optional": true,
-              "Description": "Security rule type (default: universal, interzone, intrazone)"
+              "Description": "Security rule type (default: universal, interzone, intrazone)",
+              "Default": {
+                "Type": "string",
+                "Value": "universal"
+              }
             },
             "url_filtering": {
               "Type": "String",
@@ -3061,17 +6967,28 @@
       },
       "rulebase": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "pre-rulebase"
+        }
       }
     },
     "panos_panorama_security_policy_group": {
       "device_group": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "shared"
+        }
       },
       "position_keyword": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "position_reference": {
         "Type": "String",
@@ -3086,7 +7003,11 @@
           "Info": {
             "action": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "allow"
+              }
             },
             "applications": {
               "Type": "List",
@@ -3163,7 +7084,11 @@
             },
             "log_end": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "log_setting": {
               "Type": "String",
@@ -3264,7 +7189,11 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "universal"
+              }
             },
             "url_filtering": {
               "Type": "String",
@@ -3287,17 +7216,28 @@
       },
       "rulebase": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "pre-rulebase"
+        }
       }
     },
     "panos_panorama_security_rule_group": {
       "device_group": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "shared"
+        }
       },
       "position_keyword": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "position_reference": {
         "Type": "String",
@@ -3312,7 +7252,11 @@
           "Info": {
             "action": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "allow"
+              }
             },
             "applications": {
               "Type": "List",
@@ -3389,7 +7333,11 @@
             },
             "log_end": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "log_setting": {
               "Type": "String",
@@ -3490,7 +7438,11 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "universal"
+              }
             },
             "url_filtering": {
               "Type": "String",
@@ -3513,14 +7465,22 @@
       },
       "rulebase": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "pre-rulebase"
+        }
       }
     },
     "panos_panorama_service_group": {
       "device_group": {
         "Type": "String",
         "Optional": true,
-        "Description": "The device group to put this service group in"
+        "Description": "The device group to put this service group in",
+        "Default": {
+          "Type": "string",
+          "Value": "shared"
+        }
       },
       "name": {
         "Type": "String",
@@ -3560,7 +7520,11 @@
       "device_group": {
         "Type": "String",
         "Optional": true,
-        "Description": "The device group to put this service object in"
+        "Description": "The device group to put this service object in",
+        "Default": {
+          "Type": "string",
+          "Value": "shared"
+        }
       },
       "name": {
         "Type": "String",
@@ -3607,7 +7571,11 @@
       },
       "metric": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "10"
+        }
       },
       "name": {
         "Type": "String",
@@ -3619,7 +7587,11 @@
       },
       "route_table": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "unicast"
+        }
       },
       "template": {
         "Type": "String",
@@ -3637,7 +7609,11 @@
       },
       "type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ip-address"
+        }
       },
       "virtual_router": {
         "Type": "String",
@@ -3760,7 +7736,11 @@
       },
       "type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ip-netmask"
+        }
       },
       "value": {
         "Type": "String",
@@ -3803,17 +7783,29 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_panorama_virtual_router": {
       "ebgp_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "20"
+        }
       },
       "ibgp_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "200"
+        }
       },
       "interfaces": {
         "Type": "List",
@@ -3830,31 +7822,59 @@
       },
       "ospf_ext_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "110"
+        }
       },
       "ospf_int_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "30"
+        }
       },
       "ospfv3_ext_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "110"
+        }
       },
       "ospfv3_int_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "30"
+        }
       },
       "rip_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "120"
+        }
       },
       "static_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "10"
+        }
       },
       "static_ipv6_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "10"
+        }
       },
       "template": {
         "Type": "String",
@@ -3862,7 +7882,11 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_panorama_virtual_router_entry": {
@@ -3939,7 +7963,11 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_panorama_zone": {
@@ -4000,7 +8028,11 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       },
       "zone_profile": {
         "Type": "String",
@@ -4014,7 +8046,11 @@
       },
       "mode": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "layer3"
+        }
       },
       "template": {
         "Type": "String",
@@ -4022,9 +8058,107 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       },
       "zone": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "panos_redistribution_profile_ipv4": {
+      "action": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "redist"
+        }
+      },
+      "bgp_communities": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "bgp_extended_communities": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "destinations": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "interfaces": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "next_hops": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "ospf_areas": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "ospf_path_types": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "ospf_tags": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "priority": {
+        "Type": "Int",
+        "Required": true
+      },
+      "types": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "virtual_router": {
         "Type": "String",
         "Required": true
       }
@@ -4039,7 +8173,11 @@
             "action": {
               "Type": "String",
               "Optional": true,
-              "Description": "Action (default: allow, deny, drop, reset-client, reset-server, reset-both)"
+              "Description": "Action (default: allow, deny, drop, reset-client, reset-server, reset-both)",
+              "Default": {
+                "Type": "string",
+                "Value": "allow"
+              }
             },
             "applications": {
               "Type": "List",
@@ -4116,7 +8254,11 @@
             },
             "log_end": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "log_setting": {
               "Type": "String",
@@ -4194,7 +8336,11 @@
             "type": {
               "Type": "String",
               "Optional": true,
-              "Description": "Security rule type (default: universal, interzone, intrazone)"
+              "Description": "Security rule type (default: universal, interzone, intrazone)",
+              "Default": {
+                "Type": "string",
+                "Value": "universal"
+              }
             },
             "url_filtering": {
               "Type": "String",
@@ -4225,7 +8371,11 @@
       "vsys": {
         "Type": "String",
         "Optional": true,
-        "Description": "The vsys to put this object in (default: vsys1)"
+        "Description": "The vsys to put this object in (default: vsys1)",
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_security_policy": {
@@ -4238,7 +8388,11 @@
             "action": {
               "Type": "String",
               "Optional": true,
-              "Description": "Action (default: allow, deny, drop, reset-client, reset-server, reset-both)"
+              "Description": "Action (default: allow, deny, drop, reset-client, reset-server, reset-both)",
+              "Default": {
+                "Type": "string",
+                "Value": "allow"
+              }
             },
             "applications": {
               "Type": "List",
@@ -4315,7 +8469,11 @@
             },
             "log_end": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "log_setting": {
               "Type": "String",
@@ -4393,7 +8551,11 @@
             "type": {
               "Type": "String",
               "Optional": true,
-              "Description": "Security rule type (default: universal, interzone, intrazone)"
+              "Description": "Security rule type (default: universal, interzone, intrazone)",
+              "Default": {
+                "Type": "string",
+                "Value": "universal"
+              }
             },
             "url_filtering": {
               "Type": "String",
@@ -4424,13 +8586,20 @@
       "vsys": {
         "Type": "String",
         "Optional": true,
-        "Description": "The vsys to put this object in (default: vsys1)"
+        "Description": "The vsys to put this object in (default: vsys1)",
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_security_policy_group": {
       "position_keyword": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "position_reference": {
         "Type": "String",
@@ -4445,7 +8614,11 @@
           "Info": {
             "action": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "allow"
+              }
             },
             "applications": {
               "Type": "List",
@@ -4522,7 +8695,11 @@
             },
             "log_end": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "log_setting": {
               "Type": "String",
@@ -4598,7 +8775,11 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "universal"
+              }
             },
             "url_filtering": {
               "Type": "String",
@@ -4621,13 +8802,20 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_security_rule_group": {
       "position_keyword": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "position_reference": {
         "Type": "String",
@@ -4642,7 +8830,11 @@
           "Info": {
             "action": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "allow"
+              }
             },
             "applications": {
               "Type": "List",
@@ -4719,7 +8911,11 @@
             },
             "log_end": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "log_setting": {
               "Type": "String",
@@ -4795,7 +8991,11 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "universal"
+              }
             },
             "url_filtering": {
               "Type": "String",
@@ -4818,7 +9018,11 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_service_group": {
@@ -4848,7 +9052,11 @@
       "vsys": {
         "Type": "String",
         "Optional": true,
-        "Description": "The vsys to put this service group in"
+        "Description": "The vsys to put this service group in",
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_service_object": {
@@ -4890,7 +9098,11 @@
       "vsys": {
         "Type": "String",
         "Optional": true,
-        "Description": "The vsys to put this service object in"
+        "Description": "The vsys to put this service object in",
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_static_route_ipv4": {
@@ -4912,7 +9124,11 @@
       },
       "metric": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "10"
+        }
       },
       "name": {
         "Type": "String",
@@ -4924,11 +9140,19 @@
       },
       "route_table": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "unicast"
+        }
       },
       "type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ip-address"
+        }
       },
       "virtual_router": {
         "Type": "String",
@@ -5001,17 +9225,29 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_virtual_router": {
       "ebgp_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "20"
+        }
       },
       "ibgp_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "200"
+        }
       },
       "interfaces": {
         "Type": "List",
@@ -5028,31 +9264,59 @@
       },
       "ospf_ext_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "110"
+        }
       },
       "ospf_int_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "30"
+        }
       },
       "ospfv3_ext_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "110"
+        }
       },
       "ospfv3_int_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "30"
+        }
       },
       "rip_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "120"
+        }
       },
       "static_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "10"
+        }
       },
       "static_ipv6_dist": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "10"
+        }
       },
       "vsys": {
         "Type": "String",
@@ -5125,14 +9389,22 @@
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       }
     },
     "panos_zone": {
       "enable_user_id": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "The zone's mode"
+        "Description": "The zone's mode",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "exclude_acls": {
         "Type": "List",
@@ -5180,7 +9452,11 @@
       "vsys": {
         "Type": "String",
         "Optional": true,
-        "Description": "The vsys to put this zone in"
+        "Description": "The vsys to put this zone in",
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       },
       "zone_profile": {
         "Type": "String",
@@ -5195,11 +9471,19 @@
       },
       "mode": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "layer3"
+        }
       },
       "vsys": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "vsys1"
+        }
       },
       "zone": {
         "Type": "String",

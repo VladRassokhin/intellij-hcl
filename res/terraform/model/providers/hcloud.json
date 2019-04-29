@@ -1,16 +1,19 @@
 {
+  ".schema_version": "1",
   "name": "hcloud",
   "type": "provider",
-  "version": "v1.7.0-1-gf4031b0",
+  "version": "v1.9.0",
   "provider": {
     "endpoint": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(HCLOUD_ENDPOINT)"
     },
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "The API token to access the hetzner cloud."
+      "Description": "The API token to access the Hetzner cloud.",
+      "DefaultFunc": "ENV(HCLOUD_TOKEN)"
     }
   },
   "resources": {
@@ -82,7 +85,11 @@
       },
       "backups": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "datacenter": {
         "Type": "String",
@@ -111,7 +118,11 @@
       },
       "keep_disk": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "labels": {
         "Type": "Map",
@@ -312,7 +323,11 @@
       },
       "selector": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "with_selector"
+        ],
+        "Deprecated": "Please use the with_selector property instead."
       },
       "server_id": {
         "Type": "Int",
@@ -321,6 +336,13 @@
       "type": {
         "Type": "String",
         "Computed": true
+      },
+      "with_selector": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "selector"
+        ]
       }
     },
     "hcloud_image": {
@@ -367,11 +389,30 @@
       },
       "selector": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "with_selector"
+        ],
+        "Deprecated": "Please use the with_selector property instead."
       },
       "type": {
         "Type": "String",
         "Computed": true
+      },
+      "with_selector": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "selector"
+        ]
+      },
+      "with_status": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "hcloud_location": {
@@ -432,6 +473,93 @@
         }
       }
     },
+    "hcloud_server": {
+      "backup_window": {
+        "Type": "String",
+        "Computed": true
+      },
+      "backups": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "datacenter": {
+        "Type": "String",
+        "Computed": true
+      },
+      "id": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "image": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ipv4_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ipv6_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ipv6_network": {
+        "Type": "String",
+        "Computed": true
+      },
+      "iso": {
+        "Type": "String",
+        "Computed": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "rescue": {
+        "Type": "String",
+        "Computed": true
+      },
+      "selector": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "with_selector"
+        ],
+        "Deprecated": "Please use the with_selector property instead."
+      },
+      "server_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "with_selector": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "selector"
+        ]
+      },
+      "with_status": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "hcloud_ssh_key": {
       "fingerprint": {
         "Type": "String",
@@ -457,7 +585,18 @@
       },
       "selector": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "with_selector"
+        ],
+        "Deprecated": "Please use the with_selector property instead."
+      },
+      "with_selector": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "selector"
+        ]
       }
     },
     "hcloud_volume": {
@@ -484,7 +623,11 @@
       },
       "selector": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "with_selector"
+        ],
+        "Deprecated": "Please use the with_selector property instead."
       },
       "server": {
         "Type": "String",
@@ -493,6 +636,21 @@
       "size": {
         "Type": "Int",
         "Computed": true
+      },
+      "with_selector": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "selector"
+        ]
+      },
+      "with_status": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     }
   }

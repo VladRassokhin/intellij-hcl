@@ -1,0 +1,416 @@
+{
+  ".schema_version": "1",
+  "name": "azuread",
+  "type": "provider",
+  "version": "v0.3.1",
+  "provider": {
+    "client_certificate_password": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "ENV(ARM_CLIENT_CERTIFICATE_PASSWORD)"
+    },
+    "client_certificate_path": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "ENV(ARM_CLIENT_CERTIFICATE_PATH)"
+    },
+    "client_id": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "ENV(ARM_CLIENT_ID)"
+    },
+    "client_secret": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "ENV(ARM_CLIENT_SECRET)"
+    },
+    "environment": {
+      "Type": "String",
+      "Required": true,
+      "DefaultFunc": "ENV(ARM_ENVIRONMENT)"
+    },
+    "msi_endpoint": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "ENV(ARM_MSI_ENDPOINT)"
+    },
+    "subscription_id": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "ENV(ARM_SUBSCRIPTION_ID)"
+    },
+    "tenant_id": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "ENV(ARM_TENANT_ID)"
+    },
+    "use_msi": {
+      "Type": "Bool",
+      "Optional": true,
+      "DefaultFunc": "ENV(ARM_USE_MSI)"
+    }
+  },
+  "resources": {
+    "azuread_application": {
+      "application_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "available_to_other_tenants": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "homepage": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "identifier_uris": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "oauth2_allow_implicit_flow": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "reply_urls": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "required_resource_access": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "resource_access": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "id": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "resource_app_id": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      }
+    },
+    "azuread_group": {
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azuread_service_principal": {
+      "application_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "azuread_service_principal_password": {
+      "end_date": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "end_date_relative"
+        ]
+      },
+      "end_date_relative": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "end_date"
+        ]
+      },
+      "key_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "service_principal_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "start_date": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "value": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azuread_user": {
+      "account_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "display_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "force_password_change": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "mail": {
+        "Type": "String",
+        "Computed": true
+      },
+      "mail_nickname": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "password": {
+        "Type": "String",
+        "Required": true
+      },
+      "user_principal_name": {
+        "Type": "String",
+        "Required": true
+      }
+    }
+  },
+  "data-sources": {
+    "azuread_application": {
+      "application_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "available_to_other_tenants": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "homepage": {
+        "Type": "String",
+        "Computed": true
+      },
+      "identifier_uris": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "object_id"
+        ]
+      },
+      "oauth2_allow_implicit_flow": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "object_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "name"
+        ]
+      },
+      "reply_urls": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "required_resource_access": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "resource_access": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "id": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "resource_app_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      }
+    },
+    "azuread_domains": {
+      "domains": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "authentication_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "domain_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "is_default": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "is_initial": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "is_verified": {
+              "Type": "Bool",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "include_unverified": {
+        "Type": "Bool",
+        "Optional": true,
+        "ConflictsWith": [
+          "only_default",
+          "only_initial"
+        ]
+      },
+      "only_default": {
+        "Type": "Bool",
+        "Optional": true,
+        "ConflictsWith": [
+          "only_initial"
+        ]
+      },
+      "only_initial": {
+        "Type": "Bool",
+        "Optional": true,
+        "ConflictsWith": [
+          "only_default"
+        ]
+      }
+    },
+    "azuread_group": {
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azuread_service_principal": {
+      "application_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "object_id",
+          "display_name"
+        ]
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "object_id",
+          "application_id"
+        ]
+      },
+      "object_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "display_name",
+          "application_id"
+        ]
+      }
+    },
+    "azuread_user": {
+      "account_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "mail": {
+        "Type": "String",
+        "Computed": true
+      },
+      "mail_nickname": {
+        "Type": "String",
+        "Computed": true
+      },
+      "user_principal_name": {
+        "Type": "String",
+        "Required": true
+      }
+    }
+  }
+}

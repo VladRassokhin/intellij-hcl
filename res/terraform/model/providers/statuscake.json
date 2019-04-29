@@ -1,17 +1,20 @@
 {
+  ".schema_version": "1",
   "name": "statuscake",
   "type": "provider",
-  "version": "v0.2.0-8-g9676fb9",
+  "version": "v0.2.0",
   "provider": {
     "apikey": {
       "Type": "String",
       "Required": true,
-      "Description": "API Key for StatusCake"
+      "Description": "API Key for StatusCake",
+      "DefaultFunc": "ENV(STATUSCAKE_APIKEY)"
     },
     "username": {
       "Type": "String",
       "Required": true,
-      "Description": "Username for StatusCake Account."
+      "Description": "Username for StatusCake Account.",
+      "DefaultFunc": "ENV(STATUSCAKE_USERNAME)"
     }
   },
   "resources": {
@@ -30,19 +33,19 @@
       },
       "check_rate": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
       },
       "confirmations": {
         "Type": "Int",
         "Optional": true
       },
-      "contact_group": {
-        "Type": "Set",
-        "Optional": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
+      "contact_id": {
+        "Type": "Int",
+        "Optional": true
       },
       "custom_header": {
         "Type": "String",
@@ -78,7 +81,11 @@
       },
       "paused": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "ping_url": {
         "Type": "String",
@@ -113,12 +120,8 @@
         "Computed": true
       },
       "test_tags": {
-        "Type": "Set",
-        "Optional": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
+        "Type": "String",
+        "Optional": true
       },
       "test_type": {
         "Type": "String",
@@ -126,11 +129,19 @@
       },
       "timeout": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "40"
+        }
       },
       "trigger_rate": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "uptime": {
         "Type": "Float",

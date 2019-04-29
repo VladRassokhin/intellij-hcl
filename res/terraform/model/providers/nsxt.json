@@ -1,62 +1,61 @@
 {
+  ".schema_version": "1",
   "name": "nsxt",
   "type": "provider",
-  "version": "v1.0.0-294-ga1524af",
+  "version": "v1.1.0",
   "provider": {
     "allow_unverified_ssl": {
       "Type": "Bool",
       "Optional": true,
-      "Default": {
-        "Type": "bool",
-        "Value": "false"
-      }
+      "DefaultFunc": "ENV(NSXT_ALLOW_UNVERIFIED_SSL)"
     },
     "ca_file": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(NSXT_CA_FILE)"
     },
     "client_auth_cert_file": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(NSXT_CLIENT_AUTH_CERT_FILE)"
     },
     "client_auth_key_file": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(NSXT_CLIENT_AUTH_KEY_FILE)"
     },
     "host": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(NSXT_MANAGER_HOST)"
     },
     "max_retries": {
       "Type": "Int",
       "Optional": true,
       "Description": "Maximum number of HTTP client retries",
-      "Default": {
-        "Type": "int",
-        "Value": "50"
-      }
+      "DefaultFunc": "ENV(NSXT_MAX_RETRIES)"
     },
     "password": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(NSXT_PASSWORD)"
+    },
+    "remote_auth": {
+      "Type": "Bool",
+      "Optional": true,
+      "DefaultFunc": "ENV(NSXT_REMOTE_AUTH)"
     },
     "retry_max_delay": {
       "Type": "Int",
       "Optional": true,
       "Description": "Maximum delay in milliseconds between retries of a request",
-      "Default": {
-        "Type": "int",
-        "Value": "5000"
-      }
+      "DefaultFunc": "ENV(NSXT_RETRY_MAX_DELAY)"
     },
     "retry_min_delay": {
       "Type": "Int",
       "Optional": true,
       "Description": "Minimum delay in milliseconds between retries of a request",
-      "Default": {
-        "Type": "int",
-        "Value": "500"
-      }
+      "DefaultFunc": "ENV(NSXT_RETRY_MIN_DELAY)"
     },
     "retry_on_status_codes": {
       "Type": "List",
@@ -69,7 +68,8 @@
     },
     "username": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(NSXT_USERNAME)"
     }
   },
   "resources": {
@@ -278,7 +278,11 @@
       "error_threshold": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Error threshold"
+        "Description": "Error threshold",
+        "Default": {
+          "Type": "int",
+          "Value": "100"
+        }
       },
       "gateway_ip": {
         "Type": "String",
@@ -306,7 +310,11 @@
       "lease_time": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Lease time, in seconds"
+        "Description": "Lease time, in seconds",
+        "Default": {
+          "Type": "int",
+          "Value": "86400"
+        }
       },
       "logical_dhcp_server_id": {
         "Type": "String",
@@ -339,7 +347,11 @@
       "warning_threshold": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Warning threshold"
+        "Description": "Warning threshold",
+        "Default": {
+          "Type": "int",
+          "Value": "80"
+        }
       }
     },
     "nsxt_dhcp_server_profile": {
@@ -928,12 +940,20 @@
       "arp_bindings_limit": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Limit for the amount of ARP bindings"
+        "Description": "Limit for the amount of ARP bindings",
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
       },
       "arp_snooping_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Indicates whether ARP snooping is enabled"
+        "Description": "Indicates whether ARP snooping is enabled",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "description": {
         "Type": "String",
@@ -943,7 +963,11 @@
       "dhcp_snooping_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Indicates whether DHCP snooping is enabled"
+        "Description": "Indicates whether DHCP snooping is enabled",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "display_name": {
         "Type": "String",
@@ -977,7 +1001,11 @@
       "vm_tools_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Indicating whether VM tools will be enabled. This option is only supported on ESX where vm-tools is installed"
+        "Description": "Indicating whether VM tools will be enabled. This option is only supported on ESX where vm-tools is installed",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       }
     },
     "nsxt_ip_pool": {
@@ -1246,7 +1274,11 @@
       "prefer_server_ciphers": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Allow server to override the client's preference"
+        "Description": "Allow server to override the client's preference",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "protocols": {
         "Type": "Set",
@@ -1266,12 +1298,20 @@
       "session_cache_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Reuse previously negotiated security parameters during handshake"
+        "Description": "Reuse previously negotiated security parameters during handshake",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "session_cache_timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "For how long the SSL session parameters can be reused"
+        "Description": "For how long the SSL session parameters can be reused",
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
       },
       "tag": {
         "Type": "Set",
@@ -1296,17 +1336,29 @@
       "cookie_fallback": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "A boolean flag which reflects whether once the server points by this cookie is down, a new server is selected, or the requests will be rejected"
+        "Description": "A boolean flag which reflects whether once the server points by this cookie is down, a new server is selected, or the requests will be rejected",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "cookie_garble": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "A boolean flag which reflects whether the cookie value (server IP and port) would be encrypted or in plain text"
+        "Description": "A boolean flag which reflects whether the cookie value (server IP and port) would be encrypted or in plain text",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "cookie_mode": {
         "Type": "String",
         "Optional": true,
-        "Description": "The cookie persistence mode"
+        "Description": "The cookie persistence mode",
+        "Default": {
+          "Type": "string",
+          "Value": "INSERT"
+        }
       },
       "cookie_name": {
         "Type": "String",
@@ -1366,7 +1418,11 @@
       "persistence_shared": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "A boolean flag which reflects whether the cookie persistence is private or shared"
+        "Description": "A boolean flag which reflects whether the cookie persistence is private or shared",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "revision": {
         "Type": "Int",
@@ -1396,7 +1452,11 @@
       "close_timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Timeout in seconds to specify how long a closed TCP connection should be kept for this application before cleaning up the connection"
+        "Description": "Timeout in seconds to specify how long a closed TCP connection should be kept for this application before cleaning up the connection",
+        "Default": {
+          "Type": "int",
+          "Value": "8"
+        }
       },
       "description": {
         "Type": "String",
@@ -1412,12 +1472,20 @@
       "ha_flow_mirroring": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "A boolean flag which reflects whether flow mirroring is enabled, and all the flows to the bounded virtual server are mirrored to the standby node"
+        "Description": "A boolean flag which reflects whether flow mirroring is enabled, and all the flows to the bounded virtual server are mirrored to the standby node",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "idle_timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Timeout in seconds to specify how long an idle TCP connection in ESTABLISHED state should be kept for this application before cleaning up"
+        "Description": "Timeout in seconds to specify how long an idle TCP connection in ESTABLISHED state should be kept for this application before cleaning up",
+        "Default": {
+          "Type": "int",
+          "Value": "1800"
+        }
       },
       "revision": {
         "Type": "Int",
@@ -1458,12 +1526,20 @@
       "ha_flow_mirroring": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "A boolean flag which reflects whether flow mirroring is enabled, and all the flows to the bounded virtual server are mirrored to the standby node"
+        "Description": "A boolean flag which reflects whether flow mirroring is enabled, and all the flows to the bounded virtual server are mirrored to the standby node",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "idle_timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Timeout in seconds to specify how long an idle UDP connection in ESTABLISHED state should be kept for this application before cleaning up"
+        "Description": "Timeout in seconds to specify how long an idle UDP connection in ESTABLISHED state should be kept for this application before cleaning up",
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
       },
       "revision": {
         "Type": "Int",
@@ -1509,17 +1585,29 @@
       "http_redirect_to_https": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "A boolean flag which reflects whether the client will automatically be redirected to use SSL"
+        "Description": "A boolean flag which reflects whether the client will automatically be redirected to use SSL",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "idle_timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Timeout in seconds to specify how long an HTTP application can remain idle"
+        "Description": "Timeout in seconds to specify how long an HTTP application can remain idle",
+        "Default": {
+          "Type": "int",
+          "Value": "15"
+        }
       },
       "ntlm": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "A boolean flag which reflects whether NTLM challenge/response methodology will be used over HTTP"
+        "Description": "A boolean flag which reflects whether NTLM challenge/response methodology will be used over HTTP",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "request_body_size": {
         "Type": "Int",
@@ -1529,12 +1617,20 @@
       "request_header_size": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Maximum request header size in bytes. Requests with larger header size will be processed as best effort whereas a request with header below this specified size is guaranteed to be processed"
+        "Description": "Maximum request header size in bytes. Requests with larger header size will be processed as best effort whereas a request with header below this specified size is guaranteed to be processed",
+        "Default": {
+          "Type": "int",
+          "Value": "1024"
+        }
       },
       "response_timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of seconds waiting for the server response before the connection is closed"
+        "Description": "Number of seconds waiting for the server response before the connection is closed",
+        "Default": {
+          "Type": "int",
+          "Value": "60"
+        }
       },
       "revision": {
         "Type": "Int",
@@ -1576,12 +1672,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -1605,12 +1709,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -1649,12 +1761,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -1720,7 +1840,11 @@
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "source_address": {
               "Type": "String",
@@ -1732,7 +1856,11 @@
       "match_strategy": {
         "Type": "String",
         "Optional": true,
-        "Description": "Strategy when multiple match conditions are specified in one rule (ANY vs ALL)"
+        "Description": "Strategy when multiple match conditions are specified in one rule (ANY vs ALL)",
+        "Default": {
+          "Type": "string",
+          "Value": "ALL"
+        }
       },
       "method_condition": {
         "Type": "Set",
@@ -1744,7 +1872,11 @@
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "method": {
               "Type": "String",
@@ -1801,7 +1933,11 @@
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "source_port": {
               "Type": "String",
@@ -1820,12 +1956,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -1850,7 +1994,11 @@
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "version": {
               "Type": "String",
@@ -1875,12 +2023,20 @@
       "fall_count": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of consecutive checks that must fail before marking it down"
+        "Description": "Number of consecutive checks that must fail before marking it down",
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
       },
       "interval": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The frequency at which the system issues the monitor check (in seconds)"
+        "Description": "The frequency at which the system issues the monitor check (in seconds)",
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "monitor_port": {
         "Type": "String",
@@ -1915,17 +2071,29 @@
       "request_method": {
         "Type": "String",
         "Optional": true,
-        "Description": "Health check method for HTTP monitor type"
+        "Description": "Health check method for HTTP monitor type",
+        "Default": {
+          "Type": "string",
+          "Value": "GET"
+        }
       },
       "request_url": {
         "Type": "String",
         "Optional": true,
-        "Description": "URL used for HTTP monitor"
+        "Description": "URL used for HTTP monitor",
+        "Default": {
+          "Type": "string",
+          "Value": "/"
+        }
       },
       "request_version": {
         "Type": "String",
         "Optional": true,
-        "Description": "HTTP request version"
+        "Description": "HTTP request version",
+        "Default": {
+          "Type": "string",
+          "Value": "HTTP_VERSION_1_1"
+        }
       },
       "response_body": {
         "Type": "String",
@@ -1950,7 +2118,11 @@
       "rise_count": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of consecutive checks that must pass before marking it up"
+        "Description": "Number of consecutive checks that must pass before marking it up",
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
       },
       "tag": {
         "Type": "Set",
@@ -1973,7 +2145,11 @@
       "timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of seconds the target has to respond to the monitor request"
+        "Description": "Number of seconds the target has to respond to the monitor request",
+        "Default": {
+          "Type": "int",
+          "Value": "15"
+        }
       }
     },
     "nsxt_lb_http_request_rewrite_rule": {
@@ -1987,12 +2163,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -2016,12 +2200,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -2060,12 +2252,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -2112,7 +2312,11 @@
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "source_address": {
               "Type": "String",
@@ -2124,7 +2328,11 @@
       "match_strategy": {
         "Type": "String",
         "Optional": true,
-        "Description": "Strategy when multiple match conditions are specified in one rule (ANY vs ALL)"
+        "Description": "Strategy when multiple match conditions are specified in one rule (ANY vs ALL)",
+        "Default": {
+          "Type": "string",
+          "Value": "ALL"
+        }
       },
       "method_condition": {
         "Type": "Set",
@@ -2136,7 +2344,11 @@
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "method": {
               "Type": "String",
@@ -2178,7 +2390,11 @@
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "source_port": {
               "Type": "String",
@@ -2197,12 +2413,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -2226,12 +2450,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -2275,7 +2507,11 @@
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "version": {
               "Type": "String",
@@ -2296,12 +2532,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -2359,7 +2603,11 @@
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "source_address": {
               "Type": "String",
@@ -2371,7 +2619,11 @@
       "match_strategy": {
         "Type": "String",
         "Optional": true,
-        "Description": "Strategy when multiple match conditions are specified in one rule (ANY vs ALL)"
+        "Description": "Strategy when multiple match conditions are specified in one rule (ANY vs ALL)",
+        "Default": {
+          "Type": "string",
+          "Value": "ALL"
+        }
       },
       "method_condition": {
         "Type": "Set",
@@ -2383,7 +2635,11 @@
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "method": {
               "Type": "String",
@@ -2402,12 +2658,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -2435,12 +2699,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -2491,7 +2763,11 @@
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "source_port": {
               "Type": "String",
@@ -2510,12 +2786,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -2539,12 +2823,20 @@
             "case_sensitive": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "If true, case is significant in condition matching"
+              "Description": "If true, case is significant in condition matching",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "match_type": {
               "Type": "String",
@@ -2569,7 +2861,11 @@
             "inverse": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to reverse match result of this condition"
+              "Description": "Whether to reverse match result of this condition",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "version": {
               "Type": "String",
@@ -2583,7 +2879,11 @@
       "access_log_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Whether access log is enabled"
+        "Description": "Whether access log is enabled",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "application_profile_id": {
         "Type": "String",
@@ -2610,12 +2910,20 @@
             "certificate_chain_depth": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Verification depth in the server certificate chain"
+              "Description": "Verification depth in the server certificate chain",
+              "Default": {
+                "Type": "int",
+                "Value": "3"
+              }
             },
             "client_auth": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether client certificate authentication is mandatory"
+              "Description": "Whether client certificate authentication is mandatory",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "client_ssl_profile_id": {
               "Type": "String",
@@ -2667,7 +2975,11 @@
       "enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Whether the virtual server is enabled"
+        "Description": "Whether the virtual server is enabled",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "ip_address": {
         "Type": "String",
@@ -2733,7 +3045,11 @@
             "certificate_chain_depth": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Verification depth in the server certificate chain"
+              "Description": "Verification depth in the server certificate chain",
+              "Default": {
+                "Type": "int",
+                "Value": "3"
+              }
             },
             "client_certificate_id": {
               "Type": "String",
@@ -2752,7 +3068,11 @@
             "server_auth": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Server authentication mode"
+              "Description": "Server authentication mode",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "server_ssl_profile_id": {
               "Type": "String",
@@ -2790,7 +3110,11 @@
       "certificate_chain_depth": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Verification depth in the server certificate chain"
+        "Description": "Verification depth in the server certificate chain",
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
       },
       "ciphers": {
         "Type": "Set",
@@ -2821,12 +3145,20 @@
       "fall_count": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of consecutive checks that must fail before marking it down"
+        "Description": "Number of consecutive checks that must fail before marking it down",
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
       },
       "interval": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The frequency at which the system issues the monitor check (in seconds)"
+        "Description": "The frequency at which the system issues the monitor check (in seconds)",
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "is_secure": {
         "Type": "Bool",
@@ -2876,17 +3208,29 @@
       "request_method": {
         "Type": "String",
         "Optional": true,
-        "Description": "Health check method for HTTP monitor type"
+        "Description": "Health check method for HTTP monitor type",
+        "Default": {
+          "Type": "string",
+          "Value": "GET"
+        }
       },
       "request_url": {
         "Type": "String",
         "Optional": true,
-        "Description": "URL used for HTTP monitor"
+        "Description": "URL used for HTTP monitor",
+        "Default": {
+          "Type": "string",
+          "Value": "/"
+        }
       },
       "request_version": {
         "Type": "String",
         "Optional": true,
-        "Description": "HTTP request version"
+        "Description": "HTTP request version",
+        "Default": {
+          "Type": "string",
+          "Value": "HTTP_VERSION_1_1"
+        }
       },
       "response_body": {
         "Type": "String",
@@ -2911,12 +3255,20 @@
       "rise_count": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of consecutive checks that must pass before marking it up"
+        "Description": "Number of consecutive checks that must pass before marking it up",
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
       },
       "server_auth": {
         "Type": "String",
         "Optional": true,
-        "Description": "Server authentication mode"
+        "Description": "Server authentication mode",
+        "Default": {
+          "Type": "string",
+          "Value": "IGNORE"
+        }
       },
       "server_auth_ca_ids": {
         "Type": "Set",
@@ -2957,14 +3309,22 @@
       "timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of seconds the target has to respond to the monitor request"
+        "Description": "Number of seconds the target has to respond to the monitor request",
+        "Default": {
+          "Type": "int",
+          "Value": "15"
+        }
       }
     },
     "nsxt_lb_icmp_monitor": {
       "data_length": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The data size (in bytes) of the ICMP healthcheck packet"
+        "Description": "The data size (in bytes) of the ICMP healthcheck packet",
+        "Default": {
+          "Type": "int",
+          "Value": "56"
+        }
       },
       "description": {
         "Type": "String",
@@ -2980,12 +3340,20 @@
       "fall_count": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of consecutive checks that must fail before marking it down"
+        "Description": "Number of consecutive checks that must fail before marking it down",
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
       },
       "interval": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The frequency at which the system issues the monitor check (in seconds)"
+        "Description": "The frequency at which the system issues the monitor check (in seconds)",
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "monitor_port": {
         "Type": "String",
@@ -3000,7 +3368,11 @@
       "rise_count": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of consecutive checks that must pass before marking it up"
+        "Description": "Number of consecutive checks that must pass before marking it up",
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
       },
       "tag": {
         "Type": "Set",
@@ -3023,7 +3395,11 @@
       "timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of seconds the target has to respond to the monitor request"
+        "Description": "Number of seconds the target has to respond to the monitor request",
+        "Default": {
+          "Type": "int",
+          "Value": "15"
+        }
       }
     },
     "nsxt_lb_passive_monitor": {
@@ -3041,7 +3417,11 @@
       "max_fails": {
         "Type": "Int",
         "Optional": true,
-        "Description": "When the consecutive failures reach this value, then the member is considered temporarily unavailable for a configurable period"
+        "Description": "When the consecutive failures reach this value, then the member is considered temporarily unavailable for a configurable period",
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "revision": {
         "Type": "Int",
@@ -3069,7 +3449,11 @@
       "timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "After this timeout period, the member is tried again for a new connection to see if it is available"
+        "Description": "After this timeout period, the member is tried again for a new connection to see if it is available",
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       }
     },
     "nsxt_lb_pool": {
@@ -3081,7 +3465,11 @@
       "algorithm": {
         "Type": "String",
         "Optional": true,
-        "Description": "Load balancing algorithm controls how the incoming connections are distributed among the members"
+        "Description": "Load balancing algorithm controls how the incoming connections are distributed among the members",
+        "Default": {
+          "Type": "string",
+          "Value": "ROUND_ROBIN"
+        }
       },
       "description": {
         "Type": "String",
@@ -3104,12 +3492,20 @@
             "admin_state": {
               "Type": "String",
               "Optional": true,
-              "Description": "Member admin state"
+              "Description": "Member admin state",
+              "Default": {
+                "Type": "string",
+                "Value": "ENABLED"
+              }
             },
             "backup_member": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "A boolean flag which reflects whether this is a backup pool member"
+              "Description": "A boolean flag which reflects whether this is a backup pool member",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "display_name": {
               "Type": "String",
@@ -3135,7 +3531,11 @@
             "weight": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Pool member weight is used for WEIGHTED_ROUND_ROBIN balancing algorithm. The weight value would be ignored in other algorithms"
+              "Description": "Pool member weight is used for WEIGHTED_ROUND_ROBIN balancing algorithm. The weight value would be ignored in other algorithms",
+              "Default": {
+                "Type": "int",
+                "Value": "1"
+              }
             }
           }
         }
@@ -3182,12 +3582,20 @@
             "ip_version_filter": {
               "Type": "String",
               "Optional": true,
-              "Description": "Ip revision filter is used to filter IPv4 or IPv6 addresses from the grouping object. If the filter is not specified, both IPv4 and IPv6 addresses would be used as server IPs"
+              "Description": "Ip revision filter is used to filter IPv4 or IPv6 addresses from the grouping object. If the filter is not specified, both IPv4 and IPv6 addresses would be used as server IPs",
+              "Default": {
+                "Type": "string",
+                "Value": "IPV4"
+              }
             },
             "limit_ip_list_size": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Specifies whether to limit pool members. If false, dynamic pool can grow up to the load balancer max pool member capacity."
+              "Description": "Specifies whether to limit pool members. If false, dynamic pool can grow up to the load balancer max pool member capacity.",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "max_ip_list_size": {
               "Type": "Int",
@@ -3205,7 +3613,11 @@
       "min_active_members": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The minimum number of members for the pool to be considered active"
+        "Description": "The minimum number of members for the pool to be considered active",
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
       },
       "passive_monitor_id": {
         "Type": "String",
@@ -3231,16 +3643,14 @@
               "Optional": true,
               "Description": "Ip address or Ip range for SNAT of type SNAT_IP_POOL"
             },
-            "port_overload": {
-              "Type": "Int",
-              "Optional": true,
-              "Description": "Maximum times for reusing the same SNAT IP and port for multiple backend connections",
-              "Computed": true
-            },
             "type": {
               "Type": "String",
               "Optional": true,
-              "Description": "Type of SNAT performed to ensure reverse traffic from the server can be received and processed by the loadbalancer"
+              "Description": "Type of SNAT performed to ensure reverse traffic from the server can be received and processed by the loadbalancer",
+              "Default": {
+                "Type": "string",
+                "Value": "TRANSPARENT"
+              }
             }
           }
         }
@@ -3266,12 +3676,20 @@
       "tcp_multiplexing_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "TCP multiplexing allows the same TCP connection between load balancer and the backend server to be used for sending multiple client requests from different client TCP connections"
+        "Description": "TCP multiplexing allows the same TCP connection between load balancer and the backend server to be used for sending multiple client requests from different client TCP connections",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "tcp_multiplexing_number": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The maximum number of TCP connections per pool that are idly kept alive for sending future client requests"
+        "Description": "The maximum number of TCP connections per pool that are idly kept alive for sending future client requests",
+        "Default": {
+          "Type": "int",
+          "Value": "6"
+        }
       }
     },
     "nsxt_lb_server_ssl_profile": {
@@ -3319,7 +3737,11 @@
       "session_cache_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Reuse previously negotiated security parameters during handshake"
+        "Description": "Reuse previously negotiated security parameters during handshake",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "tag": {
         "Type": "Set",
@@ -3355,12 +3777,20 @@
       "enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Whether the load balancer service is enabled"
+        "Description": "Whether the load balancer service is enabled",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "error_log_level": {
         "Type": "String",
         "Optional": true,
-        "Description": "Load balancer engine writes information about encountered issues of different severity levels to the error log. This setting is used to define the severity level of the error log"
+        "Description": "Load balancer engine writes information about encountered issues of different severity levels to the error log. This setting is used to define the severity level of the error log",
+        "Default": {
+          "Type": "string",
+          "Value": "INFO"
+        }
       },
       "logical_router_id": {
         "Type": "String",
@@ -3375,7 +3805,11 @@
       "size": {
         "Type": "String",
         "Optional": true,
-        "Description": "Size of load balancer service"
+        "Description": "Size of load balancer service",
+        "Default": {
+          "Type": "string",
+          "Value": "SMALL"
+        }
       },
       "tag": {
         "Type": "Set",
@@ -3420,7 +3854,11 @@
       "ha_persistence_mirroring": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "A boolean flag which reflects whether persistence entries will be synchronized to the HA peer"
+        "Description": "A boolean flag which reflects whether persistence entries will be synchronized to the HA peer",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "persistence_shared": {
         "Type": "Bool",
@@ -3430,7 +3868,11 @@
       "purge_when_full": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "A boolean flag which reflects whether entries will be purged when the persistence table is full"
+        "Description": "A boolean flag which reflects whether entries will be purged when the persistence table is full",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "revision": {
         "Type": "Int",
@@ -3458,7 +3900,11 @@
       "timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Persistence expiration time in seconds, counted from the time all the connections are completed"
+        "Description": "Persistence expiration time in seconds, counted from the time all the connections are completed",
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
       }
     },
     "nsxt_lb_tcp_monitor": {
@@ -3476,12 +3922,20 @@
       "fall_count": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of consecutive checks that must fail before marking it down"
+        "Description": "Number of consecutive checks that must fail before marking it down",
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
       },
       "interval": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The frequency at which the system issues the monitor check (in seconds)"
+        "Description": "The frequency at which the system issues the monitor check (in seconds)",
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "monitor_port": {
         "Type": "String",
@@ -3501,7 +3955,11 @@
       "rise_count": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of consecutive checks that must pass before marking it up"
+        "Description": "Number of consecutive checks that must pass before marking it up",
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
       },
       "send": {
         "Type": "String",
@@ -3529,14 +3987,22 @@
       "timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of seconds the target has to respond to the monitor request"
+        "Description": "Number of seconds the target has to respond to the monitor request",
+        "Default": {
+          "Type": "int",
+          "Value": "15"
+        }
       }
     },
     "nsxt_lb_tcp_virtual_server": {
       "access_log_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Whether access log is enabled"
+        "Description": "Whether access log is enabled",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "application_profile_id": {
         "Type": "String",
@@ -3566,7 +4032,11 @@
       "enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "whether the virtual server is enabled"
+        "Description": "whether the virtual server is enabled",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "ip_address": {
         "Type": "String",
@@ -3646,12 +4116,20 @@
       "fall_count": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of consecutive checks that must fail before marking it down"
+        "Description": "Number of consecutive checks that must fail before marking it down",
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
       },
       "interval": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The frequency at which the system issues the monitor check (in seconds)"
+        "Description": "The frequency at which the system issues the monitor check (in seconds)",
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "monitor_port": {
         "Type": "String",
@@ -3671,7 +4149,11 @@
       "rise_count": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of consecutive checks that must pass before marking it up"
+        "Description": "Number of consecutive checks that must pass before marking it up",
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
       },
       "send": {
         "Type": "String",
@@ -3699,14 +4181,22 @@
       "timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of seconds the target has to respond to the monitor request"
+        "Description": "Number of seconds the target has to respond to the monitor request",
+        "Default": {
+          "Type": "int",
+          "Value": "15"
+        }
       }
     },
     "nsxt_lb_udp_virtual_server": {
       "access_log_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Whether access log is enabled"
+        "Description": "Whether access log is enabled",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "application_profile_id": {
         "Type": "String",
@@ -3736,7 +4226,11 @@
       "enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "whether the virtual server is enabled"
+        "Description": "whether the virtual server is enabled",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "ip_address": {
         "Type": "String",
@@ -3805,7 +4299,11 @@
       "admin_state": {
         "Type": "String",
         "Optional": true,
-        "Description": "Represents Desired state of the object"
+        "Description": "Represents Desired state of the object",
+        "Default": {
+          "Type": "string",
+          "Value": "UP"
+        }
       },
       "description": {
         "Type": "String",
@@ -3970,7 +4468,11 @@
       "admin_state": {
         "Type": "String",
         "Optional": true,
-        "Description": "Represents Desired state of the object"
+        "Description": "Represents Desired state of the object",
+        "Default": {
+          "Type": "string",
+          "Value": "UP"
+        }
       },
       "description": {
         "Type": "String",
@@ -4086,7 +4588,11 @@
       "urpf_mode": {
         "Type": "String",
         "Optional": true,
-        "Description": "Unicast Reverse Path Forwarding mode"
+        "Description": "Unicast Reverse Path Forwarding mode",
+        "Default": {
+          "Type": "string",
+          "Value": "STRICT"
+        }
       }
     },
     "nsxt_logical_router_downlink_port": {
@@ -4177,7 +4683,11 @@
       "urpf_mode": {
         "Type": "String",
         "Optional": true,
-        "Description": "Unicast Reverse Path Forwarding mode"
+        "Description": "Unicast Reverse Path Forwarding mode",
+        "Default": {
+          "Type": "string",
+          "Value": "STRICT"
+        }
       }
     },
     "nsxt_logical_router_link_port_on_tier0": {
@@ -4301,7 +4811,11 @@
       "admin_state": {
         "Type": "String",
         "Optional": true,
-        "Description": "Represents Desired state of the object"
+        "Description": "Represents Desired state of the object",
+        "Default": {
+          "Type": "string",
+          "Value": "UP"
+        }
       },
       "description": {
         "Type": "String",
@@ -4327,7 +4841,11 @@
       "replication_mode": {
         "Type": "String",
         "Optional": true,
-        "Description": "Replication mode of the Logical Switch"
+        "Description": "Replication mode of the Logical Switch",
+        "Default": {
+          "Type": "string",
+          "Value": "MTEP"
+        }
       },
       "revision": {
         "Type": "Int",
@@ -4380,7 +4898,8 @@
       },
       "vlan": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Deprecated": "Use nsxt_vlan_logical_switch resource instead"
       },
       "vni": {
         "Type": "Int",
@@ -4446,7 +4965,11 @@
       "high_availability_mode": {
         "Type": "String",
         "Optional": true,
-        "Description": "High availability mode"
+        "Description": "High availability mode",
+        "Default": {
+          "Type": "string",
+          "Value": "ACTIVE_STANDBY"
+        }
       },
       "revision": {
         "Type": "Int",
@@ -4481,27 +5004,47 @@
       "advertise_connected_routes": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Enable connected NSX routes advertisement"
+        "Description": "Enable connected NSX routes advertisement",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "advertise_lb_snat_ip_routes": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Enable LB SNAT IP routes advertisement"
+        "Description": "Enable LB SNAT IP routes advertisement",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "advertise_lb_vip_routes": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Enable LB VIP routes advertisement"
+        "Description": "Enable LB VIP routes advertisement",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "advertise_nat_routes": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Enable NAT routes advertisement"
+        "Description": "Enable NAT routes advertisement",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "advertise_static_routes": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Enable static routes advertisement"
+        "Description": "Enable static routes advertisement",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "description": {
         "Type": "String",
@@ -4522,12 +5065,20 @@
       "enable_router_advertisement": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Enable router advertisement"
+        "Description": "Enable router advertisement",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "failover_mode": {
         "Type": "String",
         "Optional": true,
-        "Description": "Failover mode which determines whether the preferred service router instance for given logical router will preempt the peer"
+        "Description": "Failover mode which determines whether the preferred service router instance for given logical router will preempt the peer",
+        "Default": {
+          "Type": "string",
+          "Value": "PREEMPTIVE"
+        }
       },
       "firewall_sections": {
         "Type": "List",
@@ -4599,7 +5150,11 @@
       "mac_change_allowed": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Allowing source MAC address change"
+        "Description": "Allowing source MAC address change",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "mac_learning": {
         "Type": "List",
@@ -4611,22 +5166,38 @@
             "enabled": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Allowing source MAC address learning"
+              "Description": "Allowing source MAC address learning",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "limit": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The maximum number of MAC addresses that can be learned on this port"
+              "Description": "The maximum number of MAC addresses that can be learned on this port",
+              "Default": {
+                "Type": "int",
+                "Value": "4096"
+              }
             },
             "limit_policy": {
               "Type": "String",
               "Optional": true,
-              "Description": "The policy after MAC Limit is exceeded"
+              "Description": "The policy after MAC Limit is exceeded",
+              "Default": {
+                "Type": "string",
+                "Value": "ALLOW"
+              }
             },
             "unicast_flooding_allowed": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Allowing flooding for unlearned MAC for ingress traffic"
+              "Description": "Allowing flooding for unlearned MAC for ingress traffic",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -4675,12 +5246,20 @@
       "enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "enable/disable the rule"
+        "Description": "enable/disable the rule",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "logging": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "enable/disable the logging of rule"
+        "Description": "enable/disable the logging of rule",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "logical_router_id": {
         "Type": "String",
@@ -4700,7 +5279,11 @@
       "nat_pass": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "A boolean flag which reflects whether the following firewall stage will be skipped"
+        "Description": "A boolean flag which reflects whether the following firewall stage will be skipped",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "revision": {
         "Type": "Int",
@@ -4786,7 +5369,11 @@
             },
             "scope_op": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "EQUALS"
+              }
             },
             "tag": {
               "Type": "String",
@@ -4794,7 +5381,11 @@
             },
             "tag_op": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "EQUALS"
+              }
             },
             "target_type": {
               "Type": "String",
@@ -4897,7 +5488,11 @@
       "dscp_trusted": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Trust mode for DSCP"
+        "Description": "Trust mode for DSCP",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "egress_rate_shaper": {
         "Type": "List",
@@ -4919,7 +5514,11 @@
             "enabled": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether this rate shaper is enabled"
+              "Description": "Whether this rate shaper is enabled",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "peak_bw_mbps": {
               "Type": "Int",
@@ -4949,7 +5548,11 @@
             "enabled": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether this rate shaper is enabled"
+              "Description": "Whether this rate shaper is enabled",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "peak_bw_kbps": {
               "Type": "Int",
@@ -4979,7 +5582,11 @@
             "enabled": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether this rate shaper is enabled"
+              "Description": "Whether this rate shaper is enabled",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "peak_bw_mbps": {
               "Type": "Int",
@@ -5017,7 +5624,11 @@
       "address_binding_whitelist_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "When true, this profile overrides the default system wide settings for Spoof Guard when assigned to ports"
+        "Description": "When true, this profile overrides the default system wide settings for Spoof Guard when assigned to ports",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "description": {
         "Type": "String",
@@ -5138,22 +5749,38 @@
       "block_client_dhcp": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Indicates whether DHCP client blocking is enabled"
+        "Description": "Indicates whether DHCP client blocking is enabled",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "block_non_ip": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Block all traffic except IP/(G)ARP/BPDU"
+        "Description": "Block all traffic except IP/(G)ARP/BPDU",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "block_server_dhcp": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Indicates whether DHCP server blocking is enabled"
+        "Description": "Indicates whether DHCP server blocking is enabled",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "bpdu_filter_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Indicates whether BPDU filter is enabled"
+        "Description": "Indicates whether BPDU filter is enabled",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "bpdu_filter_whitelist": {
         "Type": "Set",
@@ -5185,7 +5812,11 @@
             "enabled": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether rate limiting is enabled"
+              "Description": "Whether rate limiting is enabled",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "rx_broadcast": {
               "Type": "Int",
@@ -5232,6 +5863,117 @@
             }
           }
         }
+      }
+    },
+    "nsxt_vlan_logical_switch": {
+      "address_binding": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Address bindings for the Logical switch",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_address": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "A single IP address or a subnet cidr"
+            },
+            "mac_address": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "A single MAC address"
+            },
+            "vlan": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "A single vlan tag value"
+            }
+          }
+        }
+      },
+      "admin_state": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Represents Desired state of the object",
+        "Default": {
+          "Type": "string",
+          "Value": "UP"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Description of this resource"
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The display name of this resource. Defaults to ID if not set",
+        "Computed": true
+      },
+      "ip_pool_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "IP pool id that associated with a LogicalSwitch"
+      },
+      "mac_pool_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Mac pool id that associated with a LogicalSwitch"
+      },
+      "revision": {
+        "Type": "Int",
+        "Description": "The _revision property describes the current revision of the resource. To prevent clients from overwriting each other's changes, PUT operations must include the current _revision of the resource, which clients should obtain by issuing a GET operation. If the _revision provided in a PUT request is missing or stale, the operation will be rejected",
+        "Computed": true
+      },
+      "switching_profile_id": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "List of IDs of switching profiles (of various types) to be associated with this object. Default switching profiles will be used if not specified",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "key": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The resource type of this profile"
+            },
+            "value": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The ID of this profile"
+            }
+          }
+        }
+      },
+      "tag": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Set of opaque identifiers meaningful to the user",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "scope": {
+              "Type": "String",
+              "Required": true
+            },
+            "tag": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "transport_zone_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Id of the TransportZone to which this LogicalSwitch is associated"
+      },
+      "vlan": {
+        "Type": "Int",
+        "Required": true,
+        "Description": "VLAN Id"
       }
     },
     "nsxt_vm_tags": {

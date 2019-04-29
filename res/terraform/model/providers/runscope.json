@@ -1,17 +1,24 @@
 {
+  ".schema_version": "1",
   "name": "runscope",
   "type": "provider",
-  "version": "v0.5.0-2-gf380a04",
+  "version": "v0.5.0",
   "provider": {
     "access_token": {
       "Type": "String",
       "Required": true,
-      "Description": "A runscope access token."
+      "Description": "A runscope access token.",
+      "DefaultFunc": "ENV(RUNSCOPE_ACCESS_TOKEN)"
     },
     "api_url": {
       "Type": "String",
       "Optional": true,
-      "Description": "A runscope api url i.e. https://api.runscope.com."
+      "Description": "A runscope api url i.e. https://api.runscope.com.",
+      "DefaultFunc": "ENV(RUNSCOPE_API_URL)",
+      "Default": {
+        "Type": "string",
+        "Value": "https://api.runscope.com"
+      }
     }
   },
   "resources": {
@@ -136,7 +143,11 @@
       },
       "verify_ssl": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "webhooks": {
         "Type": "Set",

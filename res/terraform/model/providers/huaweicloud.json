@@ -1,188 +1,143 @@
 {
+  ".schema_version": "1",
   "name": "huaweicloud",
   "type": "provider",
-  "version": "v1.2.0-36-gde8c937",
+  "version": "v1.4.0",
   "provider": {
     "access_key": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_ACCESS_KEY)"
     },
     "agency_domain_name": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of domain who created the agency (Identity v3).",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_AGENCY_DOMAIN_NAME)"
     },
     "agency_name": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of agency",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_AGENCY_NAME)"
     },
     "auth_url": {
       "Type": "String",
       "Optional": true,
       "Description": "The Identity authentication URL.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_AUTH_URL)"
     },
     "cacert_file": {
       "Type": "String",
       "Optional": true,
       "Description": "A Custom CA certificate.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_CACERT)"
     },
     "cert": {
       "Type": "String",
       "Optional": true,
       "Description": "A client certificate to authenticate with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_CERT)"
     },
     "cloud": {
       "Type": "String",
       "Optional": true,
       "Description": "An entry in a `clouds.yaml` file to use.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_CLOUD)"
     },
     "delegated_project": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of delegated project (Identity v3).",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_DELEGATED_PROJECT)"
     },
     "domain_id": {
       "Type": "String",
       "Optional": true,
       "Description": "The ID of the Domain to scope to (Identity v3).",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(OS_USER_DOMAIN_ID,OS_PROJECT_DOMAIN_ID,OS_DOMAIN_ID)"
     },
     "domain_name": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of the Domain to scope to (Identity v3).",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(OS_USER_DOMAIN_NAME,OS_PROJECT_DOMAIN_NAME,OS_DOMAIN_NAME,OS_DEFAULT_DOMAIN)"
     },
     "endpoint_type": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_ENDPOINT_TYPE)"
     },
     "insecure": {
       "Type": "Bool",
       "Optional": true,
       "Description": "Trust self-signed certificates.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_INSECURE)"
     },
     "key": {
       "Type": "String",
       "Optional": true,
       "Description": "A client private key to authenticate with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_KEY)"
     },
     "password": {
       "Type": "String",
       "Optional": true,
       "Description": "Password to login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_PASSWORD)"
     },
     "region": {
       "Type": "String",
       "Optional": true,
       "Description": "The HuaweiCloud region to connect to.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_REGION_NAME)"
     },
     "secret_key": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_SECRET_KEY)"
     },
     "swauth": {
       "Type": "Bool",
       "Optional": true,
       "Description": "Use Swift's authentication system instead of Keystone. Only used for\ninteraction with Swift.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_SWAUTH)"
     },
     "tenant_id": {
       "Type": "String",
       "Optional": true,
       "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(OS_TENANT_ID,OS_PROJECT_ID)"
     },
     "tenant_name": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(OS_TENANT_NAME,OS_PROJECT_NAME)"
     },
     "token": {
       "Type": "String",
       "Optional": true,
       "Description": "Authentication token to use as an alternative to username/password.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_AUTH_TOKEN)"
     },
     "use_octavia": {
       "Type": "Bool",
       "Optional": true,
       "Description": "If set to `true`, API requests will go the Load Balancer\nservice (Octavia) instead of the Networking service (Neutron).",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_USE_OCTAVIA)"
     },
     "user_id": {
       "Type": "String",
       "Optional": true,
       "Description": "Username to login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_USER_ID)"
     },
     "user_name": {
       "Type": "String",
       "Optional": true,
       "Description": "Username to login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_USERNAME)"
     }
   },
   "resources": {
@@ -217,7 +172,8 @@
             },
             "flavor": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "DefaultFunc": "ENV(OS_FLAVOR_ID)"
             },
             "image": {
               "Type": "String",
@@ -332,16 +288,28 @@
       "cool_down_time": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The cooling duration, in seconds."
+        "Description": "The cooling duration, in seconds.",
+        "Default": {
+          "Type": "int",
+          "Value": "900"
+        }
       },
       "delete_instances": {
         "Type": "String",
         "Optional": true,
-        "Description": "Whether to delete instances when they are removed from the AS group."
+        "Description": "Whether to delete instances when they are removed from the AS group.",
+        "Default": {
+          "Type": "string",
+          "Value": "no"
+        }
       },
       "delete_publicip": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "desire_instance_number": {
         "Type": "Int",
@@ -349,16 +317,28 @@
       },
       "health_periodic_audit_method": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "NOVA_AUDIT"
+        }
       },
       "health_periodic_audit_time": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The health check period for instances, in minutes."
+        "Description": "The health check period for instances, in minutes.",
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "instance_terminate_policy": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "OLD_CONFIG_OLD_INSTANCE"
+        }
       },
       "instances": {
         "Type": "List",
@@ -376,11 +356,19 @@
       },
       "max_instance_number": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "min_instance_number": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "networks": {
         "Type": "List",
@@ -443,7 +431,11 @@
       },
       "cool_down_time": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "900"
+        }
       },
       "region": {
         "Type": "String",
@@ -463,7 +455,11 @@
           "Info": {
             "instance_number": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "1"
+              }
             },
             "operation": {
               "Type": "String",
@@ -505,7 +501,11 @@
             },
             "start_time": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "2019-04-29T14:54Z"
+              }
             }
           }
         }
@@ -544,7 +544,11 @@
       },
       "cascade": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "consistency_group_id": {
         "Type": "String",
@@ -635,7 +639,7 @@
         "Type": "Map",
         "Optional": true
       },
-      "flavor": {
+      "flavor_id": {
         "Type": "String",
         "Required": true
       },
@@ -684,7 +688,7 @@
         "Optional": true,
         "Computed": true
       },
-      "az": {
+      "availability_zone": {
         "Type": "String",
         "Required": true
       },
@@ -752,7 +756,7 @@
         "Optional": true,
         "Computed": true
       },
-      "flavor": {
+      "flavor_id": {
         "Type": "String",
         "Required": true
       },
@@ -760,6 +764,10 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "key_pair": {
+        "Type": "String",
+        "Required": true
       },
       "labels": {
         "Type": "Map",
@@ -820,10 +828,6 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
-      },
-      "sshkey": {
-        "Type": "String",
-        "Required": true
       }
     },
     "huaweicloud_ces_alarmrule": {
@@ -834,7 +838,11 @@
       ],
       "alarm_action_enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "alarm_actions": {
         "Type": "List",
@@ -864,7 +872,11 @@
       },
       "alarm_enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "alarm_name": {
         "Type": "String",
@@ -1029,7 +1041,8 @@
       },
       "pool": {
         "Type": "String",
-        "Required": true
+        "Required": true,
+        "DefaultFunc": "ENV(OS_POOL_NAME)"
       },
       "region": {
         "Type": "String",
@@ -1077,7 +1090,11 @@
             },
             "delete_on_termination": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "destination_type": {
               "Type": "String",
@@ -1109,12 +1126,14 @@
       "flavor_id": {
         "Type": "String",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "DefaultFunc": "ENV(OS_FLAVOR_ID)"
       },
       "flavor_name": {
         "Type": "String",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "DefaultFunc": "ENV(OS_FLAVOR_NAME)"
       },
       "floating_ip": {
         "Type": "String",
@@ -1152,7 +1171,11 @@
           "Info": {
             "access_network": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "fixed_ip_v4": {
               "Type": "String",
@@ -1270,7 +1293,11 @@
       },
       "stop_before_destroy": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "user_data": {
         "Type": "String",
@@ -1366,7 +1393,11 @@
             },
             "self": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "to_port": {
               "Type": "Int",
@@ -1450,7 +1481,11 @@
       },
       "provider_id": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "fc4d5750-22e7-4798-8a46-f48f62c4c1da"
+        }
       },
       "region": {
         "Type": "String",
@@ -1491,7 +1526,11 @@
             },
             "enabled": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "id": {
               "Type": "String",
@@ -1573,7 +1612,11 @@
       },
       "resource_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "OS::Nova::Server"
+        }
       },
       "status": {
         "Type": "String",
@@ -2110,7 +2153,11 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
       },
       "type": {
         "Type": "String",
@@ -2175,7 +2222,11 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
       },
       "value_specs": {
         "Type": "Map",
@@ -2183,7 +2234,11 @@
       },
       "zone_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "public"
+        }
       }
     },
     "huaweicloud_dws_cluster": {
@@ -2522,7 +2577,11 @@
       },
       "ssl_protocols": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "TLSv1.2"
+        }
       },
       "status": {
         "Type": "String",
@@ -2579,7 +2638,11 @@
       },
       "charge_mode": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "bandwidth"
+        }
       },
       "create_time": {
         "Type": "String",
@@ -2642,7 +2705,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "description": {
         "Type": "String",
@@ -2690,7 +2757,11 @@
       ],
       "audited": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "description": {
         "Type": "String",
@@ -2746,11 +2817,19 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "ip_version": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "4"
+        }
       },
       "name": {
         "Type": "String",
@@ -2852,6 +2931,132 @@
         "Computed": true
       }
     },
+    "huaweicloud_identity_group_membership_v3": {
+      "group": {
+        "Type": "String",
+        "Required": true
+      },
+      "users": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "huaweicloud_identity_group_v3": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "domain_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "huaweicloud_identity_project_v3": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "domain_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "parent_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "huaweicloud_identity_role_assignment_v3": {
+      "domain_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "project_id"
+        ]
+      },
+      "group_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "user_id"
+        ]
+      },
+      "project_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "domain_id"
+        ]
+      },
+      "role_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "user_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "group_id"
+        ]
+      }
+    },
+    "huaweicloud_identity_user_v3": {
+      "default_project_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "domain_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "password": {
+        "Type": "String",
+        "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "huaweicloud_images_image_v2": {
       "__timeouts__": [
         "create"
@@ -2878,7 +3083,11 @@
       },
       "image_cache_path": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "/home/vlad/.terraform/image_cache"
+        }
       },
       "image_source_url": {
         "Type": "String",
@@ -2900,11 +3109,19 @@
       },
       "min_disk_gb": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "min_ram_mb": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "name": {
         "Type": "String",
@@ -2916,7 +3133,11 @@
       },
       "protected": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "region": {
         "Type": "String",
@@ -2949,7 +3170,11 @@
       },
       "visibility": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "private"
+        }
       }
     },
     "huaweicloud_kms_key_v1": {
@@ -2971,7 +3196,11 @@
       },
       "is_enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "key_alias": {
         "Type": "String",
@@ -2987,7 +3216,11 @@
       },
       "pending_days": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "7"
+        }
       },
       "realm": {
         "Type": "String",
@@ -2999,6 +3232,115 @@
         "Computed": true
       }
     },
+    "huaweicloud_lb_l7policy_v2": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "action": {
+        "Type": "String",
+        "Required": true
+      },
+      "admin_state_up": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "listener_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "position": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "redirect_listener_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "redirect_pool_id"
+        ]
+      },
+      "redirect_pool_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "redirect_listener_id"
+        ]
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "huaweicloud_lb_l7rule_v2": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "admin_state_up": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "compare_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "key": {
+        "Type": "String",
+        "Optional": true
+      },
+      "l7policy_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "listener_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      },
+      "value": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "huaweicloud_lb_listener_v2": {
       "__timeouts__": [
         "create",
@@ -3007,7 +3349,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "connection_limit": {
         "Type": "Int",
@@ -3071,7 +3417,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "description": {
         "Type": "String",
@@ -3135,7 +3485,11 @@
       },
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -3177,7 +3531,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "delay": {
         "Type": "Int",
@@ -3237,7 +3595,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "description": {
         "Type": "String",
@@ -3377,7 +3739,11 @@
             },
             "cloud_type": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "Aliyun"
+              }
             },
             "object_key": {
               "Type": "String",
@@ -3400,6 +3766,128 @@
       },
       "thread_num": {
         "Type": "Int",
+        "Required": true
+      }
+    },
+    "huaweicloud_mls_instance": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "agency": {
+        "Type": "String",
+        "Optional": true
+      },
+      "created": {
+        "Type": "String",
+        "Computed": true
+      },
+      "current_task": {
+        "Type": "String",
+        "Computed": true
+      },
+      "flavor": {
+        "Type": "String",
+        "Required": true
+      },
+      "id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "inner_endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "mrs_cluster": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Required": true
+            },
+            "user_name": {
+              "Type": "String",
+              "Optional": true
+            },
+            "user_password": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "network": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "available_zone": {
+              "Type": "String",
+              "Required": true
+            },
+            "network_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "public_ip": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "bind_type": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "eip_id": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "security_group_id": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "vpc_id": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "public_endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "updated": {
+        "Type": "String",
+        "Computed": true
+      },
+      "version": {
+        "Type": "String",
         "Required": true
       }
     },
@@ -3842,7 +4330,8 @@
       },
       "pool": {
         "Type": "String",
-        "Required": true
+        "Required": true,
+        "DefaultFunc": "ENV(OS_POOL_NAME)"
       },
       "port_id": {
         "Type": "String",
@@ -3981,6 +4470,31 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "extra_dhcp_option": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_version": {
+              "Type": "Int",
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "4"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "value": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       },
       "fixed_ip": {
         "Type": "List",
@@ -4271,7 +4785,11 @@
       },
       "enable_dhcp": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "gateway_ip": {
         "Type": "String",
@@ -4300,7 +4818,11 @@
       },
       "ip_version": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "4"
+        }
       },
       "ipv6_address_mode": {
         "Type": "String",
@@ -4325,7 +4847,11 @@
         "Optional": true,
         "ConflictsWith": [
           "gateway_ip"
-        ]
+        ],
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "region": {
         "Type": "String",
@@ -4629,7 +5155,11 @@
     "huaweicloud_s3_bucket": {
       "acl": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "private"
+        }
       },
       "arn": {
         "Type": "String",
@@ -4699,7 +5229,11 @@
       },
       "force_destroy": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "hosted_zone_id": {
         "Type": "String",
@@ -4806,11 +5340,19 @@
           "Info": {
             "enabled": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "mfa_delete": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -4859,7 +5401,11 @@
     "huaweicloud_s3_bucket_object": {
       "acl": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "private"
+        }
       },
       "bucket": {
         "Type": "String",
@@ -4957,7 +5503,11 @@
       },
       "access_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "cert"
+        }
       },
       "availability_zone": {
         "Type": "String",
@@ -5007,7 +5557,11 @@
       },
       "share_proto": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "NFS"
+        }
       },
       "size": {
         "Type": "Int",
@@ -5389,7 +5943,11 @@
       },
       "dhcp_enable": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "dns_list": {
         "Type": "Set",
@@ -5633,7 +6191,7 @@
           }
         }
       },
-      "flavor": {
+      "flavor_id": {
         "Type": "String",
         "Computed": true
       },
@@ -5668,7 +6226,7 @@
       }
     },
     "huaweicloud_cce_node_v3": {
-      "az": {
+      "availability_zone": {
         "Type": "String",
         "Computed": true
       },
@@ -5725,11 +6283,15 @@
         "Type": "String",
         "Computed": true
       },
-      "flavor": {
+      "flavor_id": {
         "Type": "String",
         "Computed": true
       },
       "ip_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "key_pair": {
         "Type": "String",
         "Computed": true
       },
@@ -5763,10 +6325,6 @@
         "Computed": true
       },
       "spec_extend_param": {
-        "Type": "String",
-        "Computed": true
-      },
-      "sshkey": {
         "Type": "String",
         "Computed": true
       },
@@ -6264,6 +6822,22 @@
         "Computed": true
       }
     },
+    "huaweicloud_identity_role_v3": {
+      "domain_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "huaweicloud_images_image_v2": {
       "checksum": {
         "Type": "String",
@@ -6295,7 +6869,11 @@
       },
       "most_recent": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -6332,11 +6910,19 @@
       },
       "sort_direction": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "asc"
+        }
       },
       "sort_key": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "name"
+        }
       },
       "tag": {
         "Type": "String",
@@ -6458,9 +7044,7 @@
         "Type": "String",
         "Optional": true,
         "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
-        "Default": {
-          "Type": "string"
-        }
+        "DefaultFunc": "MENV(OS_TENANT_ID,OS_PROJECT_ID)"
       }
     },
     "huaweicloud_networking_secgroup_v2": {
@@ -6594,9 +7178,7 @@
         "Optional": true,
         "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
         "Computed": true,
-        "Default": {
-          "Type": "string"
-        }
+        "DefaultFunc": "MENV(OS_TENANT_ID,OS_PROJECT_ID)"
       }
     },
     "huaweicloud_rds_flavors_v1": {

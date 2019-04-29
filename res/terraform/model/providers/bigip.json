@@ -1,32 +1,46 @@
 {
+  ".schema_version": "1",
   "name": "bigip",
   "type": "provider",
-  "version": "v0.12.0-62-g594064f",
+  "version": "v0.12.1",
   "provider": {
     "address": {
       "Type": "String",
       "Required": true,
-      "Description": "Domain name/IP of the BigIP"
+      "Description": "Domain name/IP of the BigIP",
+      "DefaultFunc": "ENV(BIGIP_HOST)"
     },
     "login_ref": {
       "Type": "String",
       "Optional": true,
-      "Description": "Login reference for token authentication (see BIG-IP REST docs for details)"
+      "Description": "Login reference for token authentication (see BIG-IP REST docs for details)",
+      "DefaultFunc": "ENV(BIGIP_LOGIN_REF)",
+      "Default": {
+        "Type": "string",
+        "Value": "tmos"
+      }
     },
     "password": {
       "Type": "String",
       "Required": true,
-      "Description": "The user's password"
+      "Description": "The user's password",
+      "DefaultFunc": "ENV(BIGIP_PASSWORD)"
     },
     "token_auth": {
       "Type": "Bool",
       "Optional": true,
-      "Description": "Enable to use an external authentication source (LDAP, TACACS, etc)"
+      "Description": "Enable to use an external authentication source (LDAP, TACACS, etc)",
+      "DefaultFunc": "ENV(BIGIP_TOKEN_AUTH)",
+      "Default": {
+        "Type": "bool",
+        "Value": "false"
+      }
     },
     "username": {
       "Type": "String",
       "Required": true,
-      "Description": "Username with API access to the BigIP"
+      "Description": "Username with API access to the BigIP",
+      "DefaultFunc": "ENV(BIGIP_USER)"
     }
   },
   "resources": {
@@ -56,7 +70,11 @@
       "auto_sync": {
         "Type": "String",
         "Optional": true,
-        "Description": "Specifies if the device-group will automatically sync configuration data to its members"
+        "Description": "Specifies if the device-group will automatically sync configuration data to its members",
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
       },
       "description": {
         "Type": "String",
@@ -85,12 +103,20 @@
       "full_load_on_sync": {
         "Type": "String",
         "Optional": true,
-        "Description": "Specifies if the device-group will perform a full-load upon sync"
+        "Description": "Specifies if the device-group will perform a full-load upon sync",
+        "Default": {
+          "Type": "string",
+          "Value": "false"
+        }
       },
       "incremental_config": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Specifies the maximum size (in KB) to devote to incremental config sync cached transactions. The default is 1024 KB."
+        "Description": "Specifies the maximum size (in KB) to devote to incremental config sync cached transactions. The default is 1024 KB.",
+        "Default": {
+          "Type": "int",
+          "Value": "1024"
+        }
       },
       "name": {
         "Type": "String",
@@ -100,7 +126,11 @@
       "network_failover": {
         "Type": "String",
         "Optional": true,
-        "Description": "Specifies if the device-group will use a network connection for failover"
+        "Description": "Specifies if the device-group will use a network connection for failover",
+        "Default": {
+          "Type": "string",
+          "Value": "enabled"
+        }
       },
       "partition": {
         "Type": "String",
@@ -110,12 +140,20 @@
       "save_on_auto_sync": {
         "Type": "String",
         "Optional": true,
-        "Description": "Specifies whether the configuration should be saved upon auto-sync."
+        "Description": "Specifies whether the configuration should be saved upon auto-sync.",
+        "Default": {
+          "Type": "string",
+          "Value": "false"
+        }
       },
       "type": {
         "Type": "String",
         "Optional": true,
-        "Description": "Specifies if the device-group will be used for failover or resource syncing"
+        "Description": "Specifies if the device-group will be used for failover or resource syncing",
+        "Default": {
+          "Type": "string",
+          "Value": "sync-only"
+        }
       }
     },
     "bigip_ltm_datagroup": {
@@ -160,6 +198,29 @@
       }
     },
     "bigip_ltm_monitor": {
+      "adaptive": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ftp adaptive",
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
+      },
+      "adaptive_limit": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Integer value",
+        "Default": {
+          "Type": "int",
+          "Value": "200"
+        }
+      },
+      "compatibility": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies, when enabled, that the SSL options setting (in OpenSSL) is set to ALL. The default value is enabled."
+      },
       "defaults_from": {
         "Type": "String",
         "Optional": true,
@@ -168,20 +229,46 @@
       "destination": {
         "Type": "String",
         "Optional": true,
-        "Description": "Alias for the destination"
+        "Description": "Alias for the destination",
+        "Default": {
+          "Type": "string",
+          "Value": "*:*"
+        }
+      },
+      "filename": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the full path and file name of the file that the system attempts to download. The health check is successful if the system can download the file."
       },
       "interval": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Check interval in seconds"
+        "Description": "Check interval in seconds",
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
       },
       "ip_dscp": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "manual_resume": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
+      },
+      "mode": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the data transfer process (DTP) mode. The default value is passive."
       },
       "name": {
         "Type": "String",
@@ -192,6 +279,11 @@
         "Type": "String",
         "Required": true,
         "Description": "Existing monitor to inherit from. Must be one of /Common/http, /Common/https, /Common/icmp or /Common/gateway-icmp."
+      },
+      "password": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the password if the monitored target requires authentication"
       },
       "receive": {
         "Type": "String",
@@ -215,16 +307,33 @@
       "time_until_up": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Time in seconds"
+        "Description": "Time in seconds",
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Timeout in seconds"
+        "Description": "Timeout in seconds",
+        "Default": {
+          "Type": "int",
+          "Value": "16"
+        }
       },
       "transparent": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
+      },
+      "username": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the user name if the monitored target requires authentication"
       }
     },
     "bigip_ltm_node": {
@@ -236,12 +345,20 @@
       "connection_limit": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Specifies the maximum number of connections allowed for the node or node address."
+        "Description": "Specifies the maximum number of connections allowed for the node or node address.",
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "dynamic_ratio": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Sets the dynamic ratio number for the node. Used for dynamic ratio load balancing. "
+        "Description": "Sets the dynamic ratio number for the node. Used for dynamic ratio load balancing. ",
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "fqdn": {
         "Type": "List",
@@ -258,17 +375,29 @@
             "autopopulate": {
               "Type": "String",
               "Optional": true,
-              "Description": "Specifies whether the node should scale to the IP address set returned by DNS."
+              "Description": "Specifies whether the node should scale to the IP address set returned by DNS.",
+              "Default": {
+                "Type": "string",
+                "Value": "disabled"
+              }
             },
             "downinterval": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Specifies the number of attempts to resolve a domain name. The default is 5."
+              "Description": "Specifies the number of attempts to resolve a domain name. The default is 5.",
+              "Default": {
+                "Type": "int",
+                "Value": "5"
+              }
             },
             "interval": {
               "Type": "String",
               "Optional": true,
-              "Description": "Specifies the amount of time before sending the next DNS query."
+              "Description": "Specifies the amount of time before sending the next DNS query.",
+              "Default": {
+                "Type": "string",
+                "Value": "3600"
+              }
             },
             "name": {
               "Type": "String",
@@ -296,23 +425,38 @@
       "state": {
         "Type": "String",
         "Optional": true,
-        "Description": "Marks the node up or down. The default value is user-up."
+        "Description": "Marks the node up or down. The default value is user-up.",
+        "Default": {
+          "Type": "string",
+          "Value": "user-up"
+        }
       }
     },
     "bigip_ltm_persistence_profile_cookie": {
       "always_send": {
         "Type": "String",
         "Optional": true,
-        "Description": "To enable _ disable always sending cookies"
+        "Description": "To enable _ disable always sending cookies",
+        "Default": {
+          "Type": "string",
+          "Value": "default"
+        }
       },
       "app_service": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "cookie_encryption": {
         "Type": "String",
         "Optional": true,
-        "Description": "To required, preferred, or disabled policy for cookie encryption"
+        "Description": "To required, preferred, or disabled policy for cookie encryption",
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
       },
       "cookie_encryption_passphrase": {
         "Type": "String",
@@ -322,7 +466,11 @@
       "cookie_name": {
         "Type": "String",
         "Optional": true,
-        "Description": "Name of the cookie to track persistence"
+        "Description": "Name of the cookie to track persistence",
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
       },
       "defaults_from": {
         "Type": "String",
@@ -332,22 +480,38 @@
       "expiration": {
         "Type": "String",
         "Optional": true,
-        "Description": "Expiration TTL for cookie specified in D:H:M:S or in seconds"
+        "Description": "Expiration TTL for cookie specified in D:H:M:S or in seconds",
+        "Default": {
+          "Type": "string",
+          "Value": "0"
+        }
       },
       "hash_length": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Length of hash to apply to cookie"
+        "Description": "Length of hash to apply to cookie",
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "hash_offset": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of characters to skip in the cookie for the hash"
+        "Description": "Number of characters to skip in the cookie for the hash",
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "httponly": {
         "Type": "String",
         "Optional": true,
-        "Description": "To enable _ disable sending only over http"
+        "Description": "To enable _ disable sending only over http",
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
       },
       "match_across_pools": {
         "Type": "String",
@@ -367,7 +531,11 @@
       "mirror": {
         "Type": "String",
         "Optional": true,
-        "Description": "To enable _ disable"
+        "Description": "To enable _ disable",
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
       },
       "name": {
         "Type": "String",
@@ -377,7 +545,11 @@
       "override_conn_limit": {
         "Type": "String",
         "Optional": true,
-        "Description": "To enable _ disable that pool member connection limits are overridden for persisted clients. Per-virtual connection limits remain hard limits and are not overridden."
+        "Description": "To enable _ disable that pool member connection limits are overridden for persisted clients. Per-virtual connection limits remain hard limits and are not overridden.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "timeout": {
         "Type": "Int",
@@ -388,7 +560,10 @@
     "bigip_ltm_persistence_profile_dstaddr": {
       "app_service": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "defaults_from": {
         "Type": "String",
@@ -398,7 +573,11 @@
       "hash_algorithm": {
         "Type": "String",
         "Optional": true,
-        "Description": "Specify the hash algorithm"
+        "Description": "Specify the hash algorithm",
+        "Default": {
+          "Type": "string",
+          "Value": "default"
+        }
       },
       "mask": {
         "Type": "String",
@@ -433,7 +612,11 @@
       "override_conn_limit": {
         "Type": "String",
         "Optional": true,
-        "Description": "To enable _ disable that pool member connection limits are overridden for persisted clients. Per-virtual connection limits remain hard limits and are not overridden."
+        "Description": "To enable _ disable that pool member connection limits are overridden for persisted clients. Per-virtual connection limits remain hard limits and are not overridden.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "timeout": {
         "Type": "Int",
@@ -444,7 +627,10 @@
     "bigip_ltm_persistence_profile_srcaddr": {
       "app_service": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "defaults_from": {
         "Type": "String",
@@ -454,12 +640,20 @@
       "hash_algorithm": {
         "Type": "String",
         "Optional": true,
-        "Description": "Specify the hash algorithm"
+        "Description": "Specify the hash algorithm",
+        "Default": {
+          "Type": "string",
+          "Value": "default"
+        }
       },
       "map_proxies": {
         "Type": "String",
         "Optional": true,
-        "Description": "To enable _ disable directs all to the same single pool member"
+        "Description": "To enable _ disable directs all to the same single pool member",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "mask": {
         "Type": "String",
@@ -494,7 +688,11 @@
       "override_conn_limit": {
         "Type": "String",
         "Optional": true,
-        "Description": "To enable _ disable that pool member connection limits are overridden for persisted clients. Per-virtual connection limits remain hard limits and are not overridden."
+        "Description": "To enable _ disable that pool member connection limits are overridden for persisted clients. Per-virtual connection limits remain hard limits and are not overridden.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "timeout": {
         "Type": "Int",
@@ -505,7 +703,10 @@
     "bigip_ltm_persistence_profile_ssl": {
       "app_service": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "defaults_from": {
         "Type": "String",
@@ -540,7 +741,11 @@
       "override_conn_limit": {
         "Type": "String",
         "Optional": true,
-        "Description": "To enable _ disable that pool member connection limits are overridden for persisted clients. Per-virtual connection limits remain hard limits and are not overridden."
+        "Description": "To enable _ disable that pool member connection limits are overridden for persisted clients. Per-virtual connection limits remain hard limits and are not overridden.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "timeout": {
         "Type": "Int",
@@ -1573,24 +1778,40 @@
       "strategy": {
         "Type": "String",
         "Optional": true,
-        "Description": "Policy Strategy (i.e. /Common/first-match)"
+        "Description": "Policy Strategy (i.e. /Common/first-match)",
+        "Default": {
+          "Type": "string",
+          "Value": "/Common/first-match"
+        }
       }
     },
     "bigip_ltm_pool": {
       "allow_nat": {
         "Type": "String",
         "Optional": true,
-        "Description": "Allow NAT"
+        "Description": "Allow NAT",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "allow_snat": {
         "Type": "String",
         "Optional": true,
-        "Description": "Allow SNAT"
+        "Description": "Allow SNAT",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "load_balancing_mode": {
         "Type": "String",
         "Optional": true,
-        "Description": "Possible values: round-robin, ..."
+        "Description": "Possible values: round-robin, ...",
+        "Default": {
+          "Type": "string",
+          "Value": "round-robin"
+        }
       },
       "monitors": {
         "Type": "Set",
@@ -1609,17 +1830,29 @@
       "reselect_tries": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of times the system tries to select a new pool member after a failure."
+        "Description": "Number of times the system tries to select a new pool member after a failure.",
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "service_down_action": {
         "Type": "String",
         "Optional": true,
-        "Description": "Possible values: none, reset, reselect, drop"
+        "Description": "Possible values: none, reset, reselect, drop",
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
       },
       "slow_ramp_time": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Slow ramp time for pool members"
+        "Description": "Slow ramp time for pool members",
+        "Default": {
+          "Type": "int",
+          "Value": "10"
+        }
       }
     },
     "bigip_ltm_pool_attachment": {
@@ -1638,7 +1871,11 @@
       "connpool_maxreuse": {
         "Type": "Int",
         "Optional": true,
-        "Description": "connpool_maxreuse timer"
+        "Description": "connpool_maxreuse timer",
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "connpool_maxsize": {
         "Type": "Int",
@@ -1653,12 +1890,20 @@
       "connpool_replenish": {
         "Type": "String",
         "Optional": true,
-        "Description": "enabled or disabled"
+        "Description": "enabled or disabled",
+        "Default": {
+          "Type": "string",
+          "Value": "enabled"
+        }
       },
       "connpool_step": {
         "Type": "Int",
         "Optional": true,
-        "Description": "integer value"
+        "Description": "integer value",
+        "Default": {
+          "Type": "int",
+          "Value": "4"
+        }
       },
       "connpoolidle_timeoutoverride": {
         "Type": "Int",
@@ -1673,17 +1918,28 @@
       "forcehttp_10response": {
         "Type": "String",
         "Optional": true,
-        "Description": "disabled or enabled "
+        "Description": "disabled or enabled ",
+        "Default": {
+          "Type": "string"
+        }
       },
       "idle_timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "integer value"
+        "Description": "integer value",
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
       },
       "maxheader_size": {
         "Type": "Int",
         "Optional": true,
-        "Description": "integer value"
+        "Description": "integer value",
+        "Default": {
+          "Type": "int",
+          "Value": "32768"
+        }
       },
       "name": {
         "Type": "String",
@@ -1695,7 +1951,11 @@
       "client_timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Use the parent Fastl4 profile"
+        "Description": "Use the parent Fastl4 profile",
+        "Default": {
+          "Type": "int",
+          "Value": "30"
+        }
       },
       "defaults_from": {
         "Type": "String",
@@ -1705,32 +1965,56 @@
       "explicitflow_migration": {
         "Type": "String",
         "Optional": true,
-        "Description": "Use the parent Fastl4 profile"
+        "Description": "Use the parent Fastl4 profile",
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
       },
       "hardware_syncookie": {
         "Type": "String",
         "Optional": true,
-        "Description": "Use the parent Fastl4 profile"
+        "Description": "Use the parent Fastl4 profile",
+        "Default": {
+          "Type": "string",
+          "Value": "enabled"
+        }
       },
       "idle_timeout": {
         "Type": "String",
         "Optional": true,
-        "Description": "Use the parent Fastl4 profile"
+        "Description": "Use the parent Fastl4 profile",
+        "Default": {
+          "Type": "string",
+          "Value": "300"
+        }
       },
       "iptos_toclient": {
         "Type": "String",
         "Optional": true,
-        "Description": "Use the parent Fastl4 profile"
+        "Description": "Use the parent Fastl4 profile",
+        "Default": {
+          "Type": "string",
+          "Value": "65535"
+        }
       },
       "iptos_toserver": {
         "Type": "String",
         "Optional": true,
-        "Description": "Use the parent Fastl4 profile"
+        "Description": "Use the parent Fastl4 profile",
+        "Default": {
+          "Type": "string",
+          "Value": "65535"
+        }
       },
       "keepalive_interval": {
         "Type": "String",
         "Optional": true,
-        "Description": "Use the parent Fastl4 profile"
+        "Description": "Use the parent Fastl4 profile",
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "name": {
         "Type": "String",
@@ -1741,6 +2025,221 @@
         "Type": "String",
         "Optional": true,
         "Description": "name of partition"
+      }
+    },
+    "bigip_ltm_profile_http": {
+      "accept_xff": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Enables or disables trusting the client IP address, and statistics from the client IP address, based on the request's XFF (X-forwarded-for) headers, if they exist.",
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
+      },
+      "app_service": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The application service to which the object belongs."
+      },
+      "basic_auth_realm": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies a quoted string for the basic authentication realm. The system sends this string to a client whenever authorization fails. The default value is none",
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
+      },
+      "defaults_from": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Inherit defaults from parent profile"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "User defibned description"
+      },
+      "encrypt_cookie_secret": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies a passphrase for the cookie encryption"
+      },
+      "encrypt_cookies": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Encrypts specified cookies that the BIG-IP system sends to a client system",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "fallback_host": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies an HTTP fallback host. HTTP redirection allows you to redirect HTTP traffic to another protocol identifier, host name, port number, or URI path.",
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
+      },
+      "fallback_status_codes": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Specifies one or more three-digit status codes that can be returned by an HTTP server.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "head_erase": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the header string that you want to erase from an HTTP request. You can also specify none",
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
+      },
+      "head_insert": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies a quoted header string that you want to insert into an HTTP request. You can also specify none. ",
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
+      },
+      "insert_xforwarded_for": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "When using connection pooling, which allows clients to make use of other client requests' server-side connections,\tyou can insert the X-Forwarded-For header and specify a client IP address. ",
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
+      },
+      "lws_separator": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies a quoted header string that you want to insert into an HTTP request. You can also specify none. ",
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the profile"
+      },
+      "oneconnect_transformations": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Enables the system to perform HTTP header transformations for the purpose of  keeping server-side connections open. This feature requires configuration of a OneConnect profile.",
+        "Default": {
+          "Type": "string",
+          "Value": "enabled"
+        }
+      },
+      "proxy_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the type of HTTP proxy. ",
+        "Default": {
+          "Type": "string",
+          "Value": "reverse"
+        }
+      },
+      "redirect_rewrite": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies which of the application HTTP redirects the system rewrites to HTTPS.",
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
+      },
+      "request_chunking": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies how to handle chunked and unchunked requests.",
+        "Default": {
+          "Type": "string",
+          "Value": "preserve"
+        }
+      },
+      "response_chunking": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies how to handle chunked and unchunked responses.",
+        "Default": {
+          "Type": "string",
+          "Value": "preserve"
+        }
+      },
+      "response_headers_permitted": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Specifies headers that the BIG-IP system allows in an HTTP response.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "server_agent_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the value of the Server header in responses that the BIG-IP itself generates. The default is BigIP. If no string is specified, then no Server header will be added to such responses",
+        "Default": {
+          "Type": "string",
+          "Value": "BigIP"
+        }
+      },
+      "tm_partition": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Displays the administrative partition within which this profile resides. ",
+        "Default": {
+          "Type": "string"
+        }
+      },
+      "via_host_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies the hostname to include into Via header",
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
+      },
+      "via_request": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies whether to append, remove, or preserve a Via header in an HTTP request",
+        "Default": {
+          "Type": "string",
+          "Value": "preserve"
+        }
+      },
+      "via_response": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Specifies whether to append, remove, or preserve a Via header in an HTTP request",
+        "Default": {
+          "Type": "string",
+          "Value": "preserve"
+        }
+      },
+      "xff_alternative_names": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Specifies alternative XFF headers instead of the default X-forwarded-for header",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "bigip_ltm_profile_http2": {
@@ -1756,12 +2255,20 @@
       "concurrent_streams_per_connection": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Use the parent Http2 profile"
+        "Description": "Use the parent Http2 profile",
+        "Default": {
+          "Type": "int",
+          "Value": "10"
+        }
       },
       "connection_idle_timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Use the parent Http2 profile"
+        "Description": "Use the parent Http2 profile",
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
       },
       "defaults_from": {
         "Type": "String",
@@ -1771,7 +2278,11 @@
       "header_table_size": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Use the parent Http2 profile"
+        "Description": "Use the parent Http2 profile",
+        "Default": {
+          "Type": "int",
+          "Value": "4096"
+        }
       },
       "name": {
         "Type": "String",
@@ -1836,22 +2347,38 @@
       "idle_timeout_override": {
         "Type": "String",
         "Optional": true,
-        "Description": "idleTimeoutOverride can be enabled or disabled"
+        "Description": "idleTimeoutOverride can be enabled or disabled",
+        "Default": {
+          "Type": "string",
+          "Value": "0"
+        }
       },
       "max_age": {
         "Type": "Int",
         "Optional": true,
-        "Description": "max_age has integer value typical 3600 sec"
+        "Description": "max_age has integer value typical 3600 sec",
+        "Default": {
+          "Type": "int",
+          "Value": "-1"
+        }
       },
       "max_reuse": {
         "Type": "Int",
         "Optional": true,
-        "Description": "max_reuse has integer value typical 1000 sec"
+        "Description": "max_reuse has integer value typical 1000 sec",
+        "Default": {
+          "Type": "int",
+          "Value": "-1"
+        }
       },
       "max_size": {
         "Type": "Int",
         "Optional": true,
-        "Description": "max_size has integer value typical 1000 sec"
+        "Description": "max_size has integer value typical 1000 sec",
+        "Default": {
+          "Type": "int",
+          "Value": "-1"
+        }
       },
       "name": {
         "Type": "String",
@@ -1866,7 +2393,11 @@
       "share_pools": {
         "Type": "String",
         "Optional": true,
-        "Description": "sharePools can be enabled or disabled"
+        "Description": "sharePools can be enabled or disabled",
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
       },
       "source_mask": {
         "Type": "String",
@@ -1878,42 +2409,74 @@
       "close_wait_timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "close wait timer integer"
+        "Description": "close wait timer integer",
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "defaults_from": {
         "Type": "String",
         "Optional": true,
-        "Description": "Use the parent tcp profile"
+        "Description": "Use the parent tcp profile",
+        "Default": {
+          "Type": "string",
+          "Value": "/Common/tcp"
+        }
       },
       "deferred_accept": {
         "Type": "String",
         "Optional": true,
-        "Description": "Defferred accept"
+        "Description": "Defferred accept",
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
       },
       "fast_open": {
         "Type": "String",
         "Optional": true,
-        "Description": "fast_open value "
+        "Description": "fast_open value ",
+        "Default": {
+          "Type": "string",
+          "Value": "disabled"
+        }
       },
       "finwait_2timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "timer integer"
+        "Description": "timer integer",
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
       },
       "finwait_timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "fin wait timer integer"
+        "Description": "fin wait timer integer",
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "idle_timeout": {
         "Type": "Int",
         "Optional": true,
-        "Description": "idle_timeout can be given value"
+        "Description": "idle_timeout can be given value",
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
       },
       "keepalive_interval": {
         "Type": "Int",
         "Optional": true,
-        "Description": "keepalive_interval timer integer"
+        "Description": "keepalive_interval timer integer",
+        "Default": {
+          "Type": "int",
+          "Value": "1800"
+        }
       },
       "name": {
         "Type": "String",
@@ -1986,6 +2549,15 @@
         "Optional": true,
         "Description": "Specifies the name of a translated IP address."
       },
+      "vlans": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Vlans or Vlan list",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "vlansdisabled": {
         "Type": "Bool",
         "Optional": true,
@@ -2013,32 +2585,56 @@
       "advertize_route": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Enabled dynamic routing of the address"
+        "Description": "Enabled dynamic routing of the address",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "arp": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Enable or disable ARP for the virtual address"
+        "Description": "Enable or disable ARP for the virtual address",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "auto_delete": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Automatically delete the virtual address with the virtual server"
+        "Description": "Automatically delete the virtual address with the virtual server",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "conn_limit": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Max number of connections for virtual address"
+        "Description": "Max number of connections for virtual address",
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Enable or disable the virtual address"
+        "Description": "Enable or disable the virtual address",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "icmp_echo": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Enable/Disable ICMP response to the virtual address"
+        "Description": "Enable/Disable ICMP response to the virtual address",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -2048,7 +2644,11 @@
       "traffic_group": {
         "Type": "String",
         "Optional": true,
-        "Description": "Specify the partition and traffic group"
+        "Description": "Specify the partition and traffic group",
+        "Default": {
+          "Type": "string",
+          "Value": "/Common/traffic-group-1"
+        }
       }
     },
     "bigip_ltm_virtual_server": {
@@ -2088,7 +2688,11 @@
       "mask": {
         "Type": "String",
         "Optional": true,
-        "Description": "Mask can either be in CIDR notation or decimal, i.e.: \"24\" or \"255.255.255.0\". A CIDR mask of \"0\" is the same as \"0.0.0.0\""
+        "Description": "Mask can either be in CIDR notation or decimal, i.e.: \"24\" or \"255.255.255.0\". A CIDR mask of \"0\" is the same as \"0.0.0.0\"",
+        "Default": {
+          "Type": "string",
+          "Value": "255.255.255.255"
+        }
       },
       "name": {
         "Type": "String",
@@ -2149,7 +2753,11 @@
       "source": {
         "Type": "String",
         "Optional": true,
-        "Description": "Source IP and mask for the virtual server"
+        "Description": "Source IP and mask for the virtual server",
+        "Default": {
+          "Type": "string",
+          "Value": "0.0.0.0/0"
+        }
       },
       "source_address_translation": {
         "Type": "String",
@@ -2215,7 +2823,11 @@
       "traffic_group": {
         "Type": "String",
         "Optional": true,
-        "Description": "Name of the traffic group, defaults to traffic-group-local-only if not specified"
+        "Description": "Name of the traffic group, defaults to traffic-group-local-only if not specified",
+        "Default": {
+          "Type": "string",
+          "Value": "traffic-group-local-only"
+        }
       },
       "vlan": {
         "Type": "String",
@@ -2306,7 +2918,11 @@
       "devicegroup": {
         "Type": "String",
         "Optional": true,
-        "Description": "BIG-IP password"
+        "Description": "BIG-IP password",
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
       },
       "execute_action": {
         "Type": "String",
@@ -2316,12 +2932,20 @@
       "inherited_devicegroup": {
         "Type": "String",
         "Optional": true,
-        "Description": "BIG-IP password"
+        "Description": "BIG-IP password",
+        "Default": {
+          "Type": "string",
+          "Value": "true"
+        }
       },
       "inherited_traffic_group": {
         "Type": "String",
         "Optional": true,
-        "Description": "BIG-IP password"
+        "Description": "BIG-IP password",
+        "Default": {
+          "Type": "string",
+          "Value": "true"
+        }
       },
       "jsonfile": {
         "Type": "String",
@@ -2337,7 +2961,11 @@
             "encrypted": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of origin"
+              "Description": "Name of origin",
+              "Default": {
+                "Type": "string",
+                "Value": "no"
+              }
             },
             "value": {
               "Type": "String",
@@ -2356,7 +2984,11 @@
             "persists": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of origin"
+              "Description": "Name of origin",
+              "Default": {
+                "Type": "string",
+                "Value": "true"
+              }
             },
             "value": {
               "Type": "String",
@@ -2374,12 +3006,20 @@
       "partition": {
         "Type": "String",
         "Optional": true,
-        "Description": "Address of the Iapp which needs to be Iappensed"
+        "Description": "Address of the Iapp which needs to be Iappensed",
+        "Default": {
+          "Type": "string",
+          "Value": "Common"
+        }
       },
       "strict_updates": {
         "Type": "String",
         "Optional": true,
-        "Description": "BIG-IP password"
+        "Description": "BIG-IP password",
+        "Default": {
+          "Type": "string",
+          "Value": "enabled"
+        }
       },
       "tables": {
         "Type": "List",
@@ -2433,7 +3073,11 @@
       "template_modified": {
         "Type": "String",
         "Optional": true,
-        "Description": "BIG-IP password"
+        "Description": "BIG-IP password",
+        "Default": {
+          "Type": "string",
+          "Value": "no"
+        }
       },
       "template_prerequisite_errors": {
         "Type": "String",
@@ -2443,7 +3087,11 @@
       "traffic_group": {
         "Type": "String",
         "Optional": true,
-        "Description": "BIG-IP password"
+        "Description": "BIG-IP password",
+        "Default": {
+          "Type": "string",
+          "Value": "/Common/traffic-group-1"
+        }
       },
       "variables": {
         "Type": "List",
@@ -2454,7 +3102,11 @@
             "encrypted": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of origin"
+              "Description": "Name of origin",
+              "Default": {
+                "Type": "string",
+                "Value": "no"
+              }
             },
             "name": {
               "Type": "String",
@@ -2510,7 +3162,11 @@
       "level": {
         "Type": "String",
         "Optional": true,
-        "Description": "what level nominal or dedicated"
+        "Description": "what level nominal or dedicated",
+        "Default": {
+          "Type": "string",
+          "Value": "nominal"
+        }
       },
       "memory_ratio": {
         "Type": "Int",

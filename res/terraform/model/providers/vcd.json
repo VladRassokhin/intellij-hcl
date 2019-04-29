@@ -1,61 +1,173 @@
 {
+  ".schema_version": "1",
   "name": "vcd",
   "type": "provider",
-  "version": "v1.0.0-25-g704012e",
+  "version": "v2.1.0",
   "provider": {
     "allow_unverified_ssl": {
       "Type": "Bool",
       "Optional": true,
       "Description": "If set, VCDClient will permit unverifiable SSL certificates.",
-      "Default": {
-        "Type": "bool",
-        "Value": "false"
-      }
+      "DefaultFunc": "ENV(VCD_ALLOW_UNVERIFIED_SSL)"
     },
-    "maxRetryTimeout": {
-      "Type": "Int",
+    "logging": {
+      "Type": "Bool",
       "Optional": true,
-      "Deprecated": "Deprecated. Use max_retry_timeout instead."
+      "Description": "If set, it will enable logging of API requests and responses",
+      "DefaultFunc": "ENV(VCD_API_LOGGING)"
+    },
+    "logging_file": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Defines the full name of the logging file for API calls (requires 'logging')",
+      "DefaultFunc": "ENV(VCD_API_LOGGING_FILE)"
     },
     "max_retry_timeout": {
       "Type": "Int",
       "Optional": true,
       "Description": "Max num seconds to wait for successful response when operating on resources within vCloud (defaults to 60)",
-      "Default": {
-        "Type": "int",
-        "Value": "60"
-      }
+      "DefaultFunc": "ENV(VCD_MAX_RETRY_TIMEOUT)"
     },
     "org": {
       "Type": "String",
       "Required": true,
-      "Description": "The vcd org for API operations"
+      "Description": "The VCD Org for API operations",
+      "DefaultFunc": "ENV(VCD_ORG)"
     },
     "password": {
       "Type": "String",
       "Required": true,
-      "Description": "The user password for vcd API operations."
+      "Description": "The user password for VCD API operations.",
+      "DefaultFunc": "ENV(VCD_PASSWORD)"
+    },
+    "sysorg": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The VCD Org for user authentication",
+      "DefaultFunc": "ENV(VCD_SYS_ORG)"
     },
     "url": {
       "Type": "String",
       "Required": true,
-      "Description": "The vcd url for vcd API operations."
+      "Description": "The VCD url for VCD API operations.",
+      "DefaultFunc": "ENV(VCD_URL)"
     },
     "user": {
       "Type": "String",
       "Required": true,
-      "Description": "The user name for vcd API operations."
+      "Description": "The user name for VCD API operations.",
+      "DefaultFunc": "ENV(VCD_USER)"
     },
     "vdc": {
       "Type": "String",
       "Optional": true,
-      "Description": "The name of the VDC to run operations on",
-      "Default": {
-        "Type": "string"
-      }
+      "Description": "The VDC for API operations",
+      "DefaultFunc": "ENV(VCD_VDC)"
     }
   },
   "resources": {
+    "vcd_catalog": {
+      "delete_force": {
+        "Type": "Bool",
+        "Required": true,
+        "Description": "When destroying use delete_force=True with delete_recursive=True to remove a catalog and any objects it contains, regardless of their state."
+      },
+      "delete_recursive": {
+        "Type": "Bool",
+        "Required": true,
+        "Description": "When destroying use delete_recursive=True to remove the catalog and any objects it contains that are in a state that normally allows removal."
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "org": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "vcd_catalog_item": {
+      "catalog": {
+        "Type": "String",
+        "Required": true,
+        "Description": "catalog name where upload the OVA file"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "catalog item name"
+      },
+      "org": {
+        "Type": "String",
+        "Optional": true
+      },
+      "ova_path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "absolute or relative path to OVA"
+      },
+      "show_upload_progress": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "shows upload progress in stdout"
+      },
+      "upload_piece_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "size of upload file piece size in mega bytes",
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      }
+    },
+    "vcd_catalog_media": {
+      "catalog": {
+        "Type": "String",
+        "Required": true,
+        "Description": "catalog name where upload the Media file"
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "media_path": {
+        "Type": "String",
+        "Required": true,
+        "Description": "absolute or relative path to Media file"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "media name"
+      },
+      "org": {
+        "Type": "String",
+        "Optional": true
+      },
+      "show_upload_progress": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "shows upload progress in stdout"
+      },
+      "upload_piece_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "size of upload file piece size in mega bytes",
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      }
+    },
     "vcd_dnat": {
       "edge_gateway": {
         "Type": "String",
@@ -65,16 +177,40 @@
         "Type": "String",
         "Required": true
       },
+      "icmp_sub_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "any"
+        }
+      },
       "internal_ip": {
         "Type": "String",
         "Required": true
+      },
+      "org": {
+        "Type": "String",
+        "Optional": true
       },
       "port": {
         "Type": "Int",
         "Required": true
       },
+      "protocol": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "TCP"
+        }
+      },
       "translated_port": {
         "Type": "Int",
+        "Optional": true
+      },
+      "vdc": {
+        "Type": "String",
         "Optional": true
       }
     },
@@ -128,6 +264,10 @@
         "Type": "String",
         "Required": true
       },
+      "org": {
+        "Type": "String",
+        "Optional": true
+      },
       "peer_id": {
         "Type": "String",
         "Required": true
@@ -160,6 +300,10 @@
       "shared_secret": {
         "Type": "String",
         "Required": true
+      },
+      "vdc": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "vcd_firewall_rules": {
@@ -170,6 +314,10 @@
       "edge_gateway": {
         "Type": "String",
         "Required": true
+      },
+      "org": {
+        "Type": "String",
+        "Optional": true
       },
       "rule": {
         "Type": "List",
@@ -212,6 +360,80 @@
             }
           }
         }
+      },
+      "vdc": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "vcd_independent_disk": {
+      "bus_sub_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "bus_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "org": {
+        "Type": "String",
+        "Optional": true
+      },
+      "size": {
+        "Type": "Float",
+        "Required": true,
+        "Description": "size in MB"
+      },
+      "storage_profile": {
+        "Type": "String",
+        "Optional": true
+      },
+      "vdc": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "vcd_inserted_media": {
+      "catalog": {
+        "Type": "String",
+        "Required": true,
+        "Description": "catalog name where to find media file"
+      },
+      "eject_force": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "When ejecting answers automatically to question yes",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "media name to use"
+      },
+      "org": {
+        "Type": "String",
+        "Optional": true
+      },
+      "vapp_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "vApp to use"
+      },
+      "vdc": {
+        "Type": "String",
+        "Optional": true
+      },
+      "vm_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "VM in vApp in which media will be inserted or ejected"
       }
     },
     "vcd_network": {
@@ -223,7 +445,11 @@
           "Info": {
             "default_lease_time": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "3600"
+              }
             },
             "end_address": {
               "Type": "String",
@@ -231,7 +457,11 @@
             },
             "max_lease_time": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "7200"
+              }
             },
             "start_address": {
               "Type": "String",
@@ -242,11 +472,19 @@
       },
       "dns1": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "8.8.8.8"
+        }
       },
       "dns2": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "8.8.4.4"
+        }
       },
       "dns_suffix": {
         "Type": "String",
@@ -256,13 +494,9 @@
         "Type": "String",
         "Required": true
       },
-      "fence_mode": {
-        "Type": "String",
-        "Optional": true
-      },
       "gateway": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "href": {
         "Type": "String",
@@ -275,11 +509,23 @@
       },
       "netmask": {
         "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "255.255.255.0"
+        }
+      },
+      "org": {
+        "Type": "String",
         "Optional": true
       },
       "shared": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "static_ip_pool": {
         "Type": "Set",
@@ -297,6 +543,328 @@
             }
           }
         }
+      },
+      "vdc": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "vcd_network_direct": {
+      "external_network": {
+        "Type": "String",
+        "Required": true
+      },
+      "href": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "org": {
+        "Type": "String",
+        "Optional": true
+      },
+      "shared": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "vdc": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "vcd_network_isolated": {
+      "dhcp_pool": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "default_lease_time": {
+              "Type": "Int",
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "3600"
+              }
+            },
+            "end_address": {
+              "Type": "String",
+              "Required": true
+            },
+            "max_lease_time": {
+              "Type": "Int",
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "7200"
+              }
+            },
+            "start_address": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "dns1": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "8.8.8.8"
+        }
+      },
+      "dns2": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "8.8.4.4"
+        }
+      },
+      "dns_suffix": {
+        "Type": "String",
+        "Optional": true
+      },
+      "gateway": {
+        "Type": "String",
+        "Optional": true
+      },
+      "href": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "netmask": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "255.255.255.0"
+        }
+      },
+      "org": {
+        "Type": "String",
+        "Optional": true
+      },
+      "shared": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "static_ip_pool": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "end_address": {
+              "Type": "String",
+              "Required": true
+            },
+            "start_address": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "vdc": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "vcd_network_routed": {
+      "dhcp_pool": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "default_lease_time": {
+              "Type": "Int",
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "3600"
+              }
+            },
+            "end_address": {
+              "Type": "String",
+              "Required": true
+            },
+            "max_lease_time": {
+              "Type": "Int",
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "7200"
+              }
+            },
+            "start_address": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "dns1": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "8.8.8.8"
+        }
+      },
+      "dns2": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "8.8.4.4"
+        }
+      },
+      "dns_suffix": {
+        "Type": "String",
+        "Optional": true
+      },
+      "edge_gateway": {
+        "Type": "String",
+        "Required": true
+      },
+      "gateway": {
+        "Type": "String",
+        "Optional": true
+      },
+      "href": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "netmask": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "255.255.255.0"
+        }
+      },
+      "org": {
+        "Type": "String",
+        "Optional": true
+      },
+      "shared": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "static_ip_pool": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "end_address": {
+              "Type": "String",
+              "Required": true
+            },
+            "start_address": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "vdc": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "vcd_org": {
+      "can_publish_catalogs": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "True if this organization is allowed to share catalogs.",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "delay_after_power_on_seconds": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Specifies this organization's default for virtual machine boot delay after power on."
+      },
+      "delete_force": {
+        "Type": "Bool",
+        "Required": true,
+        "Description": "When destroying use delete_force=True with delete_recursive=True to remove an org and any objects it contains, regardless of their state."
+      },
+      "delete_recursive": {
+        "Type": "Bool",
+        "Required": true,
+        "Description": "When destroying use delete_recursive=True to remove the org and any objects it contains that are in a state that normally allows removal."
+      },
+      "deployed_vm_quota": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Maximum number of virtual machines that can be deployed simultaneously by a member of this organization.",
+        "Default": {
+          "Type": "int",
+          "Value": "-1"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "full_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "is_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "True if this organization is enabled (allows login and all other operations).",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "stored_vm_quota": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Maximum number of virtual machines in vApps or vApp templates that can be stored in an undeployed state by a member of this organization.",
+        "Default": {
+          "Type": "int",
+          "Value": "-1"
+        }
       }
     },
     "vcd_snat": {
@@ -311,9 +879,25 @@
       "internal_ip": {
         "Type": "String",
         "Required": true
+      },
+      "org": {
+        "Type": "String",
+        "Optional": true
+      },
+      "vdc": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "vcd_vapp": {
+      "accept_all_eulas": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "catalog_name": {
         "Type": "String",
         "Optional": true
@@ -356,13 +940,21 @@
         "Type": "String",
         "Optional": true
       },
+      "org": {
+        "Type": "String",
+        "Optional": true
+      },
       "ovf": {
         "Type": "Map",
         "Optional": true
       },
       "power_on": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "storage_profile": {
         "Type": "String",
@@ -371,16 +963,165 @@
       "template_name": {
         "Type": "String",
         "Optional": true
+      },
+      "vdc": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "vcd_vapp_network": {
+      "dhcp_pool": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "default_lease_time": {
+              "Type": "Int",
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "3600"
+              }
+            },
+            "enabled": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
+            },
+            "end_address": {
+              "Type": "String",
+              "Optional": true
+            },
+            "max_lease_time": {
+              "Type": "Int",
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "7200"
+              }
+            },
+            "start_address": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "dns1": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "8.8.8.8"
+        }
+      },
+      "dns2": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "8.8.4.4"
+        }
+      },
+      "dns_suffix": {
+        "Type": "String",
+        "Optional": true
+      },
+      "gateway": {
+        "Type": "String",
+        "Required": true
+      },
+      "guest_vlan_allowed": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "netmask": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "255.255.255.0"
+        }
+      },
+      "org": {
+        "Type": "String",
+        "Optional": true
+      },
+      "static_ip_pool": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "end_address": {
+              "Type": "String",
+              "Required": true
+            },
+            "start_address": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "vapp_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "vdc": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "vcd_vapp_vm": {
+      "accept_all_eulas": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "catalog_name": {
         "Type": "String",
         "Required": true
       },
+      "cpu_cores": {
+        "Type": "Int",
+        "Optional": true
+      },
       "cpus": {
         "Type": "Int",
         "Optional": true
+      },
+      "disk": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "bus_number": {
+              "Type": "String",
+              "Required": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "unit_number": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       },
       "href": {
         "Type": "String",
@@ -412,9 +1153,17 @@
         "Type": "String",
         "Optional": true
       },
+      "org": {
+        "Type": "String",
+        "Optional": true
+      },
       "power_on": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "template_name": {
         "Type": "String",
@@ -423,6 +1172,14 @@
       "vapp_name": {
         "Type": "String",
         "Required": true
+      },
+      "vapp_network_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "vdc": {
+        "Type": "String",
+        "Optional": true
       }
     }
   },

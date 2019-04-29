@@ -1,25 +1,33 @@
 {
+  ".schema_version": "1",
   "name": "fastly",
   "type": "provider",
-  "version": "v0.4.0-9-g08523af",
+  "version": "v0.6.0",
   "provider": {
     "api_key": {
       "Type": "String",
       "Optional": true,
-      "Description": "Fastly API Key from https://app.fastly.com/#account"
+      "Description": "Fastly API Key from https://app.fastly.com/#account",
+      "DefaultFunc": "ENV(FASTLY_API_KEY)"
     },
     "base_url": {
       "Type": "String",
       "Optional": true,
       "Description": "Fastly API URL",
-      "Default": {
-        "Type": "string",
-        "Value": "https://api.fastly.com"
-      }
+      "DefaultFunc": "ENV(FASTLY_API_URL)"
     }
   },
   "resources": {
     "fastly_service_v1": {
+      "activate": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Conditionally prevents the Service from being activated",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "active_version": {
         "Type": "Int",
         "Computed": true
@@ -38,47 +46,80 @@
             "auto_loadbalance": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Should this Backend be load balanced"
+              "Description": "Should this Backend be load balanced",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "between_bytes_timeout": {
               "Type": "Int",
               "Optional": true,
-              "Description": "How long to wait between bytes in milliseconds"
+              "Description": "How long to wait between bytes in milliseconds",
+              "Default": {
+                "Type": "int",
+                "Value": "10000"
+              }
             },
             "connect_timeout": {
               "Type": "Int",
               "Optional": true,
-              "Description": "How long to wait for a timeout in milliseconds"
+              "Description": "How long to wait for a timeout in milliseconds",
+              "Default": {
+                "Type": "int",
+                "Value": "1000"
+              }
             },
             "error_threshold": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Number of errors to allow before the Backend is marked as down"
+              "Description": "Number of errors to allow before the Backend is marked as down",
+              "Default": {
+                "Type": "int",
+                "Value": "0"
+              }
             },
             "first_byte_timeout": {
               "Type": "Int",
               "Optional": true,
-              "Description": "How long to wait for the first bytes in milliseconds"
+              "Description": "How long to wait for the first bytes in milliseconds",
+              "Default": {
+                "Type": "int",
+                "Value": "15000"
+              }
             },
             "healthcheck": {
               "Type": "String",
               "Optional": true,
-              "Description": "The healthcheck name that should be used for this Backend"
+              "Description": "The healthcheck name that should be used for this Backend",
+              "Default": {
+                "Type": "string"
+              }
             },
             "max_conn": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Maximum number of connections for this Backend"
+              "Description": "Maximum number of connections for this Backend",
+              "Default": {
+                "Type": "int",
+                "Value": "200"
+              }
             },
             "max_tls_version": {
               "Type": "String",
               "Optional": true,
-              "Description": "Maximum allowed TLS version on SSL connections to this backend."
+              "Description": "Maximum allowed TLS version on SSL connections to this backend.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "min_tls_version": {
               "Type": "String",
               "Optional": true,
-              "Description": "Minimum allowed TLS version on SSL connections to this backend."
+              "Description": "Minimum allowed TLS version on SSL connections to this backend.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "name": {
               "Type": "String",
@@ -88,68 +129,111 @@
             "port": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The port number Backend responds on. Default 80"
+              "Description": "The port number Backend responds on. Default 80",
+              "Default": {
+                "Type": "int",
+                "Value": "80"
+              }
             },
             "request_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of a condition, which if met, will select this backend during a request."
+              "Description": "Name of a condition, which if met, will select this backend during a request.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "shield": {
               "Type": "String",
               "Optional": true,
-              "Description": "The POP of the shield designated to reduce inbound load."
+              "Description": "The POP of the shield designated to reduce inbound load.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "ssl_ca_cert": {
               "Type": "String",
               "Optional": true,
-              "Description": "CA certificate attached to origin."
+              "Description": "CA certificate attached to origin.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "ssl_cert_hostname": {
               "Type": "String",
               "Optional": true,
-              "Description": "SSL certificate hostname for cert verification"
+              "Description": "SSL certificate hostname for cert verification",
+              "Default": {
+                "Type": "string"
+              }
             },
             "ssl_check_cert": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Be strict on checking SSL certs"
+              "Description": "Be strict on checking SSL certs",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "ssl_ciphers": {
               "Type": "String",
               "Optional": true,
-              "Description": "Comma sepparated list of ciphers"
+              "Description": "Comma sepparated list of ciphers",
+              "Default": {
+                "Type": "string"
+              }
             },
             "ssl_client_cert": {
               "Type": "String",
               "Optional": true,
-              "Description": "SSL certificate file for client connections to the backend."
+              "Description": "SSL certificate file for client connections to the backend.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "ssl_client_key": {
               "Type": "String",
               "Optional": true,
-              "Description": "SSL key file for client connections to backend."
+              "Description": "SSL key file for client connections to backend.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "ssl_hostname": {
               "Type": "String",
               "Optional": true,
               "Description": "SSL certificate hostname",
-              "Deprecated": "Use ssl_cert_hostname and ssl_sni_hostname instead."
+              "Deprecated": "Use ssl_cert_hostname and ssl_sni_hostname instead.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "ssl_sni_hostname": {
               "Type": "String",
               "Optional": true,
-              "Description": "SSL certificate hostname for SNI verification"
+              "Description": "SSL certificate hostname for SNI verification",
+              "Default": {
+                "Type": "string"
+              }
             },
             "use_ssl": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether or not to use SSL to reach the Backend"
+              "Description": "Whether or not to use SSL to reach the Backend",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "weight": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The portion of traffic to send to a specific origins. Each origin receives weight/total of the traffic."
+              "Description": "The portion of traffic to send to a specific origins. Each origin receives weight/total of the traffic.",
+              "Default": {
+                "Type": "int",
+                "Value": "100"
+              }
             }
           }
         }
@@ -169,14 +253,16 @@
               "Type": "String",
               "Optional": true,
               "Description": "The email address associated with the target BigQuery dataset on your account.",
-              "Default": {
-                "Type": "string"
-              }
+              "DefaultFunc": "ENV(FASTLY_BQ_EMAIL)"
             },
             "format": {
               "Type": "String",
               "Optional": true,
-              "Description": "The logging format desired."
+              "Description": "The logging format desired.",
+              "Default": {
+                "Type": "string",
+                "Value": "%h %l %u %t \"%r\" %\u003es %b"
+              }
             },
             "name": {
               "Type": "String",
@@ -196,15 +282,16 @@
             "response_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of a condition to apply this logging."
+              "Description": "Name of a condition to apply this logging.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "secret_key": {
               "Type": "String",
               "Optional": true,
               "Description": "The secret key associated with the target BigQuery dataset on your account.",
-              "Default": {
-                "Type": "string"
-              }
+              "DefaultFunc": "ENV(FASTLY_BQ_SECRET_KEY)"
             },
             "table": {
               "Type": "String",
@@ -214,7 +301,10 @@
             "template": {
               "Type": "String",
               "Optional": true,
-              "Description": "Big query table name suffix template"
+              "Description": "Big query table name suffix template",
+              "Default": {
+                "Type": "string"
+              }
             }
           }
         }
@@ -233,7 +323,10 @@
             "cache_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of a condition to check if this Cache Setting applies"
+              "Description": "Name of a condition to check if this Cache Setting applies",
+              "Default": {
+                "Type": "string"
+              }
             },
             "name": {
               "Type": "String",
@@ -266,7 +359,11 @@
             "priority": {
               "Type": "Int",
               "Optional": true,
-              "Description": "A number used to determine the order in which multiple conditions execute. Lower numbers execute first"
+              "Description": "A number used to determine the order in which multiple conditions execute. Lower numbers execute first",
+              "Default": {
+                "Type": "int",
+                "Value": "10"
+              }
             },
             "statement": {
               "Type": "String",
@@ -290,7 +387,11 @@
       "default_ttl": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The default Time-to-live (TTL) for the version"
+        "Description": "The default Time-to-live (TTL) for the version",
+        "Default": {
+          "Type": "int",
+          "Value": "3600"
+        }
       },
       "director": {
         "Type": "Set",
@@ -310,7 +411,11 @@
             "capacity": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Load balancing weight for the backends"
+              "Description": "Load balancing weight for the backends",
+              "Default": {
+                "Type": "int",
+                "Value": "100"
+              }
             },
             "comment": {
               "Type": "String",
@@ -324,22 +429,37 @@
             "quorum": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Percentage of capacity that needs to be up for the director itself to be considered up"
+              "Description": "Percentage of capacity that needs to be up for the director itself to be considered up",
+              "Default": {
+                "Type": "int",
+                "Value": "75"
+              }
             },
             "retries": {
               "Type": "Int",
               "Optional": true,
-              "Description": "How many backends to search if it fails"
+              "Description": "How many backends to search if it fails",
+              "Default": {
+                "Type": "int",
+                "Value": "5"
+              }
             },
             "shield": {
               "Type": "String",
               "Optional": true,
-              "Description": "Selected POP to serve as a 'shield' for origin servers."
+              "Description": "Selected POP to serve as a 'shield' for origin servers.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "type": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Type of load balance group to use. Integer, 1 to 4. Values: 1 (random), 3 (hash), 4 (client)"
+              "Description": "Type of load balance group to use. Integer, 1 to 4. Values: 1 (random), 3 (hash), 4 (client)",
+              "Default": {
+                "Type": "int",
+                "Value": "1"
+              }
             }
           }
         }
@@ -381,24 +501,34 @@
               "Type": "String",
               "Optional": true,
               "Description": "The email address associated with the target GCS bucket on your account.",
-              "Default": {
-                "Type": "string"
-              }
+              "DefaultFunc": "ENV(FASTLY_GCS_EMAIL)"
             },
             "format": {
               "Type": "String",
               "Optional": true,
-              "Description": "Apache-style string or VCL variables to use for log formatting"
+              "Description": "Apache-style string or VCL variables to use for log formatting",
+              "Default": {
+                "Type": "string",
+                "Value": "%h %l %u %t %r %\u003es"
+              }
             },
             "gzip_level": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Gzip Compression level"
+              "Description": "Gzip Compression level",
+              "Default": {
+                "Type": "int",
+                "Value": "0"
+              }
             },
             "message_type": {
               "Type": "String",
               "Optional": true,
-              "Description": "The log message type per the fastly docs: https://docs.fastly.com/api/logging#logging_gcs"
+              "Description": "The log message type per the fastly docs: https://docs.fastly.com/api/logging#logging_gcs",
+              "Default": {
+                "Type": "string",
+                "Value": "classic"
+              }
             },
             "name": {
               "Type": "String",
@@ -413,7 +543,11 @@
             "period": {
               "Type": "Int",
               "Optional": true,
-              "Description": "How frequently the logs should be transferred, in seconds (Default 3600)"
+              "Description": "How frequently the logs should be transferred, in seconds (Default 3600)",
+              "Default": {
+                "Type": "int",
+                "Value": "3600"
+              }
             },
             "placement": {
               "Type": "String",
@@ -423,20 +557,25 @@
             "response_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of a condition to apply this logging."
+              "Description": "Name of a condition to apply this logging.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "secret_key": {
               "Type": "String",
               "Optional": true,
               "Description": "The secret key associated with the target gcs bucket on your account.",
-              "Default": {
-                "Type": "string"
-              }
+              "DefaultFunc": "ENV(FASTLY_GCS_SECRET_KEY)"
             },
             "timestamp_format": {
               "Type": "String",
               "Optional": true,
-              "Description": "specified timestamp formatting (default `%Y-%m-%dT%H:%M:%S.000`)"
+              "Description": "specified timestamp formatting (default `%Y-%m-%dT%H:%M:%S.000`)",
+              "Default": {
+                "Type": "string",
+                "Value": "%Y-%m-%dT%H:%M:%S.000"
+              }
             }
           }
         }
@@ -450,7 +589,10 @@
             "cache_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of a condition controlling when this gzip configuration applies."
+              "Description": "Name of a condition controlling when this gzip configuration applies.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "content_types": {
               "Type": "Set",
@@ -492,7 +634,10 @@
             "cache_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Optional name of a cache condition to apply."
+              "Description": "Optional name of a cache condition to apply.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "destination": {
               "Type": "String",
@@ -502,7 +647,11 @@
             "ignore_if_set": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Don't add the header if it is already. (Only applies to 'set' action.). Default `false`"
+              "Description": "Don't add the header if it is already. (Only applies to 'set' action.). Default `false`",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "name": {
               "Type": "String",
@@ -512,7 +661,11 @@
             "priority": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Lower priorities execute first. (Default: 100.)"
+              "Description": "Lower priorities execute first. (Default: 100.)",
+              "Default": {
+                "Type": "int",
+                "Value": "100"
+              }
             },
             "regex": {
               "Type": "String",
@@ -523,12 +676,18 @@
             "request_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Optional name of a request condition to apply."
+              "Description": "Optional name of a request condition to apply.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "response_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Optional name of a response condition to apply."
+              "Description": "Optional name of a response condition to apply.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "source": {
               "Type": "String",
@@ -559,12 +718,20 @@
             "check_interval": {
               "Type": "Int",
               "Optional": true,
-              "Description": "How often to run the healthcheck in milliseconds"
+              "Description": "How often to run the healthcheck in milliseconds",
+              "Default": {
+                "Type": "int",
+                "Value": "5000"
+              }
             },
             "expected_response": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The status code expected from the host"
+              "Description": "The status code expected from the host",
+              "Default": {
+                "Type": "int",
+                "Value": "200"
+              }
             },
             "host": {
               "Type": "String",
@@ -574,17 +741,29 @@
             "http_version": {
               "Type": "String",
               "Optional": true,
-              "Description": "Whether to use version 1.0 or 1.1 HTTP"
+              "Description": "Whether to use version 1.0 or 1.1 HTTP",
+              "Default": {
+                "Type": "string",
+                "Value": "1.1"
+              }
             },
             "initial": {
               "Type": "Int",
               "Optional": true,
-              "Description": "When loading a config, the initial number of probes to be seen as OK"
+              "Description": "When loading a config, the initial number of probes to be seen as OK",
+              "Default": {
+                "Type": "int",
+                "Value": "2"
+              }
             },
             "method": {
               "Type": "String",
               "Optional": true,
-              "Description": "Which HTTP method to use"
+              "Description": "Which HTTP method to use",
+              "Default": {
+                "Type": "string",
+                "Value": "HEAD"
+              }
             },
             "name": {
               "Type": "String",
@@ -599,17 +778,29 @@
             "threshold": {
               "Type": "Int",
               "Optional": true,
-              "Description": "How many healthchecks must succeed to be considered healthy"
+              "Description": "How many healthchecks must succeed to be considered healthy",
+              "Default": {
+                "Type": "int",
+                "Value": "3"
+              }
             },
             "timeout": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Timeout in milliseconds"
+              "Description": "Timeout in milliseconds",
+              "Default": {
+                "Type": "int",
+                "Value": "500"
+              }
             },
             "window": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The number of most recent healthcheck queries to keep for this healthcheck"
+              "Description": "The number of most recent healthcheck queries to keep for this healthcheck",
+              "Default": {
+                "Type": "int",
+                "Value": "5"
+              }
             }
           }
         }
@@ -623,12 +814,20 @@
             "format": {
               "Type": "String",
               "Optional": true,
-              "Description": "Apache-style string or VCL variables to use for log formatting"
+              "Description": "Apache-style string or VCL variables to use for log formatting",
+              "Default": {
+                "Type": "string",
+                "Value": "%h %l %u %t %r %\u003es"
+              }
             },
             "format_version": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The version of the custom logging format used for the configured endpoint. Can be either 1 or 2. (Default: 1)"
+              "Description": "The version of the custom logging format used for the configured endpoint. Can be either 1 or 2. (Default: 1)",
+              "Default": {
+                "Type": "int",
+                "Value": "1"
+              }
             },
             "name": {
               "Type": "String",
@@ -643,12 +842,19 @@
             "port": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The port number configured in Logentries"
+              "Description": "The port number configured in Logentries",
+              "Default": {
+                "Type": "int",
+                "Value": "20000"
+              }
             },
             "response_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of a condition to apply this logging."
+              "Description": "Name of a condition to apply this logging.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "token": {
               "Type": "String",
@@ -658,7 +864,11 @@
             "use_tls": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Whether to use TLS for secure logging"
+              "Description": "Whether to use TLS for secure logging",
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             }
           }
         }
@@ -682,7 +892,11 @@
             "format": {
               "Type": "String",
               "Optional": true,
-              "Description": "Apache-style string or VCL variables to use for log formatting"
+              "Description": "Apache-style string or VCL variables to use for log formatting",
+              "Default": {
+                "Type": "string",
+                "Value": "%h %l %u %t %r %\u003es"
+              }
             },
             "name": {
               "Type": "String",
@@ -702,7 +916,10 @@
             "response_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of a condition to apply this logging"
+              "Description": "Name of a condition to apply this logging",
+              "Default": {
+                "Type": "string"
+              }
             }
           }
         }
@@ -761,7 +978,10 @@
             "request_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of a request condition to apply. If there is no condition this setting will always be applied."
+              "Description": "Name of a request condition to apply. If there is no condition this setting will always be applied.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "timer_support": {
               "Type": "Bool",
@@ -771,7 +991,11 @@
             "xff": {
               "Type": "String",
               "Optional": true,
-              "Description": "X-Forwarded-For options"
+              "Description": "X-Forwarded-For options",
+              "Default": {
+                "Type": "string",
+                "Value": "append"
+              }
             }
           }
         }
@@ -785,17 +1009,26 @@
             "cache_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of the condition checked after we have retrieved an object. If the condition passes then deliver this Request Object instead."
+              "Description": "Name of the condition checked after we have retrieved an object. If the condition passes then deliver this Request Object instead.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "content": {
               "Type": "String",
               "Optional": true,
-              "Description": "The content to deliver for the response object"
+              "Description": "The content to deliver for the response object",
+              "Default": {
+                "Type": "string"
+              }
             },
             "content_type": {
               "Type": "String",
               "Optional": true,
-              "Description": "The MIME type of the content"
+              "Description": "The MIME type of the content",
+              "Default": {
+                "Type": "string"
+              }
             },
             "name": {
               "Type": "String",
@@ -805,17 +1038,28 @@
             "request_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of the condition to be checked during the request phase to see if the object should be delivered"
+              "Description": "Name of the condition to be checked during the request phase to see if the object should be delivered",
+              "Default": {
+                "Type": "string"
+              }
             },
             "response": {
               "Type": "String",
               "Optional": true,
-              "Description": "The HTTP Response of the object"
+              "Description": "The HTTP Response of the object",
+              "Default": {
+                "Type": "string",
+                "Value": "OK"
+              }
             },
             "status": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The HTTP Status Code of the object"
+              "Description": "The HTTP Status Code of the object",
+              "Default": {
+                "Type": "int",
+                "Value": "200"
+              }
             }
           }
         }
@@ -834,27 +1078,47 @@
             "domain": {
               "Type": "String",
               "Optional": true,
-              "Description": "Bucket endpoint"
+              "Description": "Bucket endpoint",
+              "Default": {
+                "Type": "string",
+                "Value": "s3.amazonaws.com"
+              }
             },
             "format": {
               "Type": "String",
               "Optional": true,
-              "Description": "Apache-style string or VCL variables to use for log formatting"
+              "Description": "Apache-style string or VCL variables to use for log formatting",
+              "Default": {
+                "Type": "string",
+                "Value": "%h %l %u %t %r %\u003es"
+              }
             },
             "format_version": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The version of the custom logging format used for the configured endpoint. Can be either 1 or 2. (Default: 1)"
+              "Description": "The version of the custom logging format used for the configured endpoint. Can be either 1 or 2. (Default: 1)",
+              "Default": {
+                "Type": "int",
+                "Value": "1"
+              }
             },
             "gzip_level": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Gzip Compression level"
+              "Description": "Gzip Compression level",
+              "Default": {
+                "Type": "int",
+                "Value": "0"
+              }
             },
             "message_type": {
               "Type": "String",
               "Optional": true,
-              "Description": "How the message should be formatted."
+              "Description": "How the message should be formatted.",
+              "Default": {
+                "Type": "string",
+                "Value": "classic"
+              }
             },
             "name": {
               "Type": "String",
@@ -869,7 +1133,11 @@
             "period": {
               "Type": "Int",
               "Optional": true,
-              "Description": "How frequently the logs should be transferred, in seconds (Default 3600)"
+              "Description": "How frequently the logs should be transferred, in seconds (Default 3600)",
+              "Default": {
+                "Type": "int",
+                "Value": "3600"
+              }
             },
             "placement": {
               "Type": "String",
@@ -884,28 +1152,31 @@
             "response_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of a condition to apply this logging."
+              "Description": "Name of a condition to apply this logging.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "s3_access_key": {
               "Type": "String",
               "Optional": true,
               "Description": "AWS Access Key",
-              "Default": {
-                "Type": "string"
-              }
+              "DefaultFunc": "ENV(FASTLY_S3_ACCESS_KEY)"
             },
             "s3_secret_key": {
               "Type": "String",
               "Optional": true,
               "Description": "AWS Secret Key",
-              "Default": {
-                "Type": "string"
-              }
+              "DefaultFunc": "ENV(FASTLY_S3_SECRET_KEY)"
             },
             "timestamp_format": {
               "Type": "String",
               "Optional": true,
-              "Description": "specified timestamp formatting (default `%Y-%m-%dT%H:%M:%S.000`)"
+              "Description": "specified timestamp formatting (default `%Y-%m-%dT%H:%M:%S.000`)",
+              "Default": {
+                "Type": "string",
+                "Value": "%Y-%m-%dT%H:%M:%S.000"
+              }
             }
           }
         }
@@ -929,7 +1200,11 @@
             "priority": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Determines ordering for multiple snippets. Lower priorities execute first. (Default: 100)"
+              "Description": "Determines ordering for multiple snippets. Lower priorities execute first. (Default: 100)",
+              "Default": {
+                "Type": "int",
+                "Value": "100"
+              }
             },
             "type": {
               "Type": "String",
@@ -948,17 +1223,29 @@
             "format": {
               "Type": "String",
               "Optional": true,
-              "Description": "Apache-style string or VCL variables to use for log formatting"
+              "Description": "Apache-style string or VCL variables to use for log formatting",
+              "Default": {
+                "Type": "string",
+                "Value": "%h %l %u %t %r %\u003es"
+              }
             },
             "format_version": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The version of the custom logging format used for the configured endpoint. Can be either 1 or 2. (Default: 1)"
+              "Description": "The version of the custom logging format used for the configured endpoint. Can be either 1 or 2. (Default: 1)",
+              "Default": {
+                "Type": "int",
+                "Value": "1"
+              }
             },
             "message_type": {
               "Type": "String",
               "Optional": true,
-              "Description": "How the message should be formatted."
+              "Description": "How the message should be formatted.",
+              "Default": {
+                "Type": "string",
+                "Value": "classic"
+              }
             },
             "name": {
               "Type": "String",
@@ -973,7 +1260,10 @@
             "response_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of a condition to apply this logging."
+              "Description": "Name of a condition to apply this logging.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "url": {
               "Type": "String",
@@ -997,17 +1287,29 @@
             "format": {
               "Type": "String",
               "Optional": true,
-              "Description": "Apache-style string or VCL variables to use for log formatting"
+              "Description": "Apache-style string or VCL variables to use for log formatting",
+              "Default": {
+                "Type": "string",
+                "Value": "%h %l %u %t \"%r\" %\u003es %b"
+              }
             },
             "format_version": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The version of the custom logging format. Can be either 1 or 2. (Default: 1)"
+              "Description": "The version of the custom logging format. Can be either 1 or 2. (Default: 1)",
+              "Default": {
+                "Type": "int",
+                "Value": "1"
+              }
             },
             "message_type": {
               "Type": "String",
               "Optional": true,
-              "Description": "How the message should be formatted."
+              "Description": "How the message should be formatted.",
+              "Default": {
+                "Type": "string",
+                "Value": "classic"
+              }
             },
             "name": {
               "Type": "String",
@@ -1022,32 +1324,52 @@
             "port": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The port of the syslog service"
+              "Description": "The port of the syslog service",
+              "Default": {
+                "Type": "int",
+                "Value": "514"
+              }
             },
             "response_condition": {
               "Type": "String",
               "Optional": true,
-              "Description": "Name of a condition to apply this logging."
+              "Description": "Name of a condition to apply this logging.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "tls_ca_cert": {
               "Type": "String",
               "Optional": true,
-              "Description": "A secure certificate to authenticate the server with."
+              "Description": "A secure certificate to authenticate the server with.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "tls_hostname": {
               "Type": "String",
               "Optional": true,
-              "Description": "Used during the TLS handshake to validate the certificate."
+              "Description": "Used during the TLS handshake to validate the certificate.",
+              "Default": {
+                "Type": "string"
+              }
             },
             "token": {
               "Type": "String",
               "Optional": true,
-              "Description": "Authentication token"
+              "Description": "Authentication token",
+              "Default": {
+                "Type": "string"
+              }
             },
             "use_tls": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Use TLS for secure logging"
+              "Description": "Use TLS for secure logging",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -1066,7 +1388,11 @@
             "main": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Should this VCL configuration be the main configuration"
+              "Description": "Should this VCL configuration be the main configuration",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "name": {
               "Type": "String",

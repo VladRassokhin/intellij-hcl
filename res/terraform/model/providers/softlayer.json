@@ -1,17 +1,20 @@
 {
+  ".schema_version": "1",
   "name": "softlayer",
   "type": "provider",
-  "version": "v0.0.1-16-g6451278",
+  "version": "v0.0.1",
   "provider": {
     "api_key": {
       "Type": "String",
       "Required": true,
-      "Description": "The API key for SoftLayer API operations."
+      "Description": "The API key for SoftLayer API operations.",
+      "DefaultFunc": "ENV(SOFTLAYER_API_KEY)"
     },
     "username": {
       "Type": "String",
       "Required": true,
-      "Description": "The user name for SoftLayer API operations."
+      "Description": "The user name for SoftLayer API operations.",
+      "DefaultFunc": "ENV(SOFTLAYER_USERNAME)"
     }
   },
   "resources": {
@@ -100,11 +103,19 @@
       },
       "private_network_only": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "public_network_speed": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1000"
+        }
       },
       "ram": {
         "Type": "Int",

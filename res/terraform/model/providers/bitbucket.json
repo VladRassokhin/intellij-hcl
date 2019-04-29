@@ -1,15 +1,18 @@
 {
+  ".schema_version": "1",
   "name": "bitbucket",
   "type": "provider",
-  "version": "v1.0.0-12-g1fc08d0",
+  "version": "v1.0.0",
   "provider": {
     "password": {
       "Type": "String",
-      "Required": true
+      "Required": true,
+      "DefaultFunc": "ENV(BITBUCKET_PASSWORD)"
     },
     "username": {
       "Type": "String",
-      "Required": true
+      "Required": true,
+      "DefaultFunc": "ENV(BITBUCKET_USERNAME)"
     }
   },
   "resources": {
@@ -34,7 +37,11 @@
     "bitbucket_hook": {
       "active": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "description": {
         "Type": "String",
@@ -55,10 +62,6 @@
       "repository": {
         "Type": "String",
         "Required": true
-      },
-      "skip_cert_verification": {
-        "Type": "Bool",
-        "Optional": true
       },
       "url": {
         "Type": "String",
@@ -84,19 +87,35 @@
       },
       "fork_policy": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "allow_forks"
+        }
       },
       "has_issues": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "has_wiki": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "is_private": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "language": {
         "Type": "String",
@@ -116,7 +135,11 @@
       },
       "scm": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "git"
+        }
       },
       "slug": {
         "Type": "String",

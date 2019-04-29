@@ -1,15 +1,68 @@
 {
+  ".schema_version": "1",
   "name": "digitalocean",
   "type": "provider",
-  "version": "v1.1.0-5-gcc2cfb8",
+  "version": "v1.2.0",
   "provider": {
+    "api_endpoint": {
+      "Type": "String",
+      "Required": true,
+      "Description": "The URL to use for the DigitalOcean API.",
+      "DefaultFunc": "ENV(DIGITALOCEAN_API_URL)"
+    },
+    "spaces_access_id": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The access key ID for Spaces API operations.",
+      "DefaultFunc": "ENV(SPACES_ACCESS_KEY_ID)"
+    },
+    "spaces_secret_key": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The secret access key for Spaces API operations.",
+      "DefaultFunc": "ENV(SPACES_SECRET_ACCESS_KEY)"
+    },
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "The token key for API operations."
+      "Description": "The token key for API operations.",
+      "DefaultFunc": "ENV(DIGITALOCEAN_TOKEN)"
     }
   },
   "resources": {
+    "digitalocean_cdn": {
+      "certificate_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID of a DigitalOcean managed TLS certificate for use with custom domains"
+      },
+      "created_at": {
+        "Type": "String",
+        "Description": "The date and time (ISO8601) of when the CDN endpoint was created.",
+        "Computed": true
+      },
+      "custom_domain": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "fully qualified domain name (FQDN) for custom subdomain, (requires certificate_id)"
+      },
+      "endpoint": {
+        "Type": "String",
+        "Description": "fully qualified domain name (FQDN) to serve the CDN content",
+        "Computed": true
+      },
+      "origin": {
+        "Type": "String",
+        "Required": true,
+        "Description": "fully qualified domain name (FQDN) for the origin server"
+      },
+      "ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The amount of time the content is cached in the CDN",
+        "Computed": true
+      }
+    },
     "digitalocean_certificate": {
       "certificate_chain": {
         "Type": "String",
@@ -54,7 +107,79 @@
       },
       "type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "custom"
+        }
+      }
+    },
+    "digitalocean_database_cluster": {
+      "database": {
+        "Type": "String",
+        "Computed": true
+      },
+      "engine": {
+        "Type": "String",
+        "Required": true
+      },
+      "host": {
+        "Type": "String",
+        "Computed": true
+      },
+      "maintenance_window": {
+        "Type": "List",
+        "Optional": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "day": {
+              "Type": "String",
+              "Required": true
+            },
+            "hour": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "node_count": {
+        "Type": "Int",
+        "Required": true
+      },
+      "password": {
+        "Type": "String",
+        "Computed": true
+      },
+      "port": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Required": true
+      },
+      "size": {
+        "Type": "String",
+        "Required": true
+      },
+      "uri": {
+        "Type": "String",
+        "Computed": true
+      },
+      "user": {
+        "Type": "String",
+        "Computed": true
+      },
+      "version": {
+        "Type": "String",
+        "Required": true
       }
     },
     "digitalocean_domain": {
@@ -65,12 +190,20 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "urn": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "digitalocean_droplet": {
       "backups": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "disk": {
         "Type": "Int",
@@ -90,7 +223,11 @@
       },
       "ipv6": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "ipv6_address": {
         "Type": "String",
@@ -110,7 +247,11 @@
       },
       "monitoring": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -126,7 +267,11 @@
       },
       "private_networking": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "region": {
         "Type": "String",
@@ -134,7 +279,11 @@
       },
       "resize_disk": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "size": {
         "Type": "String",
@@ -159,6 +308,10 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "urn": {
+        "Type": "String",
+        "Computed": true
       },
       "user_data": {
         "Type": "String",
@@ -370,6 +523,11 @@
       "region": {
         "Type": "String",
         "Required": true
+      },
+      "urn": {
+        "Type": "String",
+        "Description": "the uniform resource name for the floating ip",
+        "Computed": true
       }
     },
     "digitalocean_floating_ip_assignment": {
@@ -583,7 +741,11 @@
     "digitalocean_loadbalancer": {
       "algorithm": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "round_robin"
+        }
       },
       "droplet_ids": {
         "Type": "Set",
@@ -600,6 +762,14 @@
       "droplet_tag": {
         "Type": "String",
         "Optional": true
+      },
+      "enable_proxy_protocol": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "forwarding_rule": {
         "Type": "List",
@@ -630,7 +800,11 @@
             },
             "tls_passthrough": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -645,11 +819,19 @@
           "Info": {
             "check_interval_seconds": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "10"
+              }
             },
             "healthy_threshold": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "5"
+              }
             },
             "path": {
               "Type": "String",
@@ -665,11 +847,19 @@
             },
             "response_timeout_seconds": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "5"
+              }
             },
             "unhealthy_threshold": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "3"
+              }
             }
           }
         }
@@ -684,7 +874,11 @@
       },
       "redirect_http_to_https": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "region": {
         "Type": "String",
@@ -712,10 +906,81 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "none"
+              }
             }
           }
         }
+      },
+      "urn": {
+        "Type": "String",
+        "Description": "the uniform resource name for the load balancer",
+        "Computed": true
+      }
+    },
+    "digitalocean_project": {
+      "created_at": {
+        "Type": "String",
+        "Description": "the date and time when the project was created, (ISO8601)",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "the descirption of the project",
+        "Default": {
+          "Type": "string"
+        }
+      },
+      "environment": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "the environment of the project's resources",
+        "Default": {
+          "Type": "string",
+          "Value": "Development"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "the human-readable name for the project"
+      },
+      "owner_id": {
+        "Type": "Int",
+        "Description": "the id of the project owner.",
+        "Computed": true
+      },
+      "owner_uuid": {
+        "Type": "String",
+        "Description": "the unique universal identifier of the project owner.",
+        "Computed": true
+      },
+      "purpose": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "the purpose of the project",
+        "Default": {
+          "Type": "string",
+          "Value": "Web Application"
+        }
+      },
+      "resources": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "the resources associated with the project",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "updated_at": {
+        "Type": "String",
+        "Description": "the date and time when the project was last updated, (ISO8601)",
+        "Computed": true
       }
     },
     "digitalocean_record": {
@@ -763,6 +1028,50 @@
       "weight": {
         "Type": "Int",
         "Optional": true
+      }
+    },
+    "digitalocean_spaces_bucket": {
+      "acl": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Canned ACL applied on bucket creation",
+        "Default": {
+          "Type": "string",
+          "Value": "private"
+        }
+      },
+      "bucket_domain_name": {
+        "Type": "String",
+        "Description": "The FQDN of the bucket",
+        "Computed": true
+      },
+      "force_destroy": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Unless true, the bucket will only be destroyed if empty",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Bucket name"
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Bucket region",
+        "Default": {
+          "Type": "string",
+          "Value": "nyc3"
+        }
+      },
+      "urn": {
+        "Type": "String",
+        "Description": "the uniform resource name for the bucket",
+        "Computed": true
       }
     },
     "digitalocean_ssh_key": {
@@ -834,6 +1143,11 @@
       "snapshot_id": {
         "Type": "String",
         "Optional": true
+      },
+      "urn": {
+        "Type": "String",
+        "Description": "the uniform resource name for the volume.",
+        "Computed": true
       }
     },
     "digitalocean_volume_attachment": {
@@ -923,6 +1237,11 @@
       "ttl": {
         "Type": "Int",
         "Description": "ttl of the domain",
+        "Computed": true
+      },
+      "urn": {
+        "Type": "String",
+        "Description": "the uniform resource name for the domain",
         "Computed": true
       },
       "zone_file": {
@@ -1030,6 +1349,11 @@
           "ElementsType": "String"
         }
       },
+      "urn": {
+        "Type": "String",
+        "Description": "the uniform resource name for the Droplet",
+        "Computed": true
+      },
       "vcpus": {
         "Type": "Int",
         "Description": "the number of virtual cpus",
@@ -1060,7 +1384,11 @@
       },
       "most_recent": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -1104,6 +1432,11 @@
       "region": {
         "Type": "String",
         "Description": "the region that the floating ip is reserved to",
+        "Computed": true
+      },
+      "urn": {
+        "Type": "String",
+        "Description": "the uniform resource name for the floating ip",
         "Computed": true
       }
     },
@@ -1317,6 +1650,11 @@
         "Description": "the name of a tag corresponding to droplets assigned to the load balancer",
         "Computed": true
       },
+      "enable_proxy_protocol": {
+        "Type": "Bool",
+        "Description": "whether PROXY Protocol should be used to pass information from connecting client requests to the backend service",
+        "Computed": true
+      },
       "forwarding_rule": {
         "Type": "List",
         "Description": "list of forwarding rules of the load balancer",
@@ -1453,6 +1791,11 @@
             }
           }
         }
+      },
+      "urn": {
+        "Type": "String",
+        "Description": "the uniform resource name for the load balancer",
+        "Computed": true
       }
     },
     "digitalocean_record": {
@@ -1570,6 +1913,11 @@
         "Type": "Int",
         "Description": "the size of the volume in gigabytes",
         "Computed": true
+      },
+      "urn": {
+        "Type": "String",
+        "Description": "the iniform resource name for the volume",
+        "Computed": true
       }
     },
     "digitalocean_volume_snapshot": {
@@ -1583,7 +1931,11 @@
       },
       "most_recent": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",

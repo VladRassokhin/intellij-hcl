@@ -1,72 +1,62 @@
 {
+  ".schema_version": "1",
   "name": "cloudflare",
   "type": "provider",
-  "version": "v1.10.0-5-g47c18db",
+  "version": "v1.13.0",
   "provider": {
     "api_client_logging": {
       "Type": "Bool",
       "Optional": true,
       "Description": "Whether to print logs from the API client (using the default log library logger)",
-      "Default": {
-        "Type": "bool",
-        "Value": "false"
-      }
+      "DefaultFunc": "ENV(CLOUDFLARE_API_CLIENT_LOGGING)"
     },
     "email": {
       "Type": "String",
       "Required": true,
-      "Description": "A registered Cloudflare email address."
+      "Description": "A registered Cloudflare email address.",
+      "DefaultFunc": "ENV(CLOUDFLARE_EMAIL)"
     },
     "max_backoff": {
       "Type": "Int",
       "Optional": true,
       "Description": "Maximum backoff period in seconds after failed API calls",
-      "Default": {
-        "Type": "int",
-        "Value": "30"
-      }
+      "DefaultFunc": "ENV(CLOUDFLARE_MAX_BACKOFF)"
     },
     "min_backoff": {
       "Type": "Int",
       "Optional": true,
       "Description": "Minimum backoff period in seconds after failed API calls",
-      "Default": {
-        "Type": "int",
-        "Value": "1"
-      }
+      "DefaultFunc": "ENV(CLOUDFLARE_MIN_BACKOFF)"
     },
     "org_id": {
       "Type": "String",
       "Optional": true,
-      "Description": "Configure API client to always use that organization. If set this will override 'user_owner_from_zone'"
+      "Description": "Configure API client to always use that organization. If set this will override 'user_owner_from_zone'",
+      "DefaultFunc": "ENV(CLOUDFLARE_ORG_ID)"
     },
     "retries": {
       "Type": "Int",
       "Optional": true,
       "Description": "Maximum number of retries to perform when an API request fails",
-      "Default": {
-        "Type": "int",
-        "Value": "3"
-      }
+      "DefaultFunc": "ENV(CLOUDFLARE_RETRIES)"
     },
     "rps": {
       "Type": "Int",
       "Optional": true,
       "Description": "RPS limit to apply when making calls to the API",
-      "Default": {
-        "Type": "int",
-        "Value": "4"
-      }
+      "DefaultFunc": "ENV(CLOUDFLARE_RPS)"
     },
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "The token key for API operations."
+      "Description": "The token key for API operations.",
+      "DefaultFunc": "ENV(CLOUDFLARE_TOKEN)"
     },
     "use_org_from_zone": {
       "Type": "String",
       "Optional": true,
-      "Description": "If specified zone is owned by an organization, configure API client to always use that organization"
+      "Description": "If specified zone is owned by an organization, configure API client to always use that organization",
+      "DefaultFunc": "ENV(CLOUDFLARE_ORG_ZONE)"
     }
   },
   "resources": {
@@ -85,7 +75,11 @@
       },
       "session_duration": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "24h"
+        }
       },
       "zone_id": {
         "Type": "String",
@@ -382,6 +376,14 @@
         "Type": "String",
         "Optional": true
       },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
       "fallback_pool_id": {
         "Type": "String",
         "Required": true
@@ -421,7 +423,11 @@
         "Optional": true,
         "ConflictsWith": [
           "ttl"
-        ]
+        ],
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "region_pools": {
         "Type": "Set",
@@ -447,11 +453,16 @@
       },
       "session_affinity": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
       },
       "steering_policy": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "ttl": {
         "Type": "Int",
@@ -471,6 +482,10 @@
       }
     },
     "cloudflare_load_balancer_monitor": {
+      "allow_insecure": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "created_on": {
         "Type": "String",
         "Computed": true
@@ -486,6 +501,10 @@
       "expected_codes": {
         "Type": "String",
         "Required": true
+      },
+      "follow_redirects": {
+        "Type": "Bool",
+        "Optional": true
       },
       "header": {
         "Type": "Set",
@@ -510,11 +529,19 @@
       },
       "interval": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "60"
+        }
       },
       "method": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "GET"
+        }
       },
       "modified_on": {
         "Type": "String",
@@ -522,7 +549,11 @@
       },
       "path": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "/"
+        }
       },
       "port": {
         "Type": "Int",
@@ -530,15 +561,27 @@
       },
       "retries": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "2"
+        }
       },
       "timeout": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "http"
+        }
       }
     },
     "cloudflare_load_balancer_pool": {
@@ -561,11 +604,19 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "minimum_origins": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
       },
       "modified_on": {
         "Type": "String",
@@ -599,7 +650,11 @@
             },
             "enabled": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "name": {
               "Type": "String",
@@ -607,10 +662,40 @@
             },
             "weight": {
               "Type": "Float",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "float64",
+                "Value": "1"
+              }
             }
           }
         }
+      }
+    },
+    "cloudflare_logpush_job": {
+      "destination_conf": {
+        "Type": "String",
+        "Required": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "logpull_options": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "ownership_challenge": {
+        "Type": "String",
+        "Required": true
+      },
+      "zone_id": {
+        "Type": "String",
+        "Required": true
       }
     },
     "cloudflare_page_rule": {
@@ -628,7 +713,11 @@
             },
             "always_use_https": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "automatic_https_rewrites": {
               "Type": "String",
@@ -664,19 +753,35 @@
             },
             "disable_apps": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "disable_performance": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "disable_railgun": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "disable_security": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "edge_cache_ttl": {
               "Type": "Int",
@@ -778,11 +883,19 @@
       },
       "priority": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
       },
       "status": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "active"
+        }
       },
       "target": {
         "Type": "String",
@@ -831,7 +944,7 @@
             },
             "timeout": {
               "Type": "Int",
-              "Required": true
+              "Optional": true
             }
           }
         }
@@ -864,7 +977,11 @@
       },
       "disabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "match": {
         "Type": "List",
@@ -1150,7 +1267,11 @@
       },
       "proxied": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "ttl": {
         "Type": "Int",
@@ -1172,6 +1293,84 @@
       "zone_id": {
         "Type": "String",
         "Computed": true
+      }
+    },
+    "cloudflare_spectrum_application": {
+      "dns": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "ip_firewall": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "origin_direct": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "origin_dns": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "origin_port": {
+        "Type": "Int",
+        "Required": true
+      },
+      "protocol": {
+        "Type": "String",
+        "Required": true
+      },
+      "proxy_protocol": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "tls": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "off"
+        }
+      },
+      "zone_id": {
+        "Type": "String",
+        "Required": true
       }
     },
     "cloudflare_waf_rule": {
@@ -1336,7 +1535,11 @@
       },
       "paused": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "urls": {
         "Type": "Set",
@@ -1365,11 +1568,6 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "advanced_ddos": {
-              "Type": "String",
-              "Optional": true,
-              "Computed": true
-            },
             "always_online": {
               "Type": "String",
               "Optional": true,
@@ -1682,11 +1880,6 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "advanced_ddos": {
-              "Type": "String",
-              "Optional": true,
-              "Computed": true
-            },
             "always_online": {
               "Type": "String",
               "Optional": true,
@@ -2009,6 +2202,51 @@
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
+        }
+      }
+    },
+    "cloudflare_zones": {
+      "filter": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Optional": true
+            },
+            "paused": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "status": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "zones": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
         }
       }
     }

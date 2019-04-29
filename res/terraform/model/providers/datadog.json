@@ -1,19 +1,23 @@
 {
+  ".schema_version": "1",
   "name": "datadog",
   "type": "provider",
-  "version": "v1.6.0-1-g274ae61",
+  "version": "v1.8.0",
   "provider": {
     "api_key": {
       "Type": "String",
-      "Required": true
+      "Required": true,
+      "DefaultFunc": "ENV(DATADOG_API_KEY)"
     },
     "api_url": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(DATADOG_HOST)"
     },
     "app_key": {
       "Type": "String",
-      "Required": true
+      "Required": true,
+      "DefaultFunc": "ENV(DATADOG_APP_KEY)"
     }
   },
   "resources": {
@@ -168,6 +172,42 @@
         "Required": true
       }
     },
+    "datadog_integration_pagerduty": {
+      "api_token": {
+        "Type": "String",
+        "Optional": true
+      },
+      "schedules": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "services": {
+        "Type": "List",
+        "Required": true,
+        "Description": "A list of service names and service keys.",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "service_key": {
+              "Type": "String",
+              "Required": true
+            },
+            "service_name": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "subdomain": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "datadog_metric_metadata": {
       "description": {
         "Type": "String",
@@ -210,7 +250,11 @@
       },
       "include_tags": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "locked": {
         "Type": "Bool",
@@ -226,7 +270,11 @@
       },
       "new_host_delay": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
       },
       "no_data_timeframe": {
         "Type": "Int",
@@ -238,7 +286,11 @@
       },
       "notify_no_data": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "query": {
         "Type": "String",
@@ -250,7 +302,11 @@
       },
       "require_full_window": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "silenced": {
         "Type": "Map",
@@ -317,12 +373,20 @@
       },
       "read_only": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "shared": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Whether the screenboard is shared or not"
+        "Description": "Whether the screenboard is shared or not",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "template_variable": {
         "Type": "List",
@@ -427,7 +491,11 @@
             "height": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The height of the widget."
+              "Description": "The height of the widget.",
+              "Default": {
+                "Type": "int",
+                "Value": "15"
+              }
             },
             "hide_zero_counts": {
               "Type": "Bool",
@@ -579,7 +647,11 @@
             },
             "text_size": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "auto"
+              }
             },
             "tick": {
               "Type": "Bool",
@@ -601,7 +673,11 @@
                 "Info": {
                   "autoscale": {
                     "Type": "Bool",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "true"
+                    }
                   },
                   "custom_unit": {
                     "Type": "String",
@@ -820,12 +896,20 @@
             "title_align": {
               "Type": "String",
               "Optional": true,
-              "Description": "The alignment of the widget's title."
+              "Description": "The alignment of the widget's title.",
+              "Default": {
+                "Type": "string",
+                "Value": "left"
+              }
             },
             "title_size": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The size of the widget's title."
+              "Description": "The size of the widget's title.",
+              "Default": {
+                "Type": "int",
+                "Value": "16"
+              }
             },
             "type": {
               "Type": "String",
@@ -848,7 +932,11 @@
             "width": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The width of the widget."
+              "Description": "The width of the widget.",
+              "Default": {
+                "Type": "int",
+                "Value": "50"
+              }
             },
             "x": {
               "Type": "Int",
@@ -867,6 +955,117 @@
         "Type": "String",
         "Optional": true,
         "Description": "Width of the screenboard"
+      }
+    },
+    "datadog_synthetics_test": {
+      "assertions": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "device_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "locations": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "message": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "options": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "follow_redirects": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "min_failure_duration": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "min_location_failed": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "tick_every": {
+              "Type": "Int",
+              "Required": true
+            }
+          }
+        }
+      },
+      "request": {
+        "Type": "Map",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "body": {
+              "Type": "String",
+              "Optional": true
+            },
+            "method": {
+              "Type": "String",
+              "Required": true
+            },
+            "timeout": {
+              "Type": "Int",
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "60"
+              }
+            },
+            "url": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "request_headers": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "status": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
       }
     },
     "datadog_timeboard": {
@@ -1032,7 +1231,11 @@
                   },
                   "stacked": {
                     "Type": "Bool",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   },
                   "style": {
                     "Type": "Map",
@@ -1040,7 +1243,11 @@
                   },
                   "type": {
                     "Type": "String",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "string",
+                      "Value": "line"
+                    }
                   }
                 }
               }
@@ -1081,7 +1288,11 @@
       },
       "read_only": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "template_variable": {
         "Type": "List",
@@ -1115,9 +1326,17 @@
       }
     },
     "datadog_user": {
+      "access_role": {
+        "Type": "String",
+        "Optional": true
+      },
       "disabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "email": {
         "Type": "String",
@@ -1130,7 +1349,11 @@
       "is_admin": {
         "Type": "Bool",
         "Optional": true,
-        "Deprecated": "This parameter will be replaced by `access_role` and will be removed from the next Major version"
+        "Deprecated": "This parameter will be replaced by `access_role` and will be removed from the next Major version",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",

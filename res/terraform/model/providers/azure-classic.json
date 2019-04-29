@@ -1,0 +1,619 @@
+{
+  ".schema_version": "1",
+  "name": "azure-classic",
+  "type": "provider",
+  "version": "v0.1.1",
+  "provider": {
+    "certificate": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "ENV(AZURE_CERTIFICATE)"
+    },
+    "publish_settings": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "ENV(AZURE_PUBLISH_SETTINGS)"
+    },
+    "settings_file": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "ENV(AZURE_SETTINGS_FILE)",
+      "Deprecated": "Use the publish_settings field instead"
+    },
+    "subscription_id": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "ENV(AZURE_SUBSCRIPTION_ID)"
+    }
+  },
+  "resources": {
+    "azure_affinity_group": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "label": {
+        "Type": "String",
+        "Required": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azure_data_disk": {
+      "caching": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "None"
+        }
+      },
+      "label": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "lun": {
+        "Type": "Int",
+        "Required": true
+      },
+      "media_link": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "size": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "source_media_link": {
+        "Type": "String",
+        "Optional": true
+      },
+      "storage_service_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "virtual_machine": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azure_dns_server": {
+      "dns_address": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Address of the DNS server. Required."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the resource to be created as it will appear in the Azure dashboard."
+      }
+    },
+    "azure_hosted_service": {
+      "default_certificate_thumbprint": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The thumbprint of the WinRM Certificate to be used as a default.",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Brief description of the resource. Optional."
+      },
+      "ephemeral_contents": {
+        "Type": "Bool",
+        "Required": true,
+        "Description": "Sets whether the associated contents of this resource should also be\ndeleted upon this resource's deletion. Default is false."
+      },
+      "label": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Label by which the resource will be identified by. Optional.",
+        "Default": {
+          "Type": "string",
+          "Value": "Made by Terraform."
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The Azure location where the resource will be located.\nA list of Azure locations can be found here: http://azure.microsoft.com/en-us/regions/"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the resource to be created as it will appear in the Azure dashboard."
+      },
+      "reverse_dns_fqdn": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The reverse of the fully qualified domain name. Optional."
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "url": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "azure_instance": {
+      "automatic_updates": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "custom_data": {
+        "Type": "String",
+        "Optional": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "domain_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "domain_ou": {
+        "Type": "String",
+        "Optional": true
+      },
+      "domain_password": {
+        "Type": "String",
+        "Optional": true
+      },
+      "domain_username": {
+        "Type": "String",
+        "Optional": true
+      },
+      "endpoint": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "private_port": {
+              "Type": "Int",
+              "Required": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "tcp"
+              }
+            },
+            "public_port": {
+              "Type": "Int",
+              "Required": true
+            }
+          }
+        }
+      },
+      "has_dedicated_service": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "hosted_service_name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "image": {
+        "Type": "String",
+        "Required": true
+      },
+      "ip_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "password": {
+        "Type": "String",
+        "Optional": true
+      },
+      "reverse_dns": {
+        "Type": "String",
+        "Optional": true
+      },
+      "security_group": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "size": {
+        "Type": "String",
+        "Required": true
+      },
+      "ssh_key_thumbprint": {
+        "Type": "String",
+        "Optional": true
+      },
+      "storage_service_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "subnet": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "time_zone": {
+        "Type": "String",
+        "Optional": true
+      },
+      "username": {
+        "Type": "String",
+        "Required": true
+      },
+      "vip_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "virtual_network": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "azure_local_network_connection": {
+      "address_space_prefixes": {
+        "Type": "List",
+        "Required": true,
+        "Description": "List of address space prefixes in the format '\u003cIP\u003e/netmask'",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the resource to be created as it will appear in the Azure dashboard."
+      },
+      "vpn_gateway_address": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The IP address of the VPN gateway bridged through this virtual network."
+      }
+    },
+    "azure_security_group": {
+      "label": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azure_security_group_rule": {
+      "action": {
+        "Type": "String",
+        "Required": true
+      },
+      "destination_address_prefix": {
+        "Type": "String",
+        "Required": true
+      },
+      "destination_port_range": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the resource to be created as it will appear in the Azure dashboard."
+      },
+      "priority": {
+        "Type": "Int",
+        "Required": true
+      },
+      "protocol": {
+        "Type": "String",
+        "Required": true
+      },
+      "security_group_names": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "source_address_prefix": {
+        "Type": "String",
+        "Required": true
+      },
+      "source_port_range": {
+        "Type": "String",
+        "Required": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azure_sql_database_server": {
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "password": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "username": {
+        "Type": "String",
+        "Required": true
+      },
+      "version": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "12.0"
+        }
+      }
+    },
+    "azure_sql_database_server_firewall_rule": {
+      "database_server_names": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "end_ip": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "start_ip": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azure_sql_database_service": {
+      "collation": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "database_server_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "edition": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "max_size_bytes": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "service_level_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "azure_storage_blob": {
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the resource to be created as it will appear in the Azure dashboard."
+      },
+      "size": {
+        "Type": "Int",
+        "Required": true,
+        "DefaultFunc": "UNKNOWN"
+      },
+      "storage_container_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "storage_service_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "azure_storage_container": {
+      "container_access_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the resource to be created as it will appear in the Azure dashboard."
+      },
+      "properties": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Value": "String"
+        }
+      },
+      "storage_service_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azure_storage_queue": {
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the resource to be created as it will appear in the Azure dashboard."
+      },
+      "storage_service_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "azure_storage_service": {
+      "account_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "affinity_group": {
+        "Type": "String",
+        "Optional": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Brief description of the resource. Optional."
+      },
+      "label": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Label by which the resource will be identified by. Optional.",
+        "Default": {
+          "Type": "string",
+          "Value": "Made by Terraform."
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The Azure location where the resource will be located.\nA list of Azure locations can be found here: http://azure.microsoft.com/en-us/regions/"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of the resource to be created as it will appear in the Azure dashboard."
+      },
+      "primary_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "properties": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Value": "String"
+        }
+      },
+      "secondary_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "url": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "azure_virtual_network": {
+      "address_space": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "dns_servers_names": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "subnet": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address_prefix": {
+              "Type": "String",
+              "Required": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "security_group": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "data-sources": {}
+}

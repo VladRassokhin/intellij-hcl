@@ -1,72 +1,53 @@
 {
+  ".schema_version": "1",
   "name": "azurestack",
   "type": "provider",
-  "version": "v0.4.0-54-gfc672946",
+  "version": "v0.6.0",
   "provider": {
     "arm_endpoint": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(ARM_ENDPOINT)"
     },
     "client_certificate_password": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(ARM_CLIENT_CERTIFICATE_PASSWORD)"
     },
     "client_certificate_path": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(ARM_CLIENT_CERTIFICATE_PATH)"
     },
     "client_id": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(ARM_CLIENT_ID)"
     },
     "client_secret": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(ARM_CLIENT_SECRET)"
     },
     "skip_credentials_validation": {
       "Type": "Bool",
       "Optional": true,
-      "Default": {
-        "Type": "bool",
-        "Value": "false"
-      }
+      "DefaultFunc": "ENV(ARM_SKIP_CREDENTIALS_VALIDATION)"
     },
     "skip_provider_registration": {
       "Type": "Bool",
       "Optional": true,
-      "Default": {
-        "Type": "bool",
-        "Value": "false"
-      }
+      "DefaultFunc": "ENV(ARM_SKIP_PROVIDER_REGISTRATION)"
     },
     "subscription_id": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(ARM_SUBSCRIPTION_ID)"
     },
     "tenant_id": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(ARM_TENANT_ID)"
     }
   },
   "resources": {
@@ -81,11 +62,19 @@
       },
       "platform_fault_domain_count": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "3"
+        }
       },
       "platform_update_domain_count": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "resource_group_name": {
         "Type": "String",
@@ -130,7 +119,7 @@
     },
     "azurestack_dns_zone": {
       "max_number_of_record_sets": {
-        "Type": "String",
+        "Type": "Int",
         "Computed": true
       },
       "name": {
@@ -146,7 +135,7 @@
         }
       },
       "number_of_record_sets": {
-        "Type": "String",
+        "Type": "Int",
         "Computed": true
       },
       "resource_group_name": {
@@ -354,7 +343,11 @@
     "azurestack_lb_probe": {
       "interval_in_seconds": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "15"
+        }
       },
       "load_balancer_rules": {
         "Type": "Set",
@@ -374,7 +367,11 @@
       },
       "number_of_probes": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "2"
+        }
       },
       "port": {
         "Type": "Int",
@@ -406,7 +403,11 @@
       },
       "enable_floating_ip": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "frontend_ip_configuration_id": {
         "Type": "String",
@@ -527,7 +528,11 @@
       },
       "enable_ip_forwarding": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "internal_dns_name_label": {
         "Type": "String",
@@ -793,7 +798,11 @@
       },
       "idle_timeout_in_minutes": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "4"
+        }
       },
       "ip_address": {
         "Type": "String",
@@ -924,11 +933,19 @@
     "azurestack_storage_account": {
       "account_encryption_source": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Microsoft.Storage"
+        }
       },
       "account_kind": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Storage"
+        }
       },
       "account_replication_type": {
         "Type": "String",
@@ -957,7 +974,11 @@
             },
             "use_subdomain": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -1048,7 +1069,11 @@
     "azurestack_storage_blob": {
       "attempts": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
       },
       "name": {
         "Type": "String",
@@ -1056,7 +1081,11 @@
       },
       "parallelism": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "8"
+        }
       },
       "resource_group_name": {
         "Type": "String",
@@ -1064,7 +1093,11 @@
       },
       "size": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "source": {
         "Type": "String",
@@ -1100,7 +1133,11 @@
     "azurestack_storage_container": {
       "container_access_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "private"
+        }
       },
       "name": {
         "Type": "String",
@@ -1217,11 +1254,19 @@
       },
       "delete_data_disks_on_termination": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "delete_os_disk_on_termination": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "identity": {
         "Type": "List",
@@ -1391,11 +1436,19 @@
             },
             "enable_automatic_upgrades": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "provision_vm_agent": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "winrm": {
               "Type": "List",
@@ -1837,7 +1890,11 @@
           "Info": {
             "disable_password_authentication": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "ssh_keys": {
               "Type": "List",
@@ -1951,7 +2008,11 @@
       },
       "overprovision": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "plan": {
         "Type": "Set",
@@ -1977,7 +2038,11 @@
       },
       "priority": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Regular"
+        }
       },
       "resource_group_name": {
         "Type": "String",
@@ -1985,7 +2050,11 @@
       },
       "single_placement_group": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "sku": {
         "Type": "Set",
@@ -2217,11 +2286,19 @@
           "Info": {
             "name": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "vnetGatewayConfig"
+              }
             },
             "private_ip_address_allocation": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "Dynamic"
+              }
             },
             "public_ip_address_id": {
               "Type": "String",
@@ -2322,7 +2399,11 @@
       },
       "vpn_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "RouteBased"
+        }
       }
     },
     "azurestack_virtual_network_gateway_connection": {

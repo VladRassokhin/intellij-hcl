@@ -1,37 +1,28 @@
 {
+  ".schema_version": "1",
   "name": "influxdb",
   "type": "provider",
-  "version": "v1.0.2-1-g8b04bdd",
+  "version": "v1.1.0",
   "provider": {
     "password": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(INFLUXDB_PASSWORD)"
     },
     "skip_ssl_verify": {
       "Type": "Bool",
       "Optional": true,
-      "Default": {
-        "Type": "string",
-        "Value": "0"
-      }
+      "DefaultFunc": "ENV(INFLUXDB_SKIP_SSL_VERIFY)"
     },
     "url": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string",
-        "Value": "http://localhost:8086/"
-      }
+      "DefaultFunc": "ENV(INFLUXDB_URL)"
     },
     "username": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(INFLUXDB_USERNAME)"
     }
   },
   "resources": {
@@ -62,7 +53,11 @@
           "Info": {
             "default": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "duration": {
               "Type": "String",
@@ -74,7 +69,11 @@
             },
             "replication": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "1"
+              }
             }
           }
         }

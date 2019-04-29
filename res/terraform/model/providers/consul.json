@@ -1,29 +1,28 @@
 {
+  ".schema_version": "1",
   "name": "consul",
   "type": "provider",
-  "version": "v2.2.0-5-g53c97f4",
+  "version": "v2.3.0",
   "provider": {
     "address": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string",
-        "Value": "localhost:8500"
-      }
+      "DefaultFunc": "MENV(CONSUL_ADDRESS,CONSUL_HTTP_ADDR)"
     },
     "ca_file": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(CONSUL_CA_FILE)"
+    },
+    "ca_path": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "ENV(CONSUL_CAPATH)"
     },
     "cert_file": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(CONSUL_CERT_FILE)"
     },
     "datacenter": {
       "Type": "String",
@@ -32,38 +31,84 @@
     "http_auth": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(CONSUL_HTTP_AUTH)"
     },
     "insecure_https": {
       "Type": "Bool",
-      "Optional": true
+      "Optional": true,
+      "Default": {
+        "Type": "bool",
+        "Value": "false"
+      }
     },
     "key_file": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(CONSUL_KEY_FILE)"
     },
     "scheme": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string",
-        "Value": "http"
-      }
+      "DefaultFunc": "MENV(CONSUL_SCHEME,CONSUL_HTTP_SCHEME)"
     },
     "token": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(CONSUL_TOKEN,CONSUL_HTTP_TOKEN)"
     }
   },
   "resources": {
+    "consul_acl_policy": {
+      "datacenters": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "The ACL policy datacenters.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ACL policy description."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ACL policy name."
+      },
+      "rules": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ACL policy rules."
+      }
+    },
+    "consul_acl_token": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The token description."
+      },
+      "local": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Flag to set the token local to the current datacenter.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "policies": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "List of policies.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "consul_agent_service": {
       "address": {
         "Type": "String",
@@ -84,6 +129,66 @@
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
+        }
+      }
+    },
+    "consul_autopilot_config": {
+      "cleanup_dead_servers": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "datacenter": {
+        "Type": "String",
+        "Optional": true
+      },
+      "disable_upgrade_migration": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "last_contact_threshold": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "200ms"
+        }
+      },
+      "max_trailing_logs": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "250"
+        }
+      },
+      "redundancy_zone_tag": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
+      },
+      "server_stabilization_time": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "10s"
+        }
+      },
+      "upgrade_version_tag": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
         }
       }
     },
@@ -176,9 +281,34 @@
         "Type": "String",
         "Required": true
       },
+      "subkey": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "flags": {
+              "Type": "Int",
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "0"
+              }
+            },
+            "path": {
+              "Type": "String",
+              "Required": true
+            },
+            "value": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
       "subkeys": {
         "Type": "Map",
-        "Required": true,
+        "Optional": true,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -207,7 +337,19 @@
             },
             "delete": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "flags": {
+              "Type": "Int",
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "0"
+              }
             },
             "name": {
               "Type": "String",
@@ -360,10 +502,108 @@
         "Optional": true,
         "Computed": true
       },
+      "check": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "check_id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "deregister_critical_service_after": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "30s"
+              }
+            },
+            "header": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "value": {
+                    "Type": "List",
+                    "Required": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "http": {
+              "Type": "String",
+              "Optional": true
+            },
+            "interval": {
+              "Type": "String",
+              "Required": true
+            },
+            "method": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "GET"
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "notes": {
+              "Type": "String",
+              "Optional": true
+            },
+            "status": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "critical"
+              }
+            },
+            "tcp": {
+              "Type": "String",
+              "Optional": true
+            },
+            "timeout": {
+              "Type": "String",
+              "Required": true
+            },
+            "tls_skip_verify": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            }
+          }
+        }
+      },
       "datacenter": {
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "external": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -1009,6 +1249,77 @@
         "Computed": true
       }
     },
+    "consul_autopilot_health": {
+      "datacenter": {
+        "Type": "String",
+        "Optional": true
+      },
+      "failure_tolerance": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "healthy": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "servers": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address": {
+              "Type": "String",
+              "Computed": true
+            },
+            "healthy": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "last_contact": {
+              "Type": "String",
+              "Computed": true
+            },
+            "last_index": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "last_term": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "leader": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "serf_status": {
+              "Type": "String",
+              "Computed": true
+            },
+            "stable_since": {
+              "Type": "String",
+              "Computed": true
+            },
+            "version": {
+              "Type": "String",
+              "Computed": true
+            },
+            "voter": {
+              "Type": "Bool",
+              "Computed": true
+            }
+          }
+        }
+      }
+    },
     "consul_catalog_nodes": {
       "datacenter": {
         "Type": "String",
@@ -1080,7 +1391,11 @@
           "Info": {
             "allow_stale": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "datacenter": {
               "Type": "String",
@@ -1096,7 +1411,11 @@
             },
             "require_consistent": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "token": {
               "Type": "String",
@@ -1131,7 +1450,11 @@
           "Info": {
             "allow_stale": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "datacenter": {
               "Type": "String",
@@ -1147,7 +1470,11 @@
             },
             "require_consistent": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "token": {
               "Type": "String",
@@ -1268,7 +1595,11 @@
           "Info": {
             "allow_stale": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "datacenter": {
               "Type": "String",
@@ -1284,7 +1615,11 @@
             },
             "require_consistent": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "token": {
               "Type": "String",
@@ -1474,7 +1809,11 @@
           "Info": {
             "allow_stale": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "datacenter": {
               "Type": "String",
@@ -1490,7 +1829,11 @@
             },
             "require_consistent": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "token": {
               "Type": "String",
@@ -1525,7 +1868,11 @@
           "Info": {
             "allow_stale": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "datacenter": {
               "Type": "String",
@@ -1541,7 +1888,11 @@
             },
             "require_consistent": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "token": {
               "Type": "String",
@@ -1662,7 +2013,11 @@
           "Info": {
             "allow_stale": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "datacenter": {
               "Type": "String",
@@ -1678,7 +2033,11 @@
             },
             "require_consistent": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "token": {
               "Type": "String",

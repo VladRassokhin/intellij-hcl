@@ -1,15 +1,73 @@
 {
+  ".schema_version": "1",
   "name": "packet",
   "type": "provider",
-  "version": "v1.2.5-9-ge92a9c0",
+  "version": "v2.0.0",
   "provider": {
     "auth_token": {
       "Type": "String",
       "Required": true,
-      "Description": "The API auth key for API operations."
+      "Description": "The API auth key for API operations.",
+      "DefaultFunc": "ENV(PACKET_AUTH_TOKEN)"
     }
   },
   "resources": {
+    "packet_bgp_session": {
+      "address_family": {
+        "Type": "String",
+        "Required": true
+      },
+      "default_route": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "device_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "packet_connect": {
+      "facility": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "port_speed": {
+        "Type": "Int",
+        "Required": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "provider_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "provider_payload": {
+        "Type": "String",
+        "Required": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "vxlan": {
+        "Type": "Int",
+        "Required": true
+      }
+    },
     "packet_device": {
       "access_private_ipv4": {
         "Type": "String",
@@ -25,7 +83,11 @@
       },
       "always_pxe": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "billing_cycle": {
         "Type": "String",
@@ -35,13 +97,27 @@
         "Type": "String",
         "Computed": true
       },
+      "deployed_facility": {
+        "Type": "String",
+        "Computed": true
+      },
       "description": {
         "Type": "String",
         "Optional": true
       },
+      "facilities": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "facility": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Removed": "Use the \"facilities\" array instead, i.e. change \n  facility = \"ewr1\"\nto \n  facilities = [\"ewr1\"]"
       },
       "hardware_reservation_id": {
         "Type": "String",
@@ -89,6 +165,10 @@
           }
         }
       },
+      "network_type": {
+        "Type": "String",
+        "Optional": true
+      },
       "operating_system": {
         "Type": "String",
         "Required": true
@@ -97,9 +177,46 @@
         "Type": "String",
         "Required": true
       },
+      "ports": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "bonded": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "mac": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "project_id": {
         "Type": "String",
         "Required": true
+      },
+      "project_ssh_key_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "public_ipv4_subnet_size": {
         "Type": "Int",
@@ -109,6 +226,14 @@
       "root_password": {
         "Type": "String",
         "Computed": true
+      },
+      "ssh_key_ids": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "state": {
         "Type": "String",
@@ -158,6 +283,10 @@
       },
       "gateway": {
         "Type": "String",
+        "Computed": true
+      },
+      "global": {
+        "Type": "Bool",
         "Computed": true
       },
       "manageable": {
@@ -211,7 +340,83 @@
         "Optional": true
       }
     },
+    "packet_port_vlan_attachment": {
+      "device_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "force_bond": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "native": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "port_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "port_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "vlan_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "vlan_vnid": {
+        "Type": "Int",
+        "Required": true
+      }
+    },
     "packet_project": {
+      "backend_transfer": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "bgp_config": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "asn": {
+              "Type": "Int",
+              "Required": true
+            },
+            "deployment_type": {
+              "Type": "String",
+              "Required": true
+            },
+            "max_prefix": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "md5": {
+              "Type": "String",
+              "Optional": true
+            },
+            "status": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "created": {
         "Type": "String",
         "Computed": true
@@ -229,6 +434,32 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "updated": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "packet_project_ssh_key": {
+      "created": {
+        "Type": "String",
+        "Computed": true
+      },
+      "fingerprint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "public_key": {
+        "Type": "String",
+        "Required": true
       },
       "updated": {
         "Type": "String",
@@ -254,10 +485,14 @@
       },
       "facility": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "gateway": {
         "Type": "String",
+        "Computed": true
+      },
+      "global": {
+        "Type": "Bool",
         "Computed": true
       },
       "manageable": {
@@ -287,6 +522,14 @@
       "quantity": {
         "Type": "Int",
         "Required": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "public_ipv4"
+        }
       }
     },
     "packet_spot_market_request": {
@@ -414,6 +657,24 @@
       },
       "updated": {
         "Type": "String",
+        "Computed": true
+      }
+    },
+    "packet_vlan": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "facility": {
+        "Type": "String",
+        "Required": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "vxlan": {
+        "Type": "Int",
         "Computed": true
       }
     },
@@ -547,11 +808,19 @@
       },
       "facility": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "gateway": {
         "Type": "String",
         "Computed": true
+      },
+      "global": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "manageable": {
         "Type": "Bool",

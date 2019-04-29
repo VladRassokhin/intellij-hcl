@@ -1,7 +1,8 @@
 {
+  ".schema_version": "1",
   "name": "dns",
   "type": "provider",
-  "version": "v2.0.0-12-g78cc5f9",
+  "version": "v2.1.0",
   "provider": {
     "update": {
       "Type": "List",
@@ -12,27 +13,43 @@
         "Info": {
           "key_algorithm": {
             "Type": "String",
-            "Optional": true
+            "Optional": true,
+            "DefaultFunc": "ENV(DNS_UPDATE_KEYALGORITHM)"
           },
           "key_name": {
             "Type": "String",
-            "Optional": true
+            "Optional": true,
+            "DefaultFunc": "ENV(DNS_UPDATE_KEYNAME)"
           },
           "key_secret": {
             "Type": "String",
-            "Optional": true
+            "Optional": true,
+            "DefaultFunc": "ENV(DNS_UPDATE_KEYSECRET)"
           },
           "port": {
             "Type": "Int",
             "Optional": true,
-            "Default": {
-              "Type": "int",
-              "Value": "53"
-            }
+            "DefaultFunc": "UNKNOWN"
+          },
+          "retries": {
+            "Type": "Int",
+            "Optional": true,
+            "DefaultFunc": "UNKNOWN"
           },
           "server": {
             "Type": "String",
-            "Required": true
+            "Required": true,
+            "DefaultFunc": "ENV(DNS_UPDATE_SERVER)"
+          },
+          "timeout": {
+            "Type": "String",
+            "Optional": true,
+            "DefaultFunc": "ENV(DNS_UPDATE_TIMEOUT)"
+          },
+          "transport": {
+            "Type": "String",
+            "Optional": true,
+            "DefaultFunc": "ENV(DNS_UPDATE_TRANSPORT)"
           }
         }
       }
@@ -50,11 +67,15 @@
       },
       "name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "3600"
+        }
       },
       "zone": {
         "Type": "String",
@@ -72,11 +93,15 @@
       },
       "name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "3600"
+        }
       },
       "zone": {
         "Type": "String",
@@ -94,7 +119,46 @@
       },
       "ttl": {
         "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "3600"
+        }
+      },
+      "zone": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "dns_mx_record_set": {
+      "mx": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "exchange": {
+              "Type": "String",
+              "Required": true
+            },
+            "preference": {
+              "Type": "Int",
+              "Required": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
         "Optional": true
+      },
+      "ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "3600"
+        }
       },
       "zone": {
         "Type": "String",
@@ -116,7 +180,11 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "3600"
+        }
       },
       "zone": {
         "Type": "String",
@@ -126,7 +194,7 @@
     "dns_ptr_record": {
       "name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "ptr": {
         "Type": "String",
@@ -134,7 +202,37 @@
       },
       "ttl": {
         "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "3600"
+        }
+      },
+      "zone": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "dns_txt_record_set": {
+      "name": {
+        "Type": "String",
         "Optional": true
+      },
+      "ttl": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "3600"
+        }
+      },
+      "txt": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "zone": {
         "Type": "String",
@@ -179,6 +277,29 @@
       "host": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "dns_mx_record_set": {
+      "domain": {
+        "Type": "String",
+        "Required": true
+      },
+      "mx": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "exchange": {
+              "Type": "String",
+              "Computed": true
+            },
+            "preference": {
+              "Type": "Int",
+              "Computed": true
+            }
+          }
+        }
       }
     },
     "dns_ns_record_set": {

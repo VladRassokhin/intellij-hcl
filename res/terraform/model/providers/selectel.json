@@ -1,21 +1,113 @@
 {
-  "name": "selvpc",
+  ".schema_version": "1",
+  "name": "selectel",
   "type": "provider",
-  "version": "v1.0.0-15-g422e2da",
+  "version": "v2.1.0",
   "provider": {
     "endpoint": {
       "Type": "String",
       "Optional": true,
-      "Description": "Base endpoint to work with the Selectel VPC API."
+      "Description": "Base endpoint to work with the Selectel API.",
+      "DefaultFunc": "ENV(SEL_ENDPOINT)"
     },
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "Token to authorize with the Selectel VPC API."
+      "Description": "Token to authorize with the Selectel API.",
+      "DefaultFunc": "ENV(SEL_TOKEN)"
     }
   },
   "resources": {
-    "selvpc_resell_floatingip_v2": {
+    "selectel_vpc_crossregion_subnet_v2": {
+      "cidr": {
+        "Type": "String",
+        "Required": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "regions": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "region": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "servers": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "status": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "subnets": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cidr": {
+              "Type": "String",
+              "Computed": true
+            },
+            "network_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "project_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "region": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnet_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vlan_id": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "vtep_ip_address": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "vlan_id": {
+        "Type": "Int",
+        "Computed": true
+      }
+    },
+    "selectel_vpc_floatingip_v2": {
       "fixed_ip_address": {
         "Type": "String",
         "Computed": true
@@ -62,7 +154,7 @@
         "Computed": true
       }
     },
-    "selvpc_resell_keypair_v2": {
+    "selectel_vpc_keypair_v2": {
       "name": {
         "Type": "String",
         "Required": true
@@ -84,7 +176,7 @@
         "Required": true
       }
     },
-    "selvpc_resell_license_v2": {
+    "selectel_vpc_license_v2": {
       "project_id": {
         "Type": "String",
         "Required": true
@@ -123,7 +215,7 @@
         "Required": true
       }
     },
-    "selvpc_resell_project_v2": {
+    "selectel_vpc_project_v2": {
       "all_quotas": {
         "Type": "Set",
         "Computed": true,
@@ -234,7 +326,7 @@
         "Computed": true
       }
     },
-    "selvpc_resell_role_v2": {
+    "selectel_vpc_role_v2": {
       "project_id": {
         "Type": "String",
         "Required": true
@@ -244,14 +336,18 @@
         "Required": true
       }
     },
-    "selvpc_resell_subnet_v2": {
+    "selectel_vpc_subnet_v2": {
       "cidr": {
         "Type": "String",
         "Computed": true
       },
       "ip_version": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "selvpcclient.IPVersion",
+          "Value": "ipv4"
+        }
       },
       "network_id": {
         "Type": "String",
@@ -259,7 +355,11 @@
       },
       "prefix_length": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "29"
+        }
       },
       "project_id": {
         "Type": "String",
@@ -299,7 +399,7 @@
         "Computed": true
       }
     },
-    "selvpc_resell_token_v2": {
+    "selectel_vpc_token_v2": {
       "account_name": {
         "Type": "String",
         "Optional": true,
@@ -315,10 +415,14 @@
         ]
       }
     },
-    "selvpc_resell_user_v2": {
+    "selectel_vpc_user_v2": {
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -329,14 +433,18 @@
         "Required": true
       }
     },
-    "selvpc_resell_vrrp_subnet_v2": {
+    "selectel_vpc_vrrp_subnet_v2": {
       "cidr": {
         "Type": "String",
         "Computed": true
       },
       "ip_version": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "selvpcclient.IPVersion",
+          "Value": "ipv4"
+        }
       },
       "master_region": {
         "Type": "String",
@@ -344,7 +452,11 @@
       },
       "prefix_length": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "29"
+        }
       },
       "project_id": {
         "Type": "String",
@@ -385,7 +497,15 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "cidr": {
+              "Type": "String",
+              "Computed": true
+            },
             "network_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "project_id": {
               "Type": "String",
               "Computed": true
             },
@@ -394,6 +514,14 @@
               "Computed": true
             },
             "subnet_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vlan_id": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "vtep_ip_address": {
               "Type": "String",
               "Computed": true
             }

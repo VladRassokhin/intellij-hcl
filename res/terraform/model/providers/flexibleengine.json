@@ -1,147 +1,115 @@
 {
+  ".schema_version": "1",
   "name": "flexibleengine",
   "type": "provider",
-  "version": "v1.2.1-31-g0c55ba3",
+  "version": "v1.4.0",
   "provider": {
     "access_key": {
       "Type": "String",
       "Optional": true,
       "Description": "The access key for API operations. You can retrieve this\nfrom the 'My Credential' section of the console.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_ACCESS_KEY)"
     },
     "auth_url": {
       "Type": "String",
       "Required": true,
-      "Description": "The Identity authentication URL."
+      "Description": "The Identity authentication URL.",
+      "DefaultFunc": "ENV(OS_AUTH_URL)"
     },
     "cacert_file": {
       "Type": "String",
       "Optional": true,
       "Description": "A Custom CA certificate.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_CACERT)"
     },
     "cert": {
       "Type": "String",
       "Optional": true,
       "Description": "A client certificate to authenticate with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_CERT)"
     },
     "domain_id": {
       "Type": "String",
       "Optional": true,
       "Description": "The ID of the Domain to scope to (Identity v3).",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(OS_USER_DOMAIN_ID,OS_PROJECT_DOMAIN_ID,OS_DOMAIN_ID)"
     },
     "domain_name": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of the Domain to scope to (Identity v3).",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(OS_USER_DOMAIN_NAME,OS_PROJECT_DOMAIN_NAME,OS_DOMAIN_NAME,OS_DEFAULT_DOMAIN)"
     },
     "endpoint_type": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_ENDPOINT_TYPE)"
     },
     "insecure": {
       "Type": "Bool",
       "Optional": true,
       "Description": "Trust self-signed certificates.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_INSECURE)"
     },
     "key": {
       "Type": "String",
       "Optional": true,
       "Description": "A client private key to authenticate with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_KEY)"
     },
     "password": {
       "Type": "String",
       "Optional": true,
       "Description": "Password to login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_PASSWORD)"
     },
     "region": {
       "Type": "String",
       "Optional": true,
       "Description": "The FlexibleEngine region to connect to.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_REGION_NAME)"
     },
     "secret_key": {
       "Type": "String",
       "Optional": true,
       "Description": "The secret key for API operations. You can retrieve this\nfrom the 'My Credential' section of the console.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_SECRET_KEY)"
     },
     "swauth": {
       "Type": "Bool",
       "Optional": true,
       "Description": "Use Swift's authentication system instead of Keystone. Only used for\ninteraction with Swift.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_SWAUTH)"
     },
     "tenant_id": {
       "Type": "String",
       "Optional": true,
       "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(OS_TENANT_ID,OS_PROJECT_ID)"
     },
     "tenant_name": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(OS_TENANT_NAME,OS_PROJECT_NAME)"
     },
     "token": {
       "Type": "String",
       "Optional": true,
       "Description": "Authentication token to use as an alternative to username/password.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_AUTH_TOKEN)"
     },
     "user_id": {
       "Type": "String",
       "Optional": true,
       "Description": "Username to login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_USER_ID)"
     },
     "user_name": {
       "Type": "String",
       "Optional": true,
       "Description": "Username to login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_USERNAME)"
     }
   },
   "resources": {
@@ -212,7 +180,8 @@
             },
             "flavor": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "DefaultFunc": "ENV(OS_FLAVOR_NAME)"
             },
             "image": {
               "Type": "String",
@@ -327,16 +296,28 @@
       "cool_down_time": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The cooling duration, in seconds."
+        "Description": "The cooling duration, in seconds.",
+        "Default": {
+          "Type": "int",
+          "Value": "900"
+        }
       },
       "delete_instances": {
         "Type": "String",
         "Optional": true,
-        "Description": "Whether to delete instances when they are removed from the AS group."
+        "Description": "Whether to delete instances when they are removed from the AS group.",
+        "Default": {
+          "Type": "string",
+          "Value": "no"
+        }
       },
       "delete_publicip": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "desire_instance_number": {
         "Type": "Int",
@@ -344,16 +325,28 @@
       },
       "health_periodic_audit_method": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "NOVA_AUDIT"
+        }
       },
       "health_periodic_audit_time": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The health check period for instances, in minutes."
+        "Description": "The health check period for instances, in minutes.",
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "instance_terminate_policy": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "OLD_CONFIG_OLD_INSTANCE"
+        }
       },
       "instances": {
         "Type": "List",
@@ -371,11 +364,19 @@
       },
       "max_instance_number": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "min_instance_number": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "networks": {
         "Type": "List",
@@ -438,7 +439,11 @@
       },
       "cool_down_time": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "900"
+        }
       },
       "region": {
         "Type": "String",
@@ -458,7 +463,11 @@
           "Info": {
             "instance_number": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "1"
+              }
             },
             "operation": {
               "Type": "String",
@@ -500,7 +509,11 @@
             },
             "start_time": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "2019-04-29T14:52Z"
+              }
             }
           }
         }
@@ -539,7 +552,11 @@
       },
       "cascade": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "consistency_group_id": {
         "Type": "String",
@@ -589,6 +606,250 @@
         "Computed": true
       }
     },
+    "flexibleengine_cce_cluster_v3": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "annotations": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "billing_mode": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "cluster_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "cluster_version": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "container_network_cidr": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "container_network_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "extend_param": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "external": {
+        "Type": "String",
+        "Computed": true
+      },
+      "external_otc": {
+        "Type": "String",
+        "Computed": true
+      },
+      "flavor_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "highway_subnet_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "internal": {
+        "Type": "String",
+        "Computed": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "subnet_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "flexibleengine_cce_node_v3": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "annotations": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true
+      },
+      "availability_zone": {
+        "Type": "String",
+        "Required": true
+      },
+      "bandwidth_charge_mode": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "bandwidth_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "billing_mode": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "cluster_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "data_volumes": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "extend_param": {
+              "Type": "String",
+              "Optional": true
+            },
+            "size": {
+              "Type": "Int",
+              "Required": true
+            },
+            "volumetype": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "ecs_performance_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "eip_count": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "eip_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "extend_param_charging_mode": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "flavor_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "iptype": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "key_pair": {
+        "Type": "String",
+        "Required": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "max_pods": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "order_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "product_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "public_key": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "root_volume": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "extend_param": {
+              "Type": "String",
+              "Optional": true
+            },
+            "size": {
+              "Type": "Int",
+              "Required": true
+            },
+            "volumetype": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "sharetype": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "flexibleengine_ces_alarmrule": {
       "__timeouts__": [
         "create",
@@ -597,7 +858,11 @@
       ],
       "alarm_action_enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "alarm_actions": {
         "Type": "List",
@@ -627,7 +892,11 @@
       },
       "alarm_enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "alarm_name": {
         "Type": "String",
@@ -793,7 +1062,11 @@
             },
             "delete_on_termination": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "destination_type": {
               "Type": "String",
@@ -833,12 +1106,14 @@
       "flavor_id": {
         "Type": "String",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "DefaultFunc": "ENV(OS_BMS_FLAVOR_NAME)"
       },
       "flavor_name": {
         "Type": "String",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "DefaultFunc": "ENV(OS_BMS_FLAVOR_NAME)"
       },
       "host_id": {
         "Type": "String",
@@ -884,7 +1159,11 @@
           "Info": {
             "access_network": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "fixed_ip_v4": {
               "Type": "String",
@@ -934,7 +1213,11 @@
       },
       "stop_before_destroy": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "tenant_id": {
         "Type": "String",
@@ -983,7 +1266,8 @@
       },
       "pool": {
         "Type": "String",
-        "Required": true
+        "Required": true,
+        "DefaultFunc": "ENV(OS_POOL_NAME)"
       },
       "region": {
         "Type": "String",
@@ -1032,7 +1316,11 @@
             },
             "delete_on_termination": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "destination_type": {
               "Type": "String",
@@ -1072,12 +1360,14 @@
       "flavor_id": {
         "Type": "String",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "DefaultFunc": "ENV(OS_FLAVOR_ID)"
       },
       "flavor_name": {
         "Type": "String",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "DefaultFunc": "ENV(OS_FLAVOR_NAME)"
       },
       "floating_ip": {
         "Type": "String",
@@ -1115,7 +1405,11 @@
           "Info": {
             "access_network": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "fixed_ip_v4": {
               "Type": "String",
@@ -1233,7 +1527,11 @@
       },
       "stop_before_destroy": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "user_data": {
         "Type": "String",
@@ -1357,7 +1655,11 @@
       },
       "provider_id": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "fc4d5750-22e7-4798-8a46-f48f62c4c1da"
+        }
       },
       "region": {
         "Type": "String",
@@ -1398,7 +1700,11 @@
             },
             "enabled": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "id": {
               "Type": "String",
@@ -1480,7 +1786,11 @@
       },
       "resource_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "OS::Nova::Server"
+        }
       },
       "status": {
         "Type": "String",
@@ -1766,7 +2076,7 @@
         "Required": true
       },
       "records": {
-        "Type": "List",
+        "Type": "Set",
         "Required": true,
         "MinItems": 1,
         "Elem": {
@@ -1781,7 +2091,11 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
       },
       "type": {
         "Type": "String",
@@ -1846,7 +2160,11 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "300"
+        }
       },
       "value_specs": {
         "Type": "Map",
@@ -1854,7 +2172,11 @@
       },
       "zone_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "public"
+        }
       }
     },
     "flexibleengine_drs_replication_v2": {
@@ -1896,7 +2218,11 @@
       },
       "replication_model": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "hypermetro"
+        }
       },
       "replication_status": {
         "Type": "String",
@@ -1954,7 +2280,11 @@
       },
       "replication_model": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "hypermetro"
+        }
       },
       "replication_status": {
         "Type": "String",
@@ -2265,7 +2595,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "az": {
         "Type": "String",
@@ -2324,7 +2658,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "description": {
         "Type": "String",
@@ -2372,7 +2710,11 @@
       ],
       "audited": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "description": {
         "Type": "String",
@@ -2428,11 +2770,19 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "ip_version": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "4"
+        }
       },
       "name": {
         "Type": "String",
@@ -2490,7 +2840,11 @@
       },
       "image_cache_path": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "/home/vlad/.terraform/image_cache"
+        }
       },
       "image_source_url": {
         "Type": "String",
@@ -2512,11 +2866,19 @@
       },
       "min_disk_gb": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "min_ram_mb": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "name": {
         "Type": "String",
@@ -2528,7 +2890,11 @@
       },
       "protected": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "region": {
         "Type": "String",
@@ -2561,7 +2927,11 @@
       },
       "visibility": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "private"
+        }
       }
     },
     "flexibleengine_lb_certificate_v2": {
@@ -2612,7 +2982,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "default_pool_id": {
         "Type": "String",
@@ -2676,7 +3050,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "description": {
         "Type": "String",
@@ -2740,7 +3118,11 @@
       },
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "id": {
         "Type": "String",
@@ -2787,7 +3169,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "delay": {
         "Type": "Int",
@@ -2852,7 +3238,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "description": {
         "Type": "String",
@@ -3473,7 +3863,8 @@
       },
       "pool": {
         "Type": "String",
-        "Required": true
+        "Required": true,
+        "DefaultFunc": "ENV(OS_POOL_NAME)"
       },
       "port_id": {
         "Type": "String",
@@ -3855,7 +4246,11 @@
       },
       "enable_dhcp": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "gateway_ip": {
         "Type": "String",
@@ -3881,7 +4276,11 @@
       },
       "ip_version": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "4"
+        }
       },
       "name": {
         "Type": "String",
@@ -4255,7 +4654,11 @@
     "flexibleengine_s3_bucket": {
       "acl": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "private"
+        }
       },
       "arn": {
         "Type": "String",
@@ -4325,7 +4728,11 @@
       },
       "force_destroy": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "hosted_zone_id": {
         "Type": "String",
@@ -4428,11 +4835,19 @@
           "Info": {
             "enabled": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "mfa_delete": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -4481,7 +4896,11 @@
     "flexibleengine_s3_bucket_object": {
       "acl": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "private"
+        }
       },
       "bucket": {
         "Type": "String",
@@ -4574,7 +4993,11 @@
       },
       "access_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "cert"
+        }
       },
       "availability_zone": {
         "Type": "String",
@@ -4617,7 +5040,11 @@
       },
       "share_proto": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "NFS"
+        }
       },
       "size": {
         "Type": "Int",
@@ -4969,7 +5396,11 @@
       },
       "dhcp_enable": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "dns_list": {
         "Type": "Set",
@@ -5041,6 +5472,189 @@
     }
   },
   "data-sources": {
+    "flexibleengine_cce_cluster_v3": {
+      "billing_mode": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "cluster_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "cluster_version": {
+        "Type": "String",
+        "Computed": true
+      },
+      "container_network_cidr": {
+        "Type": "String",
+        "Computed": true
+      },
+      "container_network_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "external": {
+        "Type": "String",
+        "Computed": true
+      },
+      "external_otc": {
+        "Type": "String",
+        "Computed": true
+      },
+      "flavor_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "highway_subnet_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "internal": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true
+      },
+      "subnet_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "flexibleengine_cce_node_v3": {
+      "availability_zone": {
+        "Type": "String",
+        "Computed": true
+      },
+      "bandwidth_size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "billing_mode": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "charge_mode": {
+        "Type": "String",
+        "Computed": true
+      },
+      "cluster_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "data_volumes": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "disk_size": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "volume_type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "disk_size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "eip_count": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "eip_ids": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "extend_param": {
+        "Type": "String",
+        "Computed": true
+      },
+      "flavor_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ip_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "key_pair": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "node_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "private_ip": {
+        "Type": "String",
+        "Computed": true
+      },
+      "public_ip": {
+        "Type": "String",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "server_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "share_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "spec_extend_param": {
+        "Type": "String",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true
+      },
+      "volume_type": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "flexibleengine_compute_bms_flavors_v2": {
       "disk": {
         "Type": "Int",
@@ -5077,11 +5691,19 @@
       },
       "sort_dir": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "asc"
+        }
       },
       "sort_key": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "id"
+        }
       },
       "swap": {
         "Type": "Int",
@@ -5679,7 +6301,11 @@
       },
       "most_recent": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -5716,11 +6342,19 @@
       },
       "sort_direction": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "asc"
+        }
       },
       "sort_key": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "name"
+        }
       },
       "tag": {
         "Type": "String",
@@ -5765,9 +6399,7 @@
         "Type": "String",
         "Optional": true,
         "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
-        "Default": {
-          "Type": "string"
-        }
+        "DefaultFunc": "MENV(OS_TENANT_ID,OS_PROJECT_ID)"
       }
     },
     "flexibleengine_networking_secgroup_v2": {

@@ -1,7 +1,8 @@
 {
+  ".schema_version": "1",
   "name": "chef",
   "type": "provider",
-  "version": "v0.1.0-21-g61b906f",
+  "version": "v0.1.0",
   "provider": {
     "allow_unverified_ssl": {
       "Type": "Bool",
@@ -11,25 +12,26 @@
     "client_name": {
       "Type": "String",
       "Required": true,
-      "Description": "Name of a registered client within the Chef server."
+      "Description": "Name of a registered client within the Chef server.",
+      "DefaultFunc": "ENV(CHEF_CLIENT_NAME)"
     },
     "key_material": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(CHEF_KEY_MATERIAL)"
     },
     "private_key_pem": {
       "Type": "String",
       "Optional": true,
       "Description": "PEM-formatted private key for client authentication.",
+      "DefaultFunc": "UNKNOWN",
       "Deprecated": "Please use key_material instead"
     },
     "server_url": {
       "Type": "String",
       "Required": true,
-      "Description": "URL of the root of the target Chef server or organization."
+      "Description": "URL of the root of the target Chef server or organization.",
+      "DefaultFunc": "ENV(CHEF_SERVER_URL)"
     }
   },
   "resources": {
@@ -68,11 +70,19 @@
       },
       "default_attributes_json": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "{}"
+        }
       },
       "description": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Managed by Terraform"
+        }
       },
       "name": {
         "Type": "String",
@@ -80,21 +90,37 @@
       },
       "override_attributes_json": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "{}"
+        }
       }
     },
     "chef_node": {
       "automatic_attributes_json": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "{}"
+        }
       },
       "default_attributes_json": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "{}"
+        }
       },
       "environment_name": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "_default"
+        }
       },
       "name": {
         "Type": "String",
@@ -102,11 +128,19 @@
       },
       "normal_attributes_json": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "{}"
+        }
       },
       "override_attributes_json": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "{}"
+        }
       },
       "run_list": {
         "Type": "List",
@@ -120,11 +154,19 @@
     "chef_role": {
       "default_attributes_json": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "{}"
+        }
       },
       "description": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Managed by Terraform"
+        }
       },
       "name": {
         "Type": "String",
@@ -132,7 +174,11 @@
       },
       "override_attributes_json": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "{}"
+        }
       },
       "run_list": {
         "Type": "List",

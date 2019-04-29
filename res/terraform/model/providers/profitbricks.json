@@ -1,30 +1,51 @@
 {
+  ".schema_version": "1",
   "name": "profitbricks",
   "type": "provider",
-  "version": "v1.4.0-1-gf0382c4",
+  "version": "v1.4.4",
   "provider": {
     "endpoint": {
       "Type": "String",
       "Optional": true,
       "Description": "ProfitBricks REST API URL.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(PROFITBRICKS_API_URL)"
     },
     "password": {
       "Type": "String",
-      "Required": true,
-      "Description": "ProfitBricks password for API operations."
+      "Optional": true,
+      "Description": "ProfitBricks password for API operations. If token is provided, token is preferred",
+      "DefaultFunc": "ENV(PROFITBRICKS_PASSWORD)",
+      "ConflictsWith": [
+        "token"
+      ]
     },
     "retries": {
       "Type": "Int",
       "Optional": true,
-      "Deprecated": "Timeout is used instead of this functionality"
+      "Deprecated": "Timeout is used instead of this functionality",
+      "Default": {
+        "Type": "int",
+        "Value": "50"
+      }
+    },
+    "token": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Profitbricks bearer token for API operations.",
+      "DefaultFunc": "ENV(PROFITBRICKS_TOKEN)",
+      "ConflictsWith": [
+        "username",
+        "password"
+      ]
     },
     "username": {
       "Type": "String",
-      "Required": true,
-      "Description": "ProfitBricks username for API operations."
+      "Optional": true,
+      "Description": "ProfitBricks username for API operations. If token is provided, token is preferred",
+      "DefaultFunc": "ENV(PROFITBRICKS_USERNAME)",
+      "ConflictsWith": [
+        "token"
+      ]
     }
   },
   "resources": {
@@ -351,7 +372,8 @@
       },
       "cpu_family": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "datacenter_id": {
         "Type": "String",
@@ -720,13 +742,17 @@
   },
   "data-sources": {
     "profitbricks_datacenter": {
+      "id": {
+        "Type": "String",
+        "Optional": true
+      },
       "location": {
         "Type": "String",
         "Optional": true
       },
       "name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       }
     },
     "profitbricks_image": {

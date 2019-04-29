@@ -1,11 +1,13 @@
 {
+  ".schema_version": "1",
   "name": "acme",
   "type": "provider",
-  "version": "v1.0.1-1-gdb2ccb4",
+  "version": "v1.1.1",
   "provider": {
     "server_url": {
       "Type": "String",
-      "Required": true
+      "Required": true,
+      "DefaultFunc": "ENV(ACME_SERVER_URL)"
     }
   },
   "resources": {
@@ -14,13 +16,20 @@
         "Type": "String",
         "Required": true
       },
-      "account_ref": {
-        "Type": "String",
-        "Computed": true
-      },
       "certificate_domain": {
         "Type": "String",
         "Computed": true
+      },
+      "certificate_p12": {
+        "Type": "String",
+        "Computed": true
+      },
+      "certificate_p12_password": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "certificate_pem": {
         "Type": "String",
@@ -47,7 +56,7 @@
         ]
       },
       "dns_challenge": {
-        "Type": "Set",
+        "Type": "List",
         "Required": true,
         "MaxItems": 1,
         "Elem": {
@@ -60,6 +69,14 @@
             "provider": {
               "Type": "String",
               "Required": true
+            },
+            "recursive_nameservers": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
             }
           }
         }
@@ -73,15 +90,27 @@
         "Optional": true,
         "ConflictsWith": [
           "certificate_request_pem"
-        ]
+        ],
+        "Default": {
+          "Type": "string",
+          "Value": "2048"
+        }
       },
       "min_days_remaining": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "7"
+        }
       },
       "must_staple": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "private_key_pem": {
         "Type": "String",

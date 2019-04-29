@@ -1,32 +1,33 @@
 {
+  ".schema_version": "1",
   "name": "scaleway",
   "type": "provider",
-  "version": "v1.8.0-3-g10c7334",
+  "version": "v1.9.2",
   "provider": {
     "access_key": {
       "Type": "String",
       "Optional": true,
       "Description": "The API key for Scaleway API operations.",
+      "DefaultFunc": "ENV(SCALEWAY_ACCESS_KEY)",
       "Deprecated": "Use `token` instead."
     },
     "organization": {
       "Type": "String",
       "Required": true,
-      "Description": "The Organization ID (a.k.a. 'access key') for Scaleway API operations."
+      "Description": "The Organization ID (a.k.a. 'access key') for Scaleway API operations.",
+      "DefaultFunc": "UNKNOWN"
     },
     "region": {
       "Type": "String",
       "Optional": true,
       "Description": "The Scaleway API region to use.",
-      "Default": {
-        "Type": "string",
-        "Value": "par1"
-      }
+      "DefaultFunc": "ENV(SCALEWAY_REGION)"
     },
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "The API key for Scaleway API operations."
+      "Description": "The API key for Scaleway API operations.",
+      "DefaultFunc": "UNKNOWN"
     }
   },
   "resources": {
@@ -78,12 +79,20 @@
       "enable_default_security": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Add default security group rules"
+        "Description": "Add default security group rules",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "inbound_default_policy": {
         "Type": "String",
         "Optional": true,
-        "Description": "Default inbound traffic policy for this security group"
+        "Description": "Default inbound traffic policy for this security group",
+        "Default": {
+          "Type": "string",
+          "Value": "accept"
+        }
       },
       "name": {
         "Type": "String",
@@ -93,7 +102,11 @@
       "outbound_default_policy": {
         "Type": "String",
         "Optional": true,
-        "Description": "Default outbound traffic policy for this security group"
+        "Description": "Default outbound traffic policy for this security group",
+        "Default": {
+          "Type": "string",
+          "Value": "accept"
+        }
       },
       "stateful": {
         "Type": "Bool",
@@ -159,7 +172,11 @@
       "enable_ipv6": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "determines if IPv6 is enabled for the server"
+        "Description": "determines if IPv6 is enabled for the server",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "image": {
         "Type": "String",
@@ -261,7 +278,10 @@
       "description": {
         "Type": "String",
         "Optional": true,
-        "Description": "The token description."
+        "Description": "The token description.",
+        "Default": {
+          "Type": "string"
+        }
       },
       "email": {
         "Type": "String",
@@ -277,7 +297,11 @@
       "expires": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Defines if the token is set to expire"
+        "Description": "Defines if the token is set to expire",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "password": {
         "Type": "String",

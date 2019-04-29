@@ -1,30 +1,33 @@
 {
+  ".schema_version": "1",
   "name": "rabbitmq",
   "type": "provider",
-  "version": "v1.0.0-10-g9b94f08",
+  "version": "v1.0.0",
   "provider": {
     "cacert_file": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(RABBITMQ_CACERT)"
     },
     "endpoint": {
       "Type": "String",
-      "Required": true
+      "Required": true,
+      "DefaultFunc": "ENV(RABBITMQ_ENDPOINT)"
     },
     "insecure": {
       "Type": "Bool",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(RABBITMQ_INSECURE)"
     },
     "password": {
       "Type": "String",
-      "Required": true
+      "Required": true,
+      "DefaultFunc": "ENV(RABBITMQ_PASSWORD)"
     },
     "username": {
       "Type": "String",
-      "Required": true
+      "Required": true,
+      "DefaultFunc": "ENV(RABBITMQ_USERNAME)"
     }
   },
   "resources": {
@@ -76,11 +79,19 @@
             },
             "auto_delete": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "durable": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "type": {
               "Type": "String",
@@ -91,7 +102,11 @@
       },
       "vhost": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "/"
+        }
       }
     },
     "rabbitmq_permissions": {
@@ -123,7 +138,11 @@
       },
       "vhost": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "/"
+        }
       }
     },
     "rabbitmq_policy": {
@@ -190,18 +209,30 @@
             },
             "auto_delete": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "durable": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
       },
       "vhost": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "/"
+        }
       }
     },
     "rabbitmq_user": {

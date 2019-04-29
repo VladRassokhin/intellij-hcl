@@ -1,23 +1,27 @@
 {
+  ".schema_version": "1",
   "name": "tencentcloud",
   "type": "provider",
-  "version": "v1.2.2-8-gdb1955e",
+  "version": "v1.5.0",
   "provider": {
     "region": {
       "Type": "String",
       "Required": true,
       "Description": "Region of Tencent Cloud",
-      "InputDefault": "ap-guangzhou"
+      "InputDefault": "ap-guangzhou",
+      "DefaultFunc": "ENV(TENCENTCLOUD_REGION)"
     },
     "secret_id": {
       "Type": "String",
       "Required": true,
-      "Description": "Secret ID of Tencent Cloud"
+      "Description": "Secret ID of Tencent Cloud",
+      "DefaultFunc": "ENV(TENCENTCLOUD_SECRET_ID)"
     },
     "secret_key": {
       "Type": "String",
       "Required": true,
-      "Description": "Secret key of Tencent Cloud"
+      "Description": "Secret key of Tencent Cloud",
+      "DefaultFunc": "ENV(TENCENTCLOUD_SECRET_KEY)"
     }
   },
   "resources": {
@@ -103,7 +107,8 @@
       },
       "snapshot_id": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "storage_name": {
         "Type": "String",
@@ -513,7 +518,11 @@
       },
       "instance_name": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "CVM-Instance"
+        }
       },
       "instance_status": {
         "Type": "String",
@@ -552,6 +561,7 @@
       "security_groups": {
         "Type": "Set",
         "Optional": true,
+        "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -604,7 +614,7 @@
     },
     "tencentcloud_lb": {
       "forward": {
-        "Type": "Int",
+        "Type": "String",
         "Optional": true
       },
       "name": {
@@ -616,10 +626,333 @@
         "Optional": true
       },
       "status": {
-        "Type": "Int",
+        "Type": "String",
         "Computed": true
       },
       "type": {
+        "Type": "String",
+        "Required": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "tencentcloud_mysql_account": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "--"
+        }
+      },
+      "mysql_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "password": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "tencentcloud_mysql_account_privilege": {
+      "account_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "database_names": {
+        "Type": "Set",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "mysql_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "privileges": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "tencentcloud_mysql_backup_policy": {
+      "backup_model": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "logical"
+        }
+      },
+      "backup_time": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "02:00-06:00"
+        }
+      },
+      "binlog_period": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "mysql_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "retention_period": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "7"
+        }
+      }
+    },
+    "tencentcloud_mysql_instance": {
+      "auto_renew_flag": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
+      },
+      "availability_zone": {
+        "Type": "String",
+        "Optional": true
+      },
+      "engine_version": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "5.7"
+        }
+      },
+      "first_slave_zone": {
+        "Type": "String",
+        "Optional": true
+      },
+      "gtid": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "instance_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "internet_host": {
+        "Type": "String",
+        "Computed": true
+      },
+      "internet_port": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "internet_service": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
+      },
+      "intranet_ip": {
+        "Type": "String",
+        "Computed": true
+      },
+      "intranet_port": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "3306"
+        }
+      },
+      "locked": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "mem_size": {
+        "Type": "Int",
+        "Required": true
+      },
+      "parameters": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "pay_type": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      },
+      "period": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      },
+      "project_id": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "root_password": {
+        "Type": "String",
+        "Required": true
+      },
+      "second_slave_zone": {
+        "Type": "String",
+        "Optional": true
+      },
+      "security_groups": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "slave_deploy_mode": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
+      },
+      "slave_sync_mode": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
+      },
+      "status": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "subnet_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "task_status": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "volume_size": {
+        "Type": "Int",
+        "Required": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "tencentcloud_mysql_readonly_instance": {
+      "auto_renew_flag": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
+      },
+      "gtid": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "instance_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "intranet_ip": {
+        "Type": "String",
+        "Computed": true
+      },
+      "intranet_port": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "3306"
+        }
+      },
+      "locked": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "master_instance_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "mem_size": {
+        "Type": "Int",
+        "Required": true
+      },
+      "pay_type": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      },
+      "period": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
+      },
+      "security_groups": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "status": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "subnet_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "task_status": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "volume_size": {
         "Type": "Int",
         "Required": true
       },
@@ -696,6 +1029,10 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "project_id": {
+        "Type": "Int",
+        "Optional": true
       }
     },
     "tencentcloud_security_group_rule": {
@@ -740,7 +1077,7 @@
       },
       "route_table_id": {
         "Type": "String",
-        "Computed": true
+        "Optional": true
       },
       "vpc_id": {
         "Type": "String",
@@ -989,6 +1326,10 @@
         "Type": "String",
         "Computed": true
       },
+      "image_name": {
+        "Type": "String",
+        "Computed": true
+      },
       "image_name_regex": {
         "Type": "String",
         "Optional": true
@@ -1055,6 +1396,447 @@
       },
       "memory_size": {
         "Type": "Float",
+        "Optional": true
+      }
+    },
+    "tencentcloud_mysql_backup_list": {
+      "list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "backup_id": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "backup_model": {
+              "Type": "String",
+              "Computed": true
+            },
+            "creator": {
+              "Type": "String",
+              "Computed": true
+            },
+            "finish_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "internet_url": {
+              "Type": "String",
+              "Computed": true
+            },
+            "intranet_url": {
+              "Type": "String",
+              "Computed": true
+            },
+            "size": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "time": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "max_number": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "10"
+        }
+      },
+      "mysql_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "result_output_file": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "tencentcloud_mysql_instance": {
+      "engine_version": {
+        "Type": "String",
+        "Optional": true
+      },
+      "init_flag": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "instance_list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "auto_renew_flag": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "cpu_core_count": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "create_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "dead_line_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "device_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "dr_instance_ids": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "engine_version": {
+              "Type": "String",
+              "Computed": true
+            },
+            "init_flag": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "instance_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "instance_role": {
+              "Type": "String",
+              "Computed": true
+            },
+            "internet_domain": {
+              "Type": "String",
+              "Computed": true
+            },
+            "internet_port": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "internet_status": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "intranet_ip": {
+              "Type": "String",
+              "Computed": true
+            },
+            "intranet_port": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "master_instance_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "memory_size": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "mysql_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "pay_type": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "project_id": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "ro_instance_ids": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "slave_sync_mode": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "status": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "subnet_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "volume_size": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "vpc_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "zone": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "instance_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "instance_role": {
+        "Type": "String",
+        "Optional": true
+      },
+      "limit": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "20"
+        }
+      },
+      "mysql_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "offset": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
+      },
+      "pay_type": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "result_output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "security_group_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "status": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "with_dr": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "with_master": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "with_ro": {
+        "Type": "Int",
+        "Optional": true
+      }
+    },
+    "tencentcloud_mysql_parameter_list": {
+      "engine_version": {
+        "Type": "String",
+        "Optional": true
+      },
+      "mysql_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "parameter_list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "current_value": {
+              "Type": "String",
+              "Computed": true
+            },
+            "default_value": {
+              "Type": "String",
+              "Computed": true
+            },
+            "description": {
+              "Type": "String",
+              "Computed": true
+            },
+            "enum_value": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "max": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "min": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "need_reboot": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "parameter_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "parameter_type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "result_output_file": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "tencentcloud_mysql_zone_config": {
+      "list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "disaster_recovery_zones": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "engine_versions": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "first_slave_zones": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "hour_instance_sale_max_num": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "is_default": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "is_support_disaster_recovery": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "is_support_vpc": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "pay_type": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "Int"
+              }
+            },
+            "second_slave_zones": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "sells": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "cdb_type": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "max_volume_size": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "mem_size": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "min_volume_size": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "qps": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "volume_step": {
+                    "Type": "Int",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "slave_deploy_modes": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "Int"
+              }
+            },
+            "support_slave_sync_modes": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "Int"
+              }
+            }
+          }
+        }
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true
+      },
+      "result_output_file": {
+        "Type": "String",
         "Optional": true
       }
     },
@@ -1193,6 +1975,10 @@
       "name": {
         "Type": "String",
         "Optional": true,
+        "Computed": true
+      },
+      "project_id": {
+        "Type": "Int",
         "Computed": true
       },
       "security_group_id": {

@@ -1,26 +1,273 @@
 {
+  ".schema_version": "1",
   "name": "google",
   "type": "provider",
-  "version": "v1.20.0-373-g43d40f40",
+  "version": "v2.5.1",
   "provider": {
+    "access_token": {
+      "Type": "String",
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_OAUTH_ACCESS_TOKEN)",
+      "ConflictsWith": [
+        "credentials"
+      ]
+    },
     "credentials": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_CREDENTIALS,GOOGLE_CLOUD_KEYFILE_JSON,GCLOUD_KEYFILE_JSON)"
     },
     "project": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_PROJECT,GOOGLE_CLOUD_PROJECT,GCLOUD_PROJECT,CLOUDSDK_CORE_PROJECT)"
     },
     "region": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_REGION,GCLOUD_REGION,CLOUDSDK_COMPUTE_REGION)"
+    },
+    "scopes": {
+      "Type": "List",
+      "Optional": true,
+      "Elem": {
+        "Type": "SchemaElements",
+        "ElementsType": "String"
+      }
     },
     "zone": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "MENV(GOOGLE_ZONE,GCLOUD_ZONE,CLOUDSDK_COMPUTE_ZONE)"
     }
   },
   "resources": {
+    "google_access_context_manager_access_level": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "basic": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "combining_function": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "AND"
+              }
+            },
+            "conditions": {
+              "Type": "List",
+              "Required": true,
+              "MinItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "device_policy": {
+                    "Type": "List",
+                    "Optional": true,
+                    "MaxItems": 1,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "allowed_device_management_levels": {
+                          "Type": "List",
+                          "Optional": true,
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "allowed_encryption_statuses": {
+                          "Type": "List",
+                          "Optional": true,
+                          "Elem": {
+                            "Type": "SchemaElements",
+                            "ElementsType": "String"
+                          }
+                        },
+                        "os_constraints": {
+                          "Type": "List",
+                          "Optional": true,
+                          "Elem": {
+                            "Type": "SchemaInfo",
+                            "Info": {
+                              "minimum_version": {
+                                "Type": "String",
+                                "Optional": true
+                              },
+                              "os_type": {
+                                "Type": "String",
+                                "Optional": true
+                              }
+                            }
+                          }
+                        },
+                        "require_screen_lock": {
+                          "Type": "Bool",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
+                  "ip_subnetworks": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "members": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "negate": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "required_access_levels": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "parent": {
+        "Type": "String",
+        "Required": true
+      },
+      "title": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "google_access_context_manager_access_policy": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "parent": {
+        "Type": "String",
+        "Required": true
+      },
+      "title": {
+        "Type": "String",
+        "Required": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "google_access_context_manager_service_perimeter": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "parent": {
+        "Type": "String",
+        "Required": true
+      },
+      "perimeter_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "PERIMETER_TYPE_REGULAR"
+        }
+      },
+      "status": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "access_levels": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "resources": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "restricted_services": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "title": {
+        "Type": "String",
+        "Required": true
+      },
+      "update_time": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "google_app_engine_application": {
       "auth_domain": {
         "Type": "String",
@@ -98,7 +345,7 @@
         }
       }
     },
-    "google_appengine_firewall_rule": {
+    "google_app_engine_firewall_rule": {
       "__timeouts__": [
         "create",
         "update",
@@ -195,6 +442,14 @@
         "Type": "Int",
         "Optional": true
       },
+      "delete_contents_on_destroy": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
       "description": {
         "Type": "String",
         "Optional": true
@@ -221,7 +476,11 @@
       },
       "location": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "US"
+        }
       },
       "project": {
         "Type": "String",
@@ -320,6 +579,10 @@
               "Type": "String",
               "Optional": true
             },
+            "require_partition_filter": {
+              "Type": "Bool",
+              "Optional": true
+            },
             "type": {
               "Type": "String",
               "Required": true
@@ -344,7 +607,11 @@
             },
             "use_legacy_sql": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             }
           }
         }
@@ -368,7 +635,11 @@
             },
             "storage_type": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "SSD"
+              }
             },
             "zone": {
               "Type": "String",
@@ -390,7 +661,11 @@
       },
       "instance_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "PRODUCTION"
+        }
       },
       "name": {
         "Type": "String",
@@ -510,6 +785,192 @@
         "Required": true
       }
     },
+    "google_cloud_scheduler_job": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "app_engine_http_target": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "pubsub_target",
+          "http_target"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "app_engine_routing": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "instance": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "service": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "version": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "body": {
+              "Type": "String",
+              "Optional": true
+            },
+            "headers": {
+              "Type": "Map",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "http_method": {
+              "Type": "String",
+              "Optional": true
+            },
+            "relative_uri": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "http_target": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "pubsub_target",
+          "app_engine_http_target"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "body": {
+              "Type": "String",
+              "Optional": true
+            },
+            "headers": {
+              "Type": "Map",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "http_method": {
+              "Type": "String",
+              "Optional": true
+            },
+            "uri": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "pubsub_target": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "app_engine_http_target",
+          "http_target"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "attributes": {
+              "Type": "Map",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "data": {
+              "Type": "String",
+              "Optional": true
+            },
+            "topic_name": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "retry_config": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "max_backoff_duration": {
+              "Type": "String",
+              "Optional": true
+            },
+            "max_doublings": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "max_retry_duration": {
+              "Type": "String",
+              "Optional": true
+            },
+            "min_backoff_duration": {
+              "Type": "String",
+              "Optional": true
+            },
+            "retry_count": {
+              "Type": "Int",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "schedule": {
+        "Type": "String",
+        "Optional": true
+      },
+      "time_zone": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Etc/UTC"
+        }
+      }
+    },
     "google_cloudbuild_trigger": {
       "__timeouts__": [
         "create",
@@ -548,9 +1009,70 @@
                       "ElementsType": "String"
                     }
                   },
+                  "dir": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "entrypoint": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "env": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "id": {
+                    "Type": "String",
+                    "Optional": true
+                  },
                   "name": {
                     "Type": "String",
                     "Optional": true
+                  },
+                  "secret_env": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "timeout": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "timing": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "volumes": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "name": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "path": {
+                          "Type": "String",
+                          "Optional": true
+                        }
+                      }
+                    }
+                  },
+                  "wait_for": {
+                    "Type": "List",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
                   }
                 }
               }
@@ -575,7 +1097,7 @@
         "Optional": true
       },
       "disabled": {
-        "Type": "String",
+        "Type": "Bool",
         "Optional": true
       },
       "filename": {
@@ -644,7 +1166,11 @@
             },
             "repo_name": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "default"
+              }
             },
             "tag_name": {
               "Type": "String",
@@ -662,7 +1188,11 @@
       ],
       "available_memory_mb": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "256"
+        }
       },
       "description": {
         "Type": "String",
@@ -736,13 +1266,12 @@
         "Optional": true,
         "Computed": true
       },
-      "retry_on_failure": {
-        "Type": "Bool",
-        "Optional": true,
-        "Computed": true,
-        "Removed": "This field is removed. Use `event_trigger.failure_policy.retry` instead."
-      },
       "runtime": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "service_account_email": {
         "Type": "String",
         "Optional": true,
         "Computed": true
@@ -779,7 +1308,11 @@
       },
       "timeout": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "60"
+        }
       },
       "trigger_bucket": {
         "Type": "String",
@@ -984,8 +1517,7 @@
                   },
                   "zone": {
                     "Type": "String",
-                    "Optional": true,
-                    "Computed": true
+                    "Required": true
                   }
                 }
               }
@@ -1071,7 +1603,11 @@
       },
       "address_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "EXTERNAL"
+        }
       },
       "creation_timestamp": {
         "Type": "String",
@@ -1138,7 +1674,11 @@
       },
       "mode": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "READ_WRITE"
+        }
       },
       "project": {
         "Type": "String",
@@ -1166,7 +1706,11 @@
           "Info": {
             "cooldown_period": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "60"
+              }
             },
             "cpu_utilization": {
               "Type": "List",
@@ -1213,11 +1757,11 @@
                   },
                   "target": {
                     "Type": "Float",
-                    "Required": true
+                    "Optional": true
                   },
                   "type": {
                     "Type": "String",
-                    "Required": true
+                    "Optional": true
                   }
                 }
               }
@@ -1270,6 +1814,25 @@
         "Type": "String",
         "Required": true
       },
+      "cdn_policy": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "signed_url_cache_max_age_sec": {
+              "Type": "Int",
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "3600"
+              }
+            }
+          }
+        }
+      },
       "creation_timestamp": {
         "Type": "String",
         "Computed": true
@@ -1296,7 +1859,35 @@
         "Computed": true
       }
     },
+    "google_compute_backend_bucket_signed_url_key": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "backend_bucket": {
+        "Type": "String",
+        "Required": true
+      },
+      "key_value": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "google_compute_backend_service": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
       "affinity_cookie_ttl_sec": {
         "Type": "Int",
         "Optional": true
@@ -1309,11 +1900,19 @@
           "Info": {
             "balancing_mode": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "UTILIZATION"
+              }
             },
             "capacity_scaler": {
               "Type": "Float",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "float64",
+                "Value": "1"
+              }
             },
             "description": {
               "Type": "String",
@@ -1341,7 +1940,11 @@
             },
             "max_utilization": {
               "Type": "Float",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "float64",
+                "Value": "0.8"
+              }
             }
           }
         }
@@ -1376,9 +1979,6 @@
                   "query_string_blacklist": {
                     "Type": "Set",
                     "Optional": true,
-                    "ConflictsWith": [
-                      "cdn_policy.0.cache_key_policy.query_string_whitelist"
-                    ],
                     "Elem": {
                       "Type": "SchemaElements",
                       "ElementsType": "String"
@@ -1387,9 +1987,6 @@
                   "query_string_whitelist": {
                     "Type": "Set",
                     "Optional": true,
-                    "ConflictsWith": [
-                      "cdn_policy.0.cache_key_policy.query_string_blacklist"
-                    ],
                     "Elem": {
                       "Type": "SchemaElements",
                       "ElementsType": "String"
@@ -1397,22 +1994,29 @@
                   }
                 }
               }
+            },
+            "signed_url_cache_max_age_sec": {
+              "Type": "Int",
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "3600"
+              }
             }
           }
         }
       },
       "connection_draining_timeout_sec": {
         "Type": "Int",
-        "Optional": true
-      },
-      "custom_request_headers": {
-        "Type": "Set",
         "Optional": true,
-        "Removed": "This field is in beta. Use it in the the google-beta provider instead. See https://terraform.io/docs/providers/google/provider_versions.html for more details.",
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
+        "Default": {
+          "Type": "int",
+          "Value": "300"
         }
+      },
+      "creation_timestamp": {
+        "Type": "String",
+        "Computed": true
       },
       "description": {
         "Type": "String",
@@ -1450,8 +2054,20 @@
             "oauth2_client_secret": {
               "Type": "String",
               "Required": true
+            },
+            "oauth2_client_secret_sha256": {
+              "Type": "String",
+              "Computed": true
             }
           }
+        }
+      },
+      "load_balancing_scheme": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "EXTERNAL"
         }
       },
       "name": {
@@ -1473,11 +2089,6 @@
         "Optional": true,
         "Computed": true
       },
-      "region": {
-        "Type": "String",
-        "Optional": true,
-        "Removed": "region has been removed as it was never used. For internal load balancing, use google_compute_region_backend_service"
-      },
       "security_policy": {
         "Type": "String",
         "Optional": true
@@ -1493,6 +2104,29 @@
       },
       "timeout_sec": {
         "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "google_compute_backend_service_signed_url_key": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "backend_service": {
+        "Type": "String",
+        "Required": true
+      },
+      "key_value": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
         "Optional": true,
         "Computed": true
       }
@@ -1518,6 +2152,10 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "kms_key_self_link": {
+              "Type": "String",
+              "Optional": true
+            },
             "raw_key": {
               "Type": "String",
               "Optional": true
@@ -1567,6 +2205,11 @@
         "Type": "String",
         "Required": true
       },
+      "physical_block_size_bytes": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
       "project": {
         "Type": "String",
         "Optional": true,
@@ -1592,6 +2235,10 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "kms_key_self_link": {
+              "Type": "String",
+              "Optional": true
+            },
             "raw_key": {
               "Type": "String",
               "Optional": true
@@ -1614,6 +2261,10 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "kms_key_self_link": {
+              "Type": "String",
+              "Optional": true
+            },
             "raw_key": {
               "Type": "String",
               "Optional": true
@@ -1631,7 +2282,11 @@
       },
       "type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "pd-standard"
+        }
       },
       "users": {
         "Type": "List",
@@ -1741,7 +2396,11 @@
       },
       "priority": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1000"
+        }
       },
       "project": {
         "Type": "String",
@@ -1767,6 +2426,7 @@
       "source_service_accounts": {
         "Type": "Set",
         "Optional": true,
+        "MaxItems": 10,
         "ConflictsWith": [
           "source_tags",
           "target_tags"
@@ -1792,6 +2452,7 @@
       "target_service_accounts": {
         "Type": "Set",
         "Optional": true,
+        "MaxItems": 10,
         "ConflictsWith": [
           "source_tags",
           "target_tags"
@@ -1820,6 +2481,10 @@
         "update",
         "delete"
       ],
+      "all_ports": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "backend_service": {
         "Type": "String",
         "Optional": true
@@ -1848,7 +2513,11 @@
       },
       "load_balancing_scheme": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "EXTERNAL"
+        }
       },
       "name": {
         "Type": "String",
@@ -1891,6 +2560,14 @@
         "Type": "String",
         "Computed": true
       },
+      "service_label": {
+        "Type": "String",
+        "Optional": true
+      },
+      "service_name": {
+        "Type": "String",
+        "Computed": true
+      },
       "subnetwork": {
         "Type": "String",
         "Optional": true,
@@ -1913,7 +2590,11 @@
       },
       "address_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "EXTERNAL"
+        }
       },
       "creation_timestamp": {
         "Type": "String",
@@ -2009,7 +2690,11 @@
       ],
       "check_interval_sec": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "creation_timestamp": {
         "Type": "String",
@@ -2021,7 +2706,11 @@
       },
       "healthy_threshold": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "2"
+        }
       },
       "http_health_check": {
         "Type": "List",
@@ -2041,15 +2730,27 @@
             },
             "port": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "80"
+              }
             },
             "proxy_header": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "NONE"
+              }
             },
             "request_path": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "/"
+              }
             },
             "response": {
               "Type": "String",
@@ -2076,15 +2777,27 @@
             },
             "port": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "443"
+              }
             },
             "proxy_header": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "NONE"
+              }
             },
             "request_path": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "/"
+              }
             },
             "response": {
               "Type": "String",
@@ -2120,11 +2833,19 @@
           "Info": {
             "port": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "443"
+              }
             },
             "proxy_header": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "NONE"
+              }
             },
             "request": {
               "Type": "String",
@@ -2151,11 +2872,19 @@
           "Info": {
             "port": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "80"
+              }
             },
             "proxy_header": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "NONE"
+              }
             },
             "request": {
               "Type": "String",
@@ -2170,7 +2899,11 @@
       },
       "timeout_sec": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "type": {
         "Type": "String",
@@ -2178,7 +2911,11 @@
       },
       "unhealthy_threshold": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "2"
+        }
       }
     },
     "google_compute_http_health_check": {
@@ -2189,7 +2926,11 @@
       ],
       "check_interval_sec": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "creation_timestamp": {
         "Type": "String",
@@ -2201,7 +2942,11 @@
       },
       "healthy_threshold": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "2"
+        }
       },
       "host": {
         "Type": "String",
@@ -2213,7 +2958,11 @@
       },
       "port": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "80"
+        }
       },
       "project": {
         "Type": "String",
@@ -2222,7 +2971,11 @@
       },
       "request_path": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "/"
+        }
       },
       "self_link": {
         "Type": "String",
@@ -2230,11 +2983,19 @@
       },
       "timeout_sec": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "unhealthy_threshold": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "2"
+        }
       }
     },
     "google_compute_https_health_check": {
@@ -2245,7 +3006,11 @@
       ],
       "check_interval_sec": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "creation_timestamp": {
         "Type": "String",
@@ -2257,7 +3022,11 @@
       },
       "healthy_threshold": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "2"
+        }
       },
       "host": {
         "Type": "String",
@@ -2269,7 +3038,11 @@
       },
       "port": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "443"
+        }
       },
       "project": {
         "Type": "String",
@@ -2278,7 +3051,11 @@
       },
       "request_path": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "/"
+        }
       },
       "self_link": {
         "Type": "String",
@@ -2286,11 +3063,19 @@
       },
       "timeout_sec": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "5"
+        }
       },
       "unhealthy_threshold": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "2"
+        }
       }
     },
     "google_compute_image": {
@@ -2359,7 +3144,11 @@
           "Info": {
             "container_type": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "TAR"
+              }
             },
             "sha1": {
               "Type": "String",
@@ -2412,7 +3201,11 @@
             },
             "mode": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "READ_WRITE"
+              }
             },
             "source": {
               "Type": "String",
@@ -2430,7 +3223,11 @@
           "Info": {
             "auto_delete": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "device_name": {
               "Type": "String",
@@ -2484,20 +3281,23 @@
       },
       "can_ip_forward": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "cpu_platform": {
         "Type": "String",
         "Computed": true
       },
-      "create_timeout": {
-        "Type": "Int",
-        "Optional": true,
-        "Removed": "Use timeouts block instead."
-      },
       "deletion_protection": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "description": {
         "Type": "String",
@@ -2512,7 +3312,11 @@
           "Info": {
             "auto_delete": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "device_name": {
               "Type": "String",
@@ -2566,6 +3370,10 @@
             }
           }
         }
+      },
+      "hostname": {
+        "Type": "String",
+        "Optional": true
       },
       "instance_id": {
         "Type": "String",
@@ -2710,7 +3518,11 @@
           "Info": {
             "automatic_restart": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "on_host_maintenance": {
               "Type": "String",
@@ -2719,7 +3531,11 @@
             },
             "preemptible": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -2732,7 +3548,11 @@
           "Info": {
             "interface": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "SCSI"
+              }
             }
           }
         }
@@ -2926,6 +3746,11 @@
             }
           }
         }
+      },
+      "hostname": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       },
       "instance_id": {
         "Type": "String",
@@ -3261,7 +4086,7 @@
       },
       "instance_template": {
         "Type": "String",
-        "Optional": true
+        "Required": true
       },
       "name": {
         "Type": "String",
@@ -3356,7 +4181,11 @@
       },
       "update_strategy": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "REPLACE"
+        }
       },
       "version": {
         "Type": "List",
@@ -3402,7 +4231,11 @@
       },
       "wait_for_instances": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "zone": {
         "Type": "String",
@@ -3418,7 +4251,11 @@
       },
       "can_ip_forward": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "description": {
         "Type": "String",
@@ -3432,7 +4269,11 @@
           "Info": {
             "auto_delete": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "boot": {
               "Type": "Bool",
@@ -3659,7 +4500,11 @@
           "Info": {
             "automatic_restart": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "on_host_maintenance": {
               "Type": "String",
@@ -3668,7 +4513,11 @@
             },
             "preemptible": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -3718,6 +4567,14 @@
         "create",
         "delete"
       ],
+      "candidate_subnets": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "cloud_router_ip_address": {
         "Type": "String",
         "Computed": true
@@ -3734,17 +4591,29 @@
         "Type": "String",
         "Optional": true
       },
+      "edge_availability_domain": {
+        "Type": "String",
+        "Optional": true
+      },
       "google_reference_id": {
         "Type": "String",
         "Computed": true
       },
       "interconnect": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "pairing_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "partner_asn": {
+        "Type": "String",
+        "Computed": true
       },
       "private_interconnect_info": {
         "Type": "List",
@@ -3777,12 +4646,42 @@
       "self_link": {
         "Type": "String",
         "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "vlan_tag8021q": {
+        "Type": "Int",
+        "Optional": true
       }
     },
     "google_compute_network": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
       "auto_create_subnetworks": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
+      },
+      "delete_default_routes_on_create": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "description": {
         "Type": "String",
@@ -3795,7 +4694,7 @@
       "ipv4_range": {
         "Type": "String",
         "Optional": true,
-        "Deprecated": "Please use google_compute_subnetwork resources instead."
+        "Deprecated": "Legacy Networks are deprecated and you will no longer be able to create them using this field from Feb 1, 2020 onwards."
       },
       "name": {
         "Type": "String",
@@ -3819,7 +4718,11 @@
     "google_compute_network_peering": {
       "auto_create_routes": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -3892,7 +4795,11 @@
           "Info": {
             "cooldown_period": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "60"
+              }
             },
             "cpu_utilization": {
               "Type": "List",
@@ -3939,11 +4846,11 @@
                   },
                   "target": {
                     "Type": "Float",
-                    "Required": true
+                    "Optional": true
                   },
                   "type": {
                     "Type": "String",
-                    "Required": true
+                    "Optional": true
                   }
                 }
               }
@@ -4006,7 +4913,11 @@
       },
       "connection_draining_timeout_sec": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "description": {
         "Type": "String",
@@ -4116,6 +5027,11 @@
         "Type": "String",
         "Required": true
       },
+      "physical_block_size_bytes": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
       "project": {
         "Type": "String",
         "Optional": true,
@@ -4173,7 +5089,11 @@
       },
       "type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "pd-standard"
+        }
       },
       "users": {
         "Type": "List",
@@ -4238,7 +5158,7 @@
       },
       "instance_template": {
         "Type": "String",
-        "Optional": true
+        "Required": true
       },
       "name": {
         "Type": "String",
@@ -4385,7 +5305,11 @@
       },
       "wait_for_instances": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       }
     },
     "google_compute_route": {
@@ -4435,7 +5359,11 @@
       },
       "priority": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1000"
+        }
       },
       "project": {
         "Type": "String",
@@ -4470,7 +5398,11 @@
           "Info": {
             "advertise_mode": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "DEFAULT"
+              }
             },
             "advertised_groups": {
               "Type": "List",
@@ -5006,7 +5938,11 @@
       },
       "min_tls_version": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "TLS_1_0"
+        }
       },
       "name": {
         "Type": "String",
@@ -5014,7 +5950,11 @@
       },
       "profile": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "COMPATIBLE"
+        }
       },
       "project": {
         "Type": "String",
@@ -5081,7 +6021,6 @@
       "secondary_ip_range": {
         "Type": "List",
         "Optional": true,
-        "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -5240,7 +6179,11 @@
       },
       "session_affinity": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "NONE"
+        }
       }
     },
     "google_compute_target_ssl_proxy": {
@@ -5272,7 +6215,11 @@
       },
       "proxy_header": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "NONE"
+        }
       },
       "proxy_id": {
         "Type": "Int",
@@ -5325,7 +6272,11 @@
       },
       "proxy_header": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "NONE"
+        }
       },
       "proxy_id": {
         "Type": "Int",
@@ -5507,7 +6458,6 @@
     "google_compute_vpn_tunnel": {
       "__timeouts__": [
         "create",
-        "update",
         "delete"
       ],
       "creation_timestamp": {
@@ -5524,18 +6474,10 @@
       },
       "ike_version": {
         "Type": "Int",
-        "Optional": true
-      },
-      "label_fingerprint": {
-        "Type": "String",
-        "Computed": true
-      },
-      "labels": {
-        "Type": "Map",
         "Optional": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
+        "Default": {
+          "Type": "int",
+          "Value": "2"
         }
       },
       "local_traffic_selector": {
@@ -5605,6 +6547,7 @@
         "Type": "Set",
         "Optional": true,
         "Computed": true,
+        "Deprecated": "Use node_locations instead",
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -5734,11 +6677,19 @@
       },
       "enable_kubernetes_alpha": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "enable_legacy_abac": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "enable_tpu": {
         "Type": "Bool",
@@ -5765,6 +6716,7 @@
       "ip_allocation_policy": {
         "Type": "List",
         "Optional": true,
+        "Computed": true,
         "MaxItems": 1,
         "Elem": {
           "Type": "SchemaInfo",
@@ -5774,8 +6726,6 @@
               "Optional": true,
               "Computed": true,
               "ConflictsWith": [
-                "ip_allocation_policy.0.create_subnetwork",
-                "ip_allocation_policy.0.subnetwork_name",
                 "ip_allocation_policy.0.cluster_secondary_range_name",
                 "ip_allocation_policy.0.services_secondary_range_name"
               ]
@@ -5788,15 +6738,23 @@
                 "ip_allocation_policy.0.create_subnetwork",
                 "ip_allocation_policy.0.subnetwork_name",
                 "ip_allocation_policy.0.cluster_ipv4_cidr_block",
-                "ip_allocation_policy.0.services_ipv4_cidr_block"
+                "ip_allocation_policy.0.services_ipv4_cidr_block",
+                "ip_allocation_policy.0.node_ipv4_cidr_block"
               ]
             },
             "create_subnetwork": {
               "Type": "Bool",
               "Optional": true,
               "ConflictsWith": [
-                "ip_allocation_policy.0.cluster_ipv4_cidr_block",
-                "ip_allocation_policy.0.services_ipv4_cidr_block",
+                "ip_allocation_policy.0.cluster_secondary_range_name",
+                "ip_allocation_policy.0.services_secondary_range_name"
+              ]
+            },
+            "node_ipv4_cidr_block": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true,
+              "ConflictsWith": [
                 "ip_allocation_policy.0.cluster_secondary_range_name",
                 "ip_allocation_policy.0.services_secondary_range_name"
               ]
@@ -5806,8 +6764,6 @@
               "Optional": true,
               "Computed": true,
               "ConflictsWith": [
-                "ip_allocation_policy.0.create_subnetwork",
-                "ip_allocation_policy.0.subnetwork_name",
                 "ip_allocation_policy.0.cluster_secondary_range_name",
                 "ip_allocation_policy.0.services_secondary_range_name"
               ]
@@ -5820,21 +6776,37 @@
                 "ip_allocation_policy.0.create_subnetwork",
                 "ip_allocation_policy.0.subnetwork_name",
                 "ip_allocation_policy.0.cluster_ipv4_cidr_block",
-                "ip_allocation_policy.0.services_ipv4_cidr_block"
+                "ip_allocation_policy.0.services_ipv4_cidr_block",
+                "ip_allocation_policy.0.node_ipv4_cidr_block"
               ]
             },
             "subnetwork_name": {
               "Type": "String",
               "Optional": true,
               "ConflictsWith": [
-                "ip_allocation_policy.0.cluster_ipv4_cidr_block",
-                "ip_allocation_policy.0.services_ipv4_cidr_block",
                 "ip_allocation_policy.0.cluster_secondary_range_name",
                 "ip_allocation_policy.0.services_secondary_range_name"
               ]
+            },
+            "use_ip_aliases": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             }
           }
         }
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "zone",
+          "region"
+        ]
       },
       "logging_service": {
         "Type": "String",
@@ -5924,8 +6896,6 @@
             "cidr_blocks": {
               "Type": "Set",
               "Optional": true,
-              "Computed": true,
-              "MaxItems": 20,
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
@@ -5942,12 +6912,6 @@
             }
           }
         }
-      },
-      "master_ipv4_cidr_block": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true,
-        "Removed": "Use private_cluster_config.master_ipv4_cidr_block instead."
       },
       "master_version": {
         "Type": "String",
@@ -5968,7 +6932,11 @@
       },
       "network": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "default"
+        }
       },
       "network_policy": {
         "Type": "List",
@@ -5980,11 +6948,19 @@
           "Info": {
             "enabled": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "provider": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "PROVIDER_UNSPECIFIED"
+              }
             }
           }
         }
@@ -6051,6 +7027,7 @@
             "metadata": {
               "Type": "Map",
               "Optional": true,
+              "Computed": true,
               "Elem": {
                 "Type": "SchemaElements",
                 "ElementsType": "String"
@@ -6071,7 +7048,11 @@
             },
             "preemptible": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "service_account": {
               "Type": "String",
@@ -6126,10 +7107,22 @@
           }
         }
       },
+      "node_locations": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "node_pool": {
         "Type": "List",
         "Optional": true,
         "Computed": true,
+        "ConflictsWith": [
+          "remove_default_node_pool"
+        ],
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -6174,11 +7167,19 @@
                 "Info": {
                   "auto_repair": {
                     "Type": "Bool",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   },
                   "auto_upgrade": {
                     "Type": "Bool",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   }
                 }
               }
@@ -6197,8 +7198,7 @@
             "name_prefix": {
               "Type": "String",
               "Optional": true,
-              "Computed": true,
-              "Removed": "Use the random provider instead. See migration instructions at https://github.com/terraform-providers/terraform-provider-google/issues/1054#issuecomment-377390209"
+              "Computed": true
             },
             "node_config": {
               "Type": "List",
@@ -6262,6 +7262,7 @@
                   "metadata": {
                     "Type": "Map",
                     "Optional": true,
+                    "Computed": true,
                     "Elem": {
                       "Type": "SchemaElements",
                       "ElementsType": "String"
@@ -6282,7 +7283,11 @@
                   },
                   "preemptible": {
                     "Type": "Bool",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   },
                   "service_account": {
                     "Type": "String",
@@ -6370,21 +7375,11 @@
           }
         }
       },
-      "private_cluster": {
-        "Type": "Bool",
-        "Optional": true,
-        "Computed": true,
-        "Removed": "Use private_cluster_config.enable_private_nodes instead."
-      },
       "private_cluster_config": {
         "Type": "List",
         "Optional": true,
         "Computed": true,
         "MaxItems": 1,
-        "ConflictsWith": [
-          "private_cluster",
-          "master_ipv4_cidr_block"
-        ],
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -6421,12 +7416,17 @@
         "Optional": true,
         "Computed": true,
         "ConflictsWith": [
-          "zone"
-        ]
+          "zone",
+          "location"
+        ],
+        "Deprecated": "Use location instead"
       },
       "remove_default_node_pool": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "node_pool"
+        ]
       },
       "resource_labels": {
         "Type": "Map",
@@ -6446,8 +7446,10 @@
         "Optional": true,
         "Computed": true,
         "ConflictsWith": [
-          "region"
-        ]
+          "region",
+          "location"
+        ],
+        "Deprecated": "Use location instead"
       }
     },
     "google_container_node_pool": {
@@ -6491,6 +7493,11 @@
           "ElementsType": "String"
         }
       },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "management": {
         "Type": "List",
         "Optional": true,
@@ -6501,11 +7508,19 @@
           "Info": {
             "auto_repair": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "auto_upgrade": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -6524,8 +7539,7 @@
       "name_prefix": {
         "Type": "String",
         "Optional": true,
-        "Computed": true,
-        "Removed": "Use the random provider instead. See migration instructions at https://github.com/terraform-providers/terraform-provider-google/issues/1054#issuecomment-377390209"
+        "Computed": true
       },
       "node_config": {
         "Type": "List",
@@ -6589,6 +7603,7 @@
             "metadata": {
               "Type": "Map",
               "Optional": true,
+              "Computed": true,
               "Elem": {
                 "Type": "SchemaElements",
                 "ElementsType": "String"
@@ -6609,7 +7624,11 @@
             },
             "preemptible": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "service_account": {
               "Type": "String",
@@ -6676,7 +7695,9 @@
       },
       "region": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true,
+        "Deprecated": "use location instead"
       },
       "version": {
         "Type": "String",
@@ -6686,7 +7707,8 @@
       "zone": {
         "Type": "String",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "Deprecated": "use location instead"
       }
     },
     "google_dataflow_job": {
@@ -6700,7 +7722,11 @@
       },
       "on_delete": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "drain"
+        }
       },
       "parameters": {
         "Type": "Map",
@@ -6708,9 +7734,14 @@
       },
       "project": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "region": {
+        "Type": "String",
+        "Optional": true
+      },
+      "service_account_email": {
         "Type": "String",
         "Optional": true
       },
@@ -6752,7 +7783,25 @@
             "delete_autogen_bucket": {
               "Type": "Bool",
               "Optional": true,
-              "Removed": "If you need a bucket that can be deleted, please createa new one and set the `staging_bucket` field"
+              "Removed": "If you need a bucket that can be deleted, please createa new one and set the `staging_bucket` field",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            },
+            "encryption_config": {
+              "Type": "List",
+              "Optional": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "kms_key_name": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
             },
             "gce_cluster_config": {
               "Type": "List",
@@ -6764,7 +7813,11 @@
                 "Info": {
                   "internal_ip_only": {
                     "Type": "Bool",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   },
                   "metadata": {
                     "Type": "Map",
@@ -6830,7 +7883,11 @@
                   },
                   "timeout_sec": {
                     "Type": "Int",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "int",
+                      "Value": "300"
+                    }
                   }
                 }
               }
@@ -6875,7 +7932,11 @@
                         },
                         "boot_disk_type": {
                           "Type": "String",
-                          "Optional": true
+                          "Optional": true,
+                          "Default": {
+                            "Type": "string",
+                            "Value": "pd-standard"
+                          }
                         },
                         "num_local_ssds": {
                           "Type": "Int",
@@ -6934,7 +7995,11 @@
                         },
                         "boot_disk_type": {
                           "Type": "String",
-                          "Optional": true
+                          "Optional": true,
+                          "Default": {
+                            "Type": "string",
+                            "Value": "pd-standard"
+                          }
                         },
                         "num_local_ssds": {
                           "Type": "Int",
@@ -7032,7 +8097,11 @@
                         },
                         "boot_disk_type": {
                           "Type": "String",
-                          "Optional": true
+                          "Optional": true,
+                          "Default": {
+                            "Type": "string",
+                            "Value": "pd-standard"
+                          }
                         },
                         "num_local_ssds": {
                           "Type": "Int",
@@ -7091,7 +8160,11 @@
       },
       "region": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "global"
+        }
       }
     },
     "google_dataproc_job": {
@@ -7111,7 +8184,11 @@
       },
       "force_delete": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "hadoop_config": {
         "Type": "List",
@@ -7502,7 +8579,11 @@
       },
       "region": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "global"
+        }
       },
       "scheduling": {
         "Type": "List",
@@ -7731,7 +8812,11 @@
       ],
       "description": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Managed by Terraform"
+        }
       },
       "dns_name": {
         "Type": "String",
@@ -7757,10 +8842,41 @@
           "ElementsType": "String"
         }
       },
+      "private_visibility_config": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "networks": {
+              "Type": "Set",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "network_url": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "project": {
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "visibility": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "public"
+        }
       }
     },
     "google_dns_record_set": {
@@ -8031,7 +9147,11 @@
                     "Optional": true,
                     "ConflictsWith": [
                       "list_policy.0.allow.0.values"
-                    ]
+                    ],
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   },
                   "values": {
                     "Type": "Set",
@@ -8056,7 +9176,11 @@
                     "Optional": true,
                     "ConflictsWith": [
                       "list_policy.0.deny.0.values"
-                    ]
+                    ],
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   },
                   "values": {
                     "Type": "Set",
@@ -8140,7 +9264,11 @@
             },
             "protection_level": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "SOFTWARE"
+              }
             }
           }
         }
@@ -8340,7 +9468,11 @@
       },
       "include_children": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -8384,7 +9516,11 @@
       },
       "include_children": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -8442,7 +9578,11 @@
       },
       "unique_writer_identity": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "writer_identity": {
         "Type": "String",
@@ -8682,14 +9822,22 @@
             },
             "mime_type": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "text/markdown"
+              }
             }
           }
         }
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "labels": {
         "Type": "List",
@@ -8765,7 +9913,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "labels": {
         "Type": "Map",
@@ -8866,11 +10018,16 @@
             },
             "path": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "/"
+              }
             },
             "port": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Computed": true
             },
             "use_ssl": {
               "Type": "Bool",
@@ -8943,7 +10100,11 @@
       },
       "period": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "300s"
+        }
       },
       "project": {
         "Type": "String",
@@ -8999,6 +10160,10 @@
       "timeout": {
         "Type": "String",
         "Required": true
+      },
+      "uptime_check_id": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "google_organization_iam_binding": {
@@ -9051,7 +10216,11 @@
       },
       "stage": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "GA"
+        }
       },
       "title": {
         "Type": "String",
@@ -9143,7 +10312,11 @@
                     "Optional": true,
                     "ConflictsWith": [
                       "list_policy.0.allow.0.values"
-                    ]
+                    ],
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   },
                   "values": {
                     "Type": "Set",
@@ -9168,7 +10341,11 @@
                     "Optional": true,
                     "ConflictsWith": [
                       "list_policy.0.deny.0.values"
-                    ]
+                    ],
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   },
                   "values": {
                     "Type": "Set",
@@ -9322,7 +10499,11 @@
       },
       "auto_create_network": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "billing_account": {
         "Type": "String",
@@ -9461,7 +10642,11 @@
       },
       "stage": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "GA"
+        }
       },
       "title": {
         "Type": "String",
@@ -9568,7 +10753,11 @@
                     "Optional": true,
                     "ConflictsWith": [
                       "list_policy.0.allow.0.values"
-                    ]
+                    ],
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   },
                   "values": {
                     "Type": "Set",
@@ -9593,7 +10782,11 @@
                     "Optional": true,
                     "ConflictsWith": [
                       "list_policy.0.deny.0.values"
-                    ]
+                    ],
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   },
                   "values": {
                     "Type": "Set",
@@ -9651,9 +10844,17 @@
       }
     },
     "google_project_service": {
-      "disable_on_destroy": {
+      "disable_dependent_services": {
         "Type": "Bool",
         "Optional": true
+      },
+      "disable_on_destroy": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "project": {
         "Type": "String",
@@ -9668,7 +10869,11 @@
     "google_project_services": {
       "disable_on_destroy": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "project": {
         "Type": "String",
@@ -9700,10 +10905,31 @@
       }
     },
     "google_pubsub_subscription": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
       "ack_deadline_seconds": {
         "Type": "Int",
         "Optional": true,
         "Computed": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "message_retention_duration": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "604800s"
+        }
       },
       "name": {
         "Type": "String",
@@ -9739,6 +10965,10 @@
             }
           }
         }
+      },
+      "retain_acked_messages": {
+        "Type": "Bool",
+        "Optional": true
       },
       "topic": {
         "Type": "String",
@@ -9815,6 +11045,18 @@
       }
     },
     "google_pubsub_topic": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -9981,7 +11223,11 @@
       },
       "tier": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "BASIC"
+        }
       }
     },
     "google_resource_manager_lien": {
@@ -10155,7 +11401,11 @@
     "google_service_account_key": {
       "key_algorithm": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "KEY_ALG_RSA_2048"
+        }
       },
       "name": {
         "Type": "String",
@@ -10179,7 +11429,11 @@
       },
       "private_key_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "TYPE_GOOGLE_CREDENTIALS_FILE"
+        }
       },
       "public_key": {
         "Type": "String",
@@ -10187,7 +11441,11 @@
       },
       "public_key_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "TYPE_X509_PEM_FILE"
+        }
       },
       "service_account_id": {
         "Type": "String",
@@ -10226,6 +11484,10 @@
       }
     },
     "google_spanner_database": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
       "ddl": {
         "Type": "List",
         "Optional": true,
@@ -10334,6 +11596,11 @@
       }
     },
     "google_spanner_instance": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
       "config": {
         "Type": "String",
         "Required": true
@@ -10357,7 +11624,11 @@
       },
       "num_nodes": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
       },
       "project": {
         "Type": "String",
@@ -10484,7 +11755,11 @@
       },
       "database_version": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "MYSQL_5_6"
+        }
       },
       "first_ip_address": {
         "Type": "String",
@@ -10502,7 +11777,6 @@
             },
             "time_to_retire": {
               "Type": "String",
-              "Optional": true,
               "Computed": true
             },
             "type": {
@@ -10522,9 +11796,17 @@
         "Optional": true,
         "Computed": true
       },
+      "private_ip_address": {
+        "Type": "String",
+        "Computed": true
+      },
       "project": {
         "Type": "String",
         "Optional": true,
+        "Computed": true
+      },
+      "public_ip_address": {
+        "Type": "String",
         "Computed": true
       },
       "region": {
@@ -10698,7 +11980,11 @@
             },
             "disk_autoresize": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "disk_size": {
               "Type": "Int",
@@ -10798,11 +12084,19 @@
             },
             "pricing_plan": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "PER_USE"
+              }
             },
             "replication_type": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "SYNCHRONOUS"
+              }
             },
             "tier": {
               "Type": "String",
@@ -10851,6 +12145,11 @@
       },
       "private_key": {
         "Type": "String",
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
         "Computed": true
       },
       "server_ca_cert": {
@@ -10939,7 +12238,11 @@
       },
       "force_destroy": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "labels": {
         "Type": "Map",
@@ -10993,7 +12296,9 @@
                   },
                   "is_live": {
                     "Type": "Bool",
-                    "Optional": true
+                    "Optional": true,
+                    "Computed": true,
+                    "Deprecated": "Please use `with_state` instead"
                   },
                   "matches_storage_class": {
                     "Type": "List",
@@ -11007,6 +12312,11 @@
                   "num_newer_versions": {
                     "Type": "Int",
                     "Optional": true
+                  },
+                  "with_state": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
                   }
                 }
               }
@@ -11016,7 +12326,11 @@
       },
       "location": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "US"
+        }
       },
       "logging": {
         "Type": "List",
@@ -11061,7 +12375,11 @@
       },
       "storage_class": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "STANDARD"
+        }
       },
       "url": {
         "Type": "String",
@@ -11076,7 +12394,11 @@
           "Info": {
             "enabled": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -11221,7 +12543,11 @@
       },
       "detect_md5hash": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "different hash"
+        }
       },
       "md5hash": {
         "Type": "String",
@@ -11230,6 +12556,10 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "output_name": {
+        "Type": "String",
+        "Computed": true
       },
       "predefined_acl": {
         "Type": "String",
@@ -11557,7 +12887,11 @@
       },
       "status": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "ENABLED"
+        }
       },
       "transfer_spec": {
         "Type": "List",
@@ -11717,6 +13051,94 @@
           }
         }
       }
+    },
+    "google_tpu_node": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "accelerator_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "cidr_block": {
+        "Type": "String",
+        "Required": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "network": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "network_endpoints": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_address": {
+              "Type": "String",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "scheduling_config": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "preemptible": {
+              "Type": "Bool",
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
+            }
+          }
+        }
+      },
+      "service_account": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tensorflow_version": {
+        "Type": "String",
+        "Required": true
+      },
+      "zone": {
+        "Type": "String",
+        "Required": true
+      }
     }
   },
   "data-sources": {
@@ -11778,6 +13200,12 @@
         "Computed": true
       },
       "region": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "google_client_openid_userinfo": {
+      "email": {
         "Type": "String",
         "Computed": true
       }
@@ -11849,11 +13277,11 @@
         "Type": "String",
         "Optional": true
       },
-      "retry_on_failure": {
-        "Type": "Bool",
+      "runtime": {
+        "Type": "String",
         "Computed": true
       },
-      "runtime": {
+      "service_account_email": {
         "Type": "String",
         "Computed": true
       },
@@ -12019,6 +13447,10 @@
                   }
                 }
               }
+            },
+            "signed_url_cache_max_age_sec": {
+              "Type": "Int",
+              "Computed": true
             }
           }
         }
@@ -12027,13 +13459,9 @@
         "Type": "Int",
         "Computed": true
       },
-      "custom_request_headers": {
-        "Type": "Set",
-        "Computed": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
+      "creation_timestamp": {
+        "Type": "String",
+        "Computed": true
       },
       "description": {
         "Type": "String",
@@ -12068,9 +13496,17 @@
             "oauth2_client_secret": {
               "Type": "String",
               "Computed": true
+            },
+            "oauth2_client_secret_sha256": {
+              "Type": "String",
+              "Computed": true
             }
           }
         }
+      },
+      "load_balancing_scheme": {
+        "Type": "String",
+        "Computed": true
       },
       "name": {
         "Type": "String",
@@ -12085,10 +13521,6 @@
         "Optional": true
       },
       "protocol": {
-        "Type": "String",
-        "Computed": true
-      },
-      "region": {
         "Type": "String",
         "Computed": true
       },
@@ -12402,10 +13834,6 @@
         "Type": "String",
         "Computed": true
       },
-      "create_timeout": {
-        "Type": "Int",
-        "Computed": true
-      },
       "deletion_protection": {
         "Type": "Bool",
         "Computed": true
@@ -12476,6 +13904,10 @@
           }
         }
       },
+      "hostname": {
+        "Type": "String",
+        "Computed": true
+      },
       "instance_id": {
         "Type": "String",
         "Computed": true
@@ -12518,7 +13950,7 @@
       },
       "name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "network_interface": {
         "Type": "List",
@@ -12635,7 +14067,7 @@
       },
       "self_link": {
         "Type": "String",
-        "Computed": true
+        "Optional": true
       },
       "service_account": {
         "Type": "List",
@@ -12935,7 +14367,7 @@
       },
       "name": {
         "Type": "String",
-        "Required": true
+        "Optional": true
       },
       "network": {
         "Type": "String",
@@ -12974,6 +14406,7 @@
       },
       "self_link": {
         "Type": "String",
+        "Optional": true,
         "Computed": true
       }
     },
@@ -13190,6 +14623,10 @@
               "Type": "Bool",
               "Computed": true
             },
+            "node_ipv4_cidr_block": {
+              "Type": "String",
+              "Computed": true
+            },
             "services_ipv4_cidr_block": {
               "Type": "String",
               "Computed": true
@@ -13201,9 +14638,17 @@
             "subnetwork_name": {
               "Type": "String",
               "Computed": true
+            },
+            "use_ip_aliases": {
+              "Type": "Bool",
+              "Computed": true
             }
           }
         }
+      },
+      "location": {
+        "Type": "String",
+        "Optional": true
       },
       "logging_service": {
         "Type": "String",
@@ -13302,10 +14747,6 @@
             }
           }
         }
-      },
-      "master_ipv4_cidr_block": {
-        "Type": "String",
-        "Computed": true
       },
       "master_version": {
         "Type": "String",
@@ -13466,6 +14907,14 @@
               }
             }
           }
+        }
+      },
+      "node_locations": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       },
       "node_pool": {
@@ -13684,10 +15133,6 @@
           }
         }
       },
-      "private_cluster": {
-        "Type": "Bool",
-        "Computed": true
-      },
       "private_cluster_config": {
         "Type": "List",
         "Computed": true,
@@ -13759,6 +15204,14 @@
         "Type": "String",
         "Computed": true
       },
+      "location": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "zone",
+          "region"
+        ]
+      },
       "project": {
         "Type": "String",
         "Optional": true
@@ -13767,8 +15220,10 @@
         "Type": "String",
         "Optional": true,
         "ConflictsWith": [
-          "zone"
-        ]
+          "zone",
+          "location"
+        ],
+        "Deprecated": "Use location instead"
       },
       "valid_master_versions": {
         "Type": "List",
@@ -13786,9 +15241,18 @@
           "ElementsType": "String"
         }
       },
-      "zone": {
+      "version_prefix": {
         "Type": "String",
         "Optional": true
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "region",
+          "location"
+        ],
+        "Deprecated": "Use location instead"
       }
     },
     "google_container_registry_image": {
@@ -13878,7 +15342,11 @@
       },
       "lookup_organization": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -13890,6 +15358,113 @@
       },
       "parent": {
         "Type": "String",
+        "Computed": true
+      }
+    },
+    "google_folder_organization_policy": {
+      "boolean_policy": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enforced": {
+              "Type": "Bool",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "constraint": {
+        "Type": "String",
+        "Required": true
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "folder": {
+        "Type": "String",
+        "Required": true
+      },
+      "list_policy": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allow": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "all": {
+                    "Type": "Bool",
+                    "Computed": true
+                  },
+                  "values": {
+                    "Type": "Set",
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "deny": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "all": {
+                    "Type": "Bool",
+                    "Computed": true
+                  },
+                  "values": {
+                    "Type": "Set",
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "inherit_from_parent": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "suggested_value": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "restore_policy": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "default": {
+              "Type": "Bool",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "update_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "version": {
+        "Type": "Int",
         "Computed": true
       }
     },
@@ -13972,6 +15547,59 @@
         "Computed": true
       },
       "title": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "google_kms_crypto_key": {
+      "key_ring": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "rotation_period": {
+        "Type": "String",
+        "Computed": true
+      },
+      "self_link": {
+        "Type": "String",
+        "Computed": true
+      },
+      "version_template": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "algorithm": {
+              "Type": "String",
+              "Computed": true
+            },
+            "protection_level": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      }
+    },
+    "google_kms_key_ring": {
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Optional": true
+      },
+      "self_link": {
         "Type": "String",
         "Computed": true
       }
@@ -14174,6 +15802,113 @@
         "Computed": true
       }
     },
+    "google_project_organization_policy": {
+      "boolean_policy": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "enforced": {
+              "Type": "Bool",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "constraint": {
+        "Type": "String",
+        "Required": true
+      },
+      "etag": {
+        "Type": "String",
+        "Computed": true
+      },
+      "list_policy": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allow": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "all": {
+                    "Type": "Bool",
+                    "Computed": true
+                  },
+                  "values": {
+                    "Type": "Set",
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "deny": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "all": {
+                    "Type": "Bool",
+                    "Computed": true
+                  },
+                  "values": {
+                    "Type": "Set",
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "inherit_from_parent": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "suggested_value": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "project": {
+        "Type": "String",
+        "Required": true
+      },
+      "restore_policy": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "default": {
+              "Type": "Bool",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "update_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "version": {
+        "Type": "Int",
+        "Computed": true
+      }
+    },
     "google_project_services": {
       "disable_on_destroy": {
         "Type": "Bool",
@@ -14189,6 +15924,25 @@
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
+        }
+      }
+    },
+    "google_projects": {
+      "filter": {
+        "Type": "String",
+        "Required": true
+      },
+      "projects": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "project_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
         }
       }
     },
@@ -14218,6 +15972,40 @@
         "Computed": true
       }
     },
+    "google_service_account_access_token": {
+      "access_token": {
+        "Type": "String",
+        "Computed": true
+      },
+      "delegates": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "lifetime": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "3600s"
+        }
+      },
+      "scopes": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "target_service_account": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "google_service_account_key": {
       "key_algorithm": {
         "Type": "String",
@@ -14237,7 +16025,11 @@
       },
       "public_key_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "TYPE_X509_PEM_FILE"
+        }
       },
       "service_account_id": {
         "Type": "String",
@@ -14291,6 +16083,10 @@
         "Type": "String",
         "Optional": true
       },
+      "output_name": {
+        "Type": "String",
+        "Computed": true
+      },
       "predefined_acl": {
         "Type": "String",
         "Computed": true
@@ -14315,11 +16111,17 @@
       },
       "content_md5": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "content_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "credentials": {
         "Type": "String",
@@ -14327,7 +16129,11 @@
       },
       "duration": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "1h"
+        }
       },
       "extension_headers": {
         "Type": "Map",
@@ -14339,7 +16145,11 @@
       },
       "http_method": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "GET"
+        }
       },
       "path": {
         "Type": "String",
@@ -14371,6 +16181,26 @@
         "Computed": true
       },
       "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "google_tpu_tensorflow_versions": {
+      "project": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "versions": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "zone": {
         "Type": "String",
         "Optional": true,
         "Computed": true

@@ -1,53 +1,84 @@
 {
+  ".schema_version": "1",
   "name": "brightbox",
   "type": "provider",
-  "version": "v1.0.5-3-g5a8f212",
+  "version": "v1.1.2",
   "provider": {
     "account": {
       "Type": "String",
       "Optional": true,
-      "Description": "Brightbox Cloud Account to operate on"
+      "Description": "Brightbox Cloud Account to operate on",
+      "DefaultFunc": "ENV(BRIGHTBOX_ACCOUNT)"
     },
     "apiclient": {
       "Type": "String",
       "Optional": true,
-      "Description": "Brightbox Cloud API Client",
-      "Default": {
-        "Type": "string",
-        "Value": "app-dkmch"
-      }
+      "Description": "Brightbox Cloud API Client/OAuth Application ID",
+      "DefaultFunc": "ENV(BRIGHTBOX_CLIENT)"
     },
     "apisecret": {
       "Type": "String",
       "Optional": true,
-      "Description": "Brightbox Cloud API Client Secret",
-      "Default": {
-        "Type": "string",
-        "Value": "uogoelzgt0nwawb"
-      }
+      "Description": "Brightbox Cloud API Client/OAuth Application Secret",
+      "DefaultFunc": "ENV(BRIGHTBOX_CLIENT_SECRET)"
     },
     "apiurl": {
       "Type": "String",
       "Optional": true,
       "Description": "Brightbox Cloud Api URL for selected Region",
-      "Default": {
-        "Type": "string",
-        "Value": "https://api.gb1.brightbox.com/"
-      }
+      "DefaultFunc": "ENV(BRIGHTBOX_API_URL)"
+    },
+    "orbit_url": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Brightbox Cloud Orbit URL for selected Region",
+      "DefaultFunc": "ENV(BRIGHTBOX_ORBIT_URL)"
     },
     "password": {
       "Type": "String",
       "Optional": true,
-      "Description": "Brightbox Cloud Password for User Name"
+      "Description": "Brightbox Cloud Password for User Name",
+      "DefaultFunc": "ENV(BRIGHTBOX_PASSWORD)"
     },
     "username": {
       "Type": "String",
       "Optional": true,
-      "Description": "Brightbox Cloud User Name"
+      "Description": "Brightbox Cloud User Name",
+      "DefaultFunc": "ENV(BRIGHTBOX_USER_NAME)"
     }
   },
   "resources": {
+    "brightbox_api_client": {
+      "account": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "permissions_group": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "full"
+        }
+      },
+      "secret": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "brightbox_cloudip": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
       "fqdn": {
         "Type": "String",
         "Computed": true
@@ -59,6 +90,27 @@
       "name": {
         "Type": "String",
         "Optional": true
+      },
+      "port_translator": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "incoming": {
+              "Type": "Int",
+              "Required": true
+            },
+            "outgoing": {
+              "Type": "Int",
+              "Required": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       },
       "public_ip": {
         "Type": "String",
@@ -78,38 +130,11 @@
         "Optional": true
       }
     },
-    "brightbox_container": {
-      "account_id": {
-        "Type": "String",
-        "Computed": true
-      },
-      "auth_key": {
-        "Type": "String",
-        "Computed": true
-      },
-      "auth_user": {
-        "Type": "String",
-        "Computed": true
-      },
-      "description": {
-        "Type": "String",
-        "Optional": true
-      },
-      "name": {
-        "Type": "String",
-        "Required": true
-      },
-      "orbit_url": {
-        "Type": "String",
-        "Optional": true,
-        "Description": "Brightbox Cloud Orbit URL for selected Region",
-        "Default": {
-          "Type": "string",
-          "Value": "https://orbit.brightbox.com/v1/"
-        }
-      }
-    },
     "brightbox_database_server": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
       "admin_password": {
         "Type": "String",
         "Computed": true
@@ -167,6 +192,15 @@
       "snapshot": {
         "Type": "String",
         "Optional": true
+      },
+      "snapshots_schedule": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "snapshots_schedule_next_at": {
+        "Type": "String",
+        "Computed": true
       },
       "status": {
         "Type": "String",
@@ -227,6 +261,10 @@
       }
     },
     "brightbox_load_balancer": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
       "buffer_size": {
         "Type": "Int",
         "Optional": true,
@@ -303,7 +341,11 @@
             },
             "timeout": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "50000"
+              }
             }
           }
         }
@@ -332,14 +374,90 @@
       },
       "sslv3": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "status": {
         "Type": "String",
         "Computed": true
       }
     },
+    "brightbox_orbit_container": {
+      "bytes_used": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "container_read": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "container_sync_key": {
+        "Type": "String",
+        "Optional": true
+      },
+      "container_sync_to": {
+        "Type": "String",
+        "Optional": true
+      },
+      "container_write": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "history_location": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "versions_location"
+        ]
+      },
+      "metadata": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "object_count": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "storage_policy": {
+        "Type": "String",
+        "Computed": true
+      },
+      "versions_location": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "history_location"
+        ]
+      }
+    },
     "brightbox_server": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
       "fqdn": {
         "Type": "String",
         "Computed": true
@@ -498,7 +616,11 @@
       },
       "most_recent": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",

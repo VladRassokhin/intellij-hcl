@@ -1,38 +1,47 @@
 {
+  ".schema_version": "1",
   "name": "mysql",
   "type": "provider",
-  "version": "v1.5.0-2-gffcbe5a",
+  "version": "v1.5.1",
   "provider": {
     "endpoint": {
       "Type": "String",
-      "Required": true
+      "Required": true,
+      "DefaultFunc": "ENV(MYSQL_ENDPOINT)"
     },
     "password": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(MYSQL_PASSWORD)"
     },
     "tls": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string",
-        "Value": "false"
-      }
+      "DefaultFunc": "ENV(MYSQL_TLS_CONFIG)"
     },
     "username": {
       "Type": "String",
-      "Required": true
+      "Required": true,
+      "DefaultFunc": "ENV(MYSQL_USERNAME)"
     }
   },
   "resources": {
     "mysql_database": {
       "default_character_set": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "utf8"
+        }
       },
       "default_collation": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "utf8_general_ci"
+        }
       },
       "name": {
         "Type": "String",
@@ -46,14 +55,22 @@
       },
       "grant": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "host": {
         "Type": "String",
         "Optional": true,
         "ConflictsWith": [
           "role"
-        ]
+        ],
+        "Default": {
+          "Type": "string",
+          "Value": "localhost"
+        }
       },
       "privileges": {
         "Type": "Set",
@@ -84,11 +101,19 @@
       },
       "table": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "*"
+        }
       },
       "tls_option": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "NONE"
+        }
       },
       "user": {
         "Type": "String",
@@ -115,7 +140,11 @@
       },
       "host": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "localhost"
+        }
       },
       "password": {
         "Type": "String",
@@ -131,7 +160,11 @@
       },
       "tls_option": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "NONE"
+        }
       },
       "user": {
         "Type": "String",
@@ -145,7 +178,11 @@
       },
       "host": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "localhost"
+        }
       },
       "key_fingerprint": {
         "Type": "String",

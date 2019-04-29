@@ -1,11 +1,13 @@
 {
+  ".schema_version": "1",
   "name": "heroku",
   "type": "provider",
-  "version": "v1.7.1-3-g50d706f",
+  "version": "v1.9.0",
   "provider": {
     "api_key": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(HEROKU_API_KEY)"
     },
     "delays": {
       "Type": "List",
@@ -16,34 +18,45 @@
         "Info": {
           "post_app_create_delay": {
             "Type": "Int",
-            "Optional": true
+            "Optional": true,
+            "Default": {
+              "Type": "int64",
+              "Value": "5"
+            }
           },
           "post_domain_create_delay": {
             "Type": "Int",
-            "Optional": true
+            "Optional": true,
+            "Default": {
+              "Type": "int64",
+              "Value": "5"
+            }
           },
           "post_space_create_delay": {
             "Type": "Int",
-            "Optional": true
+            "Optional": true,
+            "Default": {
+              "Type": "int64",
+              "Value": "5"
+            }
           }
         }
       }
     },
     "email": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(HEROKU_EMAIL)"
     },
     "headers": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(HEROKU_HEADERS)"
     },
     "url": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string",
-        "Value": "https://api.heroku.com"
-      }
+      "DefaultFunc": "ENV(HEROKU_API_URL)"
     }
   },
   "resources": {
@@ -182,6 +195,15 @@
         "Type": "String",
         "Required": true
       },
+      "sensitive_config_vars": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
       "space": {
         "Type": "String",
         "Optional": true
@@ -201,6 +223,28 @@
         "Computed": true
       }
     },
+    "heroku_app_config_association": {
+      "app_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "sensitive_vars": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "vars": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "heroku_app_feature": {
       "app": {
         "Type": "String",
@@ -208,7 +252,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -339,6 +387,24 @@
       "private_key": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "heroku_config": {
+      "sensitive_vars": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "vars": {
+        "Type": "Map",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "heroku_domain": {
@@ -484,6 +550,22 @@
       }
     },
     "heroku_space": {
+      "cidr": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "10.0.0.0/16"
+        }
+      },
+      "data_cidr": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "10.1.0.0/16"
+        }
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -506,7 +588,11 @@
       },
       "shield": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "trusted_ip_ranges": {
         "Type": "Set",
@@ -656,7 +742,11 @@
       },
       "federated": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "role": {
         "Type": "String",
@@ -771,6 +861,16 @@
       }
     },
     "heroku_space": {
+      "cidr": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "data_cidr": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "name": {
         "Type": "String",
         "Required": true
@@ -842,6 +942,28 @@
         "Computed": true
       },
       "vpc_id": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "heroku_team": {
+      "default": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "membership_limit": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "provisioned_licenses": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "type": {
         "Type": "String",
         "Computed": true
       }

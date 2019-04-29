@@ -1,39 +1,32 @@
 {
+  ".schema_version": "1",
   "name": "rancher",
   "type": "provider",
-  "version": "v1.2.1-2-g565a0b5",
+  "version": "v1.2.1",
   "provider": {
     "access_key": {
       "Type": "String",
       "Optional": true,
       "Description": "API Key used to authenticate with the rancher server",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(RANCHER_ACCESS_KEY)"
     },
     "api_url": {
       "Type": "String",
       "Optional": true,
       "Description": "The URL to the rancher API, must include version uri (ie. v1 or v2-beta)",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(RANCHER_URL)"
     },
     "config": {
       "Type": "String",
       "Optional": true,
       "Description": "Path to the Rancher client cli.json config file",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(RANCHER_CLIENT_CONFIG)"
     },
     "secret_key": {
       "Type": "String",
       "Optional": true,
       "Description": "API secret used to authenticate with the rancher server",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(RANCHER_SECRET_KEY)"
     }
   },
   "resources": {
@@ -353,7 +346,11 @@
       },
       "scope": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "user"
+        }
       },
       "start_on_create": {
         "Type": "Bool",

@@ -1,36 +1,42 @@
 {
+  ".schema_version": "1",
   "name": "nutanix",
   "type": "provider",
-  "version": "v1.0.0-1-g45498e6",
+  "version": "v1.0.0",
   "provider": {
     "endpoint": {
       "Type": "String",
       "Required": true,
-      "Description": "URL for Nutanix Prism (e.g IP or FQDN for cluster VIP\nnote, this is never the data services VIP, and should not be an\nindividual CVM address, as this would cause calls to fail during\ncluster lifecycle management operations, such as AOS upgrades."
+      "Description": "URL for Nutanix Prism (e.g IP or FQDN for cluster VIP\nnote, this is never the data services VIP, and should not be an\nindividual CVM address, as this would cause calls to fail during\ncluster lifecycle management operations, such as AOS upgrades.",
+      "DefaultFunc": "ENV(NUTANIX_ENDPOINT)"
     },
     "insecure": {
       "Type": "Bool",
       "Optional": true,
       "Description": "Explicitly allow the provider to perform \"insecure\" SSL requests. If omitted,default value is `false`",
-      "Default": {
-        "Type": "bool",
-        "Value": "false"
-      }
+      "DefaultFunc": "ENV(NUTANIX_INSECURE)"
     },
     "password": {
       "Type": "String",
       "Required": true,
-      "Description": "Password for provided user name."
+      "Description": "Password for provided user name.",
+      "DefaultFunc": "ENV(NUTANIX_PASSWORD)"
     },
     "port": {
       "Type": "String",
       "Optional": true,
-      "Description": "Port for Nutanix Prism."
+      "Description": "Port for Nutanix Prism.",
+      "DefaultFunc": "ENV(NUTANIX_PORT)",
+      "Default": {
+        "Type": "string",
+        "Value": "9440"
+      }
     },
     "username": {
       "Type": "String",
       "Required": true,
-      "Description": "User name for Nutanix Prism. Could be\nlocal cluster auth (e.g. 'admin') or directory auth."
+      "Description": "User name for Nutanix Prism. Could be\nlocal cluster auth (e.g. 'admin') or directory auth.",
+      "DefaultFunc": "ENV(NUTANIX_USERNAME)"
     }
   },
   "resources": {

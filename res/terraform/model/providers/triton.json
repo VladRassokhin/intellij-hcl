@@ -1,50 +1,38 @@
 {
+  ".schema_version": "1",
   "name": "triton",
   "type": "provider",
-  "version": "v0.5.1-8-gf788f1a",
+  "version": "v0.5.1",
   "provider": {
     "account": {
       "Type": "String",
       "Required": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(TRITON_ACCOUNT,SDC_ACCOUNT)"
     },
     "insecure_skip_tls_verify": {
       "Type": "Bool",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(TRITON_SKIP_TLS_VERIFY)"
     },
     "key_id": {
       "Type": "String",
       "Required": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(TRITON_KEY_ID,SDC_KEY_ID)"
     },
     "key_material": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(TRITON_KEY_MATERIAL,SDC_KEY_MATERIAL)"
     },
     "url": {
       "Type": "String",
       "Required": true,
-      "Default": {
-        "Type": "string",
-        "Value": "https://us-west-1.api.joyentcloud.com"
-      }
+      "DefaultFunc": "MENV(TRITON_URL,SDC_URL)"
     },
     "user": {
       "Type": "String",
       "Required": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(TRITON_USER,SDC_USER)"
     }
   },
   "resources": {
@@ -67,7 +55,11 @@
       "internet_nat": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Whether or not a NAT zone is provisioned at the Gateway IP address"
+        "Description": "Whether or not a NAT zone is provisioned at the Gateway IP address",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -125,7 +117,11 @@
       "enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Indicates if the rule is enabled"
+        "Description": "Indicates if the rule is enabled",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "global": {
         "Type": "Bool",
@@ -148,7 +144,11 @@
       "firewall_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Whether to enable the firewall for group instances"
+        "Description": "Whether to enable the firewall for group instances",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "image": {
         "Type": "String",
@@ -282,7 +282,11 @@
       "deletion_protection_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Whether to enable deletion protection for this machine"
+        "Description": "Whether to enable deletion protection for this machine",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "disk": {
         "Type": "Int",
@@ -301,7 +305,11 @@
       "firewall_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Whether to enable the firewall for this machine"
+        "Description": "Whether to enable the firewall for this machine",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "image": {
         "Type": "String",
@@ -622,7 +630,11 @@
     "triton_image": {
       "most_recent": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",

@@ -1,60 +1,50 @@
 {
+  ".schema_version": "1",
   "name": "nomad",
   "type": "provider",
-  "version": "v1.3.0-1-gfb393c3",
+  "version": "v1.3.0",
   "provider": {
     "address": {
       "Type": "String",
       "Required": true,
-      "Description": "URL of the root of the target Nomad agent."
+      "Description": "URL of the root of the target Nomad agent.",
+      "DefaultFunc": "ENV(NOMAD_ADDR)"
     },
     "ca_file": {
       "Type": "String",
       "Optional": true,
       "Description": "A path to a PEM-encoded certificate authority used to verify the remote agent's certificate.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(NOMAD_CACERT)"
     },
     "cert_file": {
       "Type": "String",
       "Optional": true,
       "Description": "A path to a PEM-encoded certificate provided to the remote agent; requires use of key_file.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(NOMAD_CLIENT_CERT)"
     },
     "key_file": {
       "Type": "String",
       "Optional": true,
       "Description": "A path to a PEM-encoded private key, required if cert_file is specified.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(NOMAD_CLIENT_KEY)"
     },
     "region": {
       "Type": "String",
       "Optional": true,
       "Description": "Region of the target Nomad agent.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(NOMAD_REGION)"
     },
     "secret_id": {
       "Type": "String",
       "Optional": true,
       "Description": "ACL token secret for API requests.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(NOMAD_TOKEN)"
     },
     "vault_token": {
       "Type": "String",
       "Optional": true,
       "Description": "Vault token if policies are specified in the job file.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(VAULT_TOKEN)"
     }
   },
   "resources": {
@@ -84,7 +74,11 @@
       "global": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Whether the token should be replicated to all regions or not."
+        "Description": "Whether the token should be replicated to all regions or not.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -115,12 +109,20 @@
       "deregister_on_destroy": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "If true, the job will be deregistered on destroy."
+        "Description": "If true, the job will be deregistered on destroy.",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "deregister_on_id_change": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "If true, the job will be deregistered when the job ID changes."
+        "Description": "If true, the job will be deregistered when the job ID changes.",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "jobspec": {
         "Type": "String",

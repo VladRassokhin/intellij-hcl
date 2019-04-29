@@ -1,48 +1,38 @@
 {
+  ".schema_version": "1",
   "name": "docker",
   "type": "provider",
-  "version": "v1.1.0-3-g334d6ae",
+  "version": "v1.1.1",
   "provider": {
     "ca_material": {
       "Type": "String",
       "Optional": true,
       "Description": "PEM-encoded content of Docker host CA certificate",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(DOCKER_CA_MATERIAL)"
     },
     "cert_material": {
       "Type": "String",
       "Optional": true,
       "Description": "PEM-encoded content of Docker client certificate",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(DOCKER_CERT_MATERIAL)"
     },
     "cert_path": {
       "Type": "String",
       "Optional": true,
       "Description": "Path to directory with Docker TLS config",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(DOCKER_CERT_PATH)"
     },
     "host": {
       "Type": "String",
       "Required": true,
       "Description": "The Docker daemon address",
-      "Default": {
-        "Type": "string",
-        "Value": "unix:///var/run/docker.sock"
-      }
+      "DefaultFunc": "ENV(DOCKER_HOST)"
     },
     "key_material": {
       "Type": "String",
       "Optional": true,
       "Description": "PEM-encoded content of Docker client private key",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(DOCKER_KEY_MATERIAL)"
     },
     "registry_auth": {
       "Type": "Set",
@@ -59,36 +49,29 @@
             "Type": "String",
             "Optional": true,
             "Description": "Path to docker json file for registry auth",
+            "DefaultFunc": "ENV(DOCKER_CONFIG)",
             "ConflictsWith": [
               "registry_auth.username",
               "registry_auth.password"
-            ],
-            "Default": {
-              "Type": "string",
-              "Value": "~/.docker/config.json"
-            }
+            ]
           },
           "password": {
             "Type": "String",
             "Optional": true,
             "Description": "Password for the registry",
+            "DefaultFunc": "ENV(DOCKER_REGISTRY_PASS)",
             "ConflictsWith": [
               "registry_auth.config_file"
-            ],
-            "Default": {
-              "Type": "string"
-            }
+            ]
           },
           "username": {
             "Type": "String",
             "Optional": true,
             "Description": "Username for the registry",
+            "DefaultFunc": "ENV(DOCKER_REGISTRY_USER)",
             "ConflictsWith": [
               "registry_auth.config_file"
-            ],
-            "Default": {
-              "Type": "string"
-            }
+            ]
           }
         }
       }
@@ -110,7 +93,11 @@
     "docker_container": {
       "attach": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "bridge": {
         "Type": "String",
@@ -251,17 +238,29 @@
             "interval": {
               "Type": "String",
               "Optional": true,
-              "Description": "Time between running the check (ms|s|m|h)"
+              "Description": "Time between running the check (ms|s|m|h)",
+              "Default": {
+                "Type": "string",
+                "Value": "0s"
+              }
             },
             "retries": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Consecutive failures needed to report unhealthy"
+              "Description": "Consecutive failures needed to report unhealthy",
+              "Default": {
+                "Type": "int",
+                "Value": "0"
+              }
             },
             "start_period": {
               "Type": "String",
               "Optional": true,
-              "Description": "Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)"
+              "Description": "Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)",
+              "Default": {
+                "Type": "string",
+                "Value": "0s"
+              }
             },
             "test": {
               "Type": "List",
@@ -275,7 +274,11 @@
             "timeout": {
               "Type": "String",
               "Optional": true,
-              "Description": "Maximum time to allow one check to run (ms|s|m|h)"
+              "Description": "Maximum time to allow one check to run (ms|s|m|h)",
+              "Default": {
+                "Type": "string",
+                "Value": "0s"
+              }
             }
           }
         }
@@ -330,7 +333,11 @@
       },
       "log_driver": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "json-file"
+        }
       },
       "log_opts": {
         "Type": "Map",
@@ -338,7 +345,11 @@
       },
       "logs": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "max_retry_count": {
         "Type": "Int",
@@ -354,7 +365,11 @@
       },
       "must_run": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -458,11 +473,19 @@
             },
             "ip": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "0.0.0.0"
+              }
             },
             "protocol": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "tcp"
+              }
             }
           }
         }
@@ -477,15 +500,27 @@
       },
       "restart": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "no"
+        }
       },
       "rm": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "start": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "ulimit": {
         "Type": "Set",
@@ -520,7 +555,11 @@
             },
             "executable": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "file": {
               "Type": "String",
@@ -701,9 +740,7 @@
             "password": {
               "Type": "String",
               "Optional": true,
-              "Default": {
-                "Type": "string"
-              }
+              "DefaultFunc": "ENV(DOCKER_REGISTRY_PASS)"
             },
             "server_address": {
               "Type": "String",
@@ -712,9 +749,7 @@
             "username": {
               "Type": "String",
               "Optional": true,
-              "Default": {
-                "Type": "string"
-              }
+              "DefaultFunc": "ENV(DOCKER_REGISTRY_USER)"
             }
           }
         }
@@ -733,12 +768,20 @@
             "delay": {
               "Type": "String",
               "Optional": true,
-              "Description": "The interval to check if the desired state is reached (ms|s). Default: 7s"
+              "Description": "The interval to check if the desired state is reached (ms|s). Default: 7s",
+              "Default": {
+                "Type": "string",
+                "Value": "7s"
+              }
             },
             "timeout": {
               "Type": "String",
               "Optional": true,
-              "Description": "The timeout of the service to reach the desired state (s|m). Default: 3m"
+              "Description": "The timeout of the service to reach the desired state (s|m). Default: 3m",
+              "Default": {
+                "Type": "string",
+                "Value": "3m"
+              }
             }
           }
         }
@@ -773,12 +816,20 @@
                   "protocol": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "Rrepresents the protocol of a port: 'tcp', 'udp' or 'sctp'"
+                    "Description": "Rrepresents the protocol of a port: 'tcp', 'udp' or 'sctp'",
+                    "Default": {
+                      "Type": "string",
+                      "Value": "tcp"
+                    }
                   },
                   "publish_mode": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "Represents the mode in which the port is to be published: 'ingress' or 'host'"
+                    "Description": "Represents the mode in which the port is to be published: 'ingress' or 'host'",
+                    "Default": {
+                      "Type": "string",
+                      "Value": "ingress"
+                    }
                   },
                   "published_port": {
                     "Type": "Int",
@@ -822,7 +873,11 @@
               "ConflictsWith": [
                 "mode.0.replicated",
                 "converge_config"
-              ]
+              ],
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "replicated": {
               "Type": "List",
@@ -839,7 +894,11 @@
                   "replicas": {
                     "Type": "Int",
                     "Optional": true,
-                    "Description": "The amount of replicas of the service"
+                    "Description": "The amount of replicas of the service",
+                    "Default": {
+                      "Type": "int",
+                      "Value": "1"
+                    }
                   }
                 }
               }
@@ -863,32 +922,56 @@
             "delay": {
               "Type": "String",
               "Optional": true,
-              "Description": "Delay between task rollbacks (ns|us|ms|s|m|h)"
+              "Description": "Delay between task rollbacks (ns|us|ms|s|m|h)",
+              "Default": {
+                "Type": "string",
+                "Value": "0s"
+              }
             },
             "failure_action": {
               "Type": "String",
               "Optional": true,
-              "Description": "Action on rollback failure: pause | continue"
+              "Description": "Action on rollback failure: pause | continue",
+              "Default": {
+                "Type": "string",
+                "Value": "pause"
+              }
             },
             "max_failure_ratio": {
               "Type": "String",
               "Optional": true,
-              "Description": "Failure rate to tolerate during a rollback"
+              "Description": "Failure rate to tolerate during a rollback",
+              "Default": {
+                "Type": "string",
+                "Value": "0.0"
+              }
             },
             "monitor": {
               "Type": "String",
               "Optional": true,
-              "Description": "Duration after each task rollback to monitor for failure (ns|us|ms|s|m|h)"
+              "Description": "Duration after each task rollback to monitor for failure (ns|us|ms|s|m|h)",
+              "Default": {
+                "Type": "string",
+                "Value": "5s"
+              }
             },
             "order": {
               "Type": "String",
               "Optional": true,
-              "Description": "Rollback order: either 'stop-first' or 'start-first'"
+              "Description": "Rollback order: either 'stop-first' or 'start-first'",
+              "Default": {
+                "Type": "string",
+                "Value": "stop-first"
+              }
             },
             "parallelism": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Maximum number of tasks to be rollbacked in one iteration"
+              "Description": "Maximum number of tasks to be rollbacked in one iteration",
+              "Default": {
+                "Type": "int",
+                "Value": "1"
+              }
             }
           }
         }
@@ -1026,17 +1109,29 @@
                         "interval": {
                           "Type": "String",
                           "Optional": true,
-                          "Description": "Time between running the check (ms|s|m|h)"
+                          "Description": "Time between running the check (ms|s|m|h)",
+                          "Default": {
+                            "Type": "string",
+                            "Value": "0s"
+                          }
                         },
                         "retries": {
                           "Type": "Int",
                           "Optional": true,
-                          "Description": "Consecutive failures needed to report unhealthy"
+                          "Description": "Consecutive failures needed to report unhealthy",
+                          "Default": {
+                            "Type": "int",
+                            "Value": "0"
+                          }
                         },
                         "start_period": {
                           "Type": "String",
                           "Optional": true,
-                          "Description": "Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)"
+                          "Description": "Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)",
+                          "Default": {
+                            "Type": "string",
+                            "Value": "0s"
+                          }
                         },
                         "test": {
                           "Type": "List",
@@ -1050,7 +1145,11 @@
                         "timeout": {
                           "Type": "String",
                           "Optional": true,
-                          "Description": "Maximum time to allow one check to run (ms|s|m|h)"
+                          "Description": "Maximum time to allow one check to run (ms|s|m|h)",
+                          "Default": {
+                            "Type": "string",
+                            "Value": "0s"
+                          }
                         }
                       }
                     }
@@ -1086,7 +1185,11 @@
                   "isolation": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "Isolation technology of the containers running the service. (Windows only)"
+                    "Description": "Isolation technology of the containers running the service. (Windows only)",
+                    "Default": {
+                      "Type": "string",
+                      "Value": "default"
+                    }
                   },
                   "labels": {
                     "Type": "Map",
@@ -1573,32 +1676,56 @@
             "delay": {
               "Type": "String",
               "Optional": true,
-              "Description": "Delay between task updates (ns|us|ms|s|m|h)"
+              "Description": "Delay between task updates (ns|us|ms|s|m|h)",
+              "Default": {
+                "Type": "string",
+                "Value": "0s"
+              }
             },
             "failure_action": {
               "Type": "String",
               "Optional": true,
-              "Description": "Action on update failure: pause | continue | rollback"
+              "Description": "Action on update failure: pause | continue | rollback",
+              "Default": {
+                "Type": "string",
+                "Value": "pause"
+              }
             },
             "max_failure_ratio": {
               "Type": "String",
               "Optional": true,
-              "Description": "Failure rate to tolerate during an update"
+              "Description": "Failure rate to tolerate during an update",
+              "Default": {
+                "Type": "string",
+                "Value": "0.0"
+              }
             },
             "monitor": {
               "Type": "String",
               "Optional": true,
-              "Description": "Duration after each task update to monitor for failure (ns|us|ms|s|m|h)"
+              "Description": "Duration after each task update to monitor for failure (ns|us|ms|s|m|h)",
+              "Default": {
+                "Type": "string",
+                "Value": "5s"
+              }
             },
             "order": {
               "Type": "String",
               "Optional": true,
-              "Description": "Update order: either 'stop-first' or 'start-first'"
+              "Description": "Update order: either 'stop-first' or 'start-first'",
+              "Default": {
+                "Type": "string",
+                "Value": "stop-first"
+              }
             },
             "parallelism": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Maximum number of tasks to be updated in one iteration"
+              "Description": "Maximum number of tasks to be updated in one iteration",
+              "Default": {
+                "Type": "int",
+                "Value": "1"
+              }
             }
           }
         }

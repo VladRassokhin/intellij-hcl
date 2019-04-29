@@ -1,190 +1,177 @@
 {
+  ".schema_version": "1",
   "name": "openstack",
   "type": "provider",
-  "version": "v1.13.0-26-g6a69940",
+  "version": "v1.17.0",
   "provider": {
+    "application_credential_id": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Application Credential ID to login with.",
+      "DefaultFunc": "ENV(OS_APPLICATION_CREDENTIAL_ID)"
+    },
+    "application_credential_name": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Application Credential name to login with.",
+      "DefaultFunc": "ENV(OS_APPLICATION_CREDENTIAL_NAME)"
+    },
+    "application_credential_secret": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Application Credential secret to login with.",
+      "DefaultFunc": "ENV(OS_APPLICATION_CREDENTIAL_SECRET)"
+    },
     "auth_url": {
       "Type": "String",
       "Optional": true,
       "Description": "The Identity authentication URL.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_AUTH_URL)"
     },
     "cacert_file": {
       "Type": "String",
       "Optional": true,
       "Description": "A Custom CA certificate.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_CACERT)"
     },
     "cert": {
       "Type": "String",
       "Optional": true,
       "Description": "A client certificate to authenticate with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_CERT)"
     },
     "cloud": {
       "Type": "String",
       "Optional": true,
       "Description": "An entry in a `clouds.yaml` file to use.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_CLOUD)"
     },
     "default_domain": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of the Domain ID to scope to if no other domain is specified. Defaults to `default` (Identity v3).",
-      "Default": {
-        "Type": "string",
-        "Value": "default"
-      }
+      "DefaultFunc": "ENV(OS_DEFAULT_DOMAIN)"
     },
     "domain_id": {
       "Type": "String",
       "Optional": true,
       "Description": "The ID of the Domain to scope to (Identity v3).",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_DOMAIN_ID)"
     },
     "domain_name": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of the Domain to scope to (Identity v3).",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_DOMAIN_NAME)"
+    },
+    "endpoint_overrides": {
+      "Type": "Map",
+      "Optional": true,
+      "Description": "A map of services with an endpoint to override what was\nfrom the Keystone catalog"
     },
     "endpoint_type": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_ENDPOINT_TYPE)"
     },
     "insecure": {
       "Type": "Bool",
       "Optional": true,
-      "Description": "Trust self-signed certificates."
+      "Description": "Trust self-signed certificates.",
+      "DefaultFunc": "ENV(OS_INSECURE)"
     },
     "key": {
       "Type": "String",
       "Optional": true,
       "Description": "A client private key to authenticate with.",
+      "DefaultFunc": "ENV(OS_KEY)"
+    },
+    "max_retries": {
+      "Type": "Int",
+      "Optional": true,
+      "Description": "How many times HTTP connection should be retried until giving up.",
       "Default": {
-        "Type": "string"
+        "Type": "int",
+        "Value": "0"
       }
     },
     "password": {
       "Type": "String",
       "Optional": true,
       "Description": "Password to login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_PASSWORD)"
     },
     "project_domain_id": {
       "Type": "String",
       "Optional": true,
       "Description": "The ID of the domain where the proejct resides (Identity v3).",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_PROJECT_DOMAIN_ID)"
     },
     "project_domain_name": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of the domain where the project resides (Identity v3).",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_PROJECT_DOMAIN_NAME)"
     },
     "region": {
       "Type": "String",
       "Optional": true,
       "Description": "The OpenStack region to connect to.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_REGION_NAME)"
     },
     "swauth": {
       "Type": "Bool",
       "Optional": true,
       "Description": "Use Swift's authentication system instead of Keystone. Only used for\ninteraction with Swift.",
-      "Default": {
-        "Type": "bool",
-        "Value": "false"
-      }
+      "DefaultFunc": "ENV(OS_SWAUTH)"
     },
     "tenant_id": {
       "Type": "String",
       "Optional": true,
       "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(OS_TENANT_ID,OS_PROJECT_ID)"
     },
     "tenant_name": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(OS_TENANT_NAME,OS_PROJECT_NAME)"
     },
     "token": {
       "Type": "String",
       "Optional": true,
       "Description": "Authentication token to use as an alternative to username/password.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "MENV(OS_TOKEN,OS_AUTH_TOKEN)"
     },
     "use_octavia": {
       "Type": "Bool",
       "Optional": true,
       "Description": "If set to `true`, API requests will go the Load Balancer\nservice (Octavia) instead of the Networking service (Neutron).",
-      "Default": {
-        "Type": "bool",
-        "Value": "false"
-      }
+      "DefaultFunc": "ENV(OS_USE_OCTAVIA)"
     },
     "user_domain_id": {
       "Type": "String",
       "Optional": true,
       "Description": "The ID of the domain where the user resides (Identity v3).",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_USER_DOMAIN_ID)"
     },
     "user_domain_name": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of the domain where the user resides (Identity v3).",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_USER_DOMAIN_NAME)"
     },
     "user_id": {
       "Type": "String",
       "Optional": true,
       "Description": "Username to login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_USER_ID)"
     },
     "user_name": {
       "Type": "String",
       "Optional": true,
       "Description": "Username to login with.",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(OS_USERNAME)"
     }
   },
   "resources": {
@@ -620,7 +607,11 @@
       },
       "rx_tx_factor": {
         "Type": "Float",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
       },
       "swap": {
         "Type": "Int",
@@ -672,7 +663,8 @@
       },
       "pool": {
         "Type": "String",
-        "Required": true
+        "Required": true,
+        "DefaultFunc": "ENV(OS_POOL_NAME)"
       },
       "region": {
         "Type": "String",
@@ -721,7 +713,11 @@
             },
             "delete_on_termination": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "destination_type": {
               "Type": "String",
@@ -775,7 +771,11 @@
       },
       "force_delete": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "image_id": {
         "Type": "String",
@@ -808,7 +808,11 @@
           "Info": {
             "access_network": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "fixed_ip_v4": {
               "Type": "String",
@@ -867,7 +871,11 @@
       },
       "power_state": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "active"
+        }
       },
       "region": {
         "Type": "String",
@@ -934,7 +942,11 @@
       },
       "stop_before_destroy": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "user_data": {
         "Type": "String",
@@ -950,7 +962,11 @@
           "Info": {
             "ignore_resize_confirmation": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -1089,7 +1105,11 @@
             },
             "self": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "to_port": {
               "Type": "Int",
@@ -1170,7 +1190,8 @@
       },
       "cluster_template_id": {
         "Type": "String",
-        "Required": true
+        "Required": true,
+        "DefaultFunc": "ENV(OS_MAGNUM_CLUSTER_TEMPLATE)"
       },
       "coe_version": {
         "Type": "String",
@@ -1312,7 +1333,8 @@
       },
       "flavor": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "DefaultFunc": "ENV(OS_MAGNUM_FLAVOR)"
       },
       "floating_ip_enabled": {
         "Type": "Bool",
@@ -1328,7 +1350,8 @@
       },
       "image": {
         "Type": "String",
-        "Required": true
+        "Required": true,
+        "DefaultFunc": "ENV(OS_MAGNUM_IMAGE)"
       },
       "insecure_registry": {
         "Type": "String",
@@ -1344,7 +1367,8 @@
       },
       "master_flavor": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "DefaultFunc": "ENV(OS_MAGNUM_MASTER_FLAVOR)"
       },
       "master_lb_enabled": {
         "Type": "Bool",
@@ -1453,9 +1477,7 @@
       "region": {
         "Type": "String",
         "Required": true,
-        "Default": {
-          "Type": "string"
-        }
+        "DefaultFunc": "ENV(OS_REGION_NAME)"
       }
     },
     "openstack_db_database_v1": {
@@ -1474,9 +1496,7 @@
       "region": {
         "Type": "String",
         "Optional": true,
-        "Default": {
-          "Type": "string"
-        }
+        "DefaultFunc": "ENV(OS_REGION_NAME)"
       }
     },
     "openstack_db_instance_v1": {
@@ -1530,7 +1550,8 @@
       "flavor_id": {
         "Type": "String",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "DefaultFunc": "ENV(OS_FLAVOR_ID)"
       },
       "name": {
         "Type": "String",
@@ -1564,9 +1585,7 @@
       "region": {
         "Type": "String",
         "Required": true,
-        "Default": {
-          "Type": "string"
-        }
+        "DefaultFunc": "ENV(OS_REGION_NAME)"
       },
       "size": {
         "Type": "Int",
@@ -1635,9 +1654,7 @@
       "region": {
         "Type": "String",
         "Required": true,
-        "Default": {
-          "Type": "string"
-        }
+        "DefaultFunc": "ENV(OS_REGION_NAME)"
       }
     },
     "openstack_dns_recordset_v2": {
@@ -1744,7 +1761,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "associated_routers": {
         "Type": "Set",
@@ -1794,11 +1815,16 @@
     },
     "openstack_fw_policy_v1": {
       "__timeouts__": [
-        "create"
+        "create",
+        "delete"
       ],
       "audited": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "description": {
         "Type": "String",
@@ -1854,11 +1880,19 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "ip_version": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "4"
+        }
       },
       "name": {
         "Type": "String",
@@ -1890,6 +1924,51 @@
         "Optional": true
       }
     },
+    "openstack_identity_application_credential_v3": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "expires_at": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "roles": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "secret": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "unrestricted": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      }
+    },
     "openstack_identity_project_v3": {
       "description": {
         "Type": "String",
@@ -1902,7 +1981,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "is_domain": {
         "Type": "Bool",
@@ -1944,6 +2027,11 @@
         "ConflictsWith": [
           "domain_id"
         ]
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       },
       "role_id": {
         "Type": "String",
@@ -1990,7 +2078,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "extra": {
         "Type": "Map",
@@ -2070,7 +2162,11 @@
       },
       "image_cache_path": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "/home/vlad/.terraform/image_cache"
+        }
       },
       "image_source_url": {
         "Type": "String",
@@ -2092,11 +2188,19 @@
       },
       "min_disk_gb": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "min_ram_mb": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "name": {
         "Type": "String",
@@ -2113,7 +2217,11 @@
       },
       "protected": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "region": {
         "Type": "String",
@@ -2142,15 +2250,28 @@
       },
       "update_at": {
         "Type": "String",
+        "Computed": true,
+        "Deprecated": "Use updated_at instead"
+      },
+      "updated_at": {
+        "Type": "String",
         "Computed": true
       },
       "verify_checksum": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "visibility": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "private"
+        }
       }
     },
     "openstack_lb_l7policy_v2": {
@@ -2165,7 +2286,11 @@
       },
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "description": {
         "Type": "String",
@@ -2217,7 +2342,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "compare_type": {
         "Type": "String",
@@ -2225,7 +2354,11 @@
       },
       "invert": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "key": {
         "Type": "String",
@@ -2266,7 +2399,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "connection_limit": {
         "Type": "Int",
@@ -2330,7 +2467,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "description": {
         "Type": "String",
@@ -2431,7 +2572,11 @@
       },
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -2522,7 +2667,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "delay": {
         "Type": "Int",
@@ -2636,7 +2785,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "description": {
         "Type": "String",
@@ -2758,7 +2911,45 @@
         "Computed": true
       }
     },
+    "openstack_networking_addressscope_v2": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "ip_version": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "4"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "shared": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "openstack_networking_floatingip_associate_v2": {
+      "fixed_ip": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "floating_ip": {
         "Type": "String",
         "Required": true
@@ -2783,7 +2974,23 @@
         "Optional": true,
         "Computed": true
       },
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "dns_domain": {
+        "Type": "String",
+        "Optional": true
+      },
+      "dns_name": {
         "Type": "String",
         "Optional": true
       },
@@ -2794,7 +3001,8 @@
       },
       "pool": {
         "Type": "String",
-        "Required": true
+        "Required": true,
+        "DefaultFunc": "ENV(OS_POOL_NAME)"
       },
       "port_id": {
         "Type": "String",
@@ -2834,12 +3042,20 @@
         "delete"
       ],
       "admin_state_up": {
-        "Type": "String",
+        "Type": "Bool",
         "Optional": true,
         "Computed": true
       },
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "availability_zone_hints": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Computed": true,
         "Elem": {
@@ -2851,8 +3067,17 @@
         "Type": "String",
         "Optional": true
       },
+      "dns_domain": {
+        "Type": "String",
+        "Optional": true
+      },
       "external": {
         "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "mtu": {
+        "Type": "Int",
         "Optional": true,
         "Computed": true
       },
@@ -2860,13 +3085,18 @@
         "Type": "String",
         "Optional": true
       },
+      "port_security_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
       "region": {
         "Type": "String",
         "Optional": true,
         "Computed": true
       },
       "segments": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Elem": {
           "Type": "SchemaInfo",
@@ -2887,7 +3117,7 @@
         }
       },
       "shared": {
-        "Type": "String",
+        "Type": "Bool",
         "Optional": true,
         "Computed": true
       },
@@ -2912,6 +3142,41 @@
       "value_specs": {
         "Type": "Map",
         "Optional": true
+      }
+    },
+    "openstack_networking_port_secgroup_associate_v2": {
+      "all_security_group_ids": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "enforce": {
+        "Type": "Bool",
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "port_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "security_group_ids": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "openstack_networking_port_v2": {
@@ -2940,6 +3205,14 @@
           "ElementsType": "String"
         }
       },
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "allowed_address_pairs": {
         "Type": "Set",
         "Optional": true,
@@ -2953,6 +3226,41 @@
             "mac_address": {
               "Type": "String",
               "Optional": true
+            }
+          }
+        }
+      },
+      "binding": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "host_id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "profile": {
+              "Type": "String",
+              "Optional": true
+            },
+            "vif_details": {
+              "Type": "Map",
+              "Computed": true
+            },
+            "vif_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vnic_type": {
+              "Type": "String",
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "normal"
+              }
             }
           }
         }
@@ -2971,6 +3279,18 @@
         "Optional": true,
         "Computed": true
       },
+      "dns_assignment": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "dns_name": {
+        "Type": "String",
+        "Optional": true
+      },
       "extra_dhcp_option": {
         "Type": "Set",
         "Optional": true,
@@ -2979,7 +3299,11 @@
           "Info": {
             "ip_version": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "4"
+              }
             },
             "name": {
               "Type": "String",
@@ -3035,6 +3359,11 @@
       "no_security_groups": {
         "Type": "Bool",
         "Optional": true
+      },
+      "port_security_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
       },
       "region": {
         "Type": "String",
@@ -3120,6 +3449,14 @@
         "Type": "Bool",
         "Optional": true,
         "Computed": true
+      },
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "availability_zone_hints": {
         "Type": "List",
@@ -3215,7 +3552,11 @@
           "Info": {
             "set_router_gateway_after_create": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -3281,6 +3622,14 @@
       "__timeouts__": [
         "delete"
       ],
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "delete_default_rules": {
         "Type": "Bool",
         "Optional": true
@@ -3337,6 +3686,14 @@
         "create",
         "delete"
       ],
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "allocation_pools": {
         "Type": "List",
         "Optional": true,
@@ -3358,7 +3715,10 @@
       "cidr": {
         "Type": "String",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "ConflictsWith": [
+          "prefix_length"
+        ]
       },
       "description": {
         "Type": "String",
@@ -3374,7 +3734,11 @@
       },
       "enable_dhcp": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "gateway_ip": {
         "Type": "String",
@@ -3387,6 +3751,7 @@
       "host_routes": {
         "Type": "List",
         "Optional": true,
+        "Deprecated": "Use openstack_networking_subnet_route_v2 instead",
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -3403,7 +3768,11 @@
       },
       "ip_version": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "4"
+        }
       },
       "ipv6_address_mode": {
         "Type": "String",
@@ -3428,6 +3797,17 @@
         "Optional": true,
         "ConflictsWith": [
           "gateway_ip"
+        ],
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
+      },
+      "prefix_length": {
+        "Type": "Int",
+        "Optional": true,
+        "ConflictsWith": [
+          "cidr"
         ]
       },
       "region": {
@@ -3465,6 +3845,14 @@
       "address_scope_id": {
         "Type": "String",
         "Optional": true
+      },
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "created_at": {
         "Type": "String",
@@ -3558,6 +3946,18 @@
         "Type": "Bool",
         "Optional": true
       },
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
       "name": {
         "Type": "String",
         "Optional": true
@@ -3629,7 +4029,11 @@
       },
       "force_destroy": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "metadata": {
         "Type": "Map",
@@ -3729,7 +4133,11 @@
       },
       "detect_content_type": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "etag": {
         "Type": "String",
@@ -3784,7 +4192,11 @@
       },
       "method": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "get"
+        }
       },
       "object": {
         "Type": "String",
@@ -3870,6 +4282,10 @@
         "update",
         "delete"
       ],
+      "access_key": {
+        "Type": "String",
+        "Computed": true
+      },
       "access_level": {
         "Type": "String",
         "Required": true
@@ -3881,6 +4297,11 @@
       "access_type": {
         "Type": "String",
         "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       },
       "share_id": {
         "Type": "String",
@@ -3929,7 +4350,11 @@
       },
       "is_public": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "metadata": {
         "Type": "Map",
@@ -3945,6 +4370,7 @@
       },
       "region": {
         "Type": "String",
+        "Optional": true,
         "Computed": true
       },
       "replication_type": {
@@ -3993,7 +4419,7 @@
         "Optional": true
       },
       "ip_version": {
-        "Type": "String",
+        "Type": "Int",
         "Computed": true
       },
       "name": {
@@ -4030,7 +4456,7 @@
         }
       },
       "segmentation_id": {
-        "Type": "String",
+        "Type": "Int",
         "Computed": true
       }
     },
@@ -4082,7 +4508,11 @@
       ],
       "auth_algorithm": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "sha1"
+        }
       },
       "description": {
         "Type": "String",
@@ -4090,11 +4520,19 @@
       },
       "encryption_algorithm": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "aes-128"
+        }
       },
       "ike_version": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "v1"
+        }
       },
       "lifetime": {
         "Type": "Set",
@@ -4122,11 +4560,19 @@
       },
       "pfs": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "group5"
+        }
       },
       "phase1_negotiation_mode": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "main"
+        }
       },
       "region": {
         "Type": "String",
@@ -4223,7 +4669,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "description": {
         "Type": "String",
@@ -4276,7 +4726,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "description": {
         "Type": "String",
@@ -4382,6 +4836,29 @@
     }
   },
   "data-sources": {
+    "openstack_blockstorage_availability_zones_v3": {
+      "names": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "available"
+        }
+      }
+    },
     "openstack_blockstorage_snapshot_v2": {
       "description": {
         "Type": "String",
@@ -4458,6 +4935,29 @@
         "Computed": true
       }
     },
+    "openstack_compute_availability_zones_v2": {
+      "names": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "available"
+        }
+      }
+    },
     "openstack_compute_flavor_v2": {
       "disk": {
         "Type": "Int",
@@ -4467,21 +4967,39 @@
         "Type": "Map",
         "Computed": true
       },
+      "flavor_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "name",
+          "min_ram",
+          "min_disk"
+        ]
+      },
       "is_public": {
         "Type": "Bool",
         "Computed": true
       },
       "min_disk": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "flavor_id"
+        ]
       },
       "min_ram": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "flavor_id"
+        ]
       },
       "name": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "flavor_id"
+        ]
       },
       "ram": {
         "Type": "Int",
@@ -4929,7 +5447,11 @@
     "openstack_identity_endpoint_v3": {
       "interface": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "public"
+        }
       },
       "region": {
         "Type": "String",
@@ -4977,11 +5499,19 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "is_domain": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -5025,7 +5555,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "idp_id": {
         "Type": "String",
@@ -5062,6 +5596,10 @@
         "Type": "String",
         "Computed": true
       },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
       "disk_format": {
         "Type": "String",
         "Computed": true
@@ -5088,7 +5626,11 @@
       },
       "most_recent": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -5129,15 +5671,31 @@
       },
       "sort_direction": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "asc"
+        }
       },
       "sort_key": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "name"
+        }
       },
       "tag": {
         "Type": "String",
         "Optional": true
+      },
+      "tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "updated_at": {
         "Type": "String",
@@ -5153,9 +5711,25 @@
         "Type": "String",
         "Optional": true
       },
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "description": {
         "Type": "String",
         "Optional": true
+      },
+      "dns_domain": {
+        "Type": "String",
+        "Computed": true
+      },
+      "dns_name": {
+        "Type": "String",
+        "Computed": true
       },
       "fixed_ip": {
         "Type": "String",
@@ -5177,6 +5751,14 @@
         "Type": "String",
         "Optional": true
       },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "tenant_id": {
         "Type": "String",
         "Optional": true
@@ -5186,6 +5768,14 @@
       "admin_state_up": {
         "Type": "String",
         "Computed": true
+      },
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "availability_zone_hints": {
         "Type": "List",
@@ -5199,12 +5789,20 @@
         "Type": "String",
         "Optional": true
       },
+      "dns_domain": {
+        "Type": "String",
+        "Computed": true
+      },
       "external": {
         "Type": "Bool",
         "Optional": true
       },
       "matching_subnet_cidr": {
         "Type": "String",
+        "Optional": true
+      },
+      "mtu": {
+        "Type": "Int",
         "Optional": true
       },
       "name": {
@@ -5228,16 +5826,295 @@
         "Type": "String",
         "Optional": true
       },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "tenant_id": {
         "Type": "String",
         "Optional": true,
         "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with."
+      },
+      "transparent_vlan": {
+        "Type": "Bool",
+        "Optional": true
+      }
+    },
+    "openstack_networking_port_ids_v2": {
+      "admin_state_up": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "device_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "device_owner": {
+        "Type": "String",
+        "Optional": true
+      },
+      "dns_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "fixed_ip": {
+        "Type": "String",
+        "Optional": true
+      },
+      "ids": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "mac_address": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "network_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true
+      },
+      "security_group_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "sort_direction": {
+        "Type": "String",
+        "Optional": true
+      },
+      "sort_key": {
+        "Type": "String",
+        "Optional": true
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "openstack_networking_port_v2": {
+      "admin_state_up": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "all_fixed_ips": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "all_security_group_ids": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "allowed_address_pairs": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_address": {
+              "Type": "String",
+              "Computed": true
+            },
+            "mac_address": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "binding": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "host_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "profile": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vif_details": {
+              "Type": "Map",
+              "Computed": true
+            },
+            "vif_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vnic_type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "device_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "device_owner": {
+        "Type": "String",
+        "Optional": true
+      },
+      "dns_assignment": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Map"
+        }
+      },
+      "dns_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "extra_dhcp_option": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_version": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "fixed_ip": {
+        "Type": "String",
+        "Optional": true
+      },
+      "mac_address": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "network_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "port_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true
+      },
+      "security_group_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "openstack_networking_router_v2": {
       "admin_state_up": {
         "Type": "Bool",
         "Optional": true
+      },
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "availability_zone_hints": {
         "Type": "List",
@@ -5297,12 +6174,28 @@
         "Type": "String",
         "Optional": true
       },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "tenant_id": {
         "Type": "String",
         "Optional": true
       }
     },
     "openstack_networking_secgroup_v2": {
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "description": {
         "Type": "String",
         "Optional": true
@@ -5320,6 +6213,14 @@
         "Type": "String",
         "Optional": true
       },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "tenant_id": {
         "Type": "String",
         "Optional": true,
@@ -5327,6 +6228,14 @@
       }
     },
     "openstack_networking_subnet_v2": {
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "allocation_pools": {
         "Type": "List",
         "Computed": true,
@@ -5442,6 +6351,14 @@
         "Optional": true,
         "Computed": true
       },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "tenant_id": {
         "Type": "String",
         "Optional": true,
@@ -5454,6 +6371,14 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "created_at": {
         "Type": "String",
@@ -5526,8 +6451,292 @@
         "Optional": true,
         "Computed": true
       },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "updated_at": {
         "Type": "String",
+        "Computed": true
+      }
+    },
+    "openstack_networking_trunk_v2": {
+      "admin_state_up": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "all_tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "port_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true
+      },
+      "sub_port": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "port_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "segmentation_id": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "segmentation_type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "trunk_id": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "openstack_sharedfilesystem_availability_zones_v2": {
+      "names": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "openstack_sharedfilesystem_share_v2": {
+      "availability_zone": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "export_location_path": {
+        "Type": "String",
+        "Optional": true
+      },
+      "export_locations": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "path": {
+              "Type": "String",
+              "Computed": true
+            },
+            "preferred": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "is_public": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "metadata": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "share_network_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "share_proto": {
+        "Type": "String",
+        "Computed": true
+      },
+      "size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "snapshot_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "openstack_sharedfilesystem_sharenetwork_v2": {
+      "cidr": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "ip_version": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "network_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "neutron_net_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "neutron_subnet_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "security_service_id": {
+        "Type": "String",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "security_service_ids": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "segmentation_id": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "openstack_sharedfilesystem_snapshot_v2": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "share_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "share_proto": {
+        "Type": "String",
+        "Computed": true
+      },
+      "share_size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true,
         "Computed": true
       }
     }

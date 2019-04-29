@@ -1,41 +1,36 @@
 {
+  ".schema_version": "1",
   "name": "arukas",
   "type": "provider",
-  "version": "v1.0.0-1-g4b792b9",
+  "version": "v1.1.0",
   "provider": {
     "api_url": {
       "Type": "String",
       "Optional": true,
       "Description": "default Arukas API url",
-      "Default": {
-        "Type": "string",
-        "Value": "https://app.arukas.io/api/"
-      }
+      "DefaultFunc": "ENV(ARUKAS_JSON_API_URL)"
     },
     "secret": {
       "Type": "String",
       "Required": true,
-      "Description": "your Arukas APIKey(secret)"
+      "Description": "your Arukas APIKey(secret)",
+      "DefaultFunc": "ENV(ARUKAS_JSON_API_SECRET)"
     },
     "timeout": {
       "Type": "Int",
       "Optional": true,
-      "Default": {
-        "Type": "string",
-        "Value": "900"
-      }
+      "DefaultFunc": "ENV(ARUKAS_TIMEOUT)"
     },
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "your Arukas APIKey(token)"
+      "Description": "your Arukas APIKey(token)",
+      "DefaultFunc": "ENV(ARUKAS_JSON_API_TOKEN)"
     },
     "trace": {
       "Type": "String",
       "Optional": true,
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(ARUKAS_DEBUG)"
     }
   },
   "resources": {
@@ -81,7 +76,11 @@
       },
       "instances": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
       },
       "memory": {
         "Type": "Int",
@@ -94,7 +93,11 @@
       },
       "plan": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "free"
+        }
       },
       "port_mappings": {
         "Type": "List",
@@ -130,11 +133,19 @@
           "Info": {
             "number": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "80"
+              }
             },
             "protocol": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "tcp"
+              }
             }
           }
         }

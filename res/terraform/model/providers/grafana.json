@@ -1,17 +1,20 @@
 {
+  ".schema_version": "1",
   "name": "grafana",
   "type": "provider",
-  "version": "v1.3.0-1-g338e38a",
+  "version": "v1.3.0",
   "provider": {
     "auth": {
       "Type": "String",
       "Required": true,
-      "Description": "Credentials for accessing the Grafana API."
+      "Description": "Credentials for accessing the Grafana API.",
+      "DefaultFunc": "ENV(GRAFANA_AUTH)"
     },
     "url": {
       "Type": "String",
       "Required": true,
-      "Description": "URL of the root of the target Grafana server."
+      "Description": "URL of the root of the target Grafana server.",
+      "DefaultFunc": "ENV(GRAFANA_URL)"
     }
   },
   "resources": {
@@ -22,7 +25,11 @@
       },
       "is_default": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -54,23 +61,40 @@
     "grafana_data_source": {
       "access_mode": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "proxy"
+        }
       },
       "basic_auth_enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "basic_auth_password": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "basic_auth_username": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "database_name": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "id": {
         "Type": "String",
@@ -78,7 +102,11 @@
       },
       "is_default": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "json_data": {
         "Type": "List",
@@ -111,7 +139,10 @@
       },
       "password": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "secure_json_data": {
         "Type": "List",
@@ -140,7 +171,10 @@
       },
       "username": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       }
     },
     "grafana_folder": {
@@ -160,7 +194,11 @@
     "grafana_organization": {
       "admin_user": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "admin"
+        }
       },
       "admins": {
         "Type": "List",
@@ -172,7 +210,11 @@
       },
       "create_users": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "editors": {
         "Type": "List",

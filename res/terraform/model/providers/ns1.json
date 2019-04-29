@@ -1,20 +1,24 @@
 {
+  ".schema_version": "1",
   "name": "ns1",
   "type": "provider",
-  "version": "v1.0.0-16-ge6df9f3",
+  "version": "v1.3.0",
   "provider": {
     "apikey": {
       "Type": "String",
       "Optional": true,
-      "Description": "The ns1 API key, this is required"
+      "Description": "The ns1 API key, this is required",
+      "DefaultFunc": "ENV(NS1_APIKEY)"
     },
     "endpoint": {
       "Type": "String",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(NS1_ENDPOINT)"
     },
     "ignore_ssl": {
       "Type": "Bool",
-      "Optional": true
+      "Optional": true,
+      "DefaultFunc": "ENV(NS1_IGNORE_SSL)"
     }
   },
   "resources": {
@@ -91,10 +95,6 @@
           "ElementsType": "String"
         }
       },
-      "id": {
-        "Type": "String",
-        "Computed": true
-      },
       "key": {
         "Type": "String",
         "Computed": true
@@ -129,10 +129,6 @@
         "Type": "Map",
         "Optional": true
       },
-      "id": {
-        "Type": "String",
-        "Computed": true
-      },
       "name": {
         "Type": "String",
         "Required": true
@@ -147,10 +143,6 @@
         "Type": "Map",
         "Optional": true
       },
-      "id": {
-        "Type": "String",
-        "Computed": true
-      },
       "name": {
         "Type": "String",
         "Required": true
@@ -163,7 +155,11 @@
     "ns1_monitoringjob": {
       "active": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "config": {
         "Type": "Map",
@@ -172,10 +168,6 @@
       "frequency": {
         "Type": "Int",
         "Required": true
-      },
-      "id": {
-        "Type": "String",
-        "Computed": true
       },
       "job_type": {
         "Type": "String",
@@ -211,11 +203,19 @@
       },
       "policy": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "quorum"
+        }
       },
       "rapid_recheck": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "regions": {
         "Type": "List",
@@ -248,10 +248,6 @@
       }
     },
     "ns1_notifylist": {
-      "id": {
-        "Type": "String",
-        "Computed": true
-      },
       "name": {
         "Type": "String",
         "Required": true
@@ -321,10 +317,6 @@
           }
         }
       },
-      "id": {
-        "Type": "String",
-        "Computed": true
-      },
       "link": {
         "Type": "String",
         "Optional": true
@@ -350,6 +342,14 @@
           }
         }
       },
+      "short_answers": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "ttl": {
         "Type": "Int",
         "Optional": true,
@@ -361,7 +361,11 @@
       },
       "use_client_subnet": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "zone": {
         "Type": "String",
@@ -440,10 +444,6 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
-      },
-      "id": {
-        "Type": "String",
-        "Computed": true
       },
       "monitoring_manage_jobs": {
         "Type": "Bool",
@@ -539,10 +539,6 @@
         "Type": "String",
         "Required": true
       },
-      "id": {
-        "Type": "String",
-        "Computed": true
-      },
       "monitoring_manage_jobs": {
         "Type": "Bool",
         "Optional": true
@@ -593,10 +589,6 @@
         "Type": "String",
         "Computed": true
       },
-      "id": {
-        "Type": "String",
-        "Computed": true
-      },
       "link": {
         "Type": "String",
         "Optional": true
@@ -604,6 +596,7 @@
       "networks": {
         "Type": "Set",
         "Optional": true,
+        "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "Int"
@@ -639,5 +632,56 @@
       }
     }
   },
-  "data-sources": {}
+  "data-sources": {
+    "ns1_zone": {
+      "dns_servers": {
+        "Type": "String",
+        "Computed": true
+      },
+      "expiry": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "hostmaster": {
+        "Type": "String",
+        "Computed": true
+      },
+      "link": {
+        "Type": "String",
+        "Computed": true
+      },
+      "networks": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
+        }
+      },
+      "nx_ttl": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "primary": {
+        "Type": "String",
+        "Computed": true
+      },
+      "refresh": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "retry": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "ttl": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "zone": {
+        "Type": "String",
+        "Required": true
+      }
+    }
+  }
 }

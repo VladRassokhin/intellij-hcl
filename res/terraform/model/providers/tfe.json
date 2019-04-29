@@ -1,12 +1,17 @@
 {
+  ".schema_version": "1",
   "name": "tfe",
   "type": "provider",
-  "version": "v0.5.0-1-gfbca172",
+  "version": "v0.8.2",
   "provider": {
     "hostname": {
       "Type": "String",
       "Optional": true,
-      "Description": "The Terraform Enterprise hostname to connect to. Defaults to app.terraform.io."
+      "Description": "The Terraform Enterprise hostname to connect to. Defaults to app.terraform.io.",
+      "Default": {
+        "Type": "string",
+        "Value": "app.terraform.io"
+      }
     },
     "token": {
       "Type": "String",
@@ -15,10 +20,40 @@
     }
   },
   "resources": {
+    "tfe_oauth_client": {
+      "api_url": {
+        "Type": "String",
+        "Required": true
+      },
+      "http_url": {
+        "Type": "String",
+        "Required": true
+      },
+      "oauth_token": {
+        "Type": "String",
+        "Required": true
+      },
+      "oauth_token_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      },
+      "service_provider": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "tfe_organization": {
       "collaborator_auth_policy": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "password"
+        }
       },
       "email": {
         "Type": "String",
@@ -27,6 +62,10 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "owners_team_saml_role_id": {
+        "Type": "String",
+        "Optional": true
       },
       "session_remember_minutes": {
         "Type": "Int",
@@ -62,7 +101,11 @@
         "Optional": true,
         "ConflictsWith": [
           "workspace_external_ids"
-        ]
+        ],
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -100,7 +143,11 @@
       },
       "enforce_mode": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "soft-mandatory"
+        }
       },
       "name": {
         "Type": "String",
@@ -198,7 +245,11 @@
       },
       "hcl": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "key": {
         "Type": "String",
@@ -206,11 +257,18 @@
       },
       "sensitive": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "value": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Default": {
+          "Type": "string"
+        }
       },
       "workspace_id": {
         "Type": "String",
@@ -220,7 +278,11 @@
     "tfe_workspace": {
       "auto_apply": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "external_id": {
         "Type": "String",
@@ -236,7 +298,11 @@
       },
       "queue_all_runs": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "ssh_key_id": {
         "Type": "String",
@@ -249,7 +315,7 @@
         "Computed": true
       },
       "vcs_repo": {
-        "Type": "Set",
+        "Type": "List",
         "Optional": true,
         "MaxItems": 1,
         "MinItems": 1,
@@ -266,7 +332,11 @@
             },
             "ingress_submodules": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "oauth_token_id": {
               "Type": "String",
@@ -282,5 +352,117 @@
       }
     }
   },
-  "data-sources": {}
+  "data-sources": {
+    "tfe_ssh_key": {
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "tfe_team": {
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "tfe_team_access": {
+      "access": {
+        "Type": "String",
+        "Computed": true
+      },
+      "team_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "workspace_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "tfe_workspace": {
+      "auto_apply": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "external_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      },
+      "queue_all_runs": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "ssh_key_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "terraform_version": {
+        "Type": "String",
+        "Computed": true
+      },
+      "vcs_repo": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "identifier": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ingress_submodules": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "oauth_token_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "working_directory": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "tfe_workspace_ids": {
+      "external_ids": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "ids": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "names": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "organization": {
+        "Type": "String",
+        "Required": true
+      }
+    }
+  }
 }

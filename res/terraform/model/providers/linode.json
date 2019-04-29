@@ -1,12 +1,26 @@
 {
+  ".schema_version": "1",
   "name": "linode",
   "type": "provider",
-  "version": "v1.3.0-1-g9a9052d",
+  "version": "v1.6.0",
   "provider": {
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "The token that allows you access to your Linode account"
+      "Description": "The token that allows you access to your Linode account",
+      "DefaultFunc": "ENV(LINODE_TOKEN)"
+    },
+    "ua_prefix": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "An HTTP User-Agent Prefix to prepend in API requests.",
+      "DefaultFunc": "ENV(LINODE_UA_PREFIX)"
+    },
+    "url": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The HTTP(S) API address of the Linode API to use.",
+      "DefaultFunc": "ENV(LINODE_URL)"
     }
   },
   "resources": {
@@ -33,7 +47,7 @@
       "expire_sec": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The amount of time in seconds that may pass before this Domain is no longer authoritative. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
+        "Description": "The amount of time in seconds that may pass before this Domain is no longer authoritative. Valid values are 0, 00, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
       },
       "group": {
         "Type": "String",
@@ -52,12 +66,12 @@
       "refresh_sec": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The amount of time in seconds before this Domain should be refreshed. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
+        "Description": "The amount of time in seconds before this Domain should be refreshed. Valid values are 0, 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
       },
       "retry_sec": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The interval, in seconds, at which a failed refresh should be retried. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
+        "Description": "The interval, in seconds, at which a failed refresh should be retried. Valid values are 0, 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
       },
       "soa_email": {
         "Type": "String",
@@ -71,10 +85,19 @@
         "InputDefault": "active",
         "Computed": true
       },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "An array of tags applied to this object. Tags are for organizational purposes only.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "ttl_sec": {
         "Type": "Int",
         "Optional": true,
-        "Description": "'Time to Live' - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
+        "Description": "'Time to Live' - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 0, 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
       },
       "type": {
         "Type": "String",
@@ -132,7 +155,7 @@
       "ttl_sec": {
         "Type": "Int",
         "Optional": true,
-        "Description": "'Time to Live' - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
+        "Description": "'Time to Live' - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 0, 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value."
       },
       "weight": {
         "Type": "Int",
@@ -576,27 +599,47 @@
                   "devtmpfs_automount": {
                     "Type": "Bool",
                     "Optional": true,
-                    "Description": "Populates the /dev directory early during boot without udev. Defaults to false."
+                    "Description": "Populates the /dev directory early during boot without udev. Defaults to false.",
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   },
                   "distro": {
                     "Type": "Bool",
                     "Optional": true,
-                    "Description": "Controls the behavior of the Linode Config's Distribution Helper setting."
+                    "Description": "Controls the behavior of the Linode Config's Distribution Helper setting.",
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "true"
+                    }
                   },
                   "modules_dep": {
                     "Type": "Bool",
                     "Optional": true,
-                    "Description": "Creates a modules dependency file for the Kernel you run."
+                    "Description": "Creates a modules dependency file for the Kernel you run.",
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "true"
+                    }
                   },
                   "network": {
                     "Type": "Bool",
                     "Optional": true,
-                    "Description": "Controls the behavior of the Linode Config's Network Helper setting, used to automatically configure additional IP addresses assigned to this instance."
+                    "Description": "Controls the behavior of the Linode Config's Network Helper setting, used to automatically configure additional IP addresses assigned to this instance.",
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "true"
+                    }
                   },
                   "updatedb_disabled": {
                     "Type": "Bool",
                     "Optional": true,
-                    "Description": "Disables updatedb cron job to avoid disk thrashing."
+                    "Description": "Disables updatedb cron job to avoid disk thrashing.",
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "true"
+                    }
                   }
                 }
               }
@@ -625,12 +668,20 @@
             "run_level": {
               "Type": "String",
               "Optional": true,
-              "Description": "Defines the state of your Linode after booting. Defaults to default."
+              "Description": "Defines the state of your Linode after booting. Defaults to default.",
+              "Default": {
+                "Type": "string",
+                "Value": "default"
+              }
             },
             "virt_mode": {
               "Type": "String",
               "Optional": true,
-              "Description": "Controls the virtualization mode. Defaults to paravirt."
+              "Description": "Controls the virtualization mode. Defaults to paravirt.",
+              "Default": {
+                "Type": "string",
+                "Value": "paravirt"
+              }
             }
           }
         }
@@ -854,7 +905,7 @@
         ]
       },
       "tags": {
-        "Type": "List",
+        "Type": "Set",
         "Optional": true,
         "Description": "An array of tags applied to this object. Tags are for organizational purposes only.",
         "Elem": {
@@ -865,19 +916,31 @@
       "type": {
         "Type": "String",
         "Optional": true,
-        "Description": "The type of instance to be deployed, determining the price and size."
+        "Description": "The type of instance to be deployed, determining the price and size.",
+        "Default": {
+          "Type": "string",
+          "Value": "g6-standard-1"
+        }
       },
       "watchdog_enabled": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "The watchdog, named Lassie, is a Shutdown Watchdog that monitors your Linode and will reboot it if it powers off unexpectedly. It works by issuing a boot job when your Linode powers off without a shutdown job being responsible. To prevent a loop, Lassie will give up if there have been more than 5 boot jobs issued within 15 minutes."
+        "Description": "The watchdog, named Lassie, is a Shutdown Watchdog that monitors your Linode and will reboot it if it powers off unexpectedly. It works by issuing a boot job when your Linode powers off without a shutdown job being responsible. To prevent a loop, Lassie will give up if there have been more than 5 boot jobs issued within 15 minutes.",
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       }
     },
     "linode_nodebalancer": {
       "client_conn_throttle": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Throttle connections per second (0-20). Set to 0 (zero) to disable throttling."
+        "Description": "Throttle connections per second (0-20). Set to 0 (zero) to disable throttling.",
+        "Default": {
+          "Type": "int",
+          "Value": "0"
+        }
       },
       "created": {
         "Type": "String",
@@ -908,6 +971,15 @@
         "Required": true,
         "Description": "The region where this NodeBalancer will be deployed.",
         "InputDefault": "us-east"
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "An array of tags applied to this object. Tags are for organizational purposes only.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "transfer": {
         "Type": "Map",
@@ -1020,12 +1092,20 @@
       "port": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The TCP port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example). While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443."
+        "Description": "The TCP port this Config is for. These values must be unique across configs on a single NodeBalancer (you can't have two configs for port 80, for example). While some ports imply some protocols, no enforcement is done and you may configure your NodeBalancer however is useful to you. For example, while port 443 is generally used for HTTPS, you do not need SSL configured to have a NodeBalancer listening on port 443.",
+        "Default": {
+          "Type": "int",
+          "Value": "80"
+        }
       },
       "protocol": {
         "Type": "String",
         "Optional": true,
-        "Description": "The protocol this port is configured to serve. If this is set to https you must include an ssl_cert and an ssl_key."
+        "Description": "The protocol this port is configured to serve. If this is set to https you must include an ssl_cert and an ssl_key.",
+        "Default": {
+          "Type": "linodego.ConfigProtocol",
+          "Value": "http"
+        }
       },
       "ssl_cert": {
         "Type": "String",
@@ -1067,7 +1147,7 @@
       },
       "label": {
         "Type": "String",
-        "Optional": true,
+        "Required": true,
         "Description": "The label for this node. This is for display purposes only."
       },
       "mode": {
@@ -1091,6 +1171,18 @@
         "Optional": true,
         "Description": "Used when picking a backend to serve a request and is not pinned to a single backend yet. Nodes with a higher weight will receive more traffic. (1-255)",
         "Computed": true
+      }
+    },
+    "linode_rdns": {
+      "address": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The public Linode IPv4 or IPv6 address to operate on."
+      },
+      "rdns": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The reverse DNS assigned to this address. For public IPv4 addresses, this will be set to a default value provided by Linode if not explicitly set."
       }
     },
     "linode_sshkey": {
@@ -1143,7 +1235,11 @@
       "is_public": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "This determines whether other users can use your StackScript. Once a StackScript is made public, it cannot be made private."
+        "Description": "This determines whether other users can use your StackScript. Once a StackScript is made public, it cannot be made private.",
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "label": {
         "Type": "String",
@@ -1275,6 +1371,15 @@
         "Type": "String",
         "Description": "The status of the volume, indicating the current readiness state.",
         "Computed": true
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "An array of tags applied to this object. Tags are for organizational purposes only.",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     }
   },
@@ -1338,6 +1443,89 @@
       "zip": {
         "Type": "String",
         "Description": "The zip code of this Account's billing address.",
+        "Computed": true
+      }
+    },
+    "linode_domain": {
+      "axfr_ips": {
+        "Type": "Set",
+        "Description": "The list of IPs that may perform a zone transfer for this Domain. This is potentially dangerous, and should be set to an empty list unless you intend to use it.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Description": "A description for this Domain. This is for display purposes only.",
+        "Computed": true
+      },
+      "domain": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The domain this Domain represents. These must be unique in Linode's system; there cannot be two Domain records representing the same domain."
+      },
+      "expire_sec": {
+        "Type": "Int",
+        "Description": "The amount of time in seconds that may pass before this Domain is no longer authoritative. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value.",
+        "Computed": true
+      },
+      "group": {
+        "Type": "String",
+        "Description": "The group this Domain belongs to. This is for display purposes only.",
+        "Computed": true
+      },
+      "id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "master_ips": {
+        "Type": "Set",
+        "Description": "The IP addresses representing the master DNS for this Domain.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "refresh_sec": {
+        "Type": "Int",
+        "Description": "The amount of time in seconds before this Domain should be refreshed. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value.",
+        "Computed": true
+      },
+      "retry_sec": {
+        "Type": "Int",
+        "Description": "The interval, in seconds, at which a failed refresh should be retried. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value.",
+        "Computed": true
+      },
+      "soa_email": {
+        "Type": "String",
+        "Description": "Start of Authority email address. This is required for master Domains.",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Description": "Used to control whether this Domain is currently being rendered.",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Set",
+        "Description": "An array of tags applied to this object. Tags are for organizational purposes only.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "ttl_sec": {
+        "Type": "Int",
+        "Description": "'Time to Live' - the amount of time in seconds that this Domain's records may be cached by resolvers or other domain servers. Valid values are 300, 3600, 7200, 14400, 28800, 57600, 86400, 172800, 345600, 604800, 1209600, and 2419200 - any other value will be rounded to the nearest valid value.",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Description": "If this Domain represents the authoritative source of information for the domain it describes, or if it is a read-only copy of a master (also called a slave).",
         "Computed": true
       }
     },
@@ -1442,7 +1630,7 @@
       },
       "class": {
         "Type": "String",
-        "Description": "The class of the Linode Type. There are currently three classes of Linodes: nanode, standard, highmem",
+        "Description": "The class of the Linode Type. There are currently three classes of Linodes: nanode, standard, highmem, dedicated",
         "Computed": true
       },
       "disk": {
@@ -1499,6 +1687,53 @@
       "vcpus": {
         "Type": "Int",
         "Description": "The number of VCPU cores this Linode Type offers.",
+        "Computed": true
+      }
+    },
+    "linode_networking_ip": {
+      "address": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The IP address."
+      },
+      "gateway": {
+        "Type": "String",
+        "Description": "The default gateway for this address.",
+        "Computed": true
+      },
+      "linode_id": {
+        "Type": "Int",
+        "Description": "The ID of the Linode this address currently belongs to.",
+        "Computed": true
+      },
+      "prefix": {
+        "Type": "Int",
+        "Description": "The number of bits set in the subnet mask.",
+        "Computed": true
+      },
+      "public": {
+        "Type": "Bool",
+        "Description": "Whether this is a public or private IP address.",
+        "Computed": true
+      },
+      "rdns": {
+        "Type": "String",
+        "Description": "The reverse DNS assigned to this address. For public IPv4 addresses, this will be set to a default value provided by Linode if not explicitly set.",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Description": "The Region this IP address resides in.",
+        "Computed": true
+      },
+      "subnet_mask": {
+        "Type": "String",
+        "Description": "The mask that separates host bits from network bits for this address.",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Description": "The type of address this is (ipv4, ipv6, ipv6/pool, ipv6/range).",
         "Computed": true
       }
     },

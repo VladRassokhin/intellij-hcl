@@ -1,40 +1,191 @@
 {
+  ".schema_version": "1",
   "name": "ucloud",
   "type": "provider",
-  "version": "v1.0.0-2-gaf808f4",
+  "version": "v1.6.0",
   "provider": {
+    "base_url": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "...",
+      "ConflictsWith": [
+        "insecure"
+      ],
+      "Default": {
+        "Type": "string",
+        "Value": "https://api.ucloud.cn"
+      }
+    },
     "insecure": {
       "Type": "Bool",
       "Optional": true,
-      "Description": "..."
+      "Description": "...",
+      "ConflictsWith": [
+        "base_url"
+      ],
+      "Default": {
+        "Type": "bool",
+        "Value": "false"
+      }
     },
     "max_retries": {
       "Type": "Int",
       "Optional": true,
-      "Description": "..."
+      "Description": "...",
+      "Default": {
+        "Type": "int",
+        "Value": "3"
+      }
     },
     "private_key": {
       "Type": "String",
-      "Required": true,
-      "Description": "..."
+      "Optional": true,
+      "Description": "...",
+      "DefaultFunc": "ENV(UCLOUD_PRIVATE_KEY)"
+    },
+    "profile": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "...",
+      "DefaultFunc": "ENV(UCLOUD_PROFILE)"
     },
     "project_id": {
       "Type": "String",
       "Required": true,
-      "Description": "..."
+      "Description": "...",
+      "DefaultFunc": "ENV(UCLOUD_PROJECT_ID)"
     },
     "public_key": {
       "Type": "String",
-      "Required": true,
-      "Description": "..."
+      "Optional": true,
+      "Description": "...",
+      "DefaultFunc": "ENV(UCLOUD_PUBLIC_KEY)"
     },
     "region": {
       "Type": "String",
       "Required": true,
-      "Description": "..."
+      "Description": "...",
+      "DefaultFunc": "ENV(UCLOUD_REGION)"
+    },
+    "shared_credentials_file": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "...",
+      "DefaultFunc": "ENV(UCLOUD_SHARED_CREDENTIAL_FILE)"
     }
   },
   "resources": {
+    "ucloud_db_instance": {
+      "availability_zone": {
+        "Type": "String",
+        "Required": true
+      },
+      "backup_begin_time": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "backup_black_list": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "backup_count": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "7"
+        }
+      },
+      "backup_date": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "charge_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "month"
+        }
+      },
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "duration": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "engine": {
+        "Type": "String",
+        "Required": true
+      },
+      "engine_version": {
+        "Type": "String",
+        "Required": true
+      },
+      "expire_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "instance_storage": {
+        "Type": "Int",
+        "Required": true
+      },
+      "instance_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "modify_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "password": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "port": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "standby_zone": {
+        "Type": "String",
+        "Optional": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "subnet_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "ucloud_disk": {
       "availability_zone": {
         "Type": "String",
@@ -42,7 +193,11 @@
       },
       "charge_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "month"
+        }
       },
       "create_time": {
         "Type": "String",
@@ -54,11 +209,19 @@
       },
       "disk_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "data_disk"
+        }
       },
       "duration": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
       },
       "expire_time": {
         "Type": "String",
@@ -66,7 +229,8 @@
       },
       "name": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "status": {
         "Type": "String",
@@ -74,7 +238,11 @@
       },
       "tag": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Default"
+        }
       }
     },
     "ucloud_disk_attachment": {
@@ -94,15 +262,27 @@
     "ucloud_eip": {
       "bandwidth": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
       },
       "charge_mode": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "bandwidth"
+        }
       },
       "charge_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "month"
+        }
       },
       "create_time": {
         "Type": "String",
@@ -110,7 +290,11 @@
       },
       "duration": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
       },
       "expire_time": {
         "Type": "String",
@@ -140,7 +324,12 @@
       },
       "name": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
+      },
+      "public_ip": {
+        "Type": "String",
+        "Computed": true
       },
       "remark": {
         "Type": "String",
@@ -170,7 +359,11 @@
       },
       "tag": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Default"
+        }
       }
     },
     "ucloud_eip_association": {
@@ -184,7 +377,9 @@
       },
       "resource_type": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Computed": true,
+        "Deprecated": "attribute `resource_type` is deprecated for optimizing parameters"
       }
     },
     "ucloud_instance": {
@@ -208,11 +403,16 @@
       },
       "boot_disk_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "charge_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "month"
+        }
       },
       "cpu": {
         "Type": "Int",
@@ -229,7 +429,8 @@
       },
       "data_disk_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "disk_set": {
         "Type": "List",
@@ -295,7 +496,8 @@
       },
       "name": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "remark": {
         "Type": "String",
@@ -304,7 +506,8 @@
       },
       "root_password": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Computed": true
       },
       "security_group": {
         "Type": "String",
@@ -322,7 +525,11 @@
       },
       "tag": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Default"
+        }
       },
       "vpc_id": {
         "Type": "String",
@@ -333,7 +540,8 @@
     "ucloud_lb": {
       "charge_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Deprecated": "attribute `charge_type` is deprecated for optimizing parameters"
       },
       "create_time": {
         "Type": "String",
@@ -341,11 +549,13 @@
       },
       "expire_time": {
         "Type": "String",
-        "Computed": true
+        "Computed": true,
+        "Deprecated": "attribute `expire_time` is deprecated for optimizing outputs"
       },
       "internal": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "ip_set": {
         "Type": "List",
@@ -366,7 +576,8 @@
       },
       "name": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "private_ip": {
         "Type": "String",
@@ -384,7 +595,11 @@
       },
       "tag": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Default"
+        }
       },
       "vpc_id": {
         "Type": "String",
@@ -403,7 +618,11 @@
       },
       "port": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "80"
+        }
       },
       "private_ip": {
         "Type": "String",
@@ -415,7 +634,9 @@
       },
       "resource_type": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Computed": true,
+        "Deprecated": "attribute `resource_type` is deprecated for optimizing parameters"
       },
       "status": {
         "Type": "String",
@@ -440,7 +661,11 @@
       },
       "listen_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "request_proxy"
+        }
       },
       "load_balancer_id": {
         "Type": "String",
@@ -448,11 +673,16 @@
       },
       "method": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "roundrobin"
+        }
       },
       "name": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "path": {
         "Type": "String",
@@ -466,11 +696,19 @@
       },
       "persistence_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "none"
+        }
       },
       "port": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "80"
+        }
       },
       "protocol": {
         "Type": "String",
@@ -513,6 +751,43 @@
         ]
       }
     },
+    "ucloud_lb_ssl": {
+      "ca_cert": {
+        "Type": "String",
+        "Optional": true
+      },
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "private_key": {
+        "Type": "String",
+        "Required": true
+      },
+      "user_cert": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "ucloud_lb_ssl_attachment": {
+      "listener_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "load_balancer_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "ssl_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "ucloud_security_group": {
       "create_time": {
         "Type": "String",
@@ -520,7 +795,8 @@
       },
       "name": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "remark": {
         "Type": "String",
@@ -535,30 +811,50 @@
           "Info": {
             "cidr_block": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "0.0.0.0/0"
+              }
             },
             "policy": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "accept"
+              }
             },
             "port_range": {
               "Type": "String",
-              "Required": true
+              "Optional": true
             },
             "priority": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "high"
+              }
             },
             "protocol": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "tcp"
+              }
             }
           }
         }
       },
       "tag": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Default"
+        }
       }
     },
     "ucloud_subnet": {
@@ -572,7 +868,8 @@
       },
       "name": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "remark": {
         "Type": "String",
@@ -581,9 +878,47 @@
       },
       "tag": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Default"
+        }
       },
       "vpc_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "ucloud_udpn_connection": {
+      "bandwidth": {
+        "Type": "Int",
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "2"
+        }
+      },
+      "charge_type": {
+        "Type": "String",
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "month"
+        }
+      },
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "duration": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "expire_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "peer_region": {
         "Type": "String",
         "Required": true
       }
@@ -603,7 +938,8 @@
       },
       "name": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "network_info": {
         "Type": "List",
@@ -625,7 +961,11 @@
       },
       "tag": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "Default"
+        }
       },
       "update_time": {
         "Type": "String",
@@ -649,6 +989,204 @@
     }
   },
   "data-sources": {
+    "ucloud_db_instances": {
+      "availability_zone": {
+        "Type": "String",
+        "Optional": true
+      },
+      "db_instances": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "availability_zone": {
+              "Type": "String",
+              "Computed": true
+            },
+            "backup_begin_time": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "backup_black_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "backup_count": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "backup_date": {
+              "Type": "String",
+              "Computed": true
+            },
+            "charge_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "create_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "engine": {
+              "Type": "String",
+              "Computed": true
+            },
+            "engine_version": {
+              "Type": "String",
+              "Computed": true
+            },
+            "expire_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "instance_storage": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "instance_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "modify_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "standby_zone": {
+              "Type": "String",
+              "Computed": true
+            },
+            "status": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnet_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tag": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vpc_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      }
+    },
+    "ucloud_disks": {
+      "disk_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "disks": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "availability_zone": {
+              "Type": "String",
+              "Computed": true
+            },
+            "charge_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "create_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "disk_size": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "disk_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "expire_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "status": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tag": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      }
+    },
     "ucloud_eips": {
       "eips": {
         "Type": "List",
@@ -719,6 +1257,10 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
       },
       "output_file": {
         "Type": "String",
@@ -816,9 +1358,472 @@
         "Computed": true
       }
     },
+    "ucloud_instances": {
+      "availability_zone": {
+        "Type": "String",
+        "Optional": true
+      },
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "instances": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "auto_renew": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "availability_zone": {
+              "Type": "String",
+              "Computed": true
+            },
+            "charge_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "cpu": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "create_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "disk_set": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "id": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "is_boot": {
+                    "Type": "Bool",
+                    "Computed": true
+                  },
+                  "size": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "expire_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "instance_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ip_set": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "internet_type": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "ip": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "memory": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "remark": {
+              "Type": "String",
+              "Computed": true
+            },
+            "status": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tag": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      }
+    },
+    "ucloud_lb_attachments": {
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "lb_attachments": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "private_ip": {
+              "Type": "String",
+              "Computed": true
+            },
+            "resource_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "status": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "listener_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "load_balancer_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      }
+    },
+    "ucloud_lb_listeners": {
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "lb_listeners": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "domain": {
+              "Type": "String",
+              "Computed": true
+            },
+            "health_check_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "idle_timeout": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "listen_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "method": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "path": {
+              "Type": "String",
+              "Computed": true
+            },
+            "persistence": {
+              "Type": "String",
+              "Computed": true
+            },
+            "persistence_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Computed": true
+            },
+            "status": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "load_balancer_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      }
+    },
+    "ucloud_lb_rules": {
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "lb_rules": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "domain": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "path": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "listener_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "load_balancer_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      }
+    },
+    "ucloud_lb_ssls": {
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "lb_ssls": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "create_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      }
+    },
+    "ucloud_lbs": {
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "lbs": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "create_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "internal": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "ip_set": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "internet_type": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "ip": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "private_ip": {
+              "Type": "String",
+              "Computed": true
+            },
+            "remark": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnet_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tag": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vpc_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "subnet_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "ucloud_projects": {
       "is_finance": {
         "Type": "Bool",
+        "Optional": true
+      },
+      "name_regex": {
+        "Type": "String",
         "Optional": true
       },
       "output_file": {
@@ -867,10 +1872,228 @@
         "Computed": true
       }
     },
+    "ucloud_security_groups": {
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "security_groups": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "create_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "remark": {
+              "Type": "String",
+              "Computed": true
+            },
+            "rules": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "cidr_block": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "policy": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "port_range": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "priority": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "protocol": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "tag": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "ucloud_subnets": {
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "subnets": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cidr_block": {
+              "Type": "String",
+              "Computed": true
+            },
+            "create_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "remark": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tag": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "ucloud_vpcs": {
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "vpcs": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cidr_blocks": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "create_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tag": {
+              "Type": "String",
+              "Computed": true
+            },
+            "update_time": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      }
+    },
     "ucloud_zones": {
       "output_file": {
         "Type": "String",
         "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
       },
       "zones": {
         "Type": "List",

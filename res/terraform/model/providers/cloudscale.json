@@ -1,12 +1,14 @@
 {
+  ".schema_version": "1",
   "name": "cloudscale",
   "type": "provider",
-  "version": "v1.0.1-8-g33b91a5",
+  "version": "v1.1.0",
   "provider": {
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "The token for API operations."
+      "Description": "The token for API operations.",
+      "DefaultFunc": "ENV(CLOUDSCALE_TOKEN)"
     }
   },
   "resources": {
@@ -42,6 +44,10 @@
       }
     },
     "cloudscale_server": {
+      "allow_stopping_for_update": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "anti_affinity_uuid": {
         "Type": "String",
         "Optional": true
@@ -116,6 +122,18 @@
         "Type": "String",
         "Required": true
       },
+      "private_ipv4_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "public_ipv4_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "public_ipv6_address": {
+        "Type": "String",
+        "Computed": true
+      },
       "ssh_fingerprints": {
         "Type": "List",
         "Computed": true,
@@ -182,9 +200,39 @@
             "type": {
               "Type": "String",
               "Computed": true
+            },
+            "uuid": {
+              "Type": "String",
+              "Computed": true
             }
           }
         }
+      }
+    },
+    "cloudscale_volume": {
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "server_uuids": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "size_gb": {
+        "Type": "Int",
+        "Required": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true
       }
     }
   },

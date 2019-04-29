@@ -1,30 +1,35 @@
 {
+  ".schema_version": "1",
   "name": "github",
   "type": "provider",
-  "version": "v1.3.0-13-g4238b0f",
+  "version": "v1.3.0",
   "provider": {
     "base_url": {
       "Type": "String",
       "Optional": true,
       "Description": "The GitHub Base API URL",
-      "Default": {
-        "Type": "string"
-      }
+      "DefaultFunc": "ENV(GITHUB_BASE_URL)"
     },
     "insecure": {
       "Type": "Bool",
       "Optional": true,
-      "Description": "Whether server should be accessed without verifying the TLS certificate."
+      "Description": "Whether server should be accessed without verifying the TLS certificate.",
+      "Default": {
+        "Type": "bool",
+        "Value": "false"
+      }
     },
     "organization": {
       "Type": "String",
       "Required": true,
-      "Description": "The GitHub organization name to manage."
+      "Description": "The GitHub organization name to manage.",
+      "DefaultFunc": "ENV(GITHUB_ORGANIZATION)"
     },
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "The OAuth token used to connect to GitHub."
+      "Description": "The OAuth token used to connect to GitHub.",
+      "DefaultFunc": "ENV(GITHUB_TOKEN)"
     }
   },
   "resources": {
@@ -35,7 +40,11 @@
       },
       "enforce_admins": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "etag": {
         "Type": "String",
@@ -54,7 +63,11 @@
           "Info": {
             "dismiss_stale_reviews": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "dismissal_teams": {
               "Type": "Set",
@@ -75,7 +88,11 @@
             "include_admins": {
               "Type": "Bool",
               "Optional": true,
-              "Deprecated": "Use enforce_admins instead"
+              "Deprecated": "Use enforce_admins instead",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "require_code_owner_reviews": {
               "Type": "Bool",
@@ -102,11 +119,19 @@
             "include_admins": {
               "Type": "Bool",
               "Optional": true,
-              "Deprecated": "Use enforce_admins instead"
+              "Deprecated": "Use enforce_admins instead",
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "strict": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             }
           }
         }
@@ -171,7 +196,11 @@
       },
       "role": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "member"
+        }
       },
       "username": {
         "Type": "String",
@@ -199,7 +228,11 @@
     "github_organization_webhook": {
       "active": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "configuration": {
         "Type": "List",
@@ -265,19 +298,35 @@
     "github_repository": {
       "allow_merge_commit": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "allow_rebase_merge": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "allow_squash_merge": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "archived": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "auto_init": {
         "Type": "Bool",
@@ -367,13 +416,13 @@
       }
     },
     "github_repository_collaborator": {
-      "invitation_id": {
-        "Type": "String",
-        "Computed": true
-      },
       "permission": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "push"
+        }
       },
       "repository": {
         "Type": "String",
@@ -395,7 +444,11 @@
       },
       "read_only": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "repository": {
         "Type": "String",
@@ -431,7 +484,11 @@
     "github_repository_webhook": {
       "active": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "configuration": {
         "Type": "List",
@@ -507,7 +564,11 @@
       },
       "privacy": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "secret"
+        }
       },
       "slug": {
         "Type": "String",
@@ -521,7 +582,11 @@
       },
       "role": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "member"
+        }
       },
       "team_id": {
         "Type": "String",
@@ -539,7 +604,11 @@
       },
       "permission": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "pull"
+        }
       },
       "repository": {
         "Type": "String",
@@ -562,12 +631,6 @@
       "key_id": {
         "Type": "String",
         "Computed": true
-      }
-    },
-    "github_user_invitation_accepter": {
-      "invitation_id": {
-        "Type": "String",
-        "Required": true
       }
     },
     "github_user_ssh_key": {

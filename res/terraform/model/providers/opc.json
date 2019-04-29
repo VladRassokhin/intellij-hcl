@@ -1,60 +1,62 @@
 {
+  ".schema_version": "1",
   "name": "opc",
   "type": "provider",
-  "version": "v1.3.1-1-gaa3cddf",
+  "version": "v1.3.4",
   "provider": {
     "endpoint": {
       "Type": "String",
       "Optional": true,
-      "Description": "The HTTP endpoint for OPC API operations."
+      "Description": "The HTTP endpoint for OPC API operations.",
+      "DefaultFunc": "ENV(OPC_ENDPOINT)"
     },
     "identity_domain": {
       "Type": "String",
       "Required": true,
-      "Description": "The OPC identity domain for API operations"
+      "Description": "The OPC identity domain for API operations",
+      "DefaultFunc": "ENV(OPC_IDENTITY_DOMAIN)"
     },
     "insecure": {
       "Type": "Bool",
       "Optional": true,
       "Description": "Skip TLS Verification for self-signed certificates. Should only be used if absolutely required.",
-      "Default": {
-        "Type": "bool",
-        "Value": "false"
-      }
+      "DefaultFunc": "ENV(OPC_INSECURE)"
     },
     "lbaas_endpoint": {
       "Type": "String",
       "Optional": true,
-      "Description": "The HTTP endpoint for the Load Balancer Classic service."
+      "Description": "The HTTP endpoint for the Load Balancer Classic service.",
+      "DefaultFunc": "ENV(OPC_LBAAS_ENDPOINT)"
     },
     "max_retries": {
       "Type": "Int",
       "Optional": true,
       "Description": "Maximum number retries to wait for a successful response when operating on resources within OPC (defaults to 1)",
-      "Default": {
-        "Type": "int",
-        "Value": "1"
-      }
+      "DefaultFunc": "ENV(OPC_MAX_RETRIES)"
     },
     "password": {
       "Type": "String",
       "Required": true,
-      "Description": "The user password for OPC API operations."
+      "Description": "The user password for OPC API operations.",
+      "DefaultFunc": "ENV(OPC_PASSWORD)"
     },
     "storage_endpoint": {
       "Type": "String",
       "Optional": true,
-      "Description": "The HTTP endpoint for Oracle Storage operations."
+      "Description": "The HTTP endpoint for Oracle Storage operations.",
+      "DefaultFunc": "ENV(OPC_STORAGE_ENDPOINT)"
     },
     "storage_service_id": {
       "Type": "String",
       "Optional": true,
-      "Description": "The Storage Service ID. "
+      "Description": "The Storage Service ID. ",
+      "DefaultFunc": "ENV(OPC_STORAGE_SERVICE_ID)"
     },
     "user": {
       "Type": "String",
       "Required": true,
-      "Description": "The user name for OPC API operations."
+      "Description": "The user name for OPC API operations.",
+      "DefaultFunc": "ENV(OPC_USERNAME)"
     }
   },
   "resources": {
@@ -65,7 +67,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "name": {
         "Type": "String",
@@ -87,7 +93,11 @@
     "opc_compute_image_list": {
       "default": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "1"
+        }
       },
       "description": {
         "Type": "String",
@@ -148,7 +158,11 @@
       },
       "desired_state": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "compute.InstanceDesiredState",
+          "Value": "running"
+        }
       },
       "domain": {
         "Type": "String",
@@ -268,7 +282,11 @@
             },
             "shared_network": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "vnic": {
               "Type": "String",
@@ -323,7 +341,11 @@
       },
       "reverse_dns": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "shape": {
         "Type": "String",
@@ -515,7 +537,11 @@
       },
       "public_napt_enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "tags": {
         "Type": "List",
@@ -564,7 +590,11 @@
       },
       "parent_pool": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "/oracle/public/ippool"
+        }
       },
       "permanent": {
         "Type": "Bool",
@@ -704,6 +734,7 @@
             },
             "instance_attributes": {
               "Type": "String",
+              "Optional": true,
               "Computed": true
             },
             "ip_address": {
@@ -791,7 +822,11 @@
                   },
                   "shared_network": {
                     "Type": "Bool",
-                    "Optional": true
+                    "Optional": true,
+                    "Default": {
+                      "Type": "bool",
+                      "Value": "false"
+                    }
                   },
                   "vnic": {
                     "Type": "String",
@@ -810,7 +845,11 @@
             },
             "persistent": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "false"
+              }
             },
             "placement_requirements": {
               "Type": "List",
@@ -850,7 +889,11 @@
             },
             "reverse_dns": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "shape": {
               "Type": "String",
@@ -986,7 +1029,11 @@
       },
       "disabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "name": {
         "Type": "String",
@@ -1067,11 +1114,19 @@
       },
       "outbound_cidr_policy": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "permit"
+        }
       },
       "policy": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "deny"
+        }
       }
     },
     "opc_compute_security_protocol": {
@@ -1089,7 +1144,11 @@
       },
       "ip_protocol": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "string",
+          "Value": "all"
+        }
       },
       "name": {
         "Type": "String",
@@ -1139,7 +1198,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "flow_direction": {
         "Type": "String",
@@ -1183,6 +1246,10 @@
       }
     },
     "opc_compute_snapshot": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
       "account": {
         "Type": "String",
         "Optional": true
@@ -1212,7 +1279,11 @@
     "opc_compute_ssh_key": {
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "key": {
         "Type": "String",
@@ -1245,7 +1316,11 @@
       ],
       "bootable": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "description": {
         "Type": "String",
@@ -1262,7 +1337,11 @@
       },
       "image_list_entry": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "int",
+          "Value": "-1"
+        }
       },
       "machine_image": {
         "Type": "String",
@@ -1319,7 +1398,11 @@
       },
       "storage_type": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "compute.StorageVolumeKind",
+          "Value": "/oracle/public/storage/default"
+        }
       },
       "tags": {
         "Type": "List",
@@ -1346,7 +1429,11 @@
       },
       "collocated": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "description": {
         "Type": "String",
@@ -1363,7 +1450,11 @@
       },
       "parent_volume_bootable": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "false"
+        }
       },
       "platform": {
         "Type": "String",
@@ -1469,7 +1560,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "ike_identifier": {
         "Type": "String",
@@ -1513,7 +1608,11 @@
             },
             "lifetime": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "0"
+              }
             }
           }
         }
@@ -1535,7 +1634,11 @@
             },
             "lifetime": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "0"
+              }
             }
           }
         }
@@ -1555,7 +1658,11 @@
       },
       "require_perfect_forward_secrecy": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "tags": {
         "Type": "List",
@@ -1627,7 +1734,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "load_balancer": {
         "Type": "String",
@@ -1721,7 +1832,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "ip_network": {
         "Type": "String",
@@ -1934,15 +2049,27 @@
             },
             "http_error_code": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "503"
+              }
             },
             "logging_level": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "warn"
+              }
             },
             "rate_limiting_criteria": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "server"
+              }
             },
             "requests_per_second": {
               "Type": "Int",
@@ -1954,7 +2081,11 @@
             },
             "zone_memory_size": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "10"
+              }
             }
           }
         }
@@ -2168,7 +2299,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true
+        "Optional": true,
+        "Default": {
+          "Type": "bool",
+          "Value": "true"
+        }
       },
       "health_check": {
         "Type": "List",
@@ -2188,31 +2323,58 @@
             },
             "enabled": {
               "Type": "Bool",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "bool",
+                "Value": "true"
+              }
             },
             "healthy_threshold": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "5"
+              }
             },
             "interval": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "30"
+              }
             },
             "path": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string"
+              }
             },
             "timeout": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "20"
+              }
             },
             "type": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "string",
+                "Value": "http"
+              }
             },
             "unhealthy_threshold": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Default": {
+                "Type": "int",
+                "Value": "7"
+              }
             }
           }
         }
