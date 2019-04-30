@@ -46,7 +46,8 @@ Here `TERRAFORM_GLOBAL_DIR` stands for `$HOME/.terraform.d` on Linux/macOS and `
 
 :information_source: Recommended approach is to clone [special repo](https://github.com/VladRassokhin/terraform-metadata) as `TERRAFORM_GLOBAL_DIR/metadata-repo` 
 and later update it from time to time.
-:warning: As of plugin version 0.6.14 IntelliJ restart is required once model is updated
+
+:warning: As of plugin version 0.6.14 IntelliJ restart is required once metadata is updated on disk
 
 Linux/macOS user may use commands like:
 ```bash
