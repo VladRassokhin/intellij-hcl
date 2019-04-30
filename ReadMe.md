@@ -30,3 +30,31 @@ The HCL format is used for [Nomad](https://www.nomadproject.io/)(`.nomad` files)
 * Find usages for resources, providers, variables
 
 #### Terraform configs Interpolation Language
+
+
+### Terraform External Metadata
+
+Starting from version 0.6.14 it's possible to use external source of Terraform model.
+Previously plugins updates were necessary once something was updated in Terraform itself or providers.
+
+Plugin reads metadata from specially-formatted json files located at (in order):
+ * `TERRAFORM_GLOBAL_DIR/schemas` (intended for schemas for your custom providers/provisioners) and 
+ * `TERRAFORM_GLOBAL_DIR/metadata-repo/terraform/model` (semi-automatically updated schemas) and
+ * Plugin itself
+
+Here `TERRAFORM_GLOBAL_DIR` stands for `$HOME/.terraform.d` on Linux/macOS and `%APPDATA%/terraform.d` on Windows.
+
+:information_source: Recommended approach is to clone [special repo](https://github.com/VladRassokhin/terraform-metadata) as `TERRAFORM_GLOBAL_DIR/metadata-repo` 
+and later update it from time to time.
+:warning: As of plugin version 0.6.14 IntelliJ restart is required once model is updated
+
+Linux/macOS user may use commands like:
+```bash
+# To initial clone
+mkdir -p "$HOME/.terraform.d/"
+git clone https://github.com/VladRassokhin/terraform-metadata "$HOME/.terraform.d/metadata-repo"
+
+# To update metadata
+git -C "$HOME/.terraform.d/metadata-repo" pull
+# Don't forget to restart IntelliJ after that
+```
