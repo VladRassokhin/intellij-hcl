@@ -20,13 +20,16 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
+import org.intellij.plugins.resettableLazy
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 class TypeModelProvider {
-  private val _model: TypeModel by lazy {
+  private val _model_lazy = resettableLazy {
     TypeModelLoader(external).load() ?: TypeModel()
   }
+  private val _model: TypeModel by _model_lazy
+
   val external: Map<String, Additional> by lazy { loadExternalInformation() }
   val ignored_references: Set<String> by lazy { loadIgnoredReferences() }
 
@@ -59,6 +62,17 @@ class TypeModelProvider {
       if (ourDisposers.putIfAbsent(project, disposable) == null) {
         Disposer.register(project, disposable)
       }
+    }
+
+    @JvmStatic
+    fun reloadModel(project: Project) {
+      // Unload, global way
+      ourModels.clear()
+      val service = ServiceManager.getService(TypeModelProvider::class.java)
+      service._model_lazy.reset()
+
+      // Load, global way
+      ServiceManager.getService(TypeModelProvider::class.java)._model
     }
 
     private val ourModels: MutableMap<Project, TypeModel> = ConcurrentHashMap()

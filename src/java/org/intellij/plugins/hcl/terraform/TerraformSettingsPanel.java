@@ -15,18 +15,28 @@
  */
 package org.intellij.plugins.hcl.terraform;
 
+import com.intellij.openapi.application.ex.ApplicationManagerEx;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.ConfigurableUi;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.Comparing;
+import org.intellij.plugins.hcl.terraform.config.model.TypeModelProvider;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
 public class TerraformSettingsPanel implements ConfigurableUi<TerraformToolProjectSettings> {
+  @NotNull
+  private final Project myProject;
   private JPanel myWholePanel;
   private TextFieldWithBrowseButton myTerraformPathField;
+  private JButton myReloadTerraformMetadataModelButton;
+
+  public TerraformSettingsPanel(@NotNull Project project) {
+    myProject = project;
+  }
 
   @NotNull
   @Override
@@ -40,6 +50,7 @@ public class TerraformSettingsPanel implements ConfigurableUi<TerraformToolProje
         fileChooserDescriptor,
         TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT
     );
+    myReloadTerraformMetadataModelButton.addActionListener(e -> reloadModel());
 
     return myWholePanel;
   }
@@ -57,5 +68,16 @@ public class TerraformSettingsPanel implements ConfigurableUi<TerraformToolProje
   @Override
   public void reset(@NotNull TerraformToolProjectSettings settings) {
     myTerraformPathField.setText(settings.getTerraformPath());
+  }
+
+  private void reloadModel() {
+    myReloadTerraformMetadataModelButton.setEnabled(false);
+    ApplicationManagerEx.getApplicationEx().runProcessWithProgressSynchronously(() -> {
+      try {
+        TypeModelProvider.reloadModel(myProject);
+      } finally {
+        myReloadTerraformMetadataModelButton.setEnabled(true);
+      }
+    }, "Reloading Terraform Model", false, myProject, getComponent());
   }
 }

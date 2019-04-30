@@ -35,6 +35,6 @@ public class TerraformToolConfigurable extends ConfigurableBase<TerraformSetting
 
   @Override
   protected TerraformSettingsPanel createUi() {
-    return new TerraformSettingsPanel();
+    return new TerraformSettingsPanel(myProject);
   }
 }
