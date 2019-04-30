@@ -2,6 +2,128 @@
 
 ### For newest releases see `<change-notes>` in [plugin.xml](https://github.com/VladRassokhin/intellij-hcl/blob/master/res/META-INF/plugin.xml)
 
+#### 0.6.13
+
+*   Fixed order of unary and select operations in interpolations (#179)  
+*   Improved formatting (#141)  
+*   Fixed exception in properties completion (#182)  
+*   Reduced plugin memory consumption, speed up completion/inspections  
+*   Updated model data to match Terraform v0.11.11  
+
+#### 0.6.12
+
+*   Added 'Conflicting properties' inspection  
+*   Added 'Missing modules' inspection with 'run terraform get' quick fix  
+*   Fixed heredoc formatting inside arrays (#153)  
+*   Improved module references support  
+*   Updated model data to match Terraform v0.11.8  
+
+#### 0.6.11
+
+*   Fixed 'Condition should be boolean' inspection on references (#147)  
+*   Fixed 'Argument rangeInElement' exception (#151)  
+*   Updated model data to match Terraform v0.11.7  
+
+#### 0.6.10
+
+*   Support `//noinspection` comments, quick fix to suppress inspections (#138)  
+*   Fixed parsing escaped quotes in interpolations (#111)  
+*   Improved completion items description rendering (#143)  
+*   Completion/Navigation for module providers mapping (#130)  
+*   Fixed missing properties inspection for newly added 'module' block (#139)  
+*   Support 'timeouts' block in resources (#145)  
+*   Updated model data to match Terraform v0.11.5  
+
+#### 0.6.9.5
+
+*   Updated model data to match Terraform v0.11.3  
+
+#### 0.6.9.4
+
+*   Updated model data to match Terraform v0.11.2  
+
+#### 0.6.9.3
+
+*   Show gutter 'run' icon for resource names, not full blocks (#124)  
+*   Updated model data to match Terraform v0.11.1  
+
+#### 0.6.9.2
+
+*   Fix exception on IntelliJ platform older than 2017.3 (#123)  
+
+#### 0.6.9.1
+
+*   Fix inspection for duplicated properties inside one block (#122)  
+
+#### 0.6.9
+
+*   Added `terraform fmt` template for `File Watchers` plugin(#71)  
+*   Fixed rename refactoring not accepting correct names (#112)  
+*   Ability to select line comment prefix (`//` or `#`) (#81, #120)  
+*   Inspection for duplicated properties inside one block (#119)  
+*   Updated model data to match Terraform v0.11.0  
+
+#### 0.6.8
+
+*   Updated model data to match Terraform v0.10.8  
+
+#### 0.6.7
+
+*   Add action to run 'terraform fmt' (#71)  
+*   Add support for 'locals' block and related completion, navigation, find usages (#106)  
+*   Add 'Go to Definition' support for module parameters (#99)  
+
+#### 0.6.6
+
+*   Fixed quotes and right curly brace handling in interpolations in TF files (#102)  
+*   Fixed environment variables handling in run configurations (#101)  
+*   Context run configurations for files and single resources  
+*   Gutter markers for per-resource run configurations  
+*   Updated model data to match Terraform v0.10.3  
+
+#### 0.6.5
+
+*   Added simple Terraform run configuration  
+*   Report missing braces in some cases (#94)  
+*   Some minor fixes  
+*   Updated model data to match Terraform v0.10.0  
+
+#### 0.6.4
+
+*   Inspection for duplicated output/variable definition  
+*   Fixed compatibility with IntelliJ 172 branch (#92)  
+*   Fixed autoinsertion of '}' after typing '${' in some cases (#91)  
+*   Some hexadecimal numbers were highlighted erroneous (#90)  
+
+#### 0.6.3
+
+*   Support for `backend` blocks in `terraform` block  
+*   Custom folding support: `region/endregion` and `<editor-fold>  
+*   Required properties added automatically on resource/data type completion and in generators  
+*   Smart completion in interpolations provides best suited results for some properties, e.g. vpc_id in aws resources  
+*   Move statement up/down doesn't breaks syntax anymore  
+*   Other improvements and bugfixes in completion  
+*   Updated model data to match Terraform v0.9.5  
+
+#### 0.6.2
+
+*   Support `${terraform.env}` interpolation  
+*   Improve resolving for 'computed' map variables  
+*   Updated model data to match Terraform v0.9.4  
+
+#### 0.6.1
+
+*   Added 'Add missing variable' quick fix  
+*   Do not highlight terraform_remote_state parameters as missing  
+*   Updated Terraform model data to match TF v0.9.3  
+
+#### 0.6.0
+
+*   Added 'Introduce Variable' refactoring (#50)  
+*   Resource and Data Source completion variants for unused providers no longer shown in basic completion (#77)  
+*   Added completion, Go To Definition and find usages from module 'source' property for relative path cases (#73)  
+*   Updated terraform model data to match Terraform v0.9.0
+
 #### 0.5.12.2
 
 *   Updated terraform model data to match Terraform v0.8.6  
