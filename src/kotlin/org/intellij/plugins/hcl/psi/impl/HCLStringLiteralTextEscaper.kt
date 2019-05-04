@@ -30,15 +30,15 @@ class HCLStringLiteralTextEscaper(host: HCLStringLiteralMixin,
     val subText:String = rangeInsideHost.substring(myHost.text)
     val array = IntArray(subText.length + 1)
     val success = parseStringCharacters(subText, outChars, array, interpolations)
-    if (success) outSourceOffsets = array
+    outSourceOffsets = array
     return success
   }
 
   override fun getOffsetInHost(offsetInDecoded: Int, rangeInsideHost: TextRange): Int {
-    val offsets = outSourceOffsets ?: throw IllegalStateException("#decode was not called or returned 'false'")
+    val offsets = outSourceOffsets ?: throw IllegalStateException("#decode was not called")
     val result = if (offsetInDecoded < offsets.size) offsets[offsetInDecoded] else -1
     if (result == -1) return -1
-    return (if (result <= rangeInsideHost.length) result else rangeInsideHost.length) + rangeInsideHost.startOffset
+    return Math.min(result, rangeInsideHost.length) + rangeInsideHost.startOffset
   }
 
   override fun getRelevantTextRange(): TextRange {
