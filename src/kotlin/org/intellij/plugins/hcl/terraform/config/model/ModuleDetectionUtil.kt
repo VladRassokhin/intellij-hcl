@@ -24,6 +24,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
+import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
@@ -115,7 +116,7 @@ object ModuleDetectionUtil {
 
           if (module != null) {
             LOG.debug("Found module $module")
-            val path = module.full
+            val path = FileUtil.toSystemIndependentName(module.full)
             var relative = manifest.context.findFileByRelativePath(path)
             if (relative != null) {
               LOG.debug("Absolute module dir: $relative")
