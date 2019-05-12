@@ -36,6 +36,7 @@ import com.intellij.psi.util.CachedValuesManager
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLStringLiteral
 import org.intellij.plugins.hcl.psi.getNameElementUnquoted
+import org.intellij.plugins.hcl.terraform.config.model.version.MalformedConstraintException
 import org.intellij.plugins.hcl.terraform.config.model.version.Version
 import org.intellij.plugins.hcl.terraform.config.model.version.VersionConstraint
 import java.util.*
@@ -191,7 +192,12 @@ object ModuleDetectionUtil {
 
   private fun getVersionConstraint(constraint: String?): VersionConstraint {
     if (constraint == null) return VersionConstraint.AnyVersion
-    return VersionConstraint.parse(constraint) ?: return VersionConstraint.AnyVersion
+    try {
+      return VersionConstraint.parse(constraint)
+    } catch (e: MalformedConstraintException) {
+      logErrorAndFailInInternalMode(ApplicationManager.getApplication(), "Cannot parse version constraint '$constraint'", e)
+      return VersionConstraint.AnyVersion
+    }
   }
 
   // Based on configs/configload/source_addr.go:isLocalSourceAddr
