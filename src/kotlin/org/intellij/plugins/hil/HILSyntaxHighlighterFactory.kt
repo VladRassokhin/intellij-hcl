@@ -65,26 +65,26 @@ class HILSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
     val ourAttributes: Map<IElementType, TextAttributesKey> = HashMap()
 
     init {
-      SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.TIL_BRACES, TIL_BRACES)
-      SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.TIL_BRACKETS, TIL_BRACKETS)
-      SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.TIL_PARENS, TIL_PARENS)
-      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_COMMA, COMMA)
-      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_DOT, OP_DOT)
-      SyntaxHighlighterBase.fillMap(ourAttributes, HILTokenTypes.IL_ALL_OPERATORS, TIL_OPERATOR)
-      SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.STRING_LITERALS, TIL_STRING)
-      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_NUMBER, NUMBER)
-      SyntaxHighlighterBase.fillMap(ourAttributes, HILParserDefinition.TIL_KEYWORDS, TIL_KEYWORD)
-      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_IDENTIFIER, ID)
-      SyntaxHighlighterBase.fillMap(ourAttributes, HighlighterColors.BAD_CHARACTER, TokenType.BAD_CHARACTER)
+      fillMap(ourAttributes, HILParserDefinition.TIL_BRACES, TIL_BRACES)
+      fillMap(ourAttributes, HILParserDefinition.TIL_BRACKETS, TIL_BRACKETS)
+      fillMap(ourAttributes, HILParserDefinition.TIL_PARENS, TIL_PARENS)
+      fillMap(ourAttributes, TIL_COMMA, COMMA)
+      fillMap(ourAttributes, TIL_DOT, OP_DOT)
+      fillMap(ourAttributes, HILTokenTypes.IL_ALL_OPERATORS, TIL_OPERATOR)
+      fillMap(ourAttributes, HILParserDefinition.STRING_LITERALS, TIL_STRING)
+      fillMap(ourAttributes, TIL_NUMBER, NUMBER)
+      fillMap(ourAttributes, HILParserDefinition.TIL_KEYWORDS, TIL_KEYWORD)
+      fillMap(ourAttributes, TIL_IDENTIFIER, ID)
+      fillMap(ourAttributes, HighlighterColors.BAD_CHARACTER, TokenType.BAD_CHARACTER)
 
-      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_VALID_ESCAPE, StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN)
-      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_INVALID_ESCAPE, StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN)
-      SyntaxHighlighterBase.fillMap(ourAttributes, TIL_INVALID_ESCAPE, StringEscapesTokenTypes.INVALID_UNICODE_ESCAPE_TOKEN)
+      fillMap(ourAttributes, TIL_VALID_ESCAPE, StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN)
+      fillMap(ourAttributes, TIL_INVALID_ESCAPE, StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN)
+      fillMap(ourAttributes, TIL_INVALID_ESCAPE, StringEscapesTokenTypes.INVALID_UNICODE_ESCAPE_TOKEN)
     }
 
 
     override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
-      return SyntaxHighlighterBase.pack(ourAttributes[tokenType])
+      return pack(ourAttributes[tokenType])
     }
 
     override fun getHighlightingLexer(): Lexer {

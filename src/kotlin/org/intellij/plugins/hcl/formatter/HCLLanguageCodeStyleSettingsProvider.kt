@@ -43,7 +43,7 @@ open class HCLLanguageCodeStyleSettingsProvider(private val language:Language = 
     """
   }
 
-  override fun getCodeSample(settingsType: LanguageCodeStyleSettingsProvider.SettingsType): String {
+  override fun getCodeSample(settingsType: SettingsType): String {
     return SAMPLE
   }
 
@@ -56,18 +56,18 @@ open class HCLLanguageCodeStyleSettingsProvider(private val language:Language = 
     return commonSettings
   }
 
-  override fun customizeSettings(consumer: CodeStyleSettingsCustomizable, settingsType: LanguageCodeStyleSettingsProvider.SettingsType) {
+  override fun customizeSettings(consumer: CodeStyleSettingsCustomizable, settingsType: SettingsType) {
     @Suppress("NON_EXHAUSTIVE_WHEN")
     when (settingsType) {
-      LanguageCodeStyleSettingsProvider.SettingsType.SPACING_SETTINGS -> {
+      SettingsType.SPACING_SETTINGS -> {
         consumer.showStandardOptions("SPACE_WITHIN_BRACKETS", "SPACE_WITHIN_BRACES", "SPACE_AFTER_COMMA", "SPACE_BEFORE_COMMA", "SPACE_AROUND_ASSIGNMENT_OPERATORS")
         consumer.renameStandardOption("SPACE_WITHIN_BRACES", "Braces")
         consumer.renameStandardOption("SPACE_AROUND_ASSIGNMENT_OPERATORS", "Equals")
       }
-      LanguageCodeStyleSettingsProvider.SettingsType.BLANK_LINES_SETTINGS -> {
+      SettingsType.BLANK_LINES_SETTINGS -> {
         consumer.showStandardOptions("KEEP_BLANK_LINES_IN_CODE")
       }
-      LanguageCodeStyleSettingsProvider.SettingsType.WRAPPING_AND_BRACES_SETTINGS -> {
+      SettingsType.WRAPPING_AND_BRACES_SETTINGS -> {
         consumer.showStandardOptions("RIGHT_MARGIN", "KEEP_LINE_BREAKS", "WRAP_LONG_LINES")
         consumer.showCustomOption(HCLCodeStyleSettings::class.java, "ARRAY_WRAPPING", "Arrays", null, CodeStyleSettingsCustomizable.WRAP_OPTIONS, CodeStyleSettingsCustomizable.WRAP_VALUES)
         consumer.showCustomOption(HCLCodeStyleSettings::class.java, "OBJECT_WRAPPING", "Objects", null, CodeStyleSettingsCustomizable.WRAP_OPTIONS, CodeStyleSettingsCustomizable.WRAP_VALUES)

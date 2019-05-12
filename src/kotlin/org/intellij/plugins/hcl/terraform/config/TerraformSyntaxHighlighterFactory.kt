@@ -23,6 +23,6 @@ import org.intellij.plugins.hcl.HCLSyntaxHighlighterFactory
 
 class TerraformSyntaxHighlighterFactory : HCLSyntaxHighlighterFactory() {
   override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): SyntaxHighlighter {
-    return HCLSyntaxHighlighterFactory.MySyntaxHighlighter(HCLLexer(TerraformParserDefinition.LexerCapabilities))
+    return MySyntaxHighlighter(HCLLexer(TerraformParserDefinition.LexerCapabilities))
   }
 }

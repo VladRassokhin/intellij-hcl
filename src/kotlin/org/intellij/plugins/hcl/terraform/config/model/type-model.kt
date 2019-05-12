@@ -175,7 +175,7 @@ object Types {
   // Separate, as could be used as String, Number, Boolean, etc
   val StringWithInjection = Type("String")
 
-  val SimpleValueTypes = setOf(Types.String, Types.Number, Types.Boolean)
+  val SimpleValueTypes = setOf(String, Number, Boolean)
 }
 
 class ResourceType(val type: String, val provider: ProviderType, vararg properties: PropertyOrBlockType) : BlockType("resource", 2, properties = *properties) {

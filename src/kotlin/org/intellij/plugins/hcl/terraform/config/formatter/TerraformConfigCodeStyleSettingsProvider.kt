@@ -55,7 +55,7 @@ resource "aws_instance" "web" {
   """
   }
 
-  override fun getCodeSample(settingsType: LanguageCodeStyleSettingsProvider.SettingsType): String {
+  override fun getCodeSample(settingsType: SettingsType): String {
     return SAMPLE + "\n" + super.getCodeSample(settingsType)
   }
 }

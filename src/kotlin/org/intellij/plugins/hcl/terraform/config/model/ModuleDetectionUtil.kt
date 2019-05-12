@@ -81,7 +81,7 @@ object ModuleDetectionUtil {
 
     val project = moduleBlock.project
 
-    val dotTerraform = ModuleDetectionUtil.getTerraformDirSomewhere(directory)
+    val dotTerraform = getTerraformDirSomewhere(directory)
     if (dotTerraform != null) {
       LOG.debug("Found .terraform directory: $dotTerraform")
       val manifestFile = getTerraformModulesManifestFile(project, dotTerraform)
@@ -313,7 +313,7 @@ object ModuleDetectionUtil {
     return PsiManager.getInstance(moduleBlock.project).findDirectory(relative)?.let { Module(it) }
   }
 
-  private fun getKeyPrefix(directory: PsiDirectory, dotTerraform: VirtualFile, manifest: ModuleDetectionUtil.ModulesManifest, name: String, source: String): Pair<String?, String?> {
+  private fun getKeyPrefix(directory: PsiDirectory, dotTerraform: VirtualFile, manifest: ModulesManifest, name: String, source: String): Pair<String?, String?> {
     // Check whether current dir is a module itself
     val relative = VfsUtilCore.getRelativePath(directory.virtualFile, dotTerraform)
     if (relative != null) {
