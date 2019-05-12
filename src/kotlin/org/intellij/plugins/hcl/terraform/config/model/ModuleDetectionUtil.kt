@@ -261,7 +261,7 @@ object ModuleDetectionUtil {
         return CachedValueProvider.Result(null, this.file)
       }
       val parsed = parseManifest(file)
-      return CachedValueProvider.Result(parsed, this.file, file)
+      return CachedValueProvider.Result(parsed, file)
     }
   }
 
