@@ -15,6 +15,7 @@
  */
 package org.intellij.plugins.hcl.terraform.config.patterns
 
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.patterns.*
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.*
@@ -98,7 +99,7 @@ object TerraformPatterns {
           .with(object: PatternCondition<HCLBlock?>("ModuleWithEmptySource") {
             override fun accepts(t: HCLBlock, context: ProcessingContext?): Boolean {
               val source = t.`object`?.findProperty("source")?.value as? HCLStringLiteral ?: return true
-              return source.value.trim().isEmpty()
+              return StringUtil.isEmptyOrSpaces(source.value)
             }
           })
 

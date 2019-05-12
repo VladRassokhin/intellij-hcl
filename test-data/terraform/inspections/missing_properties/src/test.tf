@@ -9,3 +9,5 @@ terraform {
   backend "s3" {
   }
 }
+module "test-module" {
+}

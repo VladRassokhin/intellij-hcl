@@ -66,7 +66,11 @@ class HCLBlockMissingPropertyInspection : LocalInspectionTool() {
       block.getNameElementUnquoted(0) ?: return
       val obj = block.`object` ?: return
       // TODO: Generify
-      if (ModuleWithEmptySource.accepts(block)) return
+      if (ModuleWithEmptySource.accepts(block)) {
+        // Check 'source' and report missing one
+        doCheck(block, holder, TypeModel.Module.properties)
+        return
+      }
       if (ConfigOverrideFile.accepts(block.containingFile)) return
       val properties = ModelHelper.getBlockProperties(block)
       doCheck(block, holder, properties)
