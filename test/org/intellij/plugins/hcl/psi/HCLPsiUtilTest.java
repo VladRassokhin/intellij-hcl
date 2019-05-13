@@ -28,6 +28,9 @@ public class HCLPsiUtilTest extends TestCase {
   }
 
   public void testStripQuotesUnfinished() throws Exception {
+    doTestStripQuotes("'", "");
+    doTestStripQuotes("\"", "");
+    doTestStripQuotes("\\\"", "\\\"");
     doTestStripQuotes("'a", "a");
     doTestStripQuotes("\"b", "b");
     doTestStripQuotes("\"\\\"c\\\"", "\\\"c\\\"");
