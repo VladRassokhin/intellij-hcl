@@ -45,15 +45,14 @@ class TFIncorrectVariableTypeInspection : LocalInspectionTool() {
       val typeProperty = obj.findProperty(TypeModel.Variable_Type.name)
       val defaultProperty = obj.findProperty(TypeModel.Variable_Default.name)
 
-      val expected = typeProperty?.value?.name ?: "string"
+      val typePropertyValue = typeProperty?.value
+      val expected = typePropertyValue?.name ?: return
 
       val typeVariants = (TypeModel.Variable_Type.hint as SimpleValueHint).hint
       if (expected !in typeVariants) {
-        typeProperty?.value?.let {
-          holder.registerProblem(it, "Incorrect variable type, expected " +
-              (if (typeVariants.size > 1) (typeVariants.dropLast(1).joinToString() + " or ") else "") + typeVariants.last(),
-              ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
-        }
+        holder.registerProblem(typePropertyValue, "Incorrect variable type, expected " +
+            (if (typeVariants.size > 1) (typeVariants.dropLast(1).joinToString() + " or ") else "") + typeVariants.last(),
+            ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
       }
 
       val value = defaultProperty?.value ?: return

@@ -33,3 +33,14 @@ variable "listButMap" {
 variable "weird" {
   type = "weird"
 }
+variable "infer-map" {
+  default = {
+    a = "value-a"
+  }
+}
+variable "infer-list" {
+  default = [
+    "list1",
+    "list2",
+  ]
+}
