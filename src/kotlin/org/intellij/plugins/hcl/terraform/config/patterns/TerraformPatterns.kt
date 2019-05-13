@@ -17,6 +17,7 @@ package org.intellij.plugins.hcl.terraform.config.patterns
 
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.patterns.*
+import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.*
 import org.intellij.plugins.hcl.terraform.config.TerraformFileType
@@ -102,6 +103,13 @@ object TerraformPatterns {
               return StringUtil.isEmptyOrSpaces(source.value)
             }
           })
+
+  val IsBlockNameIdentifier: PatternCondition<PsiElement> = object : PatternCondition<PsiElement>("IsBlockNameIdentifier") {
+    override fun accepts(t: PsiElement, context: ProcessingContext?): Boolean {
+      val parent = t.parent as? HCLBlock ?: return false
+      return parent.nameIdentifier === t
+    }
+  }
 
   private fun createBlockPattern(type: String): PatternCondition<HCLBlock?> {
     return object : PatternCondition<HCLBlock?>("HCLBlock($type)") {

@@ -19,6 +19,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.rename.RenameUtil;
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import org.intellij.plugins.hcl.terraform.config.psi.TerraformElementGenerator;
+import org.intellij.plugins.hcl.psi.HCLBlock;
 import org.intellij.plugins.hil.psi.ILElementGenerator;
 
 public class TerraformRenameRefactoringTest extends LightPlatformCodeInsightFixtureTestCase {
@@ -71,6 +72,23 @@ public class TerraformRenameRefactoringTest extends LightPlatformCodeInsightFixt
     doTestNameValidness(element, "*", false);
   }
 
+  public void testNewTerraformResourceNames() throws Exception {
+    final TerraformElementGenerator generator = new TerraformElementGenerator(getProject());
+    com.intellij.psi.PsiFile file = generator.createDummyFile("resource null_resource \"name\" {}");
+    HCLBlock block = (HCLBlock) file.getFirstChild();
+    final PsiElement element = block.getNameIdentifier();
+
+    doTestNameValidness(element, "origin", true);
+    doTestNameValidness(element, "with-hyphen", true);
+    doTestNameValidness(element, "with_underscore", true);
+    doTestNameValidness(element, "_with_leading_underscore", true);
+    doTestNameValidness(element, "0a", true);
+
+    doTestNameValidness(element, "-with-leading-hyphen", false);
+    doTestNameValidness(element, "with*star", false);
+    doTestNameValidness(element, "with.dot", false);
+    doTestNameValidness(element, "*", false);
+  }
 
   private static void doTestNameValidness(PsiElement element, String newName, boolean valid) {
     final boolean actual = RenameUtil.isValidName(element.getProject(), element, newName);
