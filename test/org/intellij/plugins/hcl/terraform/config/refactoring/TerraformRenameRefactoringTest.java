@@ -86,6 +86,8 @@ public class TerraformRenameRefactoringTest extends LightPlatformCodeInsightFixt
 
     doTestNameValidness(element, "-with-leading-hyphen", false);
     doTestNameValidness(element, "with*star", false);
+    doTestNameValidness(element, "with\"quote", false);
+    doTestNameValidness(element, "with\'quote", false);
     doTestNameValidness(element, "with.dot", false);
     doTestNameValidness(element, "*", false);
   }
