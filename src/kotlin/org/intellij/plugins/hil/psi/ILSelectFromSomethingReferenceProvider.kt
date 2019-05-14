@@ -51,8 +51,6 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
       return PsiReference.EMPTY_ARRAY
     }
 
-    // FIXME: Support module outputs
-
     val references = expression.references
     if (references.isNotEmpty()) {
       // If we select variable from resource or data provider
@@ -65,12 +63,10 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
       for (reference in references) {
         refs.add(HCLElementLazyReference(element, false) { incompleteCode, fake ->
           val resolved = SmartList<PsiElement>()
-          if (reference is PsiFakeAwarePolyVariantReference) {
-            resolved.addAll(reference.multiResolve(incompleteCode, fake).mapNotNull { it.element })
-          } else if (reference is PsiPolyVariantReference) {
-            resolved.addAll(reference.multiResolve(incompleteCode).mapNotNull { it.element })
-          } else {
-            reference.resolve()?.let { resolved.add(it) }
+          when (reference) {
+            is PsiFakeAwarePolyVariantReference -> resolved.addAll(reference.multiResolve(incompleteCode, fake).mapNotNull { it.element })
+            is PsiPolyVariantReference -> resolved.addAll(reference.multiResolve(incompleteCode).mapNotNull { it.element })
+            else -> reference.resolve()?.let { resolved.add(it) }
           }
           val found = SmartList<HCLElement>()
           resolved.forEach { collectReferences(it, name, found, fake) }
@@ -98,7 +94,6 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
       val resources = module?.findResources(ev, getSelectFieldText(element)!!) ?: emptyList()
       resources.map { it.nameIdentifier as HCLElement }
     })
-    // TODO: support 'module.MODULE_NAME.OUTPUT_NAME' references (in that or another provider)
   }
 
   private fun collectReferences(r: PsiElement, name: String, found: MutableList<HCLElement>, fake: Boolean) {
@@ -113,16 +108,16 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
       }
       is HCLObject -> {
         val property = r.findProperty(name)
-        val blocks = r.blockList.filter { it.nameElements.any { it.name == name } }
+        val blocks = r.blockList.filter { it.nameElements.any { element -> element.name == name } }
         if (property != null) {
           found.add(property)
-        } else if (!blocks.isEmpty()) {
+        } else if (blocks.isNotEmpty()) {
           found.addAll(blocks.map { it.nameIdentifier as HCLElement })
         }
       }
       is HCLBlock -> {
         val property = r.`object`?.findProperty(name)
-        val blocks = r.`object`?.blockList?.filter { it.nameElements.any { it.name == name } }.orEmpty()
+        val blocks = r.`object`?.blockList?.filter { it.nameElements.any { element -> element.name == name } }.orEmpty()
         // TODO: Move this special support somewhere else
         val blockType = r.getNameElementUnquoted(0)
 
@@ -138,7 +133,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
             }
           } else {
             val outputs = module.getDefinedOutputs().filter { it.name == name }
-            if (!outputs.isEmpty()) {
+            if (outputs.isNotEmpty()) {
               outputs.map { it.nameIdentifier as HCLElement }.toCollection(found)
             } else if (fake) {
               //              found.add(FakeHCLProperty(name))
@@ -151,7 +146,7 @@ object ILSelectFromSomethingReferenceProvider : PsiReferenceProvider() {
           }
         } else if (property != null) {
           found.add(property)
-        } else if (!blocks.isEmpty()) {
+        } else if (blocks.isNotEmpty()) {
           found.addAll(blocks.map { it.nameIdentifier as HCLElement })
         } else {
           if (fqn != null) {
