@@ -17,12 +17,12 @@ package org.intellij.plugins.hcl.editor
 
 import com.intellij.lang.Language
 import com.intellij.psi.PsiElement
-import com.intellij.xml.breadcrumbs.BreadcrumbsInfoProvider
+import com.intellij.ui.breadcrumbs.BreadcrumbsProvider
 import org.intellij.plugins.hcl.HCLLanguage
 import org.intellij.plugins.hcl.psi.HCLBlock
 import org.intellij.plugins.hcl.psi.HCLProperty
 
-open class HCLBreadcrumbsInfoProvider : BreadcrumbsInfoProvider() {
+open class HCLBreadcrumbsInfoProvider : BreadcrumbsProvider {
   override fun getLanguages(): Array<Language> {
     return arrayOf(HCLLanguage)
   }
