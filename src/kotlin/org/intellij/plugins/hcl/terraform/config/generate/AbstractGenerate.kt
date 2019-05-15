@@ -28,10 +28,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import org.intellij.plugins.hcl.psi.HCLBlock
-import org.intellij.plugins.hcl.psi.HCLFile
-import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.codeinsight.InsertHandlersUtil.addHCLBlockRequiredProperties
 import org.intellij.plugins.hcl.terraform.config.codeinsight.TerraformConfigCompletionContributor
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 import java.util.*
 
 
@@ -89,7 +88,7 @@ abstract class AbstractGenerate : SimpleCodeInsightAction() {
   abstract val template: Template
 
   override fun isValidForFile(project: Project, editor: Editor, file: PsiFile): Boolean {
-    return file is HCLFile && file.fileType == TerraformFileType && !file.name.endsWith("." + TerraformFileType.TFVARS_EXTENSION)
+    return TerraformPatterns.TerraformConfigFile.accepts(file)
   }
 
   companion object {

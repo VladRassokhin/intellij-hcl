@@ -26,7 +26,7 @@ import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.util.ProcessingContext
 import org.intellij.plugins.hcl.psi.*
-import org.intellij.plugins.hcl.terraform.config.TerraformFileType
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.ModuleRootBlock
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.ResourceRootBlock
 import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns.TerraformRootBlock
@@ -37,7 +37,7 @@ import java.util.*
 class TFNoInterpolationsAllowedInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     val file = holder.file
-    if (file.fileType != TerraformFileType || file.name.endsWith("." + TerraformFileType.TFVARS_EXTENSION)) {
+    if (!TerraformPatterns.TerraformConfigFile.accepts(file)) {
       return super.buildVisitor(holder, isOnTheFly)
     }
 

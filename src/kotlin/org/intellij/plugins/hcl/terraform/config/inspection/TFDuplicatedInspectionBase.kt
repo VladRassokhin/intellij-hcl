@@ -35,15 +35,15 @@ import com.intellij.usageView.UsageInfo
 import com.intellij.usages.*
 import com.intellij.util.Consumer
 import com.intellij.util.NullableFunction
-import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.model.getTerraformSearchScope
+import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 import org.jetbrains.annotations.NotNull
 
 
 abstract class TFDuplicatedInspectionBase : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     val file = holder.file
-    if (file.fileType != TerraformFileType || file.name.endsWith("." + TerraformFileType.TFVARS_EXTENSION)) {
+    if (!TerraformPatterns.TerraformConfigFile.accepts(file)) {
       return super.buildVisitor(holder, isOnTheFly)
     }
 

@@ -19,7 +19,6 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
 import org.intellij.plugins.hcl.psi.*
-import org.intellij.plugins.hcl.terraform.config.TerraformFileType
 import org.intellij.plugins.hcl.terraform.config.model.SimpleValueHint
 import org.intellij.plugins.hcl.terraform.config.model.TypeModel
 import org.intellij.plugins.hcl.terraform.config.model.Types
@@ -29,7 +28,7 @@ import org.intellij.plugins.hcl.terraform.config.patterns.TerraformPatterns
 class TFIncorrectVariableTypeInspection : LocalInspectionTool() {
   override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
     val file = holder.file
-    if (file.fileType != TerraformFileType || file.name.endsWith("." + TerraformFileType.TFVARS_EXTENSION)) {
+    if (!TerraformPatterns.TerraformConfigFile.accepts(file)) {
       return super.buildVisitor(holder, isOnTheFly)
     }
 
