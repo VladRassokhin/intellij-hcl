@@ -35,13 +35,13 @@ class ShowDocumentationIntentionAction : BaseIntentionAction(), LowPriorityActio
     return "https://www.terraform.io/docs/providers/$provider/$resource/$id.html"
   }
 
-  override fun getText(): String {
-    return "Show Terraform documentation"
-  }
+  override fun getText() = "Show Terraform documentation"
 
   override fun getFamilyName() = text
 
   override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean = findElements(editor, file) != null
+
+  override fun startInWriteAction() = false
 
   override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
     val (identifier, value) = findElements(editor, file) ?: return
