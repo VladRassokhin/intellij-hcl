@@ -1,13 +1,11 @@
 {
-  ".schema_version": "1",
   "name": "heroku",
   "type": "provider",
-  "version": "v1.9.0",
+  "version": "v2.2.1-1-gea3a230",
   "provider": {
     "api_key": {
       "Type": "String",
-      "Optional": true,
-      "DefaultFunc": "ENV(HEROKU_API_KEY)"
+      "Optional": true
     },
     "delays": {
       "Type": "List",
@@ -18,45 +16,34 @@
         "Info": {
           "post_app_create_delay": {
             "Type": "Int",
-            "Optional": true,
-            "Default": {
-              "Type": "int64",
-              "Value": "5"
-            }
+            "Optional": true
           },
           "post_domain_create_delay": {
             "Type": "Int",
-            "Optional": true,
-            "Default": {
-              "Type": "int64",
-              "Value": "5"
-            }
+            "Optional": true
           },
           "post_space_create_delay": {
             "Type": "Int",
-            "Optional": true,
-            "Default": {
-              "Type": "int64",
-              "Value": "5"
-            }
+            "Optional": true
           }
         }
       }
     },
     "email": {
       "Type": "String",
-      "Optional": true,
-      "DefaultFunc": "ENV(HEROKU_EMAIL)"
+      "Optional": true
     },
     "headers": {
       "Type": "String",
-      "Optional": true,
-      "DefaultFunc": "ENV(HEROKU_HEADERS)"
+      "Optional": true
     },
     "url": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(HEROKU_API_URL)"
+      "Default": {
+        "Type": "string",
+        "Value": "https://api.heroku.com"
+      }
     }
   },
   "resources": {
@@ -84,12 +71,8 @@
         "Required": true
       },
       "config": {
-        "Type": "List",
-        "Optional": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "Map"
-        }
+        "Type": "Map",
+        "Optional": true
       },
       "config_vars": {
         "Type": "List",
@@ -101,6 +84,7 @@
       },
       "name": {
         "Type": "String",
+        "Optional": true,
         "Computed": true
       },
       "plan": {
@@ -145,13 +129,9 @@
         }
       },
       "config_vars": {
-        "Type": "List",
+        "Type": "Map",
         "Optional": true,
-        "Computed": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "Map"
-        }
+        "Computed": true
       },
       "git_url": {
         "Type": "String",
@@ -196,12 +176,12 @@
         "Required": true
       },
       "sensitive_config_vars": {
-        "Type": "List",
+        "Type": "Map",
         "Optional": true,
         "Computed": true,
         "Elem": {
           "Type": "SchemaElements",
-          "ElementsType": "Map"
+          "ElementsType": "String"
         }
       },
       "space": {
@@ -252,11 +232,7 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -274,6 +250,37 @@
         "Computed": true
       },
       "slug_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "heroku_app_webhook": {
+      "app_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "authorization": {
+        "Type": "String",
+        "Optional": true
+      },
+      "include": {
+        "Type": "List",
+        "Required": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "level": {
+        "Type": "String",
+        "Required": true
+      },
+      "secret": {
+        "Type": "String",
+        "Optional": true
+      },
+      "url": {
         "Type": "String",
         "Required": true
       }
@@ -528,12 +535,8 @@
         ]
       },
       "process_types": {
-        "Type": "Set",
-        "Required": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "Map"
-        }
+        "Type": "Map",
+        "Required": true
       },
       "size": {
         "Type": "Int",
@@ -552,19 +555,11 @@
     "heroku_space": {
       "cidr": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "10.0.0.0/16"
-        }
+        "Optional": true
       },
       "data_cidr": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "10.1.0.0/16"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -588,11 +583,7 @@
       },
       "shield": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "trusted_ip_ranges": {
         "Type": "Set",
@@ -742,11 +733,7 @@
       },
       "federated": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "role": {
         "Type": "String",

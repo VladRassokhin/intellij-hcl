@@ -1,32 +1,36 @@
 {
-  ".schema_version": "1",
   "name": "ovh",
   "type": "provider",
-  "version": "v0.3.0",
+  "version": "v0.5.0-29-g3a6fc81",
   "provider": {
     "application_key": {
       "Type": "String",
       "Optional": true,
       "Description": "The OVH API Application Key.",
-      "DefaultFunc": "ENV(OVH_APPLICATION_KEY)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "application_secret": {
       "Type": "String",
       "Optional": true,
       "Description": "The OVH API Application Secret.",
-      "DefaultFunc": "ENV(OVH_APPLICATION_SECRET)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "consumer_key": {
       "Type": "String",
       "Optional": true,
       "Description": "The OVH API Consumer key.",
-      "DefaultFunc": "ENV(OVH_CONSUMER_KEY)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "endpoint": {
       "Type": "String",
       "Required": true,
-      "Description": "The OVH API endpoint to target (ex: \"ovh-eu\").",
-      "DefaultFunc": "ENV(OVH_ENDPOINT)"
+      "Description": "The OVH API endpoint to target (ex: \"ovh-eu\")."
     }
   },
   "resources": {
@@ -37,8 +41,7 @@
       },
       "project_id": {
         "Type": "String",
-        "Required": true,
-        "DefaultFunc": "ENV(OVH_PROJECT_ID)"
+        "Required": true
       },
       "regions": {
         "Type": "Set",
@@ -76,11 +79,7 @@
       },
       "vlan_id": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "0"
-        }
+        "Optional": true
       }
     },
     "ovh_cloud_network_private_subnet": {
@@ -90,11 +89,7 @@
       },
       "dhcp": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "end": {
         "Type": "String",
@@ -143,16 +138,14 @@
       },
       "no_gateway": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "project_id": {
         "Type": "String",
         "Required": true,
-        "DefaultFunc": "ENV(OVH_PROJECT_ID)"
+        "Default": {
+          "Type": "string"
+        }
       },
       "region": {
         "Type": "String",
@@ -183,8 +176,7 @@
       },
       "project_id": {
         "Type": "String",
-        "Required": true,
-        "DefaultFunc": "ENV(OVH_PROJECT_ID)"
+        "Required": true
       },
       "status": {
         "Type": "String",
@@ -210,11 +202,7 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "3600"
-        }
+        "Optional": true
       },
       "zone": {
         "Type": "String",
@@ -245,6 +233,203 @@
       "type": {
         "Type": "String",
         "Required": true
+      },
+      "zone": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "ovh_ip_reverse": {
+      "ip": {
+        "Type": "String",
+        "Required": true
+      },
+      "ipreverse": {
+        "Type": "String",
+        "Optional": true
+      },
+      "reverse": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "ovh_iploadbalancing_http_farm": {
+      "balance": {
+        "Type": "String",
+        "Optional": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "port": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "probe": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "force_ssl": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "interval": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "match": {
+              "Type": "String",
+              "Optional": true
+            },
+            "method": {
+              "Type": "String",
+              "Optional": true
+            },
+            "negate": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "pattern": {
+              "Type": "String",
+              "Optional": true
+            },
+            "port": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            },
+            "url": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "service_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "stickiness": {
+        "Type": "String",
+        "Optional": true
+      },
+      "vrack_network_id": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "zone": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "ovh_iploadbalancing_http_farm_server": {
+      "address": {
+        "Type": "String",
+        "Required": true
+      },
+      "backup": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "chain": {
+        "Type": "String",
+        "Optional": true
+      },
+      "cookie": {
+        "Type": "String",
+        "Computed": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "farm_id": {
+        "Type": "Int",
+        "Required": true
+      },
+      "port": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "probe": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "proxy_protocol_version": {
+        "Type": "String",
+        "Optional": true
+      },
+      "service_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "ssl": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "status": {
+        "Type": "String",
+        "Required": true
+      },
+      "weight": {
+        "Type": "Int",
+        "Optional": true
+      }
+    },
+    "ovh_iploadbalancing_http_frontend": {
+      "allowed_source": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "dedicated_ipfo": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "default_farm_id": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "default_ssl_id": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "disabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "port": {
+        "Type": "String",
+        "Required": true
+      },
+      "service_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "ssl": {
+        "Type": "Bool",
+        "Optional": true
       },
       "zone": {
         "Type": "String",
@@ -325,6 +510,20 @@
         "Optional": true
       }
     },
+    "ovh_iploadbalancing_refresh": {
+      "keepers": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "service_name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "ovh_iploadbalancing_tcp_farm": {
       "balance": {
         "Type": "String",
@@ -350,11 +549,7 @@
             },
             "interval": {
               "Type": "Int",
-              "Optional": true,
-              "Default": {
-                "Type": "int",
-                "Value": "30"
-              }
+              "Optional": true
             },
             "match": {
               "Type": "String",
@@ -411,11 +606,7 @@
       },
       "backup": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "chain": {
         "Type": "String",
@@ -439,11 +630,7 @@
       },
       "probe": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "proxy_protocol_version": {
         "Type": "String",
@@ -455,11 +642,7 @@
       },
       "ssl": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "status": {
         "Type": "String",
@@ -467,11 +650,79 @@
       },
       "weight": {
         "Type": "Int",
+        "Optional": true
+      }
+    },
+    "ovh_iploadbalancing_tcp_frontend": {
+      "allowed_source": {
+        "Type": "Set",
         "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "1"
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
+      },
+      "dedicated_ipfo": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "default_farm_id": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "default_ssl_id": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "disabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "port": {
+        "Type": "String",
+        "Required": true
+      },
+      "service_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "ssl": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "zone": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "ovh_me_ssh_key": {
+      "default": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "True when this public Ssh key is used for rescue mode and reinstallations",
+        "Computed": true
+      },
+      "key": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ASCII encoded public Ssh key"
+      },
+      "key_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of this public Ssh key"
       }
     },
     "ovh_publiccloud_private_network": {
@@ -481,8 +732,7 @@
       },
       "project_id": {
         "Type": "String",
-        "Required": true,
-        "DefaultFunc": "ENV(OVH_PROJECT_ID)"
+        "Required": true
       },
       "regions": {
         "Type": "Set",
@@ -520,11 +770,7 @@
       },
       "vlan_id": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "0"
-        }
+        "Optional": true
       }
     },
     "ovh_publiccloud_private_network_subnet": {
@@ -534,11 +780,7 @@
       },
       "dhcp": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "end": {
         "Type": "String",
@@ -587,16 +829,14 @@
       },
       "no_gateway": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "project_id": {
         "Type": "String",
         "Required": true,
-        "DefaultFunc": "ENV(OVH_PROJECT_ID)"
+        "Default": {
+          "Type": "string"
+        }
       },
       "region": {
         "Type": "String",
@@ -627,8 +867,7 @@
       },
       "project_id": {
         "Type": "String",
-        "Required": true,
-        "DefaultFunc": "ENV(OVH_PROJECT_ID)"
+        "Required": true
       },
       "status": {
         "Type": "String",
@@ -643,67 +882,36 @@
       "project_id": {
         "Type": "String",
         "Required": true,
-        "DefaultFunc": "ENV(OVH_PROJECT_ID)"
+        "Default": {
+          "Type": "string"
+        }
       },
       "vrack_id": {
         "Type": "String",
         "Required": true,
-        "DefaultFunc": "ENV(OVH_VRACK_ID)"
+        "Default": {
+          "Type": "string"
+        }
       }
     },
     "ovh_vrack_publiccloud_attachment": {
       "project_id": {
         "Type": "String",
         "Required": true,
-        "DefaultFunc": "ENV(OVH_PROJECT_ID)"
+        "Default": {
+          "Type": "string"
+        }
       },
       "vrack_id": {
         "Type": "String",
         "Required": true,
-        "DefaultFunc": "ENV(OVH_VRACK_ID)"
+        "Default": {
+          "Type": "string"
+        }
       }
     }
   },
   "data-sources": {
-    "ovh_bank_account": {
-      "default": {
-        "Type": "Bool",
-        "Computed": true
-      },
-      "description": {
-        "Type": "String",
-        "Computed": true
-      },
-      "description_regexp": {
-        "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": ".*"
-        }
-      },
-      "state": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "use_default": {
-        "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
-      },
-      "use_oldest": {
-        "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
-      }
-    },
     "ovh_cloud_region": {
       "continentCode": {
         "Type": "String",
@@ -729,8 +937,7 @@
       },
       "project_id": {
         "Type": "String",
-        "Required": true,
-        "DefaultFunc": "ENV(OVH_PROJECT_ID)"
+        "Required": true
       },
       "services": {
         "Type": "Set",
@@ -761,54 +968,7 @@
       },
       "project_id": {
         "Type": "String",
-        "Required": true,
-        "DefaultFunc": "ENV(OVH_PROJECT_ID)"
-      }
-    },
-    "ovh_credit_card": {
-      "default": {
-        "Type": "Bool",
-        "Computed": true
-      },
-      "description": {
-        "Type": "String",
-        "Computed": true
-      },
-      "description_regexp": {
-        "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": ".*"
-        }
-      },
-      "state": {
-        "Type": "String",
-        "Computed": true
-      },
-      "states": {
-        "Type": "Set",
-        "Optional": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
-      },
-      "use_default": {
-        "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
-      },
-      "use_last_to_expire": {
-        "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Required": true
       }
     },
     "ovh_domain_zone": {
@@ -919,6 +1079,94 @@
         }
       }
     },
+    "ovh_me_paymentmean_bankaccount": {
+      "default": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description_regexp": {
+        "Type": "String",
+        "Optional": true
+      },
+      "state": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "use_default": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "use_oldest": {
+        "Type": "Bool",
+        "Optional": true
+      }
+    },
+    "ovh_me_paymentmean_creditcard": {
+      "default": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description_regexp": {
+        "Type": "String",
+        "Optional": true
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "states": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "use_default": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "use_last_to_expire": {
+        "Type": "Bool",
+        "Optional": true
+      }
+    },
+    "ovh_me_ssh_key": {
+      "default": {
+        "Type": "Bool",
+        "Description": "True when this public Ssh key is used for rescue mode and reinstallations",
+        "Computed": true
+      },
+      "key": {
+        "Type": "String",
+        "Description": "ASCII encoded public Ssh key",
+        "Computed": true
+      },
+      "key_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name of this public Ssh key"
+      }
+    },
+    "ovh_me_ssh_keys": {
+      "names": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "ovh_publiccloud_region": {
       "continentCode": {
         "Type": "String",
@@ -944,8 +1192,7 @@
       },
       "project_id": {
         "Type": "String",
-        "Required": true,
-        "DefaultFunc": "ENV(OVH_PROJECT_ID)"
+        "Required": true
       },
       "services": {
         "Type": "Set",
@@ -976,8 +1223,7 @@
       },
       "project_id": {
         "Type": "String",
-        "Required": true,
-        "DefaultFunc": "ENV(OVH_PROJECT_ID)"
+        "Required": true
       }
     }
   }

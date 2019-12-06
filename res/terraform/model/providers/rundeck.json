@@ -1,28 +1,41 @@
 {
-  ".schema_version": "1",
   "name": "rundeck",
   "type": "provider",
-  "version": "v0.1.0",
+  "version": "v0.4.0-1-g0f82e0b",
   "provider": {
-    "allow_unverified_ssl": {
-      "Type": "Bool",
-      "Optional": true,
-      "Description": "If set, the Rundeck client will permit unverifiable SSL certificates."
+    "api_version": {
+      "Type": "String",
+      "Required": true,
+      "Description": "API Version of the target Rundeck server.",
+      "Default": {
+        "Type": "string",
+        "Value": "14"
+      }
     },
     "auth_token": {
       "Type": "String",
       "Required": true,
-      "Description": "Auth token to use with the Rundeck API.",
-      "DefaultFunc": "ENV(RUNDECK_AUTH_TOKEN)"
+      "Description": "Auth token to use with the Rundeck API."
     },
     "url": {
       "Type": "String",
       "Required": true,
-      "Description": "URL of the root of the target Rundeck server.",
-      "DefaultFunc": "ENV(RUNDECK_URL)"
+      "Description": "URL of the root of the target Rundeck server."
     }
   },
   "resources": {
+    "rundeck_acl_policy": {
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Unique name for the ACL policy"
+      },
+      "policy": {
+        "Type": "String",
+        "Required": true,
+        "Description": "YAML formatted ACL Policy string"
+      }
+    },
     "rundeck_job": {
       "allow_concurrent_executions": {
         "Type": "Bool",
@@ -59,6 +72,23 @@
                   "name": {
                     "Type": "String",
                     "Required": true
+                  },
+                  "nodefilters": {
+                    "Type": "Map",
+                    "Optional": true,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "excludeprecedence": {
+                          "Type": "String",
+                          "Optional": true
+                        },
+                        "filter": {
+                          "Type": "String",
+                          "Optional": true
+                        }
+                      }
+                    }
                   },
                   "run_for_each_node": {
                     "Type": "Bool",
@@ -118,11 +148,7 @@
       },
       "command_ordering_strategy": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "node-first"
-        }
+        "Optional": true
       },
       "continue_on_error": {
         "Type": "Bool",
@@ -132,29 +158,21 @@
         "Type": "String",
         "Required": true
       },
+      "execution_enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "group_name": {
         "Type": "String",
         "Optional": true
       },
-      "id": {
-        "Type": "String",
-        "Computed": true
-      },
       "log_level": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "INFO"
-        }
+        "Optional": true
       },
       "max_thread_count": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "1"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -167,6 +185,70 @@
       "node_filter_query": {
         "Type": "String",
         "Optional": true
+      },
+      "notification": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "email": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "attach_log": {
+                    "Type": "Bool",
+                    "Optional": true
+                  },
+                  "recipients": {
+                    "Type": "List",
+                    "Required": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "subject": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "plugin": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "config": {
+                    "Type": "Map",
+                    "Optional": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "type": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Option of `on_success`, `on_failure`, `on_start`"
+            },
+            "webhook_urls": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
       },
       "option": {
         "Type": "List",
@@ -244,14 +326,18 @@
       },
       "rank_order": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "ascending"
-        }
+        "Optional": true
       },
       "schedule": {
         "Type": "String",
+        "Optional": true
+      },
+      "schedule_enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "success_on_empty_node_filter": {
+        "Type": "Bool",
         "Optional": true
       }
     },
@@ -270,28 +356,16 @@
     "rundeck_project": {
       "default_node_executor_plugin": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "jsch-ssh"
-        }
+        "Optional": true
       },
       "default_node_file_copier_plugin": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "jsch-scp"
-        }
+        "Optional": true
       },
       "description": {
         "Type": "String",
         "Optional": true,
-        "Description": "Description of the project to be shown in the Rundeck UI",
-        "Default": {
-          "Type": "string",
-          "Value": "Managed by Terraform"
-        }
+        "Description": "Description of the project to be shown in the Rundeck UI"
       },
       "extra_config": {
         "Type": "Map",
@@ -324,11 +398,7 @@
       },
       "ssh_authentication_type": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "privateKey"
-        }
+        "Optional": true
       },
       "ssh_key_file_path": {
         "Type": "String",

@@ -1,8 +1,7 @@
 {
-  ".schema_version": "1",
   "name": "local",
   "type": "provider",
-  "version": "v1.2.1",
+  "version": "v1.4.0-1-g6d7c3e7",
   "provider": {},
   "resources": {
     "local_file": {
@@ -10,8 +9,27 @@
         "Type": "String",
         "Optional": true,
         "ConflictsWith": [
-          "sensitive_content"
+          "sensitive_content",
+          "content_base64"
         ]
+      },
+      "content_base64": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "sensitive_content",
+          "content"
+        ]
+      },
+      "directory_permission": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Permissions to set for directories created"
+      },
+      "file_permission": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Permissions to set for the output file"
       },
       "filename": {
         "Type": "String",
@@ -22,7 +40,8 @@
         "Type": "String",
         "Optional": true,
         "ConflictsWith": [
-          "content"
+          "content",
+          "content_base64"
         ]
       }
     }
@@ -30,6 +49,10 @@
   "data-sources": {
     "local_file": {
       "content": {
+        "Type": "String",
+        "Computed": true
+      },
+      "content_base64": {
         "Type": "String",
         "Computed": true
       },

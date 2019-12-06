@@ -1,13 +1,11 @@
 {
-  ".schema_version": "1",
   "name": "acme",
   "type": "provider",
-  "version": "v1.1.1",
+  "version": "v1.5.0-1-g405c1392",
   "provider": {
     "server_url": {
       "Type": "String",
-      "Required": true,
-      "DefaultFunc": "ENV(ACME_SERVER_URL)"
+      "Required": true
     }
   },
   "resources": {
@@ -26,10 +24,7 @@
       },
       "certificate_p12_password": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string"
-        }
+        "Optional": true
       },
       "certificate_pem": {
         "Type": "String",
@@ -58,7 +53,6 @@
       "dns_challenge": {
         "Type": "List",
         "Required": true,
-        "MaxItems": 1,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -69,14 +63,6 @@
             "provider": {
               "Type": "String",
               "Required": true
-            },
-            "recursive_nameservers": {
-              "Type": "List",
-              "Optional": true,
-              "Elem": {
-                "Type": "SchemaElements",
-                "ElementsType": "String"
-              }
             }
           }
         }
@@ -90,31 +76,27 @@
         "Optional": true,
         "ConflictsWith": [
           "certificate_request_pem"
-        ],
-        "Default": {
-          "Type": "string",
-          "Value": "2048"
-        }
+        ]
       },
       "min_days_remaining": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "7"
-        }
+        "Optional": true
       },
       "must_staple": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "private_key_pem": {
         "Type": "String",
         "Computed": true
+      },
+      "recursive_nameservers": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "subject_alternative_names": {
         "Type": "Set",

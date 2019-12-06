@@ -1,14 +1,12 @@
 {
-  ".schema_version": "1",
   "name": "cloudscale",
   "type": "provider",
-  "version": "v1.1.0",
+  "version": "v2.1.1-1-g663b6e3",
   "provider": {
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "The token for API operations.",
-      "DefaultFunc": "ENV(CLOUDSCALE_TOKEN)"
+      "Description": "The token for API operations."
     }
   },
   "resources": {
@@ -33,6 +31,11 @@
         "Type": "Int",
         "Optional": true
       },
+      "region_slug": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "reverse_ptr": {
         "Type": "String",
         "Optional": true,
@@ -43,22 +46,51 @@
         "Required": true
       }
     },
+    "cloudscale_network": {
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "mtu": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "subnets": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cidr": {
+              "Type": "String",
+              "Computed": true
+            },
+            "href": {
+              "Type": "String",
+              "Computed": true
+            },
+            "uuid": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "zone_slug": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "cloudscale_server": {
       "allow_stopping_for_update": {
         "Type": "Bool",
         "Optional": true
-      },
-      "anti_affinity_uuid": {
-        "Type": "String",
-        "Optional": true
-      },
-      "anti_affinity_with": {
-        "Type": "List",
-        "Computed": true,
-        "Elem": {
-          "Type": "SchemaElements",
-          "ElementsType": "String"
-        }
       },
       "bulk_volume_size_gb": {
         "Type": "Int",
@@ -78,6 +110,7 @@
       },
       "interfaces": {
         "Type": "List",
+        "Optional": true,
         "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
@@ -111,9 +144,22 @@
                 }
               }
             },
-            "type": {
+            "network_href": {
               "Type": "String",
               "Computed": true
+            },
+            "network_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "network_uuid": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
             }
           }
         }
@@ -121,6 +167,14 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "password": {
+        "Type": "String",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "private_ipv4_address": {
         "Type": "String",
@@ -133,6 +187,35 @@
       "public_ipv6_address": {
         "Type": "String",
         "Computed": true
+      },
+      "server_group_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "server_groups": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "href": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "uuid": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
       },
       "ssh_fingerprints": {
         "Type": "List",
@@ -152,7 +235,7 @@
       },
       "ssh_keys": {
         "Type": "Set",
-        "Required": true,
+        "Optional": true,
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -207,6 +290,30 @@
             }
           }
         }
+      },
+      "zone_slug": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "cloudscale_server_group": {
+      "href": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      },
+      "zone_slug": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       }
     },
     "cloudscale_volume": {
@@ -233,6 +340,11 @@
       "type": {
         "Type": "String",
         "Optional": true
+      },
+      "zone_slug": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       }
     }
   },

@@ -1,50 +1,60 @@
 {
-  ".schema_version": "1",
   "name": "nomad",
   "type": "provider",
-  "version": "v1.3.0",
+  "version": "v1.4.2-17-gdc7c4f7",
   "provider": {
     "address": {
       "Type": "String",
       "Required": true,
-      "Description": "URL of the root of the target Nomad agent.",
-      "DefaultFunc": "ENV(NOMAD_ADDR)"
+      "Description": "URL of the root of the target Nomad agent."
     },
     "ca_file": {
       "Type": "String",
       "Optional": true,
       "Description": "A path to a PEM-encoded certificate authority used to verify the remote agent's certificate.",
-      "DefaultFunc": "ENV(NOMAD_CACERT)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "cert_file": {
       "Type": "String",
       "Optional": true,
       "Description": "A path to a PEM-encoded certificate provided to the remote agent; requires use of key_file.",
-      "DefaultFunc": "ENV(NOMAD_CLIENT_CERT)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "key_file": {
       "Type": "String",
       "Optional": true,
       "Description": "A path to a PEM-encoded private key, required if cert_file is specified.",
-      "DefaultFunc": "ENV(NOMAD_CLIENT_KEY)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "region": {
       "Type": "String",
       "Optional": true,
       "Description": "Region of the target Nomad agent.",
-      "DefaultFunc": "ENV(NOMAD_REGION)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "secret_id": {
       "Type": "String",
       "Optional": true,
       "Description": "ACL token secret for API requests.",
-      "DefaultFunc": "ENV(NOMAD_TOKEN)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "vault_token": {
       "Type": "String",
       "Optional": true,
       "Description": "Vault token if policies are specified in the job file.",
-      "DefaultFunc": "ENV(VAULT_TOKEN)"
+      "Default": {
+        "Type": "string"
+      }
     }
   },
   "resources": {
@@ -71,14 +81,15 @@
         "Description": "Nomad-generated ID for this token.",
         "Computed": true
       },
+      "create_time": {
+        "Type": "String",
+        "Description": "The timestamp the token was created.",
+        "Computed": true
+      },
       "global": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Whether the token should be replicated to all regions or not.",
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Description": "Whether the token should be replicated to all regions or not."
       },
       "name": {
         "Type": "String",
@@ -106,23 +117,48 @@
       }
     },
     "nomad_job": {
+      "allocation_ids": {
+        "Type": "List",
+        "Description": "The IDs for allocations associated with this job.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "datacenters": {
+        "Type": "Set",
+        "Description": "The target datacenters for the job, as derived from the jobspec.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "deployment_id": {
+        "Type": "String",
+        "Description": "If detach = false, the ID for the deployment associated with the last job create/update, if one exists.",
+        "Computed": true
+      },
+      "deployment_status": {
+        "Type": "String",
+        "Description": "If detach = false, the status for the deployment associated with the last job create/update, if one exists.",
+        "Computed": true
+      },
       "deregister_on_destroy": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "If true, the job will be deregistered on destroy.",
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Description": "If true, the job will be deregistered on destroy."
       },
       "deregister_on_id_change": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "If true, the job will be deregistered when the job ID changes.",
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Description": "If true, the job will be deregistered when the job ID changes."
+      },
+      "detach": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If true, the provider will return immediately after creating or updating, instead of monitoring."
       },
       "jobspec": {
         "Type": "String",
@@ -134,10 +170,123 @@
         "Optional": true,
         "Description": "If true, the `jobspec` will be parsed as json instead of HCL."
       },
+      "modify_index": {
+        "Type": "String",
+        "Description": "Integer that increments for each change. Used to detect any changes between plan and apply.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Description": "The name of the job, as derived from the jobspec.",
+        "Computed": true
+      },
+      "namespace": {
+        "Type": "String",
+        "Description": "The namespace of the job, as derived from the jobspec.",
+        "Computed": true
+      },
       "policy_override": {
         "Type": "Bool",
         "Optional": true,
         "Description": "Override any soft-mandatory Sentinel policies that fail."
+      },
+      "region": {
+        "Type": "String",
+        "Description": "The target region for the job, as derived from the jobspec.",
+        "Computed": true
+      },
+      "task_groups": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "count": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "meta": {
+              "Type": "Map",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "task": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "driver": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "meta": {
+                    "Type": "Map",
+                    "Computed": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "volume_mounts": {
+                    "Type": "List",
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaInfo",
+                      "Info": {
+                        "destination": {
+                          "Type": "String",
+                          "Computed": true
+                        },
+                        "read_only": {
+                          "Type": "Bool",
+                          "Computed": true
+                        },
+                        "volume": {
+                          "Type": "String",
+                          "Computed": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "volumes": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "read_only": {
+                    "Type": "Bool",
+                    "Computed": true
+                  },
+                  "source": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "type": {
+        "Type": "String",
+        "Description": "The type of the job, as derived from the jobspec.",
+        "Computed": true
       }
     },
     "nomad_namespace": {
@@ -232,6 +381,64 @@
     }
   },
   "data-sources": {
+    "nomad_acl_policy": {
+      "description": {
+        "Type": "String",
+        "Description": "Description",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Name"
+      },
+      "rules": {
+        "Type": "String",
+        "Description": "ACL Rules in HCL format",
+        "Computed": true
+      }
+    },
+    "nomad_acl_token": {
+      "accessor_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Non-sensitive identifier for this token."
+      },
+      "create_time": {
+        "Type": "String",
+        "Description": "Date and time the token was created.",
+        "Computed": true
+      },
+      "global": {
+        "Type": "Bool",
+        "Description": "Whether the token is replicated to all regions, or if it will only be used in the region it was created.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Description": "Human-friendly name of the ACL token.",
+        "Computed": true
+      },
+      "policies": {
+        "Type": "Set",
+        "Description": "List of policy names associated with this token.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "secret_id": {
+        "Type": "String",
+        "Description": "The token value itself.",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Description": "The type of the token.",
+        "Computed": true
+      }
+    },
     "nomad_deployments": {
       "deployments": {
         "Type": "List",
@@ -307,8 +514,8 @@
       },
       "namespace": {
         "Type": "String",
-        "Description": "Job Namespace",
-        "Computed": true
+        "Optional": true,
+        "Description": "Job Namespace"
       },
       "parent_id": {
         "Type": "String",

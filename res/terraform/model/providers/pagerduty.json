@@ -1,21 +1,15 @@
 {
-  ".schema_version": "1",
   "name": "pagerduty",
   "type": "provider",
-  "version": "v1.2.1",
+  "version": "v1.4.1-2-g25a10c2",
   "provider": {
     "skip_credentials_validation": {
       "Type": "Bool",
-      "Optional": true,
-      "Default": {
-        "Type": "bool",
-        "Value": "false"
-      }
+      "Optional": true
     },
     "token": {
       "Type": "String",
-      "Required": true,
-      "DefaultFunc": "ENV(PAGERDUTY_TOKEN)"
+      "Required": true
     }
   },
   "resources": {
@@ -32,11 +26,7 @@
     "pagerduty_escalation_policy": {
       "description": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Managed by Terraform"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -72,11 +62,7 @@
                   },
                   "type": {
                     "Type": "String",
-                    "Optional": true,
-                    "Default": {
-                      "Type": "string",
-                      "Value": "user_reference"
-                    }
+                    "Optional": true
                   }
                 }
               }
@@ -91,6 +77,24 @@
           "Type": "SchemaElements",
           "ElementsType": "String"
         }
+      }
+    },
+    "pagerduty_event_rule": {
+      "action_json": {
+        "Type": "String",
+        "Required": true
+      },
+      "advanced_condition_json": {
+        "Type": "String",
+        "Optional": true
+      },
+      "catch_all": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "condition_json": {
+        "Type": "String",
+        "Required": true
       }
     },
     "pagerduty_extension": {
@@ -114,6 +118,10 @@
         "Type": "String",
         "Required": true
       },
+      "html_url": {
+        "Type": "String",
+        "Computed": true
+      },
       "name": {
         "Type": "String",
         "Optional": true,
@@ -128,18 +136,14 @@
     "pagerduty_maintenance_window": {
       "description": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Managed by Terraform"
-        }
+        "Optional": true
       },
       "end_time": {
         "Type": "String",
         "Required": true
       },
       "services": {
-        "Type": "List",
+        "Type": "Set",
         "Required": true,
         "Elem": {
           "Type": "SchemaElements",
@@ -154,11 +158,7 @@
     "pagerduty_schedule": {
       "description": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Managed by Terraform"
-        }
+        "Optional": true
       },
       "layer": {
         "Type": "List",
@@ -243,27 +243,23 @@
     "pagerduty_service": {
       "acknowledgement_timeout": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "1800"
-        }
+        "Optional": true
       },
       "alert_creation": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "create_incidents"
-        }
+        "Optional": true
+      },
+      "alert_grouping": {
+        "Type": "String",
+        "Optional": true
+      },
+      "alert_grouping_timeout": {
+        "Type": "Int",
+        "Optional": true
       },
       "auto_resolve_timeout": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "14400"
-        }
+        "Optional": true
       },
       "created_at": {
         "Type": "String",
@@ -271,15 +267,15 @@
       },
       "description": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Managed by Terraform"
-        }
+        "Optional": true
       },
       "escalation_policy": {
         "Type": "String",
         "Required": true
+      },
+      "html_url": {
+        "Type": "String",
+        "Computed": true
       },
       "incident_urgency_rule": {
         "Type": "List",
@@ -464,11 +460,11 @@
     "pagerduty_team": {
       "description": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Managed by Terraform"
-        }
+        "Optional": true
+      },
+      "html_url": {
+        "Type": "String",
+        "Computed": true
       },
       "name": {
         "Type": "String",
@@ -497,11 +493,7 @@
       },
       "description": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Managed by Terraform"
-        }
+        "Optional": true
       },
       "email": {
         "Type": "String",
@@ -525,15 +517,13 @@
       },
       "role": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "user"
-        }
+        "Optional": true
       },
       "teams": {
         "Type": "Set",
         "Optional": true,
+        "Computed": true,
+        "Deprecated": "Use the 'pagerduty_team_membership' resource instead.",
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
@@ -568,11 +558,7 @@
       },
       "send_short_email": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "type": {
         "Type": "String",
@@ -602,6 +588,12 @@
       }
     },
     "pagerduty_schedule": {
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "pagerduty_service": {
       "name": {
         "Type": "String",
         "Required": true

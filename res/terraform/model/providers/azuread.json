@@ -1,63 +1,124 @@
 {
-  ".schema_version": "1",
   "name": "azuread",
   "type": "provider",
-  "version": "v0.3.1",
+  "version": "v0.7.0-3-ge51e695",
   "provider": {
     "client_certificate_password": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_CLIENT_CERTIFICATE_PASSWORD)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "client_certificate_path": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_CLIENT_CERTIFICATE_PATH)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "client_id": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_CLIENT_ID)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "client_secret": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_CLIENT_SECRET)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "environment": {
       "Type": "String",
       "Required": true,
-      "DefaultFunc": "ENV(ARM_ENVIRONMENT)"
+      "Default": {
+        "Type": "string",
+        "Value": "public"
+      }
     },
     "msi_endpoint": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_MSI_ENDPOINT)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "subscription_id": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_SUBSCRIPTION_ID)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "tenant_id": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_TENANT_ID)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "use_msi": {
       "Type": "Bool",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_USE_MSI)"
+      "Default": {
+        "Type": "bool",
+        "Value": "false"
+      }
     }
   },
   "resources": {
     "azuread_application": {
+      "app_role": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_member_types": {
+              "Type": "Set",
+              "Required": true,
+              "MinItems": 1,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "description": {
+              "Type": "String",
+              "Required": true
+            },
+            "display_name": {
+              "Type": "String",
+              "Required": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "is_enabled": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "value": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
       "application_id": {
         "Type": "String",
         "Computed": true
       },
       "available_to_other_tenants": {
         "Type": "Bool",
+        "Optional": true
+      },
+      "group_membership_claims": {
+        "Type": "String",
         "Optional": true
       },
       "homepage": {
@@ -81,6 +142,67 @@
       "oauth2_allow_implicit_flow": {
         "Type": "Bool",
         "Optional": true
+      },
+      "oauth2_permissions": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "admin_consent_description": {
+              "Type": "String",
+              "Computed": true
+            },
+            "admin_consent_display_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "is_enabled": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "user_consent_description": {
+              "Type": "String",
+              "Computed": true
+            },
+            "user_consent_display_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "object_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "owners": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "public_client": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
       },
       "reply_urls": {
         "Type": "Set",
@@ -120,20 +242,154 @@
             }
           }
         }
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "azuread_application_password": {
+      "application_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "application_object_id"
+        ],
+        "Deprecated": "Deprecated in favour of `application_object_id` to prevent confusion"
+      },
+      "application_object_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "application_id"
+        ]
+      },
+      "end_date": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "end_date_relative"
+        ]
+      },
+      "end_date_relative": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "end_date"
+        ]
+      },
+      "key_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "start_date": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "value": {
+        "Type": "String",
+        "Required": true
       }
     },
     "azuread_group": {
+      "members": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "object_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "owners": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "azuread_group_member": {
+      "group_object_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "member_object_id": {
         "Type": "String",
         "Required": true
       }
     },
     "azuread_service_principal": {
+      "app_role_assignment_required": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "application_id": {
         "Type": "String",
         "Required": true
       },
       "display_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "oauth2_permissions": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "admin_consent_description": {
+              "Type": "String",
+              "Computed": true
+            },
+            "admin_consent_display_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "is_enabled": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "user_consent_description": {
+              "Type": "String",
+              "Computed": true
+            },
+            "user_consent_display_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "object_id": {
         "Type": "String",
         "Computed": true
       },
@@ -184,11 +440,7 @@
     "azuread_user": {
       "account_enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "display_name": {
         "Type": "String",
@@ -196,11 +448,7 @@
       },
       "force_password_change": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "mail": {
         "Type": "String",
@@ -211,9 +459,19 @@
         "Optional": true,
         "Computed": true
       },
+      "object_id": {
+        "Type": "String",
+        "Computed": true
+      },
       "password": {
         "Type": "String",
         "Required": true
+      },
+      "usage_location": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "A two letter country code (ISO standard 3166). Required for users that will be assigned licenses due to legal requirement to check for availability of services in countries. Examples include: `NO`, `JP`, and `GB`. Not nullable.",
+        "Computed": true
       },
       "user_principal_name": {
         "Type": "String",
@@ -223,12 +481,53 @@
   },
   "data-sources": {
     "azuread_application": {
+      "app_roles": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_member_types": {
+              "Type": "Set",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "description": {
+              "Type": "String",
+              "Computed": true
+            },
+            "display_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "is_enabled": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "application_id": {
         "Type": "String",
         "Computed": true
       },
       "available_to_other_tenants": {
         "Type": "Bool",
+        "Computed": true
+      },
+      "group_membership_claims": {
+        "Type": "String",
         "Computed": true
       },
       "homepage": {
@@ -255,6 +554,48 @@
         "Type": "Bool",
         "Computed": true
       },
+      "oauth2_permissions": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "admin_consent_description": {
+              "Type": "String",
+              "Computed": true
+            },
+            "admin_consent_display_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "is_enabled": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "user_consent_description": {
+              "Type": "String",
+              "Computed": true
+            },
+            "user_consent_display_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "object_id": {
         "Type": "String",
         "Optional": true,
@@ -262,6 +603,14 @@
         "ConflictsWith": [
           "name"
         ]
+      },
+      "owners": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "reply_urls": {
         "Type": "List",
@@ -300,6 +649,10 @@
             }
           }
         }
+      },
+      "type": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "azuread_domains": {
@@ -356,12 +709,105 @@
       }
     },
     "azuread_group": {
+      "members": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "name": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "object_id"
+        ]
+      },
+      "object_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "name"
+        ]
+      },
+      "owners": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "azuread_groups": {
+      "names": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MinItems": 1,
+        "ConflictsWith": [
+          "object_ids"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "object_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MinItems": 1,
+        "ConflictsWith": [
+          "names"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "azuread_service_principal": {
+      "app_roles": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_member_types": {
+              "Type": "Set",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "description": {
+              "Type": "String",
+              "Computed": true
+            },
+            "display_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "is_enabled": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "application_id": {
         "Type": "String",
         "Optional": true,
@@ -379,6 +825,48 @@
           "object_id",
           "application_id"
         ]
+      },
+      "oauth2_permissions": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "admin_consent_description": {
+              "Type": "String",
+              "Computed": true
+            },
+            "admin_consent_display_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "is_enabled": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "user_consent_description": {
+              "Type": "String",
+              "Computed": true
+            },
+            "user_consent_display_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
       },
       "object_id": {
         "Type": "String",
@@ -405,11 +893,74 @@
       },
       "mail_nickname": {
         "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "object_id",
+          "user_principal_name"
+        ]
+      },
+      "object_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "user_principal_name"
+        ]
+      },
+      "usage_location": {
+        "Type": "String",
         "Computed": true
       },
       "user_principal_name": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "object_id"
+        ]
+      }
+    },
+    "azuread_users": {
+      "mail_nicknames": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MinItems": 1,
+        "ConflictsWith": [
+          "object_ids",
+          "user_principal_names"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "object_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MinItems": 1,
+        "ConflictsWith": [
+          "user_principal_names"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "user_principal_names": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MinItems": 1,
+        "ConflictsWith": [
+          "object_ids"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     }
   }

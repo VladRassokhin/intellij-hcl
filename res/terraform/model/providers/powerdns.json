@@ -1,20 +1,34 @@
 {
-  ".schema_version": "1",
   "name": "powerdns",
   "type": "provider",
-  "version": "v0.1.0",
+  "version": "v1.2.0-12-gf3d1495",
   "provider": {
     "api_key": {
       "Type": "String",
       "Required": true,
-      "Description": "REST API authentication key",
-      "DefaultFunc": "ENV(PDNS_API_KEY)"
+      "Description": "REST API authentication key"
+    },
+    "ca_certificate": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Content or path of a Root CA to be used to verify PowerDNS's SSL certificate",
+      "Default": {
+        "Type": "string"
+      }
+    },
+    "insecure_https": {
+      "Type": "Bool",
+      "Optional": true,
+      "Description": "Disable verification of the PowerDNS server's TLS certificate",
+      "Default": {
+        "Type": "bool",
+        "Value": "false"
+      }
     },
     "server_url": {
       "Type": "String",
       "Required": true,
-      "Description": "Location of PowerDNS server",
-      "DefaultFunc": "ENV(PDNS_SERVER_URL)"
+      "Description": "Location of PowerDNS server"
     }
   },
   "resources": {
@@ -31,6 +45,11 @@
           "ElementsType": "String"
         }
       },
+      "set_ptr": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "For A and AAAA records, if true, create corresponding PTR."
+      },
       "ttl": {
         "Type": "Int",
         "Required": true
@@ -42,6 +61,28 @@
       "zone": {
         "Type": "String",
         "Required": true
+      }
+    },
+    "powerdns_zone": {
+      "kind": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "nameservers": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "soa_edit_api": {
+        "Type": "String",
+        "Optional": true
       }
     }
   },

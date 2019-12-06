@@ -1,48 +1,55 @@
 {
-  ".schema_version": "1",
   "name": "gitlab",
   "type": "provider",
-  "version": "v1.2.0",
+  "version": "v2.4.0-7-ge2a2e3e",
   "provider": {
     "base_url": {
       "Type": "String",
       "Optional": true,
       "Description": "The GitLab Base API URL",
-      "DefaultFunc": "ENV(GITLAB_BASE_URL)"
-    },
-    "cacert_file": {
-      "Type": "String",
-      "Optional": true,
-      "Description": "A file containing the ca certificate to use in case ssl certificate is not from a standard chain",
       "Default": {
         "Type": "string"
       }
     },
+    "cacert_file": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "A file containing the ca certificate to use in case ssl certificate is not from a standard chain"
+    },
     "insecure": {
       "Type": "Bool",
       "Optional": true,
-      "Description": "Disable SSL verification of API calls",
-      "Default": {
-        "Type": "bool",
-        "Value": "false"
-      }
+      "Description": "Disable SSL verification of API calls"
     },
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "The OAuth token used to connect to GitLab.",
-      "DefaultFunc": "ENV(GITLAB_TOKEN)"
+      "Description": "The OAuth token used to connect to GitLab."
     }
   },
   "resources": {
+    "gitlab_branch_protection": {
+      "branch": {
+        "Type": "String",
+        "Required": true
+      },
+      "merge_access_level": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Required": true
+      },
+      "push_access_level": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "gitlab_deploy_key": {
       "can_push": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "key": {
         "Type": "String",
@@ -57,18 +64,47 @@
         "Required": true
       }
     },
+    "gitlab_deploy_key_enable": {
+      "can_push": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "key": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "key_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Required": true
+      },
+      "title": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "gitlab_group": {
       "description": {
         "Type": "String",
         "Optional": true
       },
+      "full_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "full_path": {
+        "Type": "String",
+        "Computed": true
+      },
       "lfs_enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -76,11 +112,7 @@
       },
       "parent_id": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "0"
-        }
+        "Optional": true
       },
       "path": {
         "Type": "String",
@@ -88,16 +120,96 @@
       },
       "request_access_enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
+      },
+      "runners_token": {
+        "Type": "String",
+        "Computed": true
       },
       "visibility_level": {
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "web_url": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "gitlab_group_cluster": {
+      "cluster_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "domain": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "environment_scope": {
+        "Type": "String",
+        "Optional": true
+      },
+      "group": {
+        "Type": "String",
+        "Required": true
+      },
+      "kubernetes_api_url": {
+        "Type": "String",
+        "Required": true
+      },
+      "kubernetes_authorization_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "kubernetes_ca_cert": {
+        "Type": "String",
+        "Optional": true
+      },
+      "kubernetes_token": {
+        "Type": "String",
+        "Required": true
+      },
+      "managed": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "platform_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "provider_type": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "gitlab_group_label": {
+      "color": {
+        "Type": "String",
+        "Required": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "group": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
       }
     },
     "gitlab_group_membership": {
@@ -129,15 +241,15 @@
       },
       "protected": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "value": {
         "Type": "String",
         "Required": true
+      },
+      "variable_type": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "gitlab_label": {
@@ -154,6 +266,50 @@
         "Required": true
       },
       "project": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "gitlab_pipeline_schedule": {
+      "active": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "cron": {
+        "Type": "String",
+        "Required": true
+      },
+      "cron_timezone": {
+        "Type": "String",
+        "Optional": true
+      },
+      "description": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Required": true
+      },
+      "ref": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "gitlab_pipeline_schedule_variable": {
+      "key": {
+        "Type": "String",
+        "Required": true
+      },
+      "pipeline_schedule_id": {
+        "Type": "Int",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Required": true
+      },
+      "value": {
         "Type": "String",
         "Required": true
       }
@@ -175,11 +331,16 @@
     "gitlab_project": {
       "approvals_before_merge": {
         "Type": "Int",
+        "Optional": true
+      },
+      "archived": {
+        "Type": "Bool",
         "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "0"
-        }
+        "Description": "Whether the project is archived."
+      },
+      "container_registry_enabled": {
+        "Type": "Bool",
+        "Optional": true
       },
       "default_branch": {
         "Type": "String",
@@ -193,29 +354,25 @@
         "Type": "String",
         "Computed": true
       },
+      "initialize_with_readme": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "issues_enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
+      },
+      "lfs_enabled": {
+        "Type": "Bool",
+        "Optional": true
       },
       "merge_method": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "merge"
-        }
+        "Optional": true
       },
       "merge_requests_enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -228,26 +385,31 @@
       },
       "only_allow_merge_if_all_discussions_are_resolved": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "only_allow_merge_if_pipeline_succeeds": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "path": {
         "Type": "String",
         "Optional": true
       },
+      "pipelines_enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "request_access_enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "runners_token": {
         "Type": "String",
+        "Computed": true
+      },
+      "shared_runners_enabled": {
+        "Type": "Bool",
+        "Optional": true,
         "Computed": true
       },
       "shared_with_groups": {
@@ -273,23 +435,23 @@
       },
       "snippets_enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "ssh_url_to_repo": {
         "Type": "String",
         "Computed": true
       },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "visibility_level": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "private"
-        }
+        "Optional": true
       },
       "web_url": {
         "Type": "String",
@@ -297,11 +459,7 @@
       },
       "wiki_enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       }
     },
     "gitlab_project_cluster": {
@@ -313,21 +471,17 @@
         "Type": "String",
         "Computed": true
       },
+      "domain": {
+        "Type": "String",
+        "Optional": true
+      },
       "enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "environment_scope": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "*"
-        }
+        "Optional": true
       },
       "kubernetes_api_url": {
         "Type": "String",
@@ -335,11 +489,7 @@
       },
       "kubernetes_authorization_type": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "rbac"
-        }
+        "Optional": true
       },
       "kubernetes_ca_cert": {
         "Type": "String",
@@ -352,6 +502,10 @@
       "kubernetes_token": {
         "Type": "String",
         "Required": true
+      },
+      "managed": {
+        "Type": "Bool",
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -373,51 +527,27 @@
     "gitlab_project_hook": {
       "enable_ssl_verification": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "issues_events": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "job_events": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "merge_requests_events": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "note_events": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "pipeline_events": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "project": {
         "Type": "String",
@@ -425,19 +555,11 @@
       },
       "push_events": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "tag_push_events": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "token": {
         "Type": "String",
@@ -449,11 +571,7 @@
       },
       "wiki_page_events": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       }
     },
     "gitlab_project_membership": {
@@ -470,10 +588,70 @@
         "Required": true
       }
     },
+    "gitlab_project_push_rules": {
+      "author_email_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "branch_name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "commit_message_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "deny_delete_tag": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "file_name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "max_file_size": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "member_check": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "prevent_secrets": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "project": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "gitlab_project_share_group": {
+      "access_level": {
+        "Type": "String",
+        "Required": true
+      },
+      "group_id": {
+        "Type": "Int",
+        "Required": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "gitlab_project_variable": {
+      "environment_scope": {
+        "Type": "String",
+        "Optional": true
+      },
       "key": {
         "Type": "String",
         "Required": true
+      },
+      "masked": {
+        "Type": "Bool",
+        "Optional": true
       },
       "project": {
         "Type": "String",
@@ -481,13 +659,174 @@
       },
       "protected": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "value": {
+        "Type": "String",
+        "Required": true
+      },
+      "variable_type": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "gitlab_service_jira": {
+      "active": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "jira_issue_transition_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "password": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Required": true
+      },
+      "project_key": {
+        "Type": "String",
+        "Optional": true
+      },
+      "title": {
+        "Type": "String",
+        "Computed": true
+      },
+      "updated_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "url": {
+        "Type": "String",
+        "Required": true
+      },
+      "username": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "gitlab_service_slack": {
+      "confidential_issue_channel": {
+        "Type": "String",
+        "Optional": true
+      },
+      "confidential_issues_events": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "confidential_note_events": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "issue_channel": {
+        "Type": "String",
+        "Optional": true
+      },
+      "issues_events": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "job_events": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "merge_request_channel": {
+        "Type": "String",
+        "Optional": true
+      },
+      "merge_requests_events": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "note_channel": {
+        "Type": "String",
+        "Optional": true
+      },
+      "note_events": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "notify_only_broken_pipelines": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "notify_only_default_branch": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "pipeline_channel": {
+        "Type": "String",
+        "Optional": true
+      },
+      "pipeline_events": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "project": {
+        "Type": "String",
+        "Required": true
+      },
+      "push_channel": {
+        "Type": "String",
+        "Optional": true
+      },
+      "push_events": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "tag_push_channel": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tag_push_events": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "username": {
+        "Type": "String",
+        "Optional": true
+      },
+      "webhook": {
+        "Type": "String",
+        "Required": true
+      },
+      "wiki_page_channel": {
+        "Type": "String",
+        "Optional": true
+      },
+      "wiki_page_events": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "gitlab_tag_protection": {
+      "create_access_level": {
+        "Type": "String",
+        "Required": true
+      },
+      "project": {
+        "Type": "String",
+        "Required": true
+      },
+      "tag": {
         "Type": "String",
         "Required": true
       }
@@ -495,11 +834,7 @@
     "gitlab_user": {
       "can_create_group": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "email": {
         "Type": "String",
@@ -507,19 +842,11 @@
       },
       "is_admin": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "is_external": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -531,19 +858,15 @@
       },
       "projects_limit": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "0"
-        }
+        "Optional": true
+      },
+      "reset_password": {
+        "Type": "Bool",
+        "Optional": true
       },
       "skip_confirmation": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "username": {
         "Type": "String",
@@ -552,7 +875,70 @@
     }
   },
   "data-sources": {
+    "gitlab_group": {
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "full_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "full_path": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "group_id"
+        ]
+      },
+      "group_id": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "full_path"
+        ]
+      },
+      "lfs_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "parent_id": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "path": {
+        "Type": "String",
+        "Computed": true
+      },
+      "request_access_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "runners_token": {
+        "Type": "String",
+        "Computed": true
+      },
+      "visibility_level": {
+        "Type": "String",
+        "Computed": true
+      },
+      "web_url": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "gitlab_project": {
+      "archived": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
       "default_branch": {
         "Type": "String",
         "Optional": true,
@@ -577,6 +963,11 @@
         "Optional": true,
         "Computed": true
       },
+      "lfs_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
       "merge_requests_enabled": {
         "Type": "Bool",
         "Optional": true,
@@ -594,6 +985,16 @@
       },
       "path": {
         "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "pipelines_enabled": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "request_access_enabled": {
+        "Type": "Bool",
         "Optional": true,
         "Computed": true
       },
@@ -629,13 +1030,124 @@
       }
     },
     "gitlab_user": {
+      "avatar_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "bio": {
+        "Type": "String",
+        "Computed": true
+      },
+      "can_create_group": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "can_create_project": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "color_scheme_id": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "current_sign_in_at": {
+        "Type": "String",
+        "Computed": true
+      },
       "email": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "user_id",
+          "username"
+        ]
+      },
+      "extern_uid": {
+        "Type": "String",
+        "Computed": true
+      },
+      "external": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "is_admin": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "last_sign_in_at": {
+        "Type": "String",
+        "Computed": true
+      },
+      "linkedin": {
+        "Type": "String",
+        "Computed": true
+      },
+      "location": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "organization": {
+        "Type": "String",
+        "Computed": true
+      },
+      "projects_limit": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "skype": {
+        "Type": "String",
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "theme_id": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "twitter": {
+        "Type": "String",
+        "Computed": true
+      },
+      "two_factor_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "user_id": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "username",
+          "email"
+        ]
+      },
+      "user_provider": {
+        "Type": "String",
+        "Computed": true
       },
       "username": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "user_id",
+          "email"
+        ]
+      },
+      "website_url": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "gitlab_users": {
@@ -665,11 +1177,7 @@
       },
       "order_by": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "id"
-        }
+        "Optional": true
       },
       "search": {
         "Type": "String",
@@ -677,11 +1185,7 @@
       },
       "sort": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "desc"
-        }
+        "Optional": true
       },
       "users": {
         "Type": "List",

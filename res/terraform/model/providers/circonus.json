@@ -1,29 +1,26 @@
 {
-  ".schema_version": "1",
   "name": "circonus",
   "type": "provider",
-  "version": "v0.2.0",
+  "version": "v0.4.0-1-g7c13c72",
   "provider": {
     "api_url": {
       "Type": "String",
       "Optional": true,
       "Description": "URL of the Circonus API",
-      "DefaultFunc": "ENV(CIRCONUS_API_URL)"
+      "Default": {
+        "Type": "string",
+        "Value": "https://api.circonus.com/v2"
+      }
     },
     "auto_tag": {
       "Type": "Bool",
       "Optional": true,
-      "Description": "Signals that the provider should automatically add a tag to all API calls denoting that the resource was created by Terraform",
-      "Default": {
-        "Type": "bool",
-        "Value": "false"
-      }
+      "Description": "Signals that the provider should automatically add a tag to all API calls denoting that the resource was created by Terraform"
     },
     "key": {
       "Type": "String",
       "Required": true,
-      "Description": "API token used to authenticate with the Circonus API",
-      "DefaultFunc": "ENV(CIRCONUS_API_TOKEN)"
+      "Description": "API token used to authenticate with the Circonus API"
     }
   },
   "resources": {
@@ -31,11 +28,7 @@
       "active": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "If the check is activate or disabled",
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Description": "If the check is activate or disabled"
       },
       "caql": {
         "Type": "Set",
@@ -87,13 +80,17 @@
               "Type": "String",
               "Required": true,
               "Description": "The AWS API Key",
-              "DefaultFunc": "ENV(AWS_ACCESS_KEY_ID)"
+              "Default": {
+                "Type": "string"
+              }
             },
             "api_secret": {
               "Type": "String",
               "Required": true,
               "Description": "The AWS API Secret",
-              "DefaultFunc": "ENV(AWS_SECRET_ACCESS_KEY)"
+              "Default": {
+                "Type": "string"
+              }
             },
             "dimmensions": {
               "Type": "Map",
@@ -126,11 +123,7 @@
             "version": {
               "Type": "String",
               "Optional": true,
-              "Description": "The version of the Cloudwatch API to use.",
-              "Default": {
-                "Type": "string",
-                "Value": "2010-08-01"
-              }
+              "Description": "The version of the Cloudwatch API to use."
             }
           }
         }
@@ -167,11 +160,7 @@
             "allow_stale": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Allow Consul to read from a non-leader system",
-              "Default": {
-                "Type": "bool",
-                "Value": "true"
-              }
+              "Description": "Allow Consul to read from a non-leader system"
             },
             "ca_chain": {
               "Type": "String",
@@ -213,11 +202,7 @@
             "http_addr": {
               "Type": "String",
               "Optional": true,
-              "Description": "The HTTP Address of a Consul agent to query",
-              "Default": {
-                "Type": "string",
-                "Value": "http://consul.service.consul"
-              }
+              "Description": "The HTTP Address of a Consul agent to query"
             },
             "key_file": {
               "Type": "String",
@@ -323,11 +308,7 @@
             "code": {
               "Type": "String",
               "Optional": true,
-              "Description": "The HTTP code that is expected. If the code received does not match this regular expression, the check is marked as \"bad.\"",
-              "Default": {
-                "Type": "string",
-                "Value": "^200$"
-              }
+              "Description": "The HTTP code that is expected. If the code received does not match this regular expression, the check is marked as \"bad.\""
             },
             "extract": {
               "Type": "String",
@@ -350,11 +331,7 @@
             "method": {
               "Type": "String",
               "Optional": true,
-              "Description": "The HTTP method to use",
-              "Default": {
-                "Type": "string",
-                "Value": "GET"
-              }
+              "Description": "The HTTP method to use"
             },
             "payload": {
               "Type": "String",
@@ -374,11 +351,7 @@
             "version": {
               "Type": "String",
               "Optional": true,
-              "Description": "Sets the HTTP version for the check to use",
-              "Default": {
-                "Type": "string",
-                "Value": "1.1"
-              }
+              "Description": "Sets the HTTP version for the check to use"
             }
           }
         }
@@ -395,11 +368,7 @@
             "async_metrics": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Specify whether httptrap metrics are logged immediately or held until the status message is emitted",
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Description": "Specify whether httptrap metrics are logged immediately or held until the status message is emitted"
             },
             "secret": {
               "Type": "String",
@@ -420,29 +389,17 @@
             "availability": {
               "Type": "Float",
               "Optional": true,
-              "Description": "The percentage of ICMP available required for the check to be considered \"good.\"",
-              "Default": {
-                "Type": "float64",
-                "Value": "100"
-              }
+              "Description": "The percentage of ICMP available required for the check to be considered \"good.\""
             },
             "count": {
               "Type": "Int",
               "Optional": true,
-              "Description": "The number of ICMP requests to send during a single check.",
-              "Default": {
-                "Type": "int",
-                "Value": "5"
-              }
+              "Description": "The number of ICMP requests to send during a single check."
             },
             "interval": {
               "Type": "String",
               "Optional": true,
-              "Description": "The number of milliseconds between ICMP requests.",
-              "Default": {
-                "Type": "string",
-                "Value": "2s"
-              }
+              "Description": "The number of milliseconds between ICMP requests."
             }
           }
         }
@@ -502,11 +459,7 @@
             "method": {
               "Type": "String",
               "Optional": true,
-              "Description": "The HTTP method to use",
-              "Default": {
-                "Type": "string",
-                "Value": "GET"
-              }
+              "Description": "The HTTP method to use"
             },
             "payload": {
               "Type": "String",
@@ -516,11 +469,7 @@
             "port": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Specifies the port on which the management interface can be reached",
-              "Default": {
-                "Type": "string",
-                "Value": "443"
-              }
+              "Description": "Specifies the port on which the management interface can be reached"
             },
             "read_limit": {
               "Type": "Int",
@@ -535,11 +484,7 @@
             "version": {
               "Type": "String",
               "Optional": true,
-              "Description": "Sets the HTTP version for the check to use",
-              "Default": {
-                "Type": "string",
-                "Value": "1.1"
-              }
+              "Description": "Sets the HTTP version for the check to use"
             }
           }
         }
@@ -563,11 +508,7 @@
             "active": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Enables or disables the metric",
-              "Default": {
-                "Type": "bool",
-                "Value": "true"
-              }
+              "Description": "Enables or disables the metric"
             },
             "name": {
               "Type": "String",
@@ -591,10 +532,7 @@
             "unit": {
               "Type": "String",
               "Optional": true,
-              "Description": "The unit of measurement for a metric",
-              "Default": {
-                "Type": "string"
-              }
+              "Description": "The unit of measurement for a metric"
             }
           }
         }
@@ -754,11 +692,7 @@
             "tls": {
               "Type": "Bool",
               "Optional": true,
-              "Description": "Upgrade TCP connection to use TLS.",
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Description": "Upgrade TCP connection to use TLS."
             }
           }
         }
@@ -787,11 +721,7 @@
     "circonus_contact_group": {
       "aggregation_window": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "300s"
-        }
+        "Optional": true
       },
       "alert_option": {
         "Type": "Set",
@@ -818,6 +748,10 @@
           }
         }
       },
+      "always_send_clear": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "email": {
         "Type": "Set",
         "Optional": true,
@@ -841,6 +775,10 @@
           }
         }
       },
+      "group_type": {
+        "Type": "String",
+        "Optional": true
+      },
       "http": {
         "Type": "Set",
         "Optional": true,
@@ -853,19 +791,11 @@
             },
             "format": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "json"
-              }
+              "Optional": true
             },
             "method": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "POST"
-              }
+              "Optional": true
             }
           }
         }
@@ -944,11 +874,7 @@
           "Info": {
             "buttons": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "true"
-              }
+              "Optional": true
             },
             "channel": {
               "Type": "String",
@@ -965,11 +891,7 @@
             "username": {
               "Type": "String",
               "Optional": true,
-              "Description": "Username Slackbot uses in Slack to deliver a notification",
-              "Default": {
-                "Type": "string",
-                "Value": "Circonus"
-              }
+              "Description": "Username Slackbot uses in Slack to deliver a notification"
             }
           }
         }
@@ -1069,11 +991,7 @@
       },
       "graph_style": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "line"
-        }
+        "Optional": true
       },
       "left": {
         "Type": "Map",
@@ -1085,11 +1003,7 @@
       "line_style": {
         "Type": "String",
         "Optional": true,
-        "Description": "How the line should change between point. A string containing either 'stepped', 'interpolated' or null.",
-        "Default": {
-          "Type": "string",
-          "Value": "stepped"
-        }
+        "Description": "How the line should change between point. A string containing either 'stepped', 'interpolated' or null."
       },
       "metric": {
         "Type": "List",
@@ -1100,11 +1014,7 @@
           "Info": {
             "active": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "true"
-              }
+              "Optional": true
             },
             "alpha": {
               "Type": "Float",
@@ -1112,11 +1022,7 @@
             },
             "axis": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "left"
-              }
+              "Optional": true
             },
             "caql": {
               "Type": "String",
@@ -1178,27 +1084,15 @@
           "Info": {
             "active": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "true"
-              }
+              "Optional": true
             },
             "aggregate": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "none"
-              }
+              "Optional": true
             },
             "axis": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "left"
-              }
+              "Optional": true
             },
             "color": {
               "Type": "String",
@@ -1243,11 +1137,7 @@
       "active": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Enables or disables the metric",
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Description": "Enables or disables the metric"
       },
       "name": {
         "Type": "String",
@@ -1271,10 +1161,7 @@
       "unit": {
         "Type": "String",
         "Optional": true,
-        "Description": "The unit of measurement for a metric",
-        "Default": {
-          "Type": "string"
-        }
+        "Description": "The unit of measurement for a metric"
       }
     },
     "circonus_metric_cluster": {
@@ -1360,11 +1247,7 @@
                   "severity": {
                     "Type": "Int",
                     "Optional": true,
-                    "Description": "Send a notification at this severity level.",
-                    "Default": {
-                      "Type": "int",
-                      "Value": "1"
-                    }
+                    "Description": "Send a notification at this severity level."
                   }
                 }
               }
@@ -1514,20 +1397,12 @@
                         "last": {
                           "Type": "String",
                           "Optional": true,
-                          "Description": "Duration over which data from the last interval is examined",
-                          "Default": {
-                            "Type": "string",
-                            "Value": "300s"
-                          }
+                          "Description": "Duration over which data from the last interval is examined"
                         },
                         "using": {
                           "Type": "String",
                           "Optional": true,
-                          "Description": "Define the window funciton to use over the last duration",
-                          "Default": {
-                            "Type": "string",
-                            "Value": "average"
-                          }
+                          "Description": "Define the window funciton to use over the last duration"
                         }
                       }
                     }
@@ -1552,11 +1427,7 @@
       "metric_type": {
         "Type": "String",
         "Optional": true,
-        "Description": "The type of data flowing through the specified metric stream",
-        "Default": {
-          "Type": "string",
-          "Value": "numeric"
-        }
+        "Description": "The type of data flowing through the specified metric stream"
       },
       "notes": {
         "Type": "String",
@@ -1587,11 +1458,7 @@
       },
       "favourite": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "graphs": {
         "Type": "Set",

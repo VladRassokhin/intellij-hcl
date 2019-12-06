@@ -1,38 +1,48 @@
 {
-  ".schema_version": "1",
   "name": "docker",
   "type": "provider",
-  "version": "v1.1.1",
+  "version": "v2.6.0-1-gf8a9b2b",
   "provider": {
     "ca_material": {
       "Type": "String",
       "Optional": true,
       "Description": "PEM-encoded content of Docker host CA certificate",
-      "DefaultFunc": "ENV(DOCKER_CA_MATERIAL)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "cert_material": {
       "Type": "String",
       "Optional": true,
       "Description": "PEM-encoded content of Docker client certificate",
-      "DefaultFunc": "ENV(DOCKER_CERT_MATERIAL)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "cert_path": {
       "Type": "String",
       "Optional": true,
       "Description": "Path to directory with Docker TLS config",
-      "DefaultFunc": "ENV(DOCKER_CERT_PATH)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "host": {
       "Type": "String",
       "Required": true,
       "Description": "The Docker daemon address",
-      "DefaultFunc": "ENV(DOCKER_HOST)"
+      "Default": {
+        "Type": "string",
+        "Value": "unix:///var/run/docker.sock"
+      }
     },
     "key_material": {
       "Type": "String",
       "Optional": true,
       "Description": "PEM-encoded content of Docker client private key",
-      "DefaultFunc": "ENV(DOCKER_KEY_MATERIAL)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "registry_auth": {
       "Type": "Set",
@@ -49,29 +59,36 @@
             "Type": "String",
             "Optional": true,
             "Description": "Path to docker json file for registry auth",
-            "DefaultFunc": "ENV(DOCKER_CONFIG)",
             "ConflictsWith": [
               "registry_auth.username",
               "registry_auth.password"
-            ]
+            ],
+            "Default": {
+              "Type": "string",
+              "Value": "~/.docker/config.json"
+            }
           },
           "password": {
             "Type": "String",
             "Optional": true,
             "Description": "Password for the registry",
-            "DefaultFunc": "ENV(DOCKER_REGISTRY_PASS)",
             "ConflictsWith": [
               "registry_auth.config_file"
-            ]
+            ],
+            "Default": {
+              "Type": "string"
+            }
           },
           "username": {
             "Type": "String",
             "Optional": true,
             "Description": "Username for the registry",
-            "DefaultFunc": "ENV(DOCKER_REGISTRY_USER)",
             "ConflictsWith": [
               "registry_auth.config_file"
-            ]
+            ],
+            "Default": {
+              "Type": "string"
+            }
           }
         }
       }
@@ -93,11 +110,7 @@
     "docker_container": {
       "attach": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "bridge": {
         "Type": "String",
@@ -227,6 +240,15 @@
         "Computed": true,
         "Deprecated": "Use gateway from ip_adresses_data instead. This field exposes the data of the container's first network."
       },
+      "group_add": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Additional groups for the container user",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "healthcheck": {
         "Type": "List",
         "Optional": true,
@@ -238,29 +260,17 @@
             "interval": {
               "Type": "String",
               "Optional": true,
-              "Description": "Time between running the check (ms|s|m|h)",
-              "Default": {
-                "Type": "string",
-                "Value": "0s"
-              }
+              "Description": "Time between running the check (ms|s|m|h)"
             },
             "retries": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Consecutive failures needed to report unhealthy",
-              "Default": {
-                "Type": "int",
-                "Value": "0"
-              }
+              "Description": "Consecutive failures needed to report unhealthy"
             },
             "start_period": {
               "Type": "String",
               "Optional": true,
-              "Description": "Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)",
-              "Default": {
-                "Type": "string",
-                "Value": "0s"
-              }
+              "Description": "Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)"
             },
             "test": {
               "Type": "List",
@@ -274,11 +284,7 @@
             "timeout": {
               "Type": "String",
               "Optional": true,
-              "Description": "Maximum time to allow one check to run (ms|s|m|h)",
-              "Default": {
-                "Type": "string",
-                "Value": "0s"
-              }
+              "Description": "Maximum time to allow one check to run (ms|s|m|h)"
             }
           }
         }
@@ -318,6 +324,11 @@
         "Computed": true,
         "Deprecated": "Use ip_prefix_length from ip_adresses_data instead. This field exposes the data of the container's first network."
       },
+      "ipc_mode": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "IPC sharing mode for the container"
+      },
       "labels": {
         "Type": "Map",
         "Optional": true
@@ -333,11 +344,7 @@
       },
       "log_driver": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "json-file"
-        }
+        "Optional": true
       },
       "log_opts": {
         "Type": "Map",
@@ -345,11 +352,7 @@
       },
       "logs": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "max_retry_count": {
         "Type": "Int",
@@ -363,13 +366,115 @@
         "Type": "Int",
         "Optional": true
       },
+      "mounts": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "Specification for mounts to be added to containers created as part of the service",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "bind_options": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Optional configuration for the bind type",
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "propagation": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "A propagation mode with the value"
+                  }
+                }
+              }
+            },
+            "read_only": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Whether the mount should be read-only"
+            },
+            "source": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Mount source (e.g. a volume name, a host path)"
+            },
+            "target": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Container path"
+            },
+            "tmpfs_options": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Optional configuration for the tmpfs type",
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "mode": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The permission mode for the tmpfs mount in an integer"
+                  },
+                  "size_bytes": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Description": "The size for the tmpfs mount in bytes"
+                  }
+                }
+              }
+            },
+            "type": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The mount type"
+            },
+            "volume_options": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "Optional configuration for the volume type",
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "driver_name": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Description": "Name of the driver to use to create the volume."
+                  },
+                  "driver_options": {
+                    "Type": "Map",
+                    "Optional": true,
+                    "Description": "key/value map of driver specific options",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "labels": {
+                    "Type": "Map",
+                    "Optional": true,
+                    "Description": "User-defined key/value metadata",
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "no_copy": {
+                    "Type": "Bool",
+                    "Optional": true,
+                    "Description": "Populate volume with data from the target"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "must_run": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -473,19 +578,11 @@
             },
             "ip": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "0.0.0.0"
-              }
+              "Optional": true
             },
             "protocol": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "tcp"
-              }
+              "Optional": true
             }
           }
         }
@@ -498,29 +595,33 @@
         "Type": "Bool",
         "Optional": true
       },
+      "read_only": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "restart": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "no"
-        }
+        "Optional": true
       },
       "rm": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
+      },
+      "shm_size": {
+        "Type": "Int",
+        "Optional": true
       },
       "start": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
+      },
+      "sysctls": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "tmpfs": {
+        "Type": "Map",
+        "Optional": true
       },
       "ulimit": {
         "Type": "Set",
@@ -551,15 +652,15 @@
           "Info": {
             "content": {
               "Type": "String",
-              "Required": true
+              "Optional": true
+            },
+            "content_base64": {
+              "Type": "String",
+              "Optional": true
             },
             "executable": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             },
             "file": {
               "Type": "String",
@@ -608,6 +709,10 @@
             }
           }
         }
+      },
+      "working_dir": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "docker_image": {
@@ -651,8 +756,7 @@
       },
       "driver": {
         "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Optional": true
       },
       "ingress": {
         "Type": "Bool",
@@ -666,6 +770,7 @@
       "ipam_config": {
         "Type": "Set",
         "Optional": true,
+        "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
@@ -718,7 +823,7 @@
       "data": {
         "Type": "String",
         "Required": true,
-        "Description": "User-defined name of the secret"
+        "Description": "Base64-url-safe-encoded secret data"
       },
       "labels": {
         "Type": "Map",
@@ -740,7 +845,9 @@
             "password": {
               "Type": "String",
               "Optional": true,
-              "DefaultFunc": "ENV(DOCKER_REGISTRY_PASS)"
+              "Default": {
+                "Type": "string"
+              }
             },
             "server_address": {
               "Type": "String",
@@ -749,7 +856,9 @@
             "username": {
               "Type": "String",
               "Optional": true,
-              "DefaultFunc": "ENV(DOCKER_REGISTRY_USER)"
+              "Default": {
+                "Type": "string"
+              }
             }
           }
         }
@@ -768,20 +877,12 @@
             "delay": {
               "Type": "String",
               "Optional": true,
-              "Description": "The interval to check if the desired state is reached (ms|s). Default: 7s",
-              "Default": {
-                "Type": "string",
-                "Value": "7s"
-              }
+              "Description": "The interval to check if the desired state is reached (ms|s). Default: 7s"
             },
             "timeout": {
               "Type": "String",
               "Optional": true,
-              "Description": "The timeout of the service to reach the desired state (s|m). Default: 3m",
-              "Default": {
-                "Type": "string",
-                "Value": "3m"
-              }
+              "Description": "The timeout of the service to reach the desired state (s|m). Default: 3m"
             }
           }
         }
@@ -816,20 +917,12 @@
                   "protocol": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "Rrepresents the protocol of a port: 'tcp', 'udp' or 'sctp'",
-                    "Default": {
-                      "Type": "string",
-                      "Value": "tcp"
-                    }
+                    "Description": "Rrepresents the protocol of a port: 'tcp', 'udp' or 'sctp'"
                   },
                   "publish_mode": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "Represents the mode in which the port is to be published: 'ingress' or 'host'",
-                    "Default": {
-                      "Type": "string",
-                      "Value": "ingress"
-                    }
+                    "Description": "Represents the mode in which the port is to be published: 'ingress' or 'host'"
                   },
                   "published_port": {
                     "Type": "Int",
@@ -873,11 +966,7 @@
               "ConflictsWith": [
                 "mode.0.replicated",
                 "converge_config"
-              ],
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              ]
             },
             "replicated": {
               "Type": "List",
@@ -894,11 +983,7 @@
                   "replicas": {
                     "Type": "Int",
                     "Optional": true,
-                    "Description": "The amount of replicas of the service",
-                    "Default": {
-                      "Type": "int",
-                      "Value": "1"
-                    }
+                    "Description": "The amount of replicas of the service"
                   }
                 }
               }
@@ -922,56 +1007,32 @@
             "delay": {
               "Type": "String",
               "Optional": true,
-              "Description": "Delay between task rollbacks (ns|us|ms|s|m|h)",
-              "Default": {
-                "Type": "string",
-                "Value": "0s"
-              }
+              "Description": "Delay between task rollbacks (ns|us|ms|s|m|h)"
             },
             "failure_action": {
               "Type": "String",
               "Optional": true,
-              "Description": "Action on rollback failure: pause | continue",
-              "Default": {
-                "Type": "string",
-                "Value": "pause"
-              }
+              "Description": "Action on rollback failure: pause | continue"
             },
             "max_failure_ratio": {
               "Type": "String",
               "Optional": true,
-              "Description": "Failure rate to tolerate during a rollback",
-              "Default": {
-                "Type": "string",
-                "Value": "0.0"
-              }
+              "Description": "Failure rate to tolerate during a rollback"
             },
             "monitor": {
               "Type": "String",
               "Optional": true,
-              "Description": "Duration after each task rollback to monitor for failure (ns|us|ms|s|m|h)",
-              "Default": {
-                "Type": "string",
-                "Value": "5s"
-              }
+              "Description": "Duration after each task rollback to monitor for failure (ns|us|ms|s|m|h)"
             },
             "order": {
               "Type": "String",
               "Optional": true,
-              "Description": "Rollback order: either 'stop-first' or 'start-first'",
-              "Default": {
-                "Type": "string",
-                "Value": "stop-first"
-              }
+              "Description": "Rollback order: either 'stop-first' or 'start-first'"
             },
             "parallelism": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Maximum number of tasks to be rollbacked in one iteration",
-              "Default": {
-                "Type": "int",
-                "Value": "1"
-              }
+              "Description": "Maximum number of tasks to be rollbacked in one iteration"
             }
           }
         }
@@ -1109,29 +1170,17 @@
                         "interval": {
                           "Type": "String",
                           "Optional": true,
-                          "Description": "Time between running the check (ms|s|m|h)",
-                          "Default": {
-                            "Type": "string",
-                            "Value": "0s"
-                          }
+                          "Description": "Time between running the check (ms|s|m|h)"
                         },
                         "retries": {
                           "Type": "Int",
                           "Optional": true,
-                          "Description": "Consecutive failures needed to report unhealthy",
-                          "Default": {
-                            "Type": "int",
-                            "Value": "0"
-                          }
+                          "Description": "Consecutive failures needed to report unhealthy"
                         },
                         "start_period": {
                           "Type": "String",
                           "Optional": true,
-                          "Description": "Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)",
-                          "Default": {
-                            "Type": "string",
-                            "Value": "0s"
-                          }
+                          "Description": "Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)"
                         },
                         "test": {
                           "Type": "List",
@@ -1145,11 +1194,7 @@
                         "timeout": {
                           "Type": "String",
                           "Optional": true,
-                          "Description": "Maximum time to allow one check to run (ms|s|m|h)",
-                          "Default": {
-                            "Type": "string",
-                            "Value": "0s"
-                          }
+                          "Description": "Maximum time to allow one check to run (ms|s|m|h)"
                         }
                       }
                     }
@@ -1185,11 +1230,7 @@
                   "isolation": {
                     "Type": "String",
                     "Optional": true,
-                    "Description": "Isolation technology of the containers running the service. (Windows only)",
-                    "Default": {
-                      "Type": "string",
-                      "Value": "default"
-                    }
+                    "Description": "Isolation technology of the containers running the service. (Windows only)"
                   },
                   "labels": {
                     "Type": "Map",
@@ -1230,7 +1271,7 @@
                         },
                         "source": {
                           "Type": "String",
-                          "Required": true,
+                          "Optional": true,
                           "Description": "Mount source (e.g. a volume name, a host path)"
                         },
                         "target": {
@@ -1440,7 +1481,7 @@
                   "name": {
                     "Type": "String",
                     "Required": true,
-                    "Description": "The logging driver to use: one of none|json-file|syslog|journald|gelf|fluentd|awslogs|splunk|etwlogs|gcplogs"
+                    "Description": "The logging driver to use"
                   },
                   "options": {
                     "Type": "Map",
@@ -1676,56 +1717,32 @@
             "delay": {
               "Type": "String",
               "Optional": true,
-              "Description": "Delay between task updates (ns|us|ms|s|m|h)",
-              "Default": {
-                "Type": "string",
-                "Value": "0s"
-              }
+              "Description": "Delay between task updates (ns|us|ms|s|m|h)"
             },
             "failure_action": {
               "Type": "String",
               "Optional": true,
-              "Description": "Action on update failure: pause | continue | rollback",
-              "Default": {
-                "Type": "string",
-                "Value": "pause"
-              }
+              "Description": "Action on update failure: pause | continue | rollback"
             },
             "max_failure_ratio": {
               "Type": "String",
               "Optional": true,
-              "Description": "Failure rate to tolerate during an update",
-              "Default": {
-                "Type": "string",
-                "Value": "0.0"
-              }
+              "Description": "Failure rate to tolerate during an update"
             },
             "monitor": {
               "Type": "String",
               "Optional": true,
-              "Description": "Duration after each task update to monitor for failure (ns|us|ms|s|m|h)",
-              "Default": {
-                "Type": "string",
-                "Value": "5s"
-              }
+              "Description": "Duration after each task update to monitor for failure (ns|us|ms|s|m|h)"
             },
             "order": {
               "Type": "String",
               "Optional": true,
-              "Description": "Update order: either 'stop-first' or 'start-first'",
-              "Default": {
-                "Type": "string",
-                "Value": "stop-first"
-              }
+              "Description": "Update order: either 'stop-first' or 'start-first'"
             },
             "parallelism": {
               "Type": "Int",
               "Optional": true,
-              "Description": "Maximum number of tasks to be updated in one iteration",
-              "Default": {
-                "Type": "int",
-                "Value": "1"
-              }
+              "Description": "Maximum number of tasks to be updated in one iteration"
             }
           }
         }
@@ -1757,6 +1774,57 @@
     }
   },
   "data-sources": {
+    "docker_network": {
+      "driver": {
+        "Type": "String",
+        "Computed": true
+      },
+      "id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "internal": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "ipam_config": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "aux_address": {
+              "Type": "Map",
+              "Optional": true
+            },
+            "gateway": {
+              "Type": "String",
+              "Optional": true
+            },
+            "ip_range": {
+              "Type": "String",
+              "Optional": true
+            },
+            "subnet": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "options": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "scope": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "docker_registry_image": {
       "name": {
         "Type": "String",

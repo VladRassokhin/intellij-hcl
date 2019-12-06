@@ -1,42 +1,45 @@
 {
-  ".schema_version": "1",
   "name": "nutanix",
   "type": "provider",
-  "version": "v1.0.0",
+  "version": "v1.0.2-1-g34a9c14",
   "provider": {
     "endpoint": {
       "Type": "String",
       "Required": true,
-      "Description": "URL for Nutanix Prism (e.g IP or FQDN for cluster VIP\nnote, this is never the data services VIP, and should not be an\nindividual CVM address, as this would cause calls to fail during\ncluster lifecycle management operations, such as AOS upgrades.",
-      "DefaultFunc": "ENV(NUTANIX_ENDPOINT)"
+      "Description": "URL for Nutanix Prism (e.g IP or FQDN for cluster VIP\nnote, this is never the data services VIP, and should not be an\nindividual CVM address, as this would cause calls to fail during\ncluster lifecycle management operations, such as AOS upgrades."
     },
     "insecure": {
       "Type": "Bool",
       "Optional": true,
       "Description": "Explicitly allow the provider to perform \"insecure\" SSL requests. If omitted,default value is `false`",
-      "DefaultFunc": "ENV(NUTANIX_INSECURE)"
+      "Default": {
+        "Type": "bool",
+        "Value": "false"
+      }
     },
     "password": {
       "Type": "String",
       "Required": true,
-      "Description": "Password for provided user name.",
-      "DefaultFunc": "ENV(NUTANIX_PASSWORD)"
+      "Description": "Password for provided user name."
     },
     "port": {
       "Type": "String",
       "Optional": true,
-      "Description": "Port for Nutanix Prism.",
-      "DefaultFunc": "ENV(NUTANIX_PORT)",
-      "Default": {
-        "Type": "string",
-        "Value": "9440"
-      }
+      "Description": "Port for Nutanix Prism."
+    },
+    "proxy_url": {
+      "Type": "String",
+      "Optional": true
     },
     "username": {
       "Type": "String",
       "Required": true,
-      "Description": "User name for Nutanix Prism. Could be\nlocal cluster auth (e.g. 'admin') or directory auth.",
-      "DefaultFunc": "ENV(NUTANIX_USERNAME)"
+      "Description": "User name for Nutanix Prism. Could be\nlocal cluster auth (e.g. 'admin') or directory auth."
+    },
+    "wait_timeout": {
+      "Type": "Int",
+      "Optional": true,
+      "Description": "Set if you know that the creation o update of a resource may take long time (minutes)"
     }
   },
   "resources": {
@@ -116,9 +119,24 @@
         }
       },
       "categories": {
-        "Type": "Map",
+        "Type": "Set",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
       },
       "checksum": {
         "Type": "Map",
@@ -138,28 +156,13 @@
           }
         }
       },
-      "cluster_reference": {
-        "Type": "Map",
-        "Optional": true,
-        "Computed": true,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "kind": {
-              "Type": "String",
-              "Required": true
-            },
-            "name": {
-              "Type": "String",
-              "Optional": true,
-              "Computed": true
-            },
-            "uuid": {
-              "Type": "String",
-              "Required": true
-            }
-          }
-        }
+      "cluster_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "cluster_uuid": {
+        "Type": "String",
+        "Computed": true
       },
       "description": {
         "Type": "String",
@@ -296,6 +299,552 @@
         }
       }
     },
+    "nutanix_network_security_rule": {
+      "api_version": {
+        "Type": "String",
+        "Computed": true
+      },
+      "app_rule_action": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "app_rule_inbound_allow_list": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "expiration_time": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "filter_kind_list": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "filter_params": {
+              "Type": "Set",
+              "Optional": true,
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "values": {
+                    "Type": "List",
+                    "Required": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "filter_type": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "icmp_type_code_list": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "code": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "ip_subnet": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "ip_subnet_prefix_length": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "network_function_chain_reference": {
+              "Type": "Map",
+              "Optional": true,
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "kind": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "uuid": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "peer_specification_type": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "tcp_port_range_list": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "start_port": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "udp_port_range_list": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "start_port": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "app_rule_outbound_allow_list": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "expiration_time": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "filter_kind_list": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "filter_params": {
+              "Type": "Set",
+              "Optional": true,
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "values": {
+                    "Type": "List",
+                    "Required": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "filter_type": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "icmp_type_code_list": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "code": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "ip_subnet": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "ip_subnet_prefix_length": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "network_function_chain_reference": {
+              "Type": "Map",
+              "Optional": true,
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "kind": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "uuid": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "peer_specification_type": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "tcp_port_range_list": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "start_port": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "udp_port_range_list": {
+              "Type": "List",
+              "Optional": true,
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "start_port": {
+                    "Type": "Int",
+                    "Optional": true,
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "app_rule_target_group_default_internal_policy": {
+        "Type": "String",
+        "Optional": true
+      },
+      "app_rule_target_group_filter_kind_list": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "app_rule_target_group_filter_params": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "values": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "app_rule_target_group_filter_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "app_rule_target_group_peer_specification_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "categories": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "isolation_rule_action": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "isolation_rule_first_entity_filter_kind_list": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "isolation_rule_first_entity_filter_params": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "values": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "isolation_rule_first_entity_filter_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "isolation_rule_second_entity_filter_kind_list": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "isolation_rule_second_entity_filter_params": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "values": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "isolation_rule_second_entity_filter_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "metadata": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "creation_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "last_update_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "spec_hash": {
+              "Type": "String",
+              "Computed": true
+            },
+            "spec_version": {
+              "Type": "String",
+              "Computed": true
+            },
+            "uuid": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "owner_reference": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "kind": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true
+            },
+            "uuid": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "project_reference": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "kind": {
+              "Type": "String",
+              "Optional": true
+            },
+            "name": {
+              "Type": "String",
+              "Optional": true
+            },
+            "uuid": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      }
+    },
     "nutanix_subnet": {
       "api_version": {
         "Type": "String",
@@ -325,32 +874,32 @@
         }
       },
       "categories": {
-        "Type": "Map",
-        "Optional": true,
-        "Computed": true
-      },
-      "cluster_name": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "cluster_reference": {
-        "Type": "Map",
+        "Type": "Set",
         "Optional": true,
         "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "kind": {
+            "name": {
               "Type": "String",
-              "Required": true
+              "Optional": true,
+              "Computed": true
             },
-            "uuid": {
+            "value": {
               "Type": "String",
-              "Required": true
+              "Optional": true,
+              "Computed": true
             }
           }
         }
+      },
+      "cluster_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "cluster_uuid": {
+        "Type": "String",
+        "Required": true
       },
       "default_gateway_ip": {
         "Type": "String",
@@ -651,32 +1200,32 @@
         }
       },
       "categories": {
-        "Type": "Map",
-        "Optional": true,
-        "Computed": true
-      },
-      "cluster_name": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "cluster_reference": {
-        "Type": "Map",
+        "Type": "Set",
         "Optional": true,
         "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "kind": {
+            "name": {
               "Type": "String",
-              "Required": true
+              "Optional": true,
+              "Computed": true
             },
-            "uuid": {
+            "value": {
               "Type": "String",
-              "Required": true
+              "Optional": true,
+              "Computed": true
             }
           }
         }
+      },
+      "cluster_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "cluster_uuid": {
+        "Type": "String",
+        "Required": true
       },
       "description": {
         "Type": "String",
@@ -690,18 +1239,21 @@
           "Type": "SchemaInfo",
           "Info": {
             "data_source_reference": {
-              "Type": "List",
+              "Type": "Map",
               "Optional": true,
+              "Computed": true,
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
                   "kind": {
                     "Type": "String",
-                    "Optional": true
+                    "Optional": true,
+                    "Computed": true
                   },
                   "uuid": {
                     "Type": "String",
-                    "Optional": true
+                    "Optional": true,
+                    "Computed": true
                   }
                 }
               }
@@ -709,26 +1261,32 @@
             "device_properties": {
               "Type": "List",
               "Optional": true,
+              "Computed": true,
+              "MaxItems": 1,
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
                   "device_type": {
                     "Type": "String",
-                    "Optional": true
+                    "Optional": true,
+                    "Computed": true
                   },
                   "disk_address": {
-                    "Type": "List",
+                    "Type": "Map",
                     "Optional": true,
+                    "Computed": true,
                     "Elem": {
                       "Type": "SchemaInfo",
                       "Info": {
                         "adapter_type": {
                           "Type": "String",
-                          "Optional": true
+                          "Optional": true,
+                          "Computed": true
                         },
                         "device_index": {
                           "Type": "Int",
-                          "Optional": true
+                          "Optional": true,
+                          "Computed": true
                         }
                       }
                     }
@@ -738,33 +1296,40 @@
             },
             "disk_size_bytes": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Computed": true
             },
             "disk_size_mib": {
               "Type": "Int",
-              "Optional": true
+              "Optional": true,
+              "Computed": true
             },
             "uuid": {
               "Type": "String",
-              "Optional": true
+              "Optional": true,
+              "Computed": true
             },
             "volume_group_reference": {
-              "Type": "List",
+              "Type": "Map",
               "Optional": true,
+              "Computed": true,
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
                   "kind": {
                     "Type": "String",
-                    "Optional": true
+                    "Optional": true,
+                    "Computed": true
                   },
                   "name": {
                     "Type": "String",
-                    "Optional": true
+                    "Optional": true,
+                    "Computed": true
                   },
                   "uuid": {
                     "Type": "String",
-                    "Optional": true
+                    "Optional": true,
+                    "Computed": true
                   }
                 }
               }
@@ -952,6 +1517,20 @@
         "Type": "String",
         "Required": true
       },
+      "ngt_credentials": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true
+      },
+      "ngt_enabled_capability_list": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "nic_list": {
         "Type": "List",
         "Optional": true,
@@ -959,10 +1538,6 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "floating_ip": {
-              "Type": "String",
-              "Computed": true
-            },
             "ip_endpoint_list": {
               "Type": "List",
               "Optional": true,
@@ -982,6 +1557,10 @@
                   }
                 }
               }
+            },
+            "is_connected": {
+              "Type": "String",
+              "Optional": true
             },
             "mac_address": {
               "Type": "String",
@@ -1026,32 +1605,101 @@
               "Optional": true,
               "Computed": true
             },
-            "subnet_reference": {
-              "Type": "Map",
+            "subnet_name": {
+              "Type": "String",
               "Optional": true,
+              "Computed": true
+            },
+            "subnet_uuid": {
+              "Type": "String",
+              "Optional": true
+            },
+            "uuid": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
+      "nic_list_status": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "floating_ip": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ip_endpoint_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "ip": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "is_connected": {
+              "Type": "String",
+              "Computed": true
+            },
+            "mac_address": {
+              "Type": "String",
+              "Computed": true
+            },
+            "model": {
+              "Type": "String",
+              "Computed": true
+            },
+            "network_function_chain_reference": {
+              "Type": "Map",
               "Computed": true,
               "Elem": {
                 "Type": "SchemaInfo",
                 "Info": {
                   "kind": {
                     "Type": "String",
-                    "Required": true
+                    "Computed": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
                   },
                   "uuid": {
                     "Type": "String",
-                    "Required": true
+                    "Computed": true
                   }
                 }
               }
             },
-            "subnet_reference_name": {
+            "network_function_nic_type": {
               "Type": "String",
-              "Optional": true,
+              "Computed": true
+            },
+            "nic_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnet_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnet_uuid": {
+              "Type": "String",
               "Computed": true
             },
             "uuid": {
               "Type": "String",
-              "Optional": true,
               "Computed": true
             }
           }
@@ -1083,24 +1731,20 @@
               "Type": "String",
               "Computed": true
             },
-            "enabled_capability_list": {
-              "Type": "List",
-              "Optional": true,
-              "Computed": true,
-              "Elem": {
-                "Type": "SchemaElements",
-                "ElementsType": "String"
-              }
-            },
             "guest_os_version": {
               "Type": "String",
               "Computed": true
             },
             "is_reachable": {
-              "Type": "Bool",
+              "Type": "String",
               "Computed": true
             },
             "iso_mount_state": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "ngt_state": {
               "Type": "String",
               "Optional": true,
               "Computed": true
@@ -1112,14 +1756,15 @@
             },
             "version": {
               "Type": "String",
+              "Optional": true,
               "Computed": true
             },
             "vm_mobility_drivers_installed": {
-              "Type": "Bool",
+              "Type": "String",
               "Computed": true
             },
             "vss_snapshot_capable": {
-              "Type": "Bool",
+              "Type": "String",
               "Computed": true
             }
           }
@@ -1204,6 +1849,25 @@
           }
         }
       },
+      "serial_port_list": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "index": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            },
+            "is_connected": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
       "should_fail_on_script_failure": {
         "Type": "Bool",
         "Optional": true,
@@ -1221,6 +1885,32 @@
     }
   },
   "data-sources": {
+    "nutanix_category_key": {
+      "api_version": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "system_defined": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "values": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "nutanix_cluster": {
       "analysis_vm_efficiency_map": {
         "Type": "Map",
@@ -1323,9 +2013,24 @@
         }
       },
       "categories": {
-        "Type": "Map",
+        "Type": "Set",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
       },
       "certification_signing_info": {
         "Type": "Map",
@@ -1947,9 +2652,24 @@
               }
             },
             "categories": {
-              "Type": "Map",
+              "Type": "Set",
               "Optional": true,
-              "Computed": true
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "value": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  }
+                }
+              }
             },
             "certification_signing_info": {
               "Type": "Map",
@@ -2489,9 +3209,24 @@
         }
       },
       "categories": {
-        "Type": "Map",
+        "Type": "Set",
         "Optional": true,
-        "Computed": true
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
       },
       "checksum": {
         "Type": "Map",
@@ -2510,24 +3245,11 @@
           }
         }
       },
-      "cluster_reference": {
-        "Type": "Map",
-        "Computed": true,
-        "Elem": {
-          "Type": "SchemaInfo",
-          "Info": {
-            "kind": {
-              "Type": "String",
-              "Computed": true
-            },
-            "uuid": {
-              "Type": "String",
-              "Computed": true
-            }
-          }
-        }
+      "cluster_name": {
+        "Type": "String",
+        "Computed": true
       },
-      "cluster_reference_name": {
+      "cluster_uuid": {
         "Type": "String",
         "Computed": true
       },
@@ -2674,6 +3396,809 @@
         }
       }
     },
+    "nutanix_network_security_rule": {
+      "api_version": {
+        "Type": "String",
+        "Computed": true
+      },
+      "app_rule_action": {
+        "Type": "String",
+        "Computed": true
+      },
+      "app_rule_inbound_allow_list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "expiration_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "filter_kind_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "filter_params": {
+              "Type": "Set",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "values": {
+                    "Type": "List",
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "filter_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "icmp_type_code_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "code": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "ip_subnet": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ip_subnet_prefix_length": {
+              "Type": "String",
+              "Computed": true
+            },
+            "network_function_chain_reference": {
+              "Type": "Map",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "kind": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "uuid": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "peer_specification_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tcp_port_range_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "start_port": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "udp_port_range_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "start_port": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "app_rule_outbound_allow_list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "expiration_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "filter_kind_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "filter_params": {
+              "Type": "Set",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "values": {
+                    "Type": "List",
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "filter_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "icmp_type_code_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "code": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "ip_subnet": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ip_subnet_prefix_length": {
+              "Type": "String",
+              "Computed": true
+            },
+            "network_function_chain_reference": {
+              "Type": "Map",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "kind": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "uuid": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "peer_specification_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tcp_port_range_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "start_port": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "udp_port_range_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "start_port": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "app_rule_target_group_default_internal_policy": {
+        "Type": "String",
+        "Computed": true
+      },
+      "app_rule_target_group_filter_kind_list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "app_rule_target_group_filter_params": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "values": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "app_rule_target_group_filter_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "app_rule_target_group_peer_specification_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "categories": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "isolation_rule_action": {
+        "Type": "String",
+        "Computed": true
+      },
+      "isolation_rule_first_entity_filter_kind_list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "isolation_rule_first_entity_filter_params": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "values": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "isolation_rule_first_entity_filter_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "isolation_rule_second_entity_filter_kind_list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "isolation_rule_second_entity_filter_params": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "values": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "isolation_rule_second_entity_filter_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "metadata": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "creation_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "last_update_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "spec_hash": {
+              "Type": "String",
+              "Computed": true
+            },
+            "spec_version": {
+              "Type": "String",
+              "Computed": true
+            },
+            "uuid": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "network_security_rule_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "owner_reference": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "kind": {
+              "Type": "String"
+            },
+            "name": {
+              "Type": "String"
+            },
+            "uuid": {
+              "Type": "String"
+            }
+          }
+        }
+      },
+      "project_reference": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "kind": {
+              "Type": "String"
+            },
+            "name": {
+              "Type": "String"
+            },
+            "uuid": {
+              "Type": "String"
+            }
+          }
+        }
+      },
+      "quarantine_rule_action": {
+        "Type": "String",
+        "Computed": true
+      },
+      "quarantine_rule_inbound_allow_list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "expiration_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "filter_kind_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "filter_params": {
+              "Type": "Set",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "values": {
+                    "Type": "List",
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "filter_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "icmp_type_code_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "code": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "ip_subnet": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ip_subnet_prefix_length": {
+              "Type": "String",
+              "Computed": true
+            },
+            "network_function_chain_reference": {
+              "Type": "Map",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "kind": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "uuid": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "peer_specification_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tcp_port_range_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "start_port": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "udp_port_range_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "start_port": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "quarantine_rule_outbound_allow_list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "expiration_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "filter_kind_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "filter_params": {
+              "Type": "Set",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "values": {
+                    "Type": "List",
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  }
+                }
+              }
+            },
+            "filter_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "icmp_type_code_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "code": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "ip_subnet": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ip_subnet_prefix_length": {
+              "Type": "String",
+              "Computed": true
+            },
+            "network_function_chain_reference": {
+              "Type": "Map",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "kind": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "uuid": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "peer_specification_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tcp_port_range_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "start_port": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "udp_port_range_list": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_port": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "start_port": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "quarantine_rule_target_group_default_internal_policy": {
+        "Type": "String",
+        "Computed": true
+      },
+      "quarantine_rule_target_group_filter_kind_list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "quarantine_rule_target_group_filter_params": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "values": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "quarantine_rule_target_group_filter_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "quarantine_rule_target_group_peer_specification_type": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "nutanix_subnet": {
       "api_version": {
         "Type": "String",
@@ -2701,30 +4226,32 @@
         }
       },
       "categories": {
-        "Type": "Map",
+        "Type": "Set",
         "Optional": true,
-        "Computed": true
-      },
-      "cluster_reference": {
-        "Type": "Map",
         "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "kind": {
-              "Type": "String",
-              "Computed": true
-            },
             "name": {
               "Type": "String",
+              "Optional": true,
               "Computed": true
             },
-            "uuid": {
+            "value": {
               "Type": "String",
+              "Optional": true,
               "Computed": true
             }
           }
         }
+      },
+      "cluster_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "cluster_uuid": {
+        "Type": "String",
+        "Computed": true
       },
       "default_gateway_ip": {
         "Type": "String",
@@ -3028,28 +4555,30 @@
         }
       },
       "categories": {
-        "Type": "Map",
+        "Type": "Set",
         "Optional": true,
-        "Computed": true
-      },
-      "cluster_reference": {
-        "Type": "Map",
         "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "kind": {
+            "name": {
               "Type": "String",
+              "Optional": true,
               "Computed": true
             },
-            "uuid": {
+            "value": {
               "Type": "String",
+              "Optional": true,
               "Computed": true
             }
           }
         }
       },
-      "cluster_reference_name": {
+      "cluster_name": {
+        "Type": "String",
+        "Computed": true
+      },
+      "cluster_uuid": {
         "Type": "String",
         "Computed": true
       },
@@ -3095,7 +4624,7 @@
                     "Computed": true
                   },
                   "disk_address": {
-                    "Type": "List",
+                    "Type": "Map",
                     "Computed": true,
                     "Elem": {
                       "Type": "SchemaInfo",
@@ -3339,6 +4868,18 @@
         "Type": "String",
         "Computed": true
       },
+      "ngt_credentials": {
+        "Type": "Map",
+        "Computed": true
+      },
+      "ngt_enabled_capability_list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "nic_list": {
         "Type": "List",
         "Computed": true,
@@ -3365,6 +4906,10 @@
                   }
                 }
               }
+            },
+            "is_connected": {
+              "Type": "String",
+              "Computed": true
             },
             "mac_address": {
               "Type": "String",
@@ -3403,24 +4948,11 @@
               "Type": "String",
               "Computed": true
             },
-            "subnet_reference": {
-              "Type": "Map",
-              "Computed": true,
-              "Elem": {
-                "Type": "SchemaInfo",
-                "Info": {
-                  "kind": {
-                    "Type": "String",
-                    "Computed": true
-                  },
-                  "uuid": {
-                    "Type": "String",
-                    "Computed": true
-                  }
-                }
-              }
+            "subnet_name": {
+              "Type": "String",
+              "Computed": true
             },
-            "subnet_reference_name": {
+            "subnet_uuid": {
               "Type": "String",
               "Computed": true
             },
@@ -3453,23 +4985,19 @@
               "Type": "String",
               "Computed": true
             },
-            "enabled_capability_list": {
-              "Type": "List",
-              "Computed": true,
-              "Elem": {
-                "Type": "SchemaElements",
-                "ElementsType": "String"
-              }
-            },
             "guest_os_version": {
               "Type": "String",
               "Computed": true
             },
             "is_reachable": {
-              "Type": "Bool",
+              "Type": "String",
               "Computed": true
             },
             "iso_mount_state": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ngt_state": {
               "Type": "String",
               "Computed": true
             },
@@ -3482,11 +5010,11 @@
               "Computed": true
             },
             "vm_mobility_drivers_installed": {
-              "Type": "Bool",
+              "Type": "String",
               "Computed": true
             },
             "vss_snapshot_capable": {
-              "Type": "Bool",
+              "Type": "String",
               "Computed": true
             }
           }
@@ -3558,6 +5086,23 @@
             },
             "uuid": {
               "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "serial_port_list": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "index": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "is_connected": {
+              "Type": "Bool",
               "Computed": true
             }
           }

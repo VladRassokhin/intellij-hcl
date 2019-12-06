@@ -1,20 +1,17 @@
 {
-  ".schema_version": "1",
   "name": "statuscake",
   "type": "provider",
-  "version": "v0.2.0",
+  "version": "v1.0.0-1-gebf8436",
   "provider": {
     "apikey": {
       "Type": "String",
       "Required": true,
-      "Description": "API Key for StatusCake",
-      "DefaultFunc": "ENV(STATUSCAKE_APIKEY)"
+      "Description": "API Key for StatusCake"
     },
     "username": {
       "Type": "String",
       "Required": true,
-      "Description": "Username for StatusCake Account.",
-      "DefaultFunc": "ENV(STATUSCAKE_USERNAME)"
+      "Description": "Username for StatusCake Account."
     }
   },
   "resources": {
@@ -33,25 +30,40 @@
       },
       "check_rate": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "300"
-        }
+        "Optional": true
       },
       "confirmations": {
         "Type": "Int",
         "Optional": true
       },
+      "contact_group": {
+        "Type": "Set",
+        "Optional": true,
+        "ConflictsWith": [
+          "contact_id"
+        ],
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "contact_id": {
         "Type": "Int",
-        "Optional": true
+        "Optional": true,
+        "ConflictsWith": [
+          "contact_group"
+        ],
+        "Deprecated": "use contact_group instead"
       },
       "custom_header": {
         "Type": "String",
         "Optional": true
       },
       "do_not_find": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "enable_ssl_alert": {
         "Type": "Bool",
         "Optional": true
       },
@@ -81,11 +93,7 @@
       },
       "paused": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "ping_url": {
         "Type": "String",
@@ -120,8 +128,12 @@
         "Computed": true
       },
       "test_tags": {
-        "Type": "String",
-        "Optional": true
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "test_type": {
         "Type": "String",
@@ -129,19 +141,11 @@
       },
       "timeout": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "40"
-        }
+        "Optional": true
       },
       "trigger_rate": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "5"
-        }
+        "Optional": true
       },
       "uptime": {
         "Type": "Float",

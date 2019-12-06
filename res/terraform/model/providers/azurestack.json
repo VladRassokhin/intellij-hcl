@@ -1,53 +1,72 @@
 {
-  ".schema_version": "1",
   "name": "azurestack",
   "type": "provider",
-  "version": "v0.6.0",
+  "version": "v0.9.0-10-gbfc4ad44",
   "provider": {
     "arm_endpoint": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_ENDPOINT)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "client_certificate_password": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_CLIENT_CERTIFICATE_PASSWORD)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "client_certificate_path": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_CLIENT_CERTIFICATE_PATH)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "client_id": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_CLIENT_ID)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "client_secret": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_CLIENT_SECRET)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "skip_credentials_validation": {
       "Type": "Bool",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_SKIP_CREDENTIALS_VALIDATION)"
+      "Default": {
+        "Type": "bool",
+        "Value": "false"
+      }
     },
     "skip_provider_registration": {
       "Type": "Bool",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_SKIP_PROVIDER_REGISTRATION)"
+      "Default": {
+        "Type": "bool",
+        "Value": "false"
+      }
     },
     "subscription_id": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_SUBSCRIPTION_ID)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "tenant_id": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(ARM_TENANT_ID)"
+      "Default": {
+        "Type": "string"
+      }
     }
   },
   "resources": {
@@ -56,25 +75,21 @@
         "Type": "String",
         "Required": true
       },
+      "managed": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "name": {
         "Type": "String",
         "Required": true
       },
       "platform_fault_domain_count": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "3"
-        }
+        "Optional": true
       },
       "platform_update_domain_count": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "5"
-        }
+        "Optional": true
       },
       "resource_group_name": {
         "Type": "String",
@@ -343,11 +358,7 @@
     "azurestack_lb_probe": {
       "interval_in_seconds": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "15"
-        }
+        "Optional": true
       },
       "load_balancer_rules": {
         "Type": "Set",
@@ -367,11 +378,7 @@
       },
       "number_of_probes": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "2"
-        }
+        "Optional": true
       },
       "port": {
         "Type": "Int",
@@ -403,11 +410,7 @@
       },
       "enable_floating_ip": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "frontend_ip_configuration_id": {
         "Type": "String",
@@ -507,6 +510,55 @@
         "Computed": true
       }
     },
+    "azurestack_managed_disk": {
+      "create_option": {
+        "Type": "String",
+        "Required": true
+      },
+      "disk_size_gb": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "image_reference_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "os_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "resource_group_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "source_resource_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "source_uri": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "storage_account_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "azurestack_network_interface": {
       "applied_dns_servers": {
         "Type": "Set",
@@ -528,11 +580,7 @@
       },
       "enable_ip_forwarding": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "internal_dns_name_label": {
         "Type": "String",
@@ -798,11 +846,7 @@
       },
       "idle_timeout_in_minutes": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "4"
-        }
+        "Optional": true
       },
       "ip_address": {
         "Type": "String",
@@ -933,19 +977,11 @@
     "azurestack_storage_account": {
       "account_encryption_source": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Microsoft.Storage"
-        }
+        "Optional": true
       },
       "account_kind": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Storage"
-        }
+        "Optional": true
       },
       "account_replication_type": {
         "Type": "String",
@@ -974,11 +1010,7 @@
             },
             "use_subdomain": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             }
           }
         }
@@ -1069,11 +1101,7 @@
     "azurestack_storage_blob": {
       "attempts": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "1"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -1081,11 +1109,7 @@
       },
       "parallelism": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "8"
-        }
+        "Optional": true
       },
       "resource_group_name": {
         "Type": "String",
@@ -1093,11 +1117,7 @@
       },
       "size": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "0"
-        }
+        "Optional": true
       },
       "source": {
         "Type": "String",
@@ -1133,11 +1153,7 @@
     "azurestack_storage_container": {
       "container_access_type": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "private"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -1254,19 +1270,11 @@
       },
       "delete_data_disks_on_termination": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "delete_os_disk_on_termination": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "identity": {
         "Type": "List",
@@ -1436,19 +1444,11 @@
             },
             "enable_automatic_upgrades": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             },
             "provision_vm_agent": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             },
             "winrm": {
               "Type": "List",
@@ -1890,11 +1890,7 @@
           "Info": {
             "disable_password_authentication": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             },
             "ssh_keys": {
               "Type": "List",
@@ -2008,11 +2004,7 @@
       },
       "overprovision": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "plan": {
         "Type": "Set",
@@ -2038,11 +2030,7 @@
       },
       "priority": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Regular"
-        }
+        "Optional": true
       },
       "resource_group_name": {
         "Type": "String",
@@ -2050,11 +2038,7 @@
       },
       "single_placement_group": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "sku": {
         "Type": "Set",
@@ -2102,6 +2086,14 @@
             "lun": {
               "Type": "Int",
               "Required": true
+            },
+            "managed_disk_type": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true,
+              "ConflictsWith": [
+                "storage_profile_os_disk.vhd_containers"
+              ]
             }
           }
         }
@@ -2156,6 +2148,14 @@
             "image": {
               "Type": "String",
               "Optional": true
+            },
+            "managed_disk_type": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true,
+              "ConflictsWith": [
+                "storage_profile_os_disk.vhd_containers"
+              ]
             },
             "name": {
               "Type": "String",
@@ -2286,19 +2286,11 @@
           "Info": {
             "name": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "vnetGatewayConfig"
-              }
+              "Optional": true
             },
             "private_ip_address_allocation": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "Dynamic"
-              }
+              "Optional": true
             },
             "public_ip_address_id": {
               "Type": "String",
@@ -2399,11 +2391,7 @@
       },
       "vpn_type": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "RouteBased"
-        }
+        "Optional": true
       }
     },
     "azurestack_virtual_network_gateway_connection": {
@@ -2687,6 +2675,28 @@
       },
       "tags": {
         "Type": "Map",
+        "Computed": true
+      }
+    },
+    "azurestack_platform_image": {
+      "location": {
+        "Type": "String",
+        "Required": true
+      },
+      "offer": {
+        "Type": "String",
+        "Required": true
+      },
+      "publisher": {
+        "Type": "String",
+        "Required": true
+      },
+      "sku": {
+        "Type": "String",
+        "Required": true
+      },
+      "version": {
+        "Type": "String",
         "Computed": true
       }
     },

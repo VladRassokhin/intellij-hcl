@@ -1,20 +1,17 @@
 {
-  ".schema_version": "1",
   "name": "skytap",
   "type": "provider",
-  "version": "v0.9.0",
+  "version": "v0.11.1-1-g5b2f53b",
   "provider": {
     "api_token": {
       "Type": "String",
       "Required": true,
-      "Description": "API Token for the skytap account.",
-      "DefaultFunc": "ENV(SKYTAP_API_TOKEN)"
+      "Description": "API Token for the skytap account."
     },
     "username": {
       "Type": "String",
       "Required": true,
-      "Description": "Username for the skytap account.",
-      "DefaultFunc": "ENV(SKYTAP_USERNAME)"
+      "Description": "Username for the skytap account."
     }
   },
   "resources": {
@@ -29,19 +26,11 @@
       },
       "outbound_traffic": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "routable": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "shutdown_at_time": {
         "Type": "String",
@@ -88,11 +77,7 @@
       },
       "tunnelable": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       }
     },
     "skytap_project": {
@@ -106,11 +91,7 @@
       },
       "show_project_members": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "summary": {
         "Type": "String",
@@ -118,9 +99,55 @@
       }
     },
     "skytap_vm": {
+      "cpus": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "disk": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "controller": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "lun": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Required": true
+            },
+            "size": {
+              "Type": "Int",
+              "Required": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
       "environment_id": {
         "Type": "String",
         "Required": true
+      },
+      "max_cpus": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "max_ram": {
+        "Type": "Int",
+        "Computed": true
       },
       "name": {
         "Type": "String",
@@ -137,6 +164,10 @@
             "hostname": {
               "Type": "String",
               "Required": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
             },
             "interface_type": {
               "Type": "String",
@@ -171,11 +202,41 @@
                   "internal_port": {
                     "Type": "Int",
                     "Required": true
+                  },
+                  "name": {
+                    "Type": "String",
+                    "Required": true
                   }
                 }
               }
             }
           }
+        }
+      },
+      "os_disk_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "ram": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "service_ips": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "service_ports": {
+        "Type": "Map",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "Int"
         }
       },
       "template_id": {

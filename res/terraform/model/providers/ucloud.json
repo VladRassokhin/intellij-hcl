@@ -1,8 +1,7 @@
 {
-  ".schema_version": "1",
   "name": "ucloud",
   "type": "provider",
-  "version": "v1.6.0",
+  "version": "v1.14.1-1-g082e134",
   "provider": {
     "base_url": {
       "Type": "String",
@@ -10,11 +9,7 @@
       "Description": "...",
       "ConflictsWith": [
         "insecure"
-      ],
-      "Default": {
-        "Type": "string",
-        "Value": "https://api.ucloud.cn"
-      }
+      ]
     },
     "insecure": {
       "Type": "Bool",
@@ -22,56 +17,42 @@
       "Description": "...",
       "ConflictsWith": [
         "base_url"
-      ],
-      "Default": {
-        "Type": "bool",
-        "Value": "false"
-      }
+      ]
     },
     "max_retries": {
       "Type": "Int",
       "Optional": true,
-      "Description": "...",
-      "Default": {
-        "Type": "int",
-        "Value": "3"
-      }
+      "Description": "..."
     },
     "private_key": {
       "Type": "String",
       "Optional": true,
-      "Description": "...",
-      "DefaultFunc": "ENV(UCLOUD_PRIVATE_KEY)"
+      "Description": "..."
     },
     "profile": {
       "Type": "String",
       "Optional": true,
-      "Description": "...",
-      "DefaultFunc": "ENV(UCLOUD_PROFILE)"
+      "Description": "..."
     },
     "project_id": {
       "Type": "String",
       "Required": true,
-      "Description": "...",
-      "DefaultFunc": "ENV(UCLOUD_PROJECT_ID)"
+      "Description": "..."
     },
     "public_key": {
       "Type": "String",
       "Optional": true,
-      "Description": "...",
-      "DefaultFunc": "ENV(UCLOUD_PUBLIC_KEY)"
+      "Description": "..."
     },
     "region": {
       "Type": "String",
       "Required": true,
-      "Description": "...",
-      "DefaultFunc": "ENV(UCLOUD_REGION)"
+      "Description": "..."
     },
     "shared_credentials_file": {
       "Type": "String",
       "Optional": true,
-      "Description": "...",
-      "DefaultFunc": "ENV(UCLOUD_SHARED_CREDENTIAL_FILE)"
+      "Description": "..."
     }
   },
   "resources": {
@@ -96,11 +77,7 @@
       },
       "backup_count": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "7"
-        }
+        "Optional": true
       },
       "backup_date": {
         "Type": "String",
@@ -110,10 +87,7 @@
       "charge_type": {
         "Type": "String",
         "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "month"
-        }
+        "Computed": true
       },
       "create_time": {
         "Type": "String",
@@ -162,6 +136,10 @@
         "Optional": true,
         "Computed": true
       },
+      "private_ip": {
+        "Type": "String",
+        "Computed": true
+      },
       "standby_zone": {
         "Type": "String",
         "Optional": true
@@ -194,10 +172,7 @@
       "charge_type": {
         "Type": "String",
         "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "month"
-        }
+        "Computed": true
       },
       "create_time": {
         "Type": "String",
@@ -209,19 +184,11 @@
       },
       "disk_type": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "data_disk"
-        }
+        "Optional": true
       },
       "duration": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "1"
-        }
+        "Optional": true
       },
       "expire_time": {
         "Type": "String",
@@ -238,11 +205,7 @@
       },
       "tag": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Default"
-        }
+        "Optional": true
       }
     },
     "ucloud_disk_attachment": {
@@ -263,26 +226,17 @@
       "bandwidth": {
         "Type": "Int",
         "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "1"
-        }
+        "Computed": true
       },
       "charge_mode": {
         "Type": "String",
         "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "bandwidth"
-        }
+        "Computed": true
       },
       "charge_type": {
         "Type": "String",
         "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "month"
-        }
+        "Computed": true
       },
       "create_time": {
         "Type": "String",
@@ -290,11 +244,7 @@
       },
       "duration": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "1"
-        }
+        "Optional": true
       },
       "expire_time": {
         "Type": "String",
@@ -359,11 +309,7 @@
       },
       "tag": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Default"
-        }
+        "Optional": true
       }
     },
     "ucloud_eip_association": {
@@ -388,6 +334,10 @@
         "update",
         "delete"
       ],
+      "allow_stopping_for_update": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "auto_renew": {
         "Type": "Bool",
         "Computed": true
@@ -409,10 +359,7 @@
       "charge_type": {
         "Type": "String",
         "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "month"
-        }
+        "Computed": true
       },
       "cpu": {
         "Type": "Int",
@@ -490,6 +437,11 @@
           }
         }
       },
+      "isolation_group": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "memory": {
         "Type": "Int",
         "Computed": true
@@ -497,6 +449,10 @@
       "name": {
         "Type": "String",
         "Optional": true,
+        "Computed": true
+      },
+      "private_ip": {
+        "Type": "String",
         "Computed": true
       },
       "remark": {
@@ -525,13 +481,21 @@
       },
       "tag": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Default"
-        }
+        "Optional": true
       },
       "vpc_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "ucloud_isolation_group": {
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "remark": {
         "Type": "String",
         "Optional": true,
         "Computed": true
@@ -595,11 +559,7 @@
       },
       "tag": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Default"
-        }
+        "Optional": true
       },
       "vpc_id": {
         "Type": "String",
@@ -618,11 +578,7 @@
       },
       "port": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "80"
-        }
+        "Optional": true
       },
       "private_ip": {
         "Type": "String",
@@ -662,10 +618,7 @@
       "listen_type": {
         "Type": "String",
         "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "request_proxy"
-        }
+        "Computed": true
       },
       "load_balancer_id": {
         "Type": "String",
@@ -673,11 +626,7 @@
       },
       "method": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "roundrobin"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -696,19 +645,12 @@
       },
       "persistence_type": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "none"
-        }
+        "Optional": true
       },
       "port": {
         "Type": "Int",
         "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "80"
-        }
+        "Computed": true
       },
       "protocol": {
         "Type": "String",
@@ -788,6 +730,233 @@
         "Required": true
       }
     },
+    "ucloud_memcache_instance": {
+      "availability_zone": {
+        "Type": "String",
+        "Required": true
+      },
+      "charge_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "duration": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "expire_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "instance_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "ip_set": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip": {
+              "Type": "String",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "subnet_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "ucloud_nat_gateway": {
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "eip_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "enable_white_list": {
+        "Type": "Bool",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "remark": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "security_group": {
+        "Type": "String",
+        "Required": true
+      },
+      "subnet_ids": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "white_list": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "ucloud_nat_gateway_rule": {
+      "dst_ip": {
+        "Type": "String",
+        "Required": true
+      },
+      "dst_port_range": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "nat_gateway_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "protocol": {
+        "Type": "String",
+        "Required": true
+      },
+      "src_eip_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "src_port_range": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "ucloud_redis_instance": {
+      "availability_zone": {
+        "Type": "String",
+        "Required": true
+      },
+      "charge_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "duration": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "engine_version": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "expire_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "instance_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "ip_set": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip": {
+              "Type": "String",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "password": {
+        "Type": "String",
+        "Optional": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "subnet_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
     "ucloud_security_group": {
       "create_time": {
         "Type": "String",
@@ -811,19 +980,11 @@
           "Info": {
             "cidr_block": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "0.0.0.0/0"
-              }
+              "Optional": true
             },
             "policy": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "accept"
-              }
+              "Optional": true
             },
             "port_range": {
               "Type": "String",
@@ -831,30 +992,18 @@
             },
             "priority": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "high"
-              }
+              "Optional": true
             },
             "protocol": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "tcp"
-              }
+              "Optional": true
             }
           }
         }
       },
       "tag": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Default"
-        }
+        "Optional": true
       }
     },
     "ucloud_subnet": {
@@ -878,11 +1027,7 @@
       },
       "tag": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Default"
-        }
+        "Optional": true
       },
       "vpc_id": {
         "Type": "String",
@@ -892,19 +1037,11 @@
     "ucloud_udpn_connection": {
       "bandwidth": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "2"
-        }
+        "Optional": true
       },
       "charge_type": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "month"
-        }
+        "Optional": true
       },
       "create_time": {
         "Type": "String",
@@ -919,6 +1056,38 @@
         "Computed": true
       },
       "peer_region": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "ucloud_vip": {
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ip_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "remark": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "subnet_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true
+      },
+      "vpc_id": {
         "Type": "String",
         "Required": true
       }
@@ -961,11 +1130,7 @@
       },
       "tag": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "Default"
-        }
+        "Optional": true
       },
       "update_time": {
         "Type": "String",
@@ -981,6 +1146,209 @@
       "peer_vpc_id": {
         "Type": "String",
         "Required": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "ucloud_vpn_connection": {
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "customer_gateway_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "ike_config": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "authentication_algorithm": {
+              "Type": "String",
+              "Optional": true
+            },
+            "dh_group": {
+              "Type": "String",
+              "Optional": true
+            },
+            "encryption_algorithm": {
+              "Type": "String",
+              "Optional": true
+            },
+            "exchange_mode": {
+              "Type": "String",
+              "Optional": true
+            },
+            "ike_version": {
+              "Type": "String",
+              "Optional": true
+            },
+            "local_id": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "pre_shared_key": {
+              "Type": "String",
+              "Required": true
+            },
+            "remote_id": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "sa_life_time": {
+              "Type": "Int",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "ipsec_config": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "authentication_algorithm": {
+              "Type": "String",
+              "Optional": true
+            },
+            "encryption_algorithm": {
+              "Type": "String",
+              "Optional": true
+            },
+            "local_subnet_ids": {
+              "Type": "Set",
+              "Required": true,
+              "MaxItems": 10,
+              "MinItems": 1,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "pfs_dh_group": {
+              "Type": "String",
+              "Optional": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Optional": true
+            },
+            "remote_subnets": {
+              "Type": "Set",
+              "Required": true,
+              "MaxItems": 20,
+              "MinItems": 1,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "sa_life_time": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "sa_life_time_bytes": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "remark": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "vpn_gateway_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "ucloud_vpn_customer_gateway": {
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ip_address": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "remark": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "ucloud_vpn_gateway": {
+      "charge_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "create_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "duration": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "eip_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "expire_time": {
+        "Type": "String",
+        "Computed": true
+      },
+      "grade": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "remark": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true
       },
       "vpc_id": {
         "Type": "String",
@@ -1068,6 +1436,10 @@
               "Type": "Int",
               "Computed": true
             },
+            "private_ip": {
+              "Type": "String",
+              "Computed": true
+            },
             "standby_zone": {
               "Type": "String",
               "Computed": true
@@ -1113,6 +1485,10 @@
       }
     },
     "ucloud_disks": {
+      "availability_zone": {
+        "Type": "String",
+        "Optional": true
+      },
       "disk_type": {
         "Type": "String",
         "Optional": true
@@ -1341,6 +1717,10 @@
           }
         }
       },
+      "most_recent": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "name_regex": {
         "Type": "String",
         "Optional": true
@@ -1459,6 +1839,10 @@
               "Type": "String",
               "Computed": true
             },
+            "private_ip": {
+              "Type": "String",
+              "Computed": true
+            },
             "remark": {
               "Type": "String",
               "Computed": true
@@ -1467,7 +1851,15 @@
               "Type": "String",
               "Computed": true
             },
+            "subnet_id": {
+              "Type": "String",
+              "Computed": true
+            },
             "tag": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vpc_id": {
               "Type": "String",
               "Computed": true
             }
@@ -1817,6 +2209,90 @@
         "Computed": true
       }
     },
+    "ucloud_nat_gateways": {
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "nat_gateways": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "create_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ip_set": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "internet_type": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "ip": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "remark": {
+              "Type": "String",
+              "Computed": true
+            },
+            "security_group": {
+              "Type": "String",
+              "Computed": true
+            },
+            "subnet_ids": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "tag": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vpc_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      }
+    },
     "ucloud_projects": {
       "is_finance": {
         "Type": "Bool",
@@ -2079,6 +2555,322 @@
               "Computed": true
             },
             "update_time": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      }
+    },
+    "ucloud_vpn_connections": {
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "vpn_connections": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "create_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "customer_gateway_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ike_config": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "authentication_algorithm": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "dh_group": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "encryption_algorithm": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "exchange_mode": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "ike_version": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "local_id": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "pre_shared_key": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "remote_id": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "sa_life_time": {
+                    "Type": "Int",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "ipsec_config": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "authentication_algorithm": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "encryption_algorithm": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "local_subnet_ids": {
+                    "Type": "List",
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "pfs_dh_group": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "protocol": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "remote_subnets": {
+                    "Type": "List",
+                    "Computed": true,
+                    "Elem": {
+                      "Type": "SchemaElements",
+                      "ElementsType": "String"
+                    }
+                  },
+                  "sa_life_time": {
+                    "Type": "Int",
+                    "Computed": true
+                  },
+                  "sa_life_time_bytes": {
+                    "Type": "Int",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "remark": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tag": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vpc_id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vpn_gateway_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      }
+    },
+    "ucloud_vpn_customer_gateways": {
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "vpn_customer_gateways": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "create_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ip_address": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "remark": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tag": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      }
+    },
+    "ucloud_vpn_gateways": {
+      "ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name_regex": {
+        "Type": "String",
+        "Optional": true
+      },
+      "output_file": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true
+      },
+      "total_count": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "vpn_gateways": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "auto_renew": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "charge_type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "create_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "expire_time": {
+              "Type": "String",
+              "Computed": true
+            },
+            "grade": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "ip_set": {
+              "Type": "List",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "internet_type": {
+                    "Type": "String",
+                    "Computed": true
+                  },
+                  "ip": {
+                    "Type": "String",
+                    "Computed": true
+                  }
+                }
+              }
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "remark": {
+              "Type": "String",
+              "Computed": true
+            },
+            "tag": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vpc_id": {
               "Type": "String",
               "Computed": true
             }

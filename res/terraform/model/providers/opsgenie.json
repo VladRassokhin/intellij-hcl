@@ -1,16 +1,424 @@
 {
-  ".schema_version": "1",
   "name": "opsgenie",
   "type": "provider",
-  "version": "v0.1.0",
+  "version": "v0.2.5-1-g18970f2",
   "provider": {
     "api_key": {
       "Type": "String",
-      "Required": true,
-      "DefaultFunc": "ENV(OPSGENIE_API_KEY)"
+      "Required": true
+    },
+    "api_url": {
+      "Type": "String",
+      "Optional": true
     }
   },
   "resources": {
+    "opsgenie_api_integration": {
+      "allow_write_access": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "api_key": {
+        "Type": "String",
+        "Computed": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "ignore_responders_from_payload": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "owner_team_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "responders": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "type": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "suppress_notifications": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "opsgenie_email_integration": {
+      "email_username": {
+        "Type": "String",
+        "Required": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "ignore_responders_from_payload": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "owner_team_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "responders": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "type": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "suppress_notifications": {
+        "Type": "Bool",
+        "Optional": true
+      }
+    },
+    "opsgenie_escalation": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "owner_team_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "repeat": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "close_alert_after_all": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "count": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "reset_recipient_states": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "wait_interval": {
+              "Type": "Int",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "rules": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "condition": {
+              "Type": "String",
+              "Required": true
+            },
+            "delay": {
+              "Type": "Int",
+              "Required": true
+            },
+            "notify_type": {
+              "Type": "String",
+              "Required": true
+            },
+            "recipient": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "id": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "opsgenie_heartbeat": {
+      "alert_message": {
+        "Type": "String",
+        "Optional": true
+      },
+      "alert_priority": {
+        "Type": "String",
+        "Optional": true
+      },
+      "alert_tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Required": true
+      },
+      "interval": {
+        "Type": "Int",
+        "Required": true
+      },
+      "interval_unit": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "owner_team_id": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "opsgenie_maintenance": {
+      "description": {
+        "Type": "String",
+        "Required": true
+      },
+      "rules": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "entity": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "id": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            },
+            "state": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "time": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "end_date": {
+              "Type": "String",
+              "Optional": true
+            },
+            "start_date": {
+              "Type": "String",
+              "Optional": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      }
+    },
+    "opsgenie_schedule": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "owner_team_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "timezone": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "opsgenie_schedule_rotation": {
+      "end_date": {
+        "Type": "String",
+        "Optional": true
+      },
+      "length": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "participant": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "schedule_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "start_date": {
+        "Type": "String",
+        "Required": true
+      },
+      "time_restriction": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "restriction": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_hour": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "end_min": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "start_hour": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "start_min": {
+                    "Type": "Int",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "restrictions": {
+              "Type": "List",
+              "Optional": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "end_day": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "end_hour": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "end_min": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "start_day": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "start_hour": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "start_min": {
+                    "Type": "Int",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "type": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "opsgenie_team": {
       "description": {
         "Type": "String",
@@ -22,17 +430,13 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
-            "role": {
-              "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "user"
-              }
-            },
-            "username": {
+            "id": {
               "Type": "String",
               "Required": true
+            },
+            "role": {
+              "Type": "String",
+              "Optional": true
             }
           }
         }
@@ -49,11 +453,7 @@
       },
       "locale": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "en_US"
-        }
+        "Optional": true
       },
       "role": {
         "Type": "String",
@@ -61,11 +461,25 @@
       },
       "timezone": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "America/New_York"
-        }
+        "Optional": true
+      },
+      "username": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "opsgenie_user_contact": {
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "method": {
+        "Type": "String",
+        "Required": true
+      },
+      "to": {
+        "Type": "String",
+        "Required": true
       },
       "username": {
         "Type": "String",
@@ -74,14 +488,190 @@
     }
   },
   "data-sources": {
+    "opsgenie_escalation": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "owner_team_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "repeat": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "close_alert_after_all": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "count": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "reset_recipient_states": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "wait_interval": {
+              "Type": "Int",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "rules": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "condition": {
+              "Type": "String",
+              "Required": true
+            },
+            "delay": {
+              "Type": "Int",
+              "Required": true
+            },
+            "notify_type": {
+              "Type": "String",
+              "Required": true
+            },
+            "recipient": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "id": {
+                    "Type": "String",
+                    "Optional": true
+                  },
+                  "type": {
+                    "Type": "String",
+                    "Optional": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "opsgenie_heartbeat": {
+      "alert_message": {
+        "Type": "String",
+        "Optional": true
+      },
+      "alert_priority": {
+        "Type": "String",
+        "Optional": true
+      },
+      "alert_tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "interval": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "interval_unit": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "owner_team_id": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "opsgenie_schedule": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "owner_team_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "timezone": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
+    "opsgenie_team": {
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "member": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "role": {
+              "Type": "String",
+              "Optional": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "opsgenie_user": {
       "full_name": {
         "Type": "String",
-        "Computed": true
+        "Optional": true
+      },
+      "locale": {
+        "Type": "String",
+        "Optional": true
       },
       "role": {
         "Type": "String",
-        "Computed": true
+        "Optional": true
+      },
+      "timezone": {
+        "Type": "String",
+        "Optional": true
       },
       "username": {
         "Type": "String",

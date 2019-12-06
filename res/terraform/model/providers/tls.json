@@ -1,8 +1,7 @@
 {
-  ".schema_version": "1",
   "name": "tls",
   "type": "provider",
-  "version": "v2.0.0",
+  "version": "v2.1.1-1-gcb21e55",
   "provider": {},
   "resources": {
     "tls_cert_request": {
@@ -86,6 +85,15 @@
             }
           }
         }
+      },
+      "uris": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "List of URIs to use as subjects of the certificate",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       }
     },
     "tls_locally_signed_cert": {
@@ -125,16 +133,21 @@
       "early_renewal_hours": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of hours before the certificates expiry when a new certificate will be generated",
-        "Default": {
-          "Type": "int",
-          "Value": "0"
-        }
+        "Description": "Number of hours before the certificates expiry when a new certificate will be generated"
       },
       "is_ca_certificate": {
         "Type": "Bool",
         "Optional": true,
         "Description": "Whether the generated certificate will be usable as a CA certificate"
+      },
+      "ready_for_renewal": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "set_subject_key_id": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If true, the generated certificate will include a subject key identifier."
       },
       "validity_end_time": {
         "Type": "String",
@@ -159,11 +172,7 @@
       "ecdsa_curve": {
         "Type": "String",
         "Optional": true,
-        "Description": "ECDSA curve to use when generating a key",
-        "Default": {
-          "Type": "string",
-          "Value": "P224"
-        }
+        "Description": "ECDSA curve to use when generating a key"
       },
       "private_key_pem": {
         "Type": "String",
@@ -184,11 +193,7 @@
       "rsa_bits": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of bits to use when generating an RSA key",
-        "Default": {
-          "Type": "int",
-          "Value": "2048"
-        }
+        "Description": "Number of bits to use when generating an RSA key"
       }
     },
     "tls_self_signed_cert": {
@@ -217,11 +222,7 @@
       "early_renewal_hours": {
         "Type": "Int",
         "Optional": true,
-        "Description": "Number of hours before the certificates expiry when a new certificate will be generated",
-        "Default": {
-          "Type": "int",
-          "Value": "0"
-        }
+        "Description": "Number of hours before the certificates expiry when a new certificate will be generated"
       },
       "ip_addresses": {
         "Type": "List",
@@ -246,6 +247,15 @@
         "Type": "String",
         "Required": true,
         "Description": "PEM-encoded private key that the certificate will belong to"
+      },
+      "ready_for_renewal": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "set_subject_key_id": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "If true, the generated certificate will include a subject key identifier."
       },
       "subject": {
         "Type": "List",
@@ -294,6 +304,15 @@
               }
             }
           }
+        }
+      },
+      "uris": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "List of URIs to use as subjects of the certificate",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
         }
       },
       "validity_end_time": {

@@ -1,8 +1,7 @@
 {
-  ".schema_version": "1",
   "name": "tfe",
   "type": "provider",
-  "version": "v0.8.2",
+  "version": "v0.11.1-11-gaca853f",
   "provider": {
     "hostname": {
       "Type": "String",
@@ -20,6 +19,40 @@
     }
   },
   "resources": {
+    "tfe_notification_configuration": {
+      "destination_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "token": {
+        "Type": "String",
+        "Optional": true
+      },
+      "triggers": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "url": {
+        "Type": "String",
+        "Required": true
+      },
+      "workspace_external_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "tfe_oauth_client": {
       "api_url": {
         "Type": "String",
@@ -49,11 +82,7 @@
     "tfe_organization": {
       "collaborator_auth_policy": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "password"
-        }
+        "Optional": true
       },
       "email": {
         "Type": "String",
@@ -101,11 +130,7 @@
         "Optional": true,
         "ConflictsWith": [
           "workspace_external_ids"
-        ],
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        ]
       },
       "name": {
         "Type": "String",
@@ -115,12 +140,53 @@
         "Type": "String",
         "Required": true
       },
+      "policies_path": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "policy_ids"
+        ]
+      },
       "policy_ids": {
         "Type": "Set",
-        "Required": true,
+        "Optional": true,
+        "ConflictsWith": [
+          "vcs_repo",
+          "policies_path"
+        ],
         "Elem": {
           "Type": "SchemaElements",
           "ElementsType": "String"
+        }
+      },
+      "vcs_repo": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "MinItems": 1,
+        "ConflictsWith": [
+          "policy_ids"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "branch": {
+              "Type": "String",
+              "Optional": true
+            },
+            "identifier": {
+              "Type": "String",
+              "Required": true
+            },
+            "ingress_submodules": {
+              "Type": "Bool",
+              "Optional": true
+            },
+            "oauth_token_id": {
+              "Type": "String",
+              "Required": true
+            }
+          }
         }
       },
       "workspace_external_ids": {
@@ -143,11 +209,7 @@
       },
       "enforce_mode": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "soft-mandatory"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -245,11 +307,7 @@
       },
       "hcl": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "key": {
         "Type": "String",
@@ -257,18 +315,11 @@
       },
       "sensitive": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "value": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string"
-        }
+        "Optional": true
       },
       "workspace_id": {
         "Type": "String",
@@ -278,19 +329,23 @@
     "tfe_workspace": {
       "auto_apply": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "external_id": {
         "Type": "String",
         "Computed": true
       },
+      "file_triggers_enabled": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "operations": {
+        "Type": "Bool",
+        "Optional": true
       },
       "organization": {
         "Type": "String",
@@ -298,21 +353,24 @@
       },
       "queue_all_runs": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "ssh_key_id": {
         "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Optional": true
       },
       "terraform_version": {
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "trigger_prefixes": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "vcs_repo": {
         "Type": "List",
@@ -332,11 +390,7 @@
             },
             "ingress_submodules": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             },
             "oauth_token_id": {
               "Type": "String",
@@ -396,9 +450,17 @@
         "Type": "String",
         "Computed": true
       },
+      "file_triggers_enabled": {
+        "Type": "Bool",
+        "Computed": true
+      },
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "operations": {
+        "Type": "Bool",
+        "Computed": true
       },
       "organization": {
         "Type": "String",
@@ -415,6 +477,14 @@
       "terraform_version": {
         "Type": "String",
         "Computed": true
+      },
+      "trigger_prefixes": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "vcs_repo": {
         "Type": "List",

@@ -1,14 +1,12 @@
 {
-  ".schema_version": "1",
   "name": "packet",
   "type": "provider",
-  "version": "v2.0.0",
+  "version": "v2.7.1-12-g61f2b81",
   "provider": {
     "auth_token": {
       "Type": "String",
       "Required": true,
-      "Description": "The API auth key for API operations.",
-      "DefaultFunc": "ENV(PACKET_AUTH_TOKEN)"
+      "Description": "The API auth key for API operations."
     }
   },
   "resources": {
@@ -19,11 +17,7 @@
       },
       "default_route": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "device_id": {
         "Type": "String",
@@ -34,41 +28,12 @@
         "Computed": true
       }
     },
-    "packet_connect": {
-      "facility": {
-        "Type": "String",
-        "Required": true
-      },
-      "name": {
-        "Type": "String",
-        "Required": true
-      },
-      "port_speed": {
-        "Type": "Int",
-        "Required": true
-      },
-      "project_id": {
-        "Type": "String",
-        "Required": true
-      },
-      "provider_id": {
-        "Type": "String",
-        "Required": true
-      },
-      "provider_payload": {
-        "Type": "String",
-        "Required": true
-      },
-      "status": {
-        "Type": "String",
-        "Computed": true
-      },
-      "vxlan": {
-        "Type": "Int",
-        "Required": true
-      }
-    },
     "packet_device": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
       "access_private_ipv4": {
         "Type": "String",
         "Computed": true
@@ -83,11 +48,7 @@
       },
       "always_pxe": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "billing_cycle": {
         "Type": "String",
@@ -119,6 +80,10 @@
         "Optional": true,
         "Removed": "Use the \"facilities\" array instead, i.e. change \n  facility = \"ewr1\"\nto \n  facilities = [\"ewr1\"]"
       },
+      "force_detach_volumes": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "hardware_reservation_id": {
         "Type": "String",
         "Optional": true,
@@ -127,6 +92,16 @@
       "hostname": {
         "Type": "String",
         "Required": true
+      },
+      "ip_address_types": {
+        "Type": "Set",
+        "Optional": true,
+        "MaxItems": 3,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
       },
       "ipxe_script_url": {
         "Type": "String",
@@ -258,6 +233,10 @@
       "user_data": {
         "Type": "String",
         "Optional": true
+      },
+      "wait_for_reservation_deprovision": {
+        "Type": "Bool",
+        "Optional": true
       }
     },
     "packet_ip_attachment": {
@@ -347,19 +326,11 @@
       },
       "force_bond": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "native": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "port_id": {
         "Type": "String",
@@ -381,11 +352,7 @@
     "packet_project": {
       "backend_transfer": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "bgp_config": {
         "Type": "List",
@@ -453,6 +420,10 @@
         "Type": "String",
         "Required": true
       },
+      "owner_id": {
+        "Type": "String",
+        "Computed": true
+      },
       "project_id": {
         "Type": "String",
         "Required": true
@@ -482,6 +453,10 @@
       "cidr_notation": {
         "Type": "String",
         "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
       },
       "facility": {
         "Type": "String",
@@ -525,11 +500,7 @@
       },
       "type": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "public_ipv4"
-        }
+        "Optional": true
       }
     },
     "packet_spot_market_request": {
@@ -651,6 +622,10 @@
         "Type": "String",
         "Required": true
       },
+      "owner_id": {
+        "Type": "String",
+        "Computed": true
+      },
       "public_key": {
         "Type": "String",
         "Required": true
@@ -767,6 +742,213 @@
     }
   },
   "data-sources": {
+    "packet_device": {
+      "access_private_ipv4": {
+        "Type": "String",
+        "Computed": true
+      },
+      "access_public_ipv4": {
+        "Type": "String",
+        "Computed": true
+      },
+      "access_public_ipv6": {
+        "Type": "String",
+        "Computed": true
+      },
+      "always_pxe": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "billing_cycle": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "device_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "project_id",
+          "hostname"
+        ]
+      },
+      "facility": {
+        "Type": "String",
+        "Computed": true
+      },
+      "hardware_reservation_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "hostname": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "device_id"
+        ]
+      },
+      "ipxe_script_url": {
+        "Type": "String",
+        "Computed": true
+      },
+      "network": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address": {
+              "Type": "String",
+              "Computed": true
+            },
+            "cidr": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "family": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "gateway": {
+              "Type": "String",
+              "Computed": true
+            },
+            "public": {
+              "Type": "Bool",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "network_type": {
+        "Type": "String",
+        "Computed": true
+      },
+      "operating_system": {
+        "Type": "String",
+        "Computed": true
+      },
+      "plan": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ports": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "bonded": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "mac": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "project_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "device_id"
+        ]
+      },
+      "public_ipv4_subnet_size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "root_password": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ssh_key_ids": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "storage": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
+    "packet_ip_block_ranges": {
+      "facility": {
+        "Type": "String",
+        "Optional": true
+      },
+      "global_ipv4": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "ipv6": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "private_ipv4": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "project_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "public_ipv4": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "packet_operating_system": {
       "distro": {
         "Type": "String",
@@ -787,6 +969,48 @@
       "version": {
         "Type": "String",
         "Optional": true
+      }
+    },
+    "packet_organization": {
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "logo": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "organization_id"
+        ]
+      },
+      "organization_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "name"
+        ]
+      },
+      "project_ids": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "twitter": {
+        "Type": "String",
+        "Computed": true
+      },
+      "website": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "packet_precreated_ip_block": {
@@ -816,11 +1040,7 @@
       },
       "global": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "manageable": {
         "Type": "Bool",
@@ -851,6 +1071,82 @@
         "Computed": true
       }
     },
+    "packet_project": {
+      "backend_transfer": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "bgp_config": {
+        "Type": "List",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "asn": {
+              "Type": "Int",
+              "Required": true
+            },
+            "deployment_type": {
+              "Type": "String",
+              "Required": true
+            },
+            "max_prefix": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "md5": {
+              "Type": "String",
+              "Optional": true
+            },
+            "status": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "created": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "project_id"
+        ]
+      },
+      "organization_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "payment_method_id": {
+        "Type": "String",
+        "Computed": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "name"
+        ]
+      },
+      "updated": {
+        "Type": "String",
+        "Computed": true
+      },
+      "user_ids": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      }
+    },
     "packet_spot_market_price": {
       "facility": {
         "Type": "String",
@@ -863,6 +1159,114 @@
       "price": {
         "Type": "Float",
         "Computed": true
+      }
+    },
+    "packet_spot_market_request": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete",
+        "default"
+      ],
+      "device_ids": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "request_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "packet_volume": {
+      "billing_cycle": {
+        "Type": "String",
+        "Computed": true
+      },
+      "created": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "device_ids": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "facility": {
+        "Type": "String",
+        "Computed": true
+      },
+      "locked": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "volume_id"
+        ]
+      },
+      "plan": {
+        "Type": "String",
+        "Computed": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "volume_id"
+        ]
+      },
+      "size": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "snapshot_policies": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "snapshot_count": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "snapshot_frequency": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "state": {
+        "Type": "String",
+        "Computed": true
+      },
+      "updated": {
+        "Type": "String",
+        "Computed": true
+      },
+      "volume_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true,
+        "ConflictsWith": [
+          "project_id",
+          "name"
+        ]
       }
     }
   }

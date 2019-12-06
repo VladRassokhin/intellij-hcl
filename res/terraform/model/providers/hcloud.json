@@ -1,19 +1,16 @@
 {
-  ".schema_version": "1",
   "name": "hcloud",
   "type": "provider",
-  "version": "v1.9.0",
+  "version": "v1.15.0-2-g00e6c62f",
   "provider": {
     "endpoint": {
       "Type": "String",
-      "Optional": true,
-      "DefaultFunc": "ENV(HCLOUD_ENDPOINT)"
+      "Optional": true
     },
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "The API token to access the Hetzner cloud.",
-      "DefaultFunc": "ENV(HCLOUD_TOKEN)"
+      "Description": "The API token to access the Hetzner cloud."
     }
   },
   "resources": {
@@ -39,6 +36,11 @@
         "Type": "Map",
         "Optional": true
       },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "server_id": {
         "Type": "Int",
         "Optional": true,
@@ -56,6 +58,56 @@
       },
       "server_id": {
         "Type": "Int",
+        "Required": true
+      }
+    },
+    "hcloud_network": {
+      "ip_range": {
+        "Type": "String",
+        "Required": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "hcloud_network_route": {
+      "destination": {
+        "Type": "String",
+        "Required": true
+      },
+      "gateway": {
+        "Type": "String",
+        "Required": true
+      },
+      "network_id": {
+        "Type": "Int",
+        "Required": true
+      }
+    },
+    "hcloud_network_subnet": {
+      "gateway": {
+        "Type": "String",
+        "Computed": true
+      },
+      "ip_range": {
+        "Type": "String",
+        "Required": true
+      },
+      "network_id": {
+        "Type": "Int",
+        "Required": true
+      },
+      "network_zone": {
+        "Type": "String",
+        "Required": true
+      },
+      "type": {
+        "Type": "String",
         "Required": true
       }
     },
@@ -85,11 +137,7 @@
       },
       "backups": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "datacenter": {
         "Type": "String",
@@ -118,11 +166,7 @@
       },
       "keep_disk": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "labels": {
         "Type": "Map",
@@ -160,6 +204,33 @@
       "user_data": {
         "Type": "String",
         "Optional": true
+      }
+    },
+    "hcloud_server_network": {
+      "alias_ips": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "ip": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "mac_address": {
+        "Type": "String",
+        "Computed": true
+      },
+      "network_id": {
+        "Type": "Int",
+        "Required": true
+      },
+      "server_id": {
+        "Type": "Int",
+        "Required": true
       }
     },
     "hcloud_ssh_key": {
@@ -321,6 +392,10 @@
         "Type": "Map",
         "Computed": true
       },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
       "selector": {
         "Type": "String",
         "Optional": true,
@@ -473,6 +548,28 @@
         }
       }
     },
+    "hcloud_network": {
+      "id": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "ip_range": {
+        "Type": "String",
+        "Optional": true
+      },
+      "labels": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "with_selector": {
+        "Type": "String",
+        "Optional": true
+      }
+    },
     "hcloud_server": {
       "backup_window": {
         "Type": "String",
@@ -597,6 +694,41 @@
         "ConflictsWith": [
           "selector"
         ]
+      }
+    },
+    "hcloud_ssh_keys": {
+      "ssh_keys": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "fingerprint": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "labels": {
+              "Type": "Map",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "public_key": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "with_selector": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "hcloud_volume": {

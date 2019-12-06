@@ -1,32 +1,31 @@
 {
-  ".schema_version": "1",
   "name": "digitalocean",
   "type": "provider",
-  "version": "v1.2.0",
+  "version": "v1.11.0-4-g789b781",
   "provider": {
     "api_endpoint": {
       "Type": "String",
       "Required": true,
       "Description": "The URL to use for the DigitalOcean API.",
-      "DefaultFunc": "ENV(DIGITALOCEAN_API_URL)"
+      "Default": {
+        "Type": "string",
+        "Value": "https://api.digitalocean.com"
+      }
     },
     "spaces_access_id": {
       "Type": "String",
       "Optional": true,
-      "Description": "The access key ID for Spaces API operations.",
-      "DefaultFunc": "ENV(SPACES_ACCESS_KEY_ID)"
+      "Description": "The access key ID for Spaces API operations."
     },
     "spaces_secret_key": {
       "Type": "String",
       "Optional": true,
-      "Description": "The secret access key for Spaces API operations.",
-      "DefaultFunc": "ENV(SPACES_SECRET_ACCESS_KEY)"
+      "Description": "The secret access key for Spaces API operations."
     },
     "token": {
       "Type": "String",
       "Required": true,
-      "Description": "The token key for API operations.",
-      "DefaultFunc": "ENV(DIGITALOCEAN_TOKEN)"
+      "Description": "The token key for API operations."
     }
   },
   "resources": {
@@ -107,11 +106,7 @@
       },
       "type": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "custom"
-        }
+        "Optional": true
       }
     },
     "digitalocean_database_cluster": {
@@ -161,6 +156,14 @@
         "Type": "Int",
         "Computed": true
       },
+      "private_host": {
+        "Type": "String",
+        "Computed": true
+      },
+      "private_uri": {
+        "Type": "String",
+        "Computed": true
+      },
       "region": {
         "Type": "String",
         "Required": true
@@ -169,7 +172,19 @@
         "Type": "String",
         "Required": true
       },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "uri": {
+        "Type": "String",
+        "Computed": true
+      },
+      "urn": {
         "Type": "String",
         "Computed": true
       },
@@ -179,7 +194,143 @@
       },
       "version": {
         "Type": "String",
+        "Optional": true
+      }
+    },
+    "digitalocean_database_connection_pool": {
+      "cluster_id": {
+        "Type": "String",
         "Required": true
+      },
+      "db_name": {
+        "Type": "String",
+        "Required": true
+      },
+      "host": {
+        "Type": "String",
+        "Computed": true
+      },
+      "mode": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "password": {
+        "Type": "String",
+        "Computed": true
+      },
+      "port": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "private_host": {
+        "Type": "String",
+        "Computed": true
+      },
+      "private_uri": {
+        "Type": "String",
+        "Computed": true
+      },
+      "size": {
+        "Type": "Int",
+        "Required": true
+      },
+      "uri": {
+        "Type": "String",
+        "Computed": true
+      },
+      "user": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "digitalocean_database_db": {
+      "cluster_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "digitalocean_database_replica": {
+      "cluster_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "database": {
+        "Type": "String",
+        "Computed": true
+      },
+      "host": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "password": {
+        "Type": "String",
+        "Computed": true
+      },
+      "port": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "private_host": {
+        "Type": "String",
+        "Computed": true
+      },
+      "private_uri": {
+        "Type": "String",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true
+      },
+      "size": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "uri": {
+        "Type": "String",
+        "Computed": true
+      },
+      "user": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "digitalocean_database_user": {
+      "cluster_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "password": {
+        "Type": "String",
+        "Computed": true
+      },
+      "role": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "digitalocean_domain": {
@@ -199,11 +350,11 @@
     "digitalocean_droplet": {
       "backups": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
+      },
+      "created_at": {
+        "Type": "String",
+        "Computed": true
       },
       "disk": {
         "Type": "Int",
@@ -223,11 +374,7 @@
       },
       "ipv6": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "ipv6_address": {
         "Type": "String",
@@ -235,7 +382,8 @@
       },
       "ipv6_address_private": {
         "Type": "String",
-        "Computed": true
+        "Computed": true,
+        "Removed": "DigitalOcean does not provide private IPv6 networking"
       },
       "locked": {
         "Type": "Bool",
@@ -247,11 +395,7 @@
       },
       "monitoring": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -267,11 +411,7 @@
       },
       "private_networking": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "region": {
         "Type": "String",
@@ -279,11 +419,7 @@
       },
       "resize_disk": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "size": {
         "Type": "String",
@@ -558,7 +694,7 @@
         "Computed": true
       },
       "kube_config": {
-        "Type": "Set",
+        "Type": "List",
         "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
@@ -575,11 +711,19 @@
               "Type": "String",
               "Computed": true
             },
+            "expires_at": {
+              "Type": "String",
+              "Computed": true
+            },
             "host": {
               "Type": "String",
               "Computed": true
             },
             "raw_config": {
+              "Type": "String",
+              "Computed": true
+            },
+            "token": {
               "Type": "String",
               "Computed": true
             }
@@ -598,9 +742,25 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "actual_node_count": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "auto_scale": {
+              "Type": "Bool",
+              "Optional": true
+            },
             "id": {
               "Type": "String",
               "Computed": true
+            },
+            "max_nodes": {
+              "Type": "Int",
+              "Optional": true
+            },
+            "min_nodes": {
+              "Type": "Int",
+              "Optional": true
             },
             "name": {
               "Type": "String",
@@ -608,7 +768,7 @@
             },
             "node_count": {
               "Type": "Int",
-              "Required": true
+              "Optional": true
             },
             "nodes": {
               "Type": "List",
@@ -684,9 +844,25 @@
       }
     },
     "digitalocean_kubernetes_node_pool": {
+      "actual_node_count": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "auto_scale": {
+        "Type": "Bool",
+        "Optional": true
+      },
       "cluster_id": {
         "Type": "String",
         "Required": true
+      },
+      "max_nodes": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "min_nodes": {
+        "Type": "Int",
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -694,7 +870,7 @@
       },
       "node_count": {
         "Type": "Int",
-        "Required": true
+        "Optional": true
       },
       "nodes": {
         "Type": "List",
@@ -741,11 +917,7 @@
     "digitalocean_loadbalancer": {
       "algorithm": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "round_robin"
-        }
+        "Optional": true
       },
       "droplet_ids": {
         "Type": "Set",
@@ -765,11 +937,7 @@
       },
       "enable_proxy_protocol": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "forwarding_rule": {
         "Type": "List",
@@ -800,11 +968,7 @@
             },
             "tls_passthrough": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             }
           }
         }
@@ -819,19 +983,11 @@
           "Info": {
             "check_interval_seconds": {
               "Type": "Int",
-              "Optional": true,
-              "Default": {
-                "Type": "int",
-                "Value": "10"
-              }
+              "Optional": true
             },
             "healthy_threshold": {
               "Type": "Int",
-              "Optional": true,
-              "Default": {
-                "Type": "int",
-                "Value": "5"
-              }
+              "Optional": true
             },
             "path": {
               "Type": "String",
@@ -847,19 +1003,11 @@
             },
             "response_timeout_seconds": {
               "Type": "Int",
-              "Optional": true,
-              "Default": {
-                "Type": "int",
-                "Value": "5"
-              }
+              "Optional": true
             },
             "unhealthy_threshold": {
               "Type": "Int",
-              "Optional": true,
-              "Default": {
-                "Type": "int",
-                "Value": "3"
-              }
+              "Optional": true
             }
           }
         }
@@ -874,11 +1022,7 @@
       },
       "redirect_http_to_https": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "region": {
         "Type": "String",
@@ -906,11 +1050,7 @@
             },
             "type": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "none"
-              }
+              "Optional": true
             }
           }
         }
@@ -930,19 +1070,12 @@
       "description": {
         "Type": "String",
         "Optional": true,
-        "Description": "the descirption of the project",
-        "Default": {
-          "Type": "string"
-        }
+        "Description": "the descirption of the project"
       },
       "environment": {
         "Type": "String",
         "Optional": true,
-        "Description": "the environment of the project's resources",
-        "Default": {
-          "Type": "string",
-          "Value": "Development"
-        }
+        "Description": "the environment of the project's resources"
       },
       "name": {
         "Type": "String",
@@ -962,11 +1095,7 @@
       "purpose": {
         "Type": "String",
         "Optional": true,
-        "Description": "the purpose of the project",
-        "Default": {
-          "Type": "string",
-          "Value": "Web Application"
-        }
+        "Description": "the purpose of the project"
       },
       "resources": {
         "Type": "Set",
@@ -1034,25 +1163,58 @@
       "acl": {
         "Type": "String",
         "Optional": true,
-        "Description": "Canned ACL applied on bucket creation",
-        "Default": {
-          "Type": "string",
-          "Value": "private"
-        }
+        "Description": "Canned ACL applied on bucket creation"
       },
       "bucket_domain_name": {
         "Type": "String",
         "Description": "The FQDN of the bucket",
         "Computed": true
       },
+      "cors_rule": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "A container holding a list of elements describing allowed methods for a specific origin.",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "allowed_headers": {
+              "Type": "List",
+              "Optional": true,
+              "Description": "A list of headers that will be included in the CORS preflight request's Access-Control-Request-Headers. A header may contain one wildcard (e.g. x-amz-*).",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "allowed_methods": {
+              "Type": "List",
+              "Required": true,
+              "Description": "A list of HTTP methods (e.g. GET) which are allowed from the specified origin.",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "allowed_origins": {
+              "Type": "List",
+              "Required": true,
+              "Description": "A list of hosts from which requests using the specified methods are allowed. A host may contain one wildcard (e.g. http://*.example.com).",
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "max_age_seconds": {
+              "Type": "Int",
+              "Optional": true
+            }
+          }
+        }
+      },
       "force_destroy": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Unless true, the bucket will only be destroyed if empty",
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Description": "Unless true, the bucket will only be destroyed if empty"
       },
       "name": {
         "Type": "String",
@@ -1062,11 +1224,7 @@
       "region": {
         "Type": "String",
         "Optional": true,
-        "Description": "Bucket region",
-        "Default": {
-          "Type": "string",
-          "Value": "nyc3"
-        }
+        "Description": "Bucket region"
       },
       "urn": {
         "Type": "String",
@@ -1144,6 +1302,14 @@
         "Type": "String",
         "Optional": true
       },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "urn": {
         "Type": "String",
         "Description": "the uniform resource name for the volume.",
@@ -1192,6 +1358,43 @@
     }
   },
   "data-sources": {
+    "digitalocean_account": {
+      "droplet_limit": {
+        "Type": "Int",
+        "Description": "The total number of Droplets current user or team may have active at one time.",
+        "Computed": true
+      },
+      "email": {
+        "Type": "String",
+        "Description": "The email address used by the current user to register for DigitalOcean.",
+        "Computed": true
+      },
+      "email_verified": {
+        "Type": "Bool",
+        "Description": "If true, the user has verified their account via email. False otherwise.",
+        "Computed": true
+      },
+      "floating_ip_limit": {
+        "Type": "Int",
+        "Description": "The total number of Floating IPs the current user or team may have.",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Description": "This value is one of \"active\", \"warning\" or \"locked\".",
+        "Computed": true
+      },
+      "status_message": {
+        "Type": "String",
+        "Description": "A human-readable message giving more details about the status of the account.",
+        "Computed": true
+      },
+      "uuid": {
+        "Type": "String",
+        "Description": "The unique universal identifier for the current user.",
+        "Computed": true
+      }
+    },
     "digitalocean_certificate": {
       "domains": {
         "Type": "Set",
@@ -1228,6 +1431,94 @@
         "Computed": true
       }
     },
+    "digitalocean_database_cluster": {
+      "database": {
+        "Type": "String",
+        "Computed": true
+      },
+      "engine": {
+        "Type": "String",
+        "Computed": true
+      },
+      "host": {
+        "Type": "String",
+        "Computed": true
+      },
+      "maintenance_window": {
+        "Type": "List",
+        "Computed": true,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "day": {
+              "Type": "String",
+              "Computed": true
+            },
+            "hour": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "node_count": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "password": {
+        "Type": "String",
+        "Computed": true
+      },
+      "port": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "private_host": {
+        "Type": "String",
+        "Computed": true
+      },
+      "private_uri": {
+        "Type": "String",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Computed": true
+      },
+      "size": {
+        "Type": "String",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "uri": {
+        "Type": "String",
+        "Computed": true
+      },
+      "urn": {
+        "Type": "String",
+        "Computed": true
+      },
+      "user": {
+        "Type": "String",
+        "Computed": true
+      },
+      "version": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "digitalocean_domain": {
       "name": {
         "Type": "String",
@@ -1254,6 +1545,11 @@
       "backups": {
         "Type": "Bool",
         "Description": "whether the droplet has backups enabled",
+        "Computed": true
+      },
+      "created_at": {
+        "Type": "String",
+        "Description": "the creation date for the Droplet",
         "Computed": true
       },
       "disk": {
@@ -1308,7 +1604,7 @@
       },
       "name": {
         "Type": "String",
-        "Required": true,
+        "Optional": true,
         "Description": "name of the droplet"
       },
       "price_hourly": {
@@ -1340,6 +1636,11 @@
         "Type": "String",
         "Description": "state of the droplet instance",
         "Computed": true
+      },
+      "tag": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "unique tag of the droplet"
       },
       "tags": {
         "Type": "Set",
@@ -1384,11 +1685,7 @@
       },
       "most_recent": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -1507,7 +1804,7 @@
         "Computed": true
       },
       "kube_config": {
-        "Type": "Set",
+        "Type": "List",
         "Computed": true,
         "Elem": {
           "Type": "SchemaInfo",
@@ -1524,11 +1821,19 @@
               "Type": "String",
               "Computed": true
             },
+            "expires_at": {
+              "Type": "String",
+              "Computed": true
+            },
             "host": {
               "Type": "String",
               "Computed": true
             },
             "raw_config": {
+              "Type": "String",
+              "Computed": true
+            },
+            "token": {
               "Type": "String",
               "Computed": true
             }
@@ -1545,8 +1850,24 @@
         "Elem": {
           "Type": "SchemaInfo",
           "Info": {
+            "actual_node_count": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "auto_scale": {
+              "Type": "Bool",
+              "Computed": true
+            },
             "id": {
               "Type": "String",
+              "Computed": true
+            },
+            "max_nodes": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "min_nodes": {
+              "Type": "Int",
               "Computed": true
             },
             "name": {
@@ -1850,6 +2171,107 @@
         "Computed": true
       }
     },
+    "digitalocean_sizes": {
+      "filter": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "One or more key/value pairs to filter droplet size results.",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "key": {
+              "Type": "String",
+              "Required": true
+            },
+            "values": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            }
+          }
+        }
+      },
+      "sizes": {
+        "Type": "List",
+        "Description": "List of filtered digital ocean sizes.",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "available": {
+              "Type": "Bool",
+              "Description": "This represents whether new Droplets can be created with this size.",
+              "Computed": true
+            },
+            "disk": {
+              "Type": "Int",
+              "Description": "The amount of disk space set aside for Droplets of this size. The value is measured in gigabytes.",
+              "Computed": true
+            },
+            "memory": {
+              "Type": "Int",
+              "Description": "The amount of RAM allocated to Droplets created of this size. The value is measured in megabytes.",
+              "Computed": true
+            },
+            "price_hourly": {
+              "Type": "Float",
+              "Description": "The hourly cost of Droplets created in this size as measured hourly. The value is measured in US dollars.",
+              "Computed": true
+            },
+            "price_monthly": {
+              "Type": "Float",
+              "Description": "The monthly cost of Droplets created in this size if they are kept for an entire month. The value is measured in US dollars.",
+              "Computed": true
+            },
+            "regions": {
+              "Type": "Set",
+              "Description": "List of region slugs where Droplets can be created in this size.",
+              "Computed": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "slug": {
+              "Type": "String",
+              "Description": "A human-readable string that is used to uniquely identify each size.",
+              "Computed": true
+            },
+            "transfer": {
+              "Type": "Float",
+              "Description": "The amount of transfer bandwidth that is available for Droplets created in this size. This only counts traffic on the public interface. The value is given in terabytes.",
+              "Computed": true
+            },
+            "vcpus": {
+              "Type": "Int",
+              "Description": "The number of CPUs allocated to Droplets of this size.",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "sort": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "One or more key/direction pairs to sort droplet size results.",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "direction": {
+              "Type": "String",
+              "Optional": true
+            },
+            "key": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      }
+    },
     "digitalocean_ssh_key": {
       "fingerprint": {
         "Type": "String",
@@ -1914,6 +2336,14 @@
         "Description": "the size of the volume in gigabytes",
         "Computed": true
       },
+      "tags": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
       "urn": {
         "Type": "String",
         "Description": "the iniform resource name for the volume",
@@ -1931,11 +2361,7 @@
       },
       "most_recent": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",

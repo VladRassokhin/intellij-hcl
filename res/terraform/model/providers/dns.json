@@ -1,8 +1,7 @@
 {
-  ".schema_version": "1",
   "name": "dns",
   "type": "provider",
-  "version": "v2.1.0",
+  "version": "v2.2.0-5-g46855d9",
   "provider": {
     "update": {
       "Type": "List",
@@ -13,43 +12,51 @@
         "Info": {
           "key_algorithm": {
             "Type": "String",
-            "Optional": true,
-            "DefaultFunc": "ENV(DNS_UPDATE_KEYALGORITHM)"
+            "Optional": true
           },
           "key_name": {
             "Type": "String",
-            "Optional": true,
-            "DefaultFunc": "ENV(DNS_UPDATE_KEYNAME)"
+            "Optional": true
           },
           "key_secret": {
             "Type": "String",
-            "Optional": true,
-            "DefaultFunc": "ENV(DNS_UPDATE_KEYSECRET)"
+            "Optional": true
           },
           "port": {
             "Type": "Int",
             "Optional": true,
-            "DefaultFunc": "UNKNOWN"
+            "Default": {
+              "Type": "int",
+              "Value": "53"
+            }
           },
           "retries": {
             "Type": "Int",
             "Optional": true,
-            "DefaultFunc": "UNKNOWN"
+            "Default": {
+              "Type": "int",
+              "Value": "3"
+            }
           },
           "server": {
             "Type": "String",
-            "Required": true,
-            "DefaultFunc": "ENV(DNS_UPDATE_SERVER)"
+            "Required": true
           },
           "timeout": {
             "Type": "String",
             "Optional": true,
-            "DefaultFunc": "ENV(DNS_UPDATE_TIMEOUT)"
+            "Default": {
+              "Type": "string",
+              "Value": "0"
+            }
           },
           "transport": {
             "Type": "String",
             "Optional": true,
-            "DefaultFunc": "ENV(DNS_UPDATE_TRANSPORT)"
+            "Default": {
+              "Type": "string",
+              "Value": "udp"
+            }
           }
         }
       }
@@ -71,11 +78,7 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "3600"
-        }
+        "Optional": true
       },
       "zone": {
         "Type": "String",
@@ -97,11 +100,7 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "3600"
-        }
+        "Optional": true
       },
       "zone": {
         "Type": "String",
@@ -119,11 +118,7 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "3600"
-        }
+        "Optional": true
       },
       "zone": {
         "Type": "String",
@@ -154,11 +149,7 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "3600"
-        }
+        "Optional": true
       },
       "zone": {
         "Type": "String",
@@ -180,11 +171,7 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "3600"
-        }
+        "Optional": true
       },
       "zone": {
         "Type": "String",
@@ -202,11 +189,46 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "3600"
+        "Optional": true
+      },
+      "zone": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "dns_srv_record_set": {
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "srv": {
+        "Type": "Set",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "port": {
+              "Type": "Int",
+              "Required": true
+            },
+            "priority": {
+              "Type": "Int",
+              "Required": true
+            },
+            "target": {
+              "Type": "String",
+              "Required": true
+            },
+            "weight": {
+              "Type": "Int",
+              "Required": true
+            }
+          }
         }
+      },
+      "ttl": {
+        "Type": "Int",
+        "Optional": true
       },
       "zone": {
         "Type": "String",
@@ -220,11 +242,7 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "3600"
-        }
+        "Optional": true
       },
       "txt": {
         "Type": "Set",
@@ -324,6 +342,37 @@
       "ptr": {
         "Type": "String",
         "Computed": true
+      }
+    },
+    "dns_srv_record_set": {
+      "service": {
+        "Type": "String",
+        "Required": true
+      },
+      "srv": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "port": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "priority": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "target": {
+              "Type": "String",
+              "Computed": true
+            },
+            "weight": {
+              "Type": "Int",
+              "Computed": true
+            }
+          }
+        }
       }
     },
     "dns_txt_record_set": {

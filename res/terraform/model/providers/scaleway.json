@@ -1,41 +1,553 @@
 {
-  ".schema_version": "1",
   "name": "scaleway",
   "type": "provider",
-  "version": "v1.9.2",
+  "version": "v1.12.0-38-g0940f17",
   "provider": {
     "access_key": {
       "Type": "String",
       "Optional": true,
-      "Description": "The API key for Scaleway API operations.",
-      "DefaultFunc": "ENV(SCALEWAY_ACCESS_KEY)",
-      "Deprecated": "Use `token` instead."
+      "Description": "The Scaleway access key."
     },
     "organization": {
       "Type": "String",
-      "Required": true,
-      "Description": "The Organization ID (a.k.a. 'access key') for Scaleway API operations.",
-      "DefaultFunc": "UNKNOWN"
+      "Optional": true,
+      "Deprecated": "Use `organization_id` instead."
+    },
+    "organization_id": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The Scaleway organization ID."
     },
     "region": {
       "Type": "String",
       "Optional": true,
-      "Description": "The Scaleway API region to use.",
-      "DefaultFunc": "ENV(SCALEWAY_REGION)"
+      "Description": "The Scaleway default region to use for your resources.",
+      "Default": {
+        "Type": "string",
+        "Value": "fr-par"
+      }
+    },
+    "secret_key": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The Scaleway secret Key."
     },
     "token": {
       "Type": "String",
-      "Required": true,
-      "Description": "The API key for Scaleway API operations.",
-      "DefaultFunc": "UNKNOWN"
+      "Optional": true,
+      "Deprecated": "Use `secret_key` instead."
+    },
+    "zone": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "The Scaleway default zone to use for your resources."
     }
   },
   "resources": {
+    "scaleway_account_ssh_key": {
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the SSH key"
+      },
+      "organization_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "public_key": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The public SSH key"
+      }
+    },
+    "scaleway_baremetal_server_beta": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Some description to associate to the server, max 255 characters"
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Name of the server",
+        "Computed": true
+      },
+      "offer": {
+        "Type": "String",
+        "Required": true,
+        "Description": "ID of the server type"
+      },
+      "offer_id": {
+        "Type": "String",
+        "Optional": true,
+        "Removed": "Please use offer instead"
+      },
+      "organization_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "os_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The base image of the server"
+      },
+      "ssh_key_ids": {
+        "Type": "List",
+        "Required": true,
+        "Description": "Array of SSH key IDs allowed to SSH to the server",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tags": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Array of tags to associate with the server",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The zone you want to attach the resource to",
+        "Computed": true
+      }
+    },
     "scaleway_bucket": {
       "name": {
         "Type": "String",
         "Required": true,
         "Description": "The name of the bucket"
+      }
+    },
+    "scaleway_instance_ip": {
+      "address": {
+        "Type": "String",
+        "Description": "The IP address",
+        "Computed": true
+      },
+      "organization_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "reverse": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The reverse DNS for this IP",
+        "Computed": true,
+        "Deprecated": "Deprecated in favor of scaleway_instance_ip_reverse_dns resource"
+      },
+      "server_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The server associated with this IP"
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The zone you want to attach the resource to",
+        "Computed": true
+      }
+    },
+    "scaleway_instance_ip_reverse_dns": {
+      "ip_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The IP ID or IP address"
+      },
+      "reverse": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The reverse DNS for this IP"
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The zone you want to attach the resource to",
+        "Computed": true
+      }
+    },
+    "scaleway_instance_placement_group": {
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the placement group",
+        "Computed": true
+      },
+      "organization_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "policy_mode": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "One of the two policy_mode may be selected: enforced or optional."
+      },
+      "policy_respected": {
+        "Type": "Bool",
+        "Description": "Is true when the policy is respected.",
+        "Computed": true
+      },
+      "policy_type": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The operating mode is selected by a policy_type"
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The zone you want to attach the resource to",
+        "Computed": true
+      }
+    },
+    "scaleway_instance_security_group": {
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The description of the security group"
+      },
+      "inbound_default_policy": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Default inbound traffic policy for this security group"
+      },
+      "inbound_rule": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Inbound rules for this security group",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Action when rule match request (drop or accept)"
+            },
+            "ip": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Ip address for this rule (e.g: 1.1.1.1). Only one of ip or ip_range should be provided"
+            },
+            "ip_range": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Ip range for this rule (e.g: 192.168.1.0/24). Only one of ip or ip_range should be provided"
+            },
+            "port": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Network port for this rule"
+            },
+            "port_range": {
+              "Type": "String",
+              "Description": "Computed port range for this rule (e.g: 1-1024, 22-22)",
+              "Computed": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Protocol for this rule (TCP, UDP, ICMP or ANY)"
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the security group",
+        "Computed": true
+      },
+      "organization_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "outbound_default_policy": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Default outbound traffic policy for this security group"
+      },
+      "outbound_rule": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Outbound rules for this security group",
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Action when rule match request (drop or accept)"
+            },
+            "ip": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Ip address for this rule (e.g: 1.1.1.1). Only one of ip or ip_range should be provided"
+            },
+            "ip_range": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Ip range for this rule (e.g: 192.168.1.0/24). Only one of ip or ip_range should be provided"
+            },
+            "port": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Network port for this rule"
+            },
+            "port_range": {
+              "Type": "String",
+              "Description": "Computed port range for this rule (e.g: 1-1024, 22-22)",
+              "Computed": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Protocol for this rule (TCP, UDP, ICMP or ANY)"
+            }
+          }
+        }
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The zone you want to attach the resource to",
+        "Computed": true
+      }
+    },
+    "scaleway_instance_server": {
+      "additional_volume_ids": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The additional volumes attached to the server",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "cloud_init": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The cloud init script associated with this server"
+      },
+      "disable_dynamic_ip": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Disable dynamic IP on the server"
+      },
+      "disable_public_ip": {
+        "Type": "Bool",
+        "Optional": true,
+        "Removed": "Please use disable_dynamic_ip instead"
+      },
+      "enable_ipv6": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Determines if IPv6 is enabled for the server"
+      },
+      "image": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The UUID or the label of the base image used by the server"
+      },
+      "ipv6_address": {
+        "Type": "String",
+        "Description": "The default public IPv6 address routed to the server.",
+        "Computed": true
+      },
+      "ipv6_gateway": {
+        "Type": "String",
+        "Description": "The IPv6 gateway address",
+        "Computed": true
+      },
+      "ipv6_prefix_length": {
+        "Type": "Int",
+        "Description": "The IPv6 prefix length routed to the server.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the server",
+        "Computed": true
+      },
+      "organization_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "placement_group_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The placement group the server is attached to"
+      },
+      "placement_group_policy_respected": {
+        "Type": "Bool",
+        "Description": "True when the placement group policy is respected",
+        "Computed": true
+      },
+      "private_ip": {
+        "Type": "String",
+        "Description": "The Scaleway internal IP address of the server",
+        "Computed": true
+      },
+      "public_ip": {
+        "Type": "String",
+        "Description": "The public IPv4 address of the server",
+        "Computed": true
+      },
+      "root_volume": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Root volume attached to the server on creation",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "delete_on_termination": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Force deletion of the root volume on instance termination"
+            },
+            "size_in_gb": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Size of the root volume in gigabytes",
+              "Computed": true
+            },
+            "volume_id": {
+              "Type": "String",
+              "Description": "Volume ID of the root volume",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "security_group_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The security group the server is attached to",
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The state of the server should be: started, stopped, standby"
+      },
+      "tags": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The tags associated with the server",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The instance type of the server"
+      },
+      "user_data": {
+        "Type": "Set",
+        "Optional": true,
+        "Description": "The user data associated with the server",
+        "MaxItems": 98,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "key": {
+              "Type": "String",
+              "Required": true,
+              "Description": "A user data key, the value \"cloud-init\" is not allowed"
+            },
+            "value": {
+              "Type": "String",
+              "Required": true,
+              "Description": "A user value"
+            }
+          }
+        }
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The zone you want to attach the resource to",
+        "Computed": true
+      }
+    },
+    "scaleway_instance_volume": {
+      "from_snapshot_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Create a volume based on a image",
+        "ConflictsWith": [
+          "from_volume_id",
+          "size_in_gb"
+        ]
+      },
+      "from_volume_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Create a copy of an existing volume",
+        "ConflictsWith": [
+          "from_snapshot_id",
+          "size_in_gb"
+        ]
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the volume",
+        "Computed": true
+      },
+      "organization_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "server_id": {
+        "Type": "String",
+        "Description": "The server associated with this volume",
+        "Computed": true
+      },
+      "size_in_gb": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "The size of the volume in gigabyte",
+        "ConflictsWith": [
+          "from_snapshot_id",
+          "from_volume_id"
+        ]
+      },
+      "type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The volume type"
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The zone you want to attach the resource to",
+        "Computed": true
       }
     },
     "scaleway_ip": {
@@ -70,6 +582,667 @@
         "Description": "The ipv4 reverse dns"
       }
     },
+    "scaleway_k8s_cluster_beta": {
+      "apiserver_url": {
+        "Type": "String",
+        "Description": "Kubernetes API server URL",
+        "Computed": true
+      },
+      "autoscaler_config": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The autoscaler configuration for the cluster",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "balance_similar_node_groups": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Detect similar node groups and balance the number of nodes between them"
+            },
+            "disable_scale_down": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Disable the scale down feature of the autoscaler"
+            },
+            "estimator": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Type of resource estimator to be used in scale up"
+            },
+            "expander": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Type of node group expander to be used in scale up"
+            },
+            "expendable_pods_priority_cutoff": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Pods with priority below cutoff will be expendable. They can be killed without any consideration during scale down and they don't cause scale up. Pods with null priority (PodPriority disabled) are non expendable"
+            },
+            "ignore_daemonsets_utilization": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Ignore DaemonSet pods when calculating resource utilization for scaling down"
+            },
+            "scale_down_delay_after_add": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "How long after scale up that scale down evaluation resumes"
+            }
+          }
+        }
+      },
+      "cni": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The CNI plugin of the cluster"
+      },
+      "created_at": {
+        "Type": "String",
+        "Description": "The date and time of the creation of the Kubernetes cluster",
+        "Computed": true
+      },
+      "default_pool": {
+        "Type": "List",
+        "Required": true,
+        "Description": "Default pool created for the cluster on creation",
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "autohealing": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Enable the autohealing on the default pool"
+            },
+            "autoscaling": {
+              "Type": "Bool",
+              "Optional": true,
+              "Description": "Enable the autoscaling on the default pool"
+            },
+            "container_runtime": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "Container runtime for the default pool"
+            },
+            "created_at": {
+              "Type": "String",
+              "Description": "The date and time of the creation of the default pool",
+              "Computed": true
+            },
+            "max_size": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Maximum size of the default pool",
+              "Computed": true
+            },
+            "min_size": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "Minimun size of the default pool"
+            },
+            "node_type": {
+              "Type": "String",
+              "Required": true,
+              "Description": "Server type of the default pool servers"
+            },
+            "placement_group_id": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "ID of the placement group for the default pool"
+            },
+            "pool_id": {
+              "Type": "String",
+              "Description": "ID of default pool",
+              "Computed": true
+            },
+            "size": {
+              "Type": "Int",
+              "Required": true,
+              "Description": "Size of the default pool"
+            },
+            "status": {
+              "Type": "String",
+              "Description": "The status of the default pool",
+              "Computed": true
+            },
+            "updated_at": {
+              "Type": "String",
+              "Description": "The date and time of the last update of the default pool",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The description of the cluster"
+      },
+      "enable_dashboard": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable the dashboard on the cluster"
+      },
+      "ingress": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ingress to be deployed on the cluster"
+      },
+      "kubeconfig": {
+        "Type": "List",
+        "Description": "The kubeconfig configuration file of the Kubernetes cluster",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "cluster_ca_certificate": {
+              "Type": "String",
+              "Description": "The kubernetes cluster CA certificate",
+              "Computed": true
+            },
+            "config_file": {
+              "Type": "String",
+              "Description": "The whole kubeconfig file",
+              "Computed": true
+            },
+            "host": {
+              "Type": "String",
+              "Description": "The kubernetes master URL",
+              "Computed": true
+            },
+            "token": {
+              "Type": "String",
+              "Description": "The kubernetes cluster admin token",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the cluster"
+      },
+      "organization_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The region you want to attach the resource to",
+        "Computed": true
+      },
+      "status": {
+        "Type": "String",
+        "Description": "The status of the cluster",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "The tags associated with the cluster",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "updated_at": {
+        "Type": "String",
+        "Description": "The date and time of the last update of the Kubernetes cluster",
+        "Computed": true
+      },
+      "version": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The version of the cluster",
+        "Computed": true
+      },
+      "wildcard_dns": {
+        "Type": "String",
+        "Description": "Wildcard DNS pointing to all the ready nodes",
+        "Computed": true
+      }
+    },
+    "scaleway_k8s_pool_beta": {
+      "autohealing": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable the autohealing on the pool"
+      },
+      "autoscaling": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable the autoscaling on the pool"
+      },
+      "cluster_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The ID of the cluster on which this pool will be created"
+      },
+      "container_runtime": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Container runtime for the pool"
+      },
+      "created_at": {
+        "Type": "String",
+        "Description": "The date and time of the creation of the pool",
+        "Computed": true
+      },
+      "max_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Maximum size of the pool",
+        "Computed": true
+      },
+      "min_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Minimun size of the pool"
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the cluster"
+      },
+      "node_type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Server type of the pool servers"
+      },
+      "placement_group_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID of the placement group"
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The region you want to attach the resource to",
+        "Computed": true
+      },
+      "size": {
+        "Type": "Int",
+        "Required": true,
+        "Description": "Size of the pool"
+      },
+      "updated_at": {
+        "Type": "String",
+        "Description": "The date and time of the last update of the pool",
+        "Computed": true
+      },
+      "version": {
+        "Type": "String",
+        "Description": "The Kubernetes version of the pool",
+        "Computed": true
+      }
+    },
+    "scaleway_lb_backend_beta": {
+      "forward_port": {
+        "Type": "Int",
+        "Required": true,
+        "Description": "User sessions will be forwarded to this port of backend servers"
+      },
+      "forward_port_algorithm": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Load balancing algorithm"
+      },
+      "forward_protocol": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Backend protocol"
+      },
+      "health_check_delay": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Interval between two HC requests"
+      },
+      "health_check_http": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "health_check_tcp",
+          "health_check_https"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "code": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The expected HTTP status code"
+            },
+            "method": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The HTTP method to use for HC requests"
+            },
+            "uri": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The HTTP endpoint URL to call for HC requests"
+            }
+          }
+        }
+      },
+      "health_check_https": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "health_check_tcp",
+          "health_check_http"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "code": {
+              "Type": "Int",
+              "Optional": true,
+              "Description": "The expected HTTP status code"
+            },
+            "method": {
+              "Type": "String",
+              "Optional": true,
+              "Description": "The HTTP method to use for HC requests"
+            },
+            "uri": {
+              "Type": "String",
+              "Required": true,
+              "Description": "The HTTPS endpoint URL to call for HC requests"
+            }
+          }
+        }
+      },
+      "health_check_max_retries": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Number of allowed failed HC requests before the backend server is marked down"
+      },
+      "health_check_port": {
+        "Type": "Int",
+        "Optional": true,
+        "Description": "Port the HC requests will be send to. Default to `forward_port`",
+        "Computed": true
+      },
+      "health_check_tcp": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "ConflictsWith": [
+          "health_check_http",
+          "health_check_https"
+        ],
+        "Elem": {
+          "Type": "SchemaInfo"
+        }
+      },
+      "health_check_timeout": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Timeout before we consider a HC request failed"
+      },
+      "lb_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The load-balancer ID"
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the backend",
+        "Computed": true
+      },
+      "on_marked_down_action": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Modify what occurs when a backend server is marked down"
+      },
+      "send_proxy_v2": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enables PROXY protocol version 2"
+      },
+      "server_ips": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Backend server IP addresses list (IPv4 or IPv6)",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "sticky_sessions": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Load balancing algorithm"
+      },
+      "sticky_sessions_cookie_name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Cookie name for for sticky sessions"
+      },
+      "timeout_connect": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Maximum initial server connection establishment time"
+      },
+      "timeout_server": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Maximum server connection inactivity time"
+      },
+      "timeout_tunnel": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Maximum tunnel inactivity time"
+      }
+    },
+    "scaleway_lb_beta": {
+      "ip_address": {
+        "Type": "String",
+        "Description": "The load-balance public IP address",
+        "Computed": true
+      },
+      "ip_id": {
+        "Type": "String",
+        "Description": "The load-balance public IP ID",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Name of the lb",
+        "Computed": true
+      },
+      "organization_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The region you want to attach the resource to",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "Array of tags to associate with the load-balancer",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The type of load-balancer you want to create"
+      }
+    },
+    "scaleway_lb_frontend_beta": {
+      "backend_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The load-balancer backend ID"
+      },
+      "certificate_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Certificate ID"
+      },
+      "inbound_port": {
+        "Type": "Int",
+        "Required": true,
+        "Description": "TCP port to listen on the front side"
+      },
+      "lb_id": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The load-balancer ID"
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the frontend",
+        "Computed": true
+      },
+      "timeout_client": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Set the maximum inactivity time on the client side"
+      }
+    },
+    "scaleway_object_bucket": {
+      "acl": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ACL of the bucket: either 'public-read' or 'private'."
+      },
+      "name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The name of the bucket"
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The region you want to attach the resource to",
+        "Computed": true
+      }
+    },
+    "scaleway_rdb_instance_beta": {
+      "certificate": {
+        "Type": "String",
+        "Description": "Certificate of the database instance",
+        "Computed": true
+      },
+      "disable_backup": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Disable automated backup for the database instance"
+      },
+      "endpoint_ip": {
+        "Type": "String",
+        "Description": "Endpoint IP of the database instance",
+        "Computed": true
+      },
+      "endpoint_port": {
+        "Type": "Int",
+        "Description": "Endpoint port of the database instance",
+        "Computed": true
+      },
+      "engine": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Database's engine version id"
+      },
+      "is_ha_cluster": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Enable or disable high availability for the database instance"
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Name of the database instance",
+        "Computed": true
+      },
+      "node_type": {
+        "Type": "String",
+        "Required": true,
+        "Description": "The type of database instance you want to create"
+      },
+      "organization_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "password": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Password for the first user of the database instance"
+      },
+      "read_replicas": {
+        "Type": "List",
+        "Description": "Read replicas of the database instance",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip": {
+              "Type": "String",
+              "Description": "IP of the replica",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Description": "Name of the replica",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Description": "Port of the replica",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The region you want to attach the resource to",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "List",
+        "Optional": true,
+        "Description": "List of tags [\"tag1\", \"tag2\", ...] attached to a database instance",
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "user_name": {
+        "Type": "String",
+        "Required": true,
+        "Description": "Identifier for the first user of the database instance"
+      }
+    },
     "scaleway_security_group": {
       "description": {
         "Type": "String",
@@ -79,20 +1252,12 @@
       "enable_default_security": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Add default security group rules",
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Description": "Add default security group rules"
       },
       "inbound_default_policy": {
         "Type": "String",
         "Optional": true,
-        "Description": "Default inbound traffic policy for this security group",
-        "Default": {
-          "Type": "string",
-          "Value": "accept"
-        }
+        "Description": "Default inbound traffic policy for this security group"
       },
       "name": {
         "Type": "String",
@@ -102,11 +1267,7 @@
       "outbound_default_policy": {
         "Type": "String",
         "Optional": true,
-        "Description": "Default outbound traffic policy for this security group",
-        "Default": {
-          "Type": "string",
-          "Value": "accept"
-        }
+        "Description": "Default outbound traffic policy for this security group"
       },
       "stateful": {
         "Type": "Bool",
@@ -172,11 +1333,7 @@
       "enable_ipv6": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "determines if IPv6 is enabled for the server",
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Description": "determines if IPv6 is enabled for the server"
       },
       "image": {
         "Type": "String",
@@ -278,10 +1435,7 @@
       "description": {
         "Type": "String",
         "Optional": true,
-        "Description": "The token description.",
-        "Default": {
-          "Type": "string"
-        }
+        "Description": "The token description."
       },
       "email": {
         "Type": "String",
@@ -297,11 +1451,7 @@
       "expires": {
         "Type": "Bool",
         "Optional": true,
-        "Description": "Defines if the token is set to expire",
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Description": "Defines if the token is set to expire"
       },
       "password": {
         "Type": "String",
@@ -372,6 +1522,31 @@
     }
   },
   "data-sources": {
+    "scaleway_account_ssh_key": {
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the SSH key",
+        "Computed": true
+      },
+      "organization_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "public_key": {
+        "Type": "String",
+        "Description": "The public SSH key",
+        "Computed": true
+      },
+      "ssh_key_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ID of the SSH key",
+        "Computed": true
+      }
+    },
     "scaleway_bootscript": {
       "architecture": {
         "Type": "String",
@@ -462,6 +1637,438 @@
         "Type": "Bool",
         "Description": "indication if the bootscript is public",
         "Computed": true
+      }
+    },
+    "scaleway_instance_image": {
+      "additional_volume_ids": {
+        "Type": "List",
+        "Description": "The additional volume IDs attached to the image",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "architecture": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Architecture of the desired image",
+        "ConflictsWith": [
+          "image_id"
+        ]
+      },
+      "creation_date": {
+        "Type": "String",
+        "Description": "Date when the image was created",
+        "Computed": true
+      },
+      "default_bootscript_id": {
+        "Type": "String",
+        "Description": "ID of the bootscript associated with this image",
+        "Computed": true
+      },
+      "from_server_id": {
+        "Type": "String",
+        "Description": "ID of the server the image is originated from",
+        "Computed": true
+      },
+      "image_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "ID of the desired image",
+        "ConflictsWith": [
+          "name",
+          "architecture"
+        ]
+      },
+      "latest": {
+        "Type": "Bool",
+        "Optional": true,
+        "Description": "Select most recent image if multiple match",
+        "ConflictsWith": [
+          "image_id"
+        ]
+      },
+      "modification_date": {
+        "Type": "String",
+        "Description": "Date when the image was updated",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "Exact name of the desired image",
+        "ConflictsWith": [
+          "image_id"
+        ]
+      },
+      "organization_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "public": {
+        "Type": "Bool",
+        "Description": "Indication if the image is public",
+        "Computed": true
+      },
+      "root_volume_id": {
+        "Type": "String",
+        "Description": "ID of the root volume associated with this image",
+        "Computed": true
+      },
+      "state": {
+        "Type": "String",
+        "Description": "State of the image",
+        "Computed": true
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The zone you want to attach the resource to",
+        "Computed": true
+      }
+    },
+    "scaleway_instance_security_group": {
+      "description": {
+        "Type": "String",
+        "Description": "The description of the security group",
+        "Computed": true
+      },
+      "inbound_default_policy": {
+        "Type": "String",
+        "Description": "Default inbound traffic policy for this security group",
+        "Computed": true
+      },
+      "inbound_rule": {
+        "Type": "List",
+        "Description": "Inbound rules for this security group",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "String",
+              "Description": "Action when rule match request (drop or accept)",
+              "Computed": true
+            },
+            "ip": {
+              "Type": "String",
+              "Description": "Ip address for this rule (e.g: 1.1.1.1). Only one of ip or ip_range should be provided",
+              "Computed": true
+            },
+            "ip_range": {
+              "Type": "String",
+              "Description": "Ip range for this rule (e.g: 192.168.1.0/24). Only one of ip or ip_range should be provided",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Description": "Network port for this rule",
+              "Computed": true
+            },
+            "port_range": {
+              "Type": "String",
+              "Description": "Computed port range for this rule (e.g: 1-1024, 22-22)",
+              "Computed": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Description": "Protocol for this rule (TCP, UDP, ICMP or ANY)",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the security group",
+        "ConflictsWith": [
+          "security_group_id"
+        ]
+      },
+      "organization_id": {
+        "Type": "String",
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "outbound_default_policy": {
+        "Type": "String",
+        "Description": "Default outbound traffic policy for this security group",
+        "Computed": true
+      },
+      "outbound_rule": {
+        "Type": "List",
+        "Description": "Outbound rules for this security group",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "String",
+              "Description": "Action when rule match request (drop or accept)",
+              "Computed": true
+            },
+            "ip": {
+              "Type": "String",
+              "Description": "Ip address for this rule (e.g: 1.1.1.1). Only one of ip or ip_range should be provided",
+              "Computed": true
+            },
+            "ip_range": {
+              "Type": "String",
+              "Description": "Ip range for this rule (e.g: 192.168.1.0/24). Only one of ip or ip_range should be provided",
+              "Computed": true
+            },
+            "port": {
+              "Type": "Int",
+              "Description": "Network port for this rule",
+              "Computed": true
+            },
+            "port_range": {
+              "Type": "String",
+              "Description": "Computed port range for this rule (e.g: 1-1024, 22-22)",
+              "Computed": true
+            },
+            "protocol": {
+              "Type": "String",
+              "Description": "Protocol for this rule (TCP, UDP, ICMP or ANY)",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "security_group_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ID of the security group",
+        "ConflictsWith": [
+          "name"
+        ]
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The zone you want to attach the resource to"
+      }
+    },
+    "scaleway_instance_server": {
+      "additional_volume_ids": {
+        "Type": "List",
+        "Description": "The additional volumes attached to the server",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "cloud_init": {
+        "Type": "String",
+        "Description": "The cloud init script associated with this server",
+        "Computed": true
+      },
+      "disable_dynamic_ip": {
+        "Type": "Bool",
+        "Description": "Disable dynamic IP on the server",
+        "Computed": true
+      },
+      "disable_public_ip": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "enable_ipv6": {
+        "Type": "Bool",
+        "Description": "Determines if IPv6 is enabled for the server",
+        "Computed": true
+      },
+      "image": {
+        "Type": "String",
+        "Description": "The UUID or the label of the base image used by the server",
+        "Computed": true
+      },
+      "ipv6_address": {
+        "Type": "String",
+        "Description": "The default public IPv6 address routed to the server.",
+        "Computed": true
+      },
+      "ipv6_gateway": {
+        "Type": "String",
+        "Description": "The IPv6 gateway address",
+        "Computed": true
+      },
+      "ipv6_prefix_length": {
+        "Type": "Int",
+        "Description": "The IPv6 prefix length routed to the server.",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the server",
+        "ConflictsWith": [
+          "server_id"
+        ]
+      },
+      "organization_id": {
+        "Type": "String",
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "placement_group_id": {
+        "Type": "String",
+        "Description": "The placement group the server is attached to",
+        "Computed": true
+      },
+      "placement_group_policy_respected": {
+        "Type": "Bool",
+        "Description": "True when the placement group policy is respected",
+        "Computed": true
+      },
+      "private_ip": {
+        "Type": "String",
+        "Description": "The Scaleway internal IP address of the server",
+        "Computed": true
+      },
+      "public_ip": {
+        "Type": "String",
+        "Description": "The public IPv4 address of the server",
+        "Computed": true
+      },
+      "root_volume": {
+        "Type": "List",
+        "Description": "Root volume attached to the server on creation",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "delete_on_termination": {
+              "Type": "Bool",
+              "Description": "Force deletion of the root volume on instance termination",
+              "Computed": true
+            },
+            "size_in_gb": {
+              "Type": "Int",
+              "Description": "Size of the root volume in gigabytes",
+              "Computed": true
+            },
+            "volume_id": {
+              "Type": "String",
+              "Description": "Volume ID of the root volume",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "security_group_id": {
+        "Type": "String",
+        "Description": "The security group the server is attached to",
+        "Computed": true
+      },
+      "server_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ID of the server",
+        "ConflictsWith": [
+          "name"
+        ]
+      },
+      "state": {
+        "Type": "String",
+        "Description": "The state of the server should be: started, stopped, standby",
+        "Computed": true
+      },
+      "tags": {
+        "Type": "List",
+        "Description": "The tags associated with the server",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "type": {
+        "Type": "String",
+        "Description": "The instance type of the server",
+        "Computed": true
+      },
+      "user_data": {
+        "Type": "Set",
+        "Description": "The user data associated with the server",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "key": {
+              "Type": "String",
+              "Description": "A user data key, the value \"cloud-init\" is not allowed",
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Description": "A user value",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The zone you want to attach the resource to"
+      }
+    },
+    "scaleway_instance_volume": {
+      "from_snapshot_id": {
+        "Type": "String",
+        "Description": "Create a volume based on a image",
+        "Computed": true
+      },
+      "from_volume_id": {
+        "Type": "String",
+        "Description": "Create a copy of an existing volume",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The name of the volume",
+        "ConflictsWith": [
+          "volume_id"
+        ]
+      },
+      "organization_id": {
+        "Type": "String",
+        "Description": "The organization_id you want to attach the resource to",
+        "Computed": true
+      },
+      "server_id": {
+        "Type": "String",
+        "Description": "The server associated with this volume",
+        "Computed": true
+      },
+      "size_in_gb": {
+        "Type": "Int",
+        "Description": "The size of the volume in gigabyte",
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Description": "The volume type",
+        "Computed": true
+      },
+      "volume_id": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The ID of the volume",
+        "ConflictsWith": [
+          "name"
+        ]
+      },
+      "zone": {
+        "Type": "String",
+        "Optional": true,
+        "Description": "The zone you want to attach the resource to"
       }
     },
     "scaleway_security_group": {

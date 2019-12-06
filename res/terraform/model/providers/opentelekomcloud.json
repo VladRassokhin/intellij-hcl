@@ -1,133 +1,178 @@
 {
-  ".schema_version": "1",
   "name": "opentelekomcloud",
   "type": "provider",
-  "version": "v1.7.0",
+  "version": "v1.14.0-1-g08c443fe",
   "provider": {
     "access_key": {
       "Type": "String",
       "Optional": true,
       "Description": "The access key for API operations. You can retrieve this\nfrom the 'My Credential' section of the console.",
-      "DefaultFunc": "ENV(OS_ACCESS_KEY)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "agency_domain_name": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of domain who created the agency (Identity v3).",
-      "DefaultFunc": "ENV(OS_AGENCY_DOMAIN_NAME)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "agency_name": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of agency",
-      "DefaultFunc": "ENV(OS_AGENCY_NAME)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "auth_url": {
       "Type": "String",
       "Required": true,
-      "Description": "The Identity authentication URL.",
-      "DefaultFunc": "ENV(OS_AUTH_URL)"
+      "Description": "The Identity authentication URL."
     },
     "cacert_file": {
       "Type": "String",
       "Optional": true,
       "Description": "A Custom CA certificate.",
-      "DefaultFunc": "ENV(OS_CACERT)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "cert": {
       "Type": "String",
       "Optional": true,
       "Description": "A client certificate to authenticate with.",
-      "DefaultFunc": "ENV(OS_CERT)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "delegated_project": {
       "Type": "String",
       "Optional": true,
       "Description": "The name of delegated project (Identity v3).",
-      "DefaultFunc": "ENV(OS_DELEGATED_PROJECT)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "domain_id": {
       "Type": "String",
       "Optional": true,
       "Description": "The ID of the Domain to scope to (Identity v3).",
-      "DefaultFunc": "MENV(OS_USER_DOMAIN_ID,OS_PROJECT_DOMAIN_ID,OS_DOMAIN_ID)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "domain_name": {
       "Type": "String",
       "Required": true,
       "Description": "The name of the Domain to scope to (Identity v3).",
-      "DefaultFunc": "MENV(OS_USER_DOMAIN_NAME,OS_PROJECT_DOMAIN_NAME,OS_DOMAIN_NAME,OS_DEFAULT_DOMAIN)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "endpoint_type": {
       "Type": "String",
       "Optional": true,
-      "DefaultFunc": "ENV(OS_ENDPOINT_TYPE)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "insecure": {
       "Type": "Bool",
       "Optional": true,
       "Description": "Trust self-signed certificates.",
-      "DefaultFunc": "ENV(OS_INSECURE)"
+      "Default": {
+        "Type": "bool",
+        "Value": "false"
+      }
     },
     "key": {
       "Type": "String",
       "Optional": true,
       "Description": "A client private key to authenticate with.",
-      "DefaultFunc": "ENV(OS_KEY)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "password": {
       "Type": "String",
       "Optional": true,
       "Description": "Password to login with.",
-      "DefaultFunc": "ENV(OS_PASSWORD)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "region": {
       "Type": "String",
       "Optional": true,
       "Description": "The OpenTelekomCloud region to connect to.",
-      "DefaultFunc": "ENV(OS_REGION_NAME)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "secret_key": {
       "Type": "String",
       "Optional": true,
       "Description": "The secret key for API operations. You can retrieve this\nfrom the 'My Credential' section of the console.",
-      "DefaultFunc": "ENV(OS_SECRET_KEY)"
+      "Default": {
+        "Type": "string"
+      }
+    },
+    "security_token": {
+      "Type": "String",
+      "Optional": true,
+      "Description": "Security token to use for OBS federated authentication."
     },
     "swauth": {
       "Type": "Bool",
       "Optional": true,
       "Description": "Use Swift's authentication system instead of Keystone. Only used for\ninteraction with Swift.",
-      "DefaultFunc": "ENV(OS_SWAUTH)"
+      "Default": {
+        "Type": "bool",
+        "Value": "false"
+      }
     },
     "tenant_id": {
       "Type": "String",
       "Optional": true,
       "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
-      "DefaultFunc": "MENV(OS_TENANT_ID,OS_PROJECT_ID)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "tenant_name": {
       "Type": "String",
       "Required": true,
       "Description": "The name of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
-      "DefaultFunc": "MENV(OS_TENANT_NAME,OS_PROJECT_NAME)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "token": {
       "Type": "String",
       "Optional": true,
       "Description": "Authentication token to use as an alternative to username/password.",
-      "DefaultFunc": "ENV(OS_AUTH_TOKEN)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "user_id": {
       "Type": "String",
       "Optional": true,
       "Description": "Username to login with.",
-      "DefaultFunc": "ENV(OS_USER_ID)"
+      "Default": {
+        "Type": "string"
+      }
     },
     "user_name": {
       "Type": "String",
       "Optional": true,
       "Description": "Username to login with.",
-      "DefaultFunc": "ENV(OS_USERNAME)"
+      "Default": {
+        "Type": "string"
+      }
     }
   },
   "resources": {
@@ -185,6 +230,10 @@
                     "Type": "String",
                     "Required": true
                   },
+                  "kms_id": {
+                    "Type": "String",
+                    "Optional": true
+                  },
                   "size": {
                     "Type": "Int",
                     "Required": true
@@ -198,10 +247,7 @@
             },
             "flavor": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string"
-              }
+              "Optional": true
             },
             "image": {
               "Type": "String",
@@ -316,28 +362,16 @@
       "cool_down_time": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The cooling duration, in seconds.",
-        "Default": {
-          "Type": "int",
-          "Value": "900"
-        }
+        "Description": "The cooling duration, in seconds."
       },
       "delete_instances": {
         "Type": "String",
         "Optional": true,
-        "Description": "Whether to delete instances when they are removed from the AS group.",
-        "Default": {
-          "Type": "string",
-          "Value": "no"
-        }
+        "Description": "Whether to delete instances when they are removed from the AS group."
       },
       "delete_publicip": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "desire_instance_number": {
         "Type": "Int",
@@ -345,28 +379,16 @@
       },
       "health_periodic_audit_method": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "NOVA_AUDIT"
-        }
+        "Optional": true
       },
       "health_periodic_audit_time": {
         "Type": "Int",
         "Optional": true,
-        "Description": "The health check period for instances, in minutes.",
-        "Default": {
-          "Type": "int",
-          "Value": "5"
-        }
+        "Description": "The health check period for instances, in minutes."
       },
       "instance_terminate_policy": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "OLD_CONFIG_OLD_INSTANCE"
-        }
+        "Optional": true
       },
       "instances": {
         "Type": "List",
@@ -382,21 +404,34 @@
         "Optional": true,
         "Description": "The system supports the binding of up to three ELB listeners, the IDs of which are separated using a comma."
       },
+      "lbaas_listeners": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "pool_id": {
+              "Type": "String",
+              "Required": true
+            },
+            "protocol_port": {
+              "Type": "Int",
+              "Required": true
+            },
+            "weight": {
+              "Type": "Int",
+              "Optional": true
+            }
+          }
+        }
+      },
       "max_instance_number": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "0"
-        }
+        "Optional": true
       },
       "min_instance_number": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "0"
-        }
+        "Optional": true
       },
       "networks": {
         "Type": "List",
@@ -459,11 +494,7 @@
       },
       "cool_down_time": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "900"
-        }
+        "Optional": true
       },
       "region": {
         "Type": "String",
@@ -483,11 +514,7 @@
           "Info": {
             "instance_number": {
               "Type": "Int",
-              "Optional": true,
-              "Default": {
-                "Type": "int",
-                "Value": "1"
-              }
+              "Optional": true
             },
             "operation": {
               "Type": "String",
@@ -529,11 +556,7 @@
             },
             "start_time": {
               "Type": "String",
-              "Optional": true,
-              "Default": {
-                "Type": "string",
-                "Value": "2019-04-29T14:56Z"
-              }
+              "Optional": true
             }
           }
         }
@@ -572,17 +595,17 @@
       },
       "cascade": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "consistency_group_id": {
         "Type": "String",
         "Optional": true
       },
       "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "device_type": {
         "Type": "String",
         "Optional": true
       },
@@ -628,6 +651,10 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      },
+      "wwn": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "opentelekomcloud_cce_cluster_v3": {
@@ -639,10 +666,56 @@
         "Type": "Map",
         "Optional": true
       },
+      "authentication_mode": {
+        "Type": "String",
+        "Optional": true
+      },
       "billing_mode": {
         "Type": "Int",
         "Optional": true,
         "Computed": true
+      },
+      "certificate_clusters": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "certificate_authority_data": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "server": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "certificate_users": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "client_certificate_data": {
+              "Type": "String",
+              "Computed": true
+            },
+            "client_key_data": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
       },
       "cluster_type": {
         "Type": "String",
@@ -667,6 +740,10 @@
         "Optional": true,
         "Computed": true
       },
+      "eip": {
+        "Type": "String",
+        "Optional": true
+      },
       "extend_param": {
         "Type": "Map",
         "Optional": true
@@ -688,16 +765,16 @@
         "Optional": true,
         "Computed": true
       },
-      "id": {
-        "Type": "String",
-        "Computed": true
-      },
       "internal": {
         "Type": "String",
         "Computed": true
       },
       "labels": {
         "Type": "Map",
+        "Optional": true
+      },
+      "multi_az": {
+        "Type": "Bool",
         "Optional": true
       },
       "name": {
@@ -756,7 +833,7 @@
         "Required": true
       },
       "data_volumes": {
-        "Type": "Set",
+        "Type": "List",
         "Required": true,
         "Elem": {
           "Type": "SchemaInfo",
@@ -832,6 +909,10 @@
         "Optional": true,
         "Computed": true
       },
+      "private_ip": {
+        "Type": "String",
+        "Computed": true
+      },
       "product_id": {
         "Type": "String",
         "Optional": true,
@@ -882,11 +963,7 @@
       ],
       "alarm_action_enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "alarm_actions": {
         "Type": "List",
@@ -916,11 +993,7 @@
       },
       "alarm_enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "alarm_name": {
         "Type": "String",
@@ -1086,11 +1159,7 @@
             },
             "delete_on_termination": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             },
             "destination_type": {
               "Type": "String",
@@ -1130,14 +1199,12 @@
       "flavor_id": {
         "Type": "String",
         "Optional": true,
-        "Computed": true,
-        "DefaultFunc": "ENV(OS_BMS_FLAVOR_NAME)"
+        "Computed": true
       },
       "flavor_name": {
         "Type": "String",
         "Optional": true,
-        "Computed": true,
-        "DefaultFunc": "ENV(OS_BMS_FLAVOR_NAME)"
+        "Computed": true
       },
       "host_id": {
         "Type": "String",
@@ -1183,11 +1250,7 @@
           "Info": {
             "access_network": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             },
             "fixed_ip_v4": {
               "Type": "String",
@@ -1237,11 +1300,11 @@
       },
       "stop_before_destroy": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true
       },
       "tenant_id": {
         "Type": "String",
@@ -1313,8 +1376,7 @@
       },
       "pool": {
         "Type": "String",
-        "Required": true,
-        "DefaultFunc": "ENV(OS_POOL_NAME)"
+        "Optional": true
       },
       "region": {
         "Type": "String",
@@ -1368,11 +1430,7 @@
             },
             "delete_on_termination": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             },
             "destination_type": {
               "Type": "String",
@@ -1412,14 +1470,12 @@
       "flavor_id": {
         "Type": "String",
         "Optional": true,
-        "Computed": true,
-        "DefaultFunc": "ENV(OS_FLAVOR_ID)"
+        "Computed": true
       },
       "flavor_name": {
         "Type": "String",
         "Optional": true,
-        "Computed": true,
-        "DefaultFunc": "ENV(OS_FLAVOR_NAME)"
+        "Computed": true
       },
       "floating_ip": {
         "Type": "String",
@@ -1457,11 +1513,7 @@
           "Info": {
             "access_network": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             },
             "fixed_ip_v4": {
               "Type": "String",
@@ -1587,11 +1639,7 @@
       },
       "stop_before_destroy": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "tag": {
         "Type": "Map",
@@ -1636,6 +1684,19 @@
             "volume_id": {
               "Type": "String",
               "Required": true
+            }
+          }
+        }
+      },
+      "volume_attached": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Computed": true
             }
           }
         }
@@ -1706,11 +1767,7 @@
             },
             "self": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             },
             "to_port": {
               "Type": "Int",
@@ -1794,11 +1851,7 @@
       },
       "provider_id": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "fc4d5750-22e7-4798-8a46-f48f62c4c1da"
-        }
+        "Optional": true
       },
       "region": {
         "Type": "String",
@@ -1839,11 +1892,7 @@
             },
             "enabled": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "true"
-              }
+              "Optional": true
             },
             "id": {
               "Type": "String",
@@ -1942,11 +1991,7 @@
       },
       "resource_type": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "OS::Nova::Server"
-        }
+        "Optional": true
       },
       "status": {
         "Type": "String",
@@ -2071,6 +2116,139 @@
             }
           }
         }
+      }
+    },
+    "opentelekomcloud_css_cluster_v1": {
+      "__timeouts__": [
+        "create",
+        "update"
+      ],
+      "created": {
+        "Type": "String",
+        "Computed": true
+      },
+      "datastore": {
+        "Type": "List",
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "version": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "enable_https": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "endpoint": {
+        "Type": "String",
+        "Computed": true
+      },
+      "expect_node_num": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "node_config": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "availability_zone": {
+              "Type": "String",
+              "Optional": true
+            },
+            "flavor": {
+              "Type": "String",
+              "Required": true
+            },
+            "network_info": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "network_id": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "security_group_id": {
+                    "Type": "String",
+                    "Required": true
+                  },
+                  "vpc_id": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            },
+            "volume": {
+              "Type": "List",
+              "Required": true,
+              "MaxItems": 1,
+              "Elem": {
+                "Type": "SchemaInfo",
+                "Info": {
+                  "encryption_key": {
+                    "Type": "String",
+                    "Optional": true,
+                    "Computed": true
+                  },
+                  "size": {
+                    "Type": "Int",
+                    "Required": true
+                  },
+                  "volume_type": {
+                    "Type": "String",
+                    "Required": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "nodes": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "updated": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "opentelekomcloud_cts_tracker_v1": {
@@ -2216,7 +2394,7 @@
         "Required": true
       },
       "port": {
-        "Type": "String",
+        "Type": "Int",
         "Computed": true
       },
       "product_id": {
@@ -2470,11 +2648,7 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "300"
-        }
+        "Optional": true
       },
       "type": {
         "Type": "String",
@@ -2539,23 +2713,131 @@
       },
       "ttl": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "300"
-        }
+        "Optional": true
       },
       "type": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "public"
-        }
+        "Optional": true
       },
       "value_specs": {
         "Type": "Map",
         "Optional": true
+      }
+    },
+    "opentelekomcloud_ecs_instance_v1": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "auto_recovery": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "availability_zone": {
+        "Type": "String",
+        "Required": true
+      },
+      "data_disks": {
+        "Type": "List",
+        "Optional": true,
+        "MaxItems": 23,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "size": {
+              "Type": "Int",
+              "Required": true
+            },
+            "snapshot_id": {
+              "Type": "String",
+              "Optional": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "delete_disks_on_termination": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "flavor": {
+        "Type": "String",
+        "Required": true
+      },
+      "image_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "key_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "nics": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 12,
+        "MinItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "ip_address": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "mac_address": {
+              "Type": "String",
+              "Computed": true
+            },
+            "network_id": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "password": {
+        "Type": "String",
+        "Optional": true
+      },
+      "security_groups": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "system_disk_size": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "system_disk_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "user_data": {
+        "Type": "String",
+        "Optional": true
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Required": true
       }
     },
     "opentelekomcloud_elb_backend": {
@@ -2731,11 +3013,7 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "az": {
         "Type": "String",
@@ -2781,6 +3059,90 @@
         "Required": true
       }
     },
+    "opentelekomcloud_evs_volume_v3": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "attachment": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "device": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "instance_id": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "availability_zone": {
+        "Type": "String",
+        "Required": true
+      },
+      "backup_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "cascade": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "device_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "image_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "kms_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "multiattach": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "size": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "snapshot_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "volume_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "wwn": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
     "opentelekomcloud_fw_firewall_group_v2": {
       "__timeouts__": [
         "create",
@@ -2789,11 +3151,7 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "description": {
         "Type": "String",
@@ -2841,11 +3199,7 @@
       ],
       "audited": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "description": {
         "Type": "String",
@@ -2901,19 +3255,11 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "ip_version": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "4"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -3112,19 +3458,50 @@
       }
     },
     "opentelekomcloud_identity_role_v3": {
+      "catalog": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Required": true
+      },
+      "display_layer": {
+        "Type": "String",
+        "Required": true
+      },
+      "display_name": {
+        "Type": "String",
+        "Required": true
+      },
       "domain_id": {
         "Type": "String",
-        "Optional": true,
         "Computed": true
       },
       "name": {
         "Type": "String",
-        "Required": true
-      },
-      "region": {
-        "Type": "String",
-        "Optional": true,
         "Computed": true
+      },
+      "statement": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "effect": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
       }
     },
     "opentelekomcloud_identity_user_v3": {
@@ -3140,11 +3517,7 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -3186,11 +3559,7 @@
       },
       "image_cache_path": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "/home/vlad/.terraform/image_cache"
-        }
+        "Optional": true
       },
       "image_source_url": {
         "Type": "String",
@@ -3212,19 +3581,11 @@
       },
       "min_disk_gb": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "0"
-        }
+        "Optional": true
       },
       "min_ram_mb": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "0"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -3236,11 +3597,7 @@
       },
       "protected": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "region": {
         "Type": "String",
@@ -3273,11 +3630,155 @@
       },
       "visibility": {
         "Type": "String",
+        "Optional": true
+      }
+    },
+    "opentelekomcloud_ims_data_image_v2": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "cmk_id": {
+        "Type": "String",
         "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "private"
-        }
+        "ConflictsWith": [
+          "volume_id"
+        ]
+      },
+      "data_origin": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "disk_format": {
+        "Type": "String",
+        "Computed": true
+      },
+      "image_size": {
+        "Type": "String",
+        "Computed": true
+      },
+      "image_url": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "volume_id"
+        ]
+      },
+      "min_disk": {
+        "Type": "Int",
+        "Optional": true,
+        "ConflictsWith": [
+          "volume_id"
+        ]
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "os_type": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "volume_id"
+        ]
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "visibility": {
+        "Type": "String",
+        "Computed": true
+      },
+      "volume_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "image_url"
+        ]
+      }
+    },
+    "opentelekomcloud_ims_image_v2": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "cmk_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "data_origin": {
+        "Type": "String",
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "disk_format": {
+        "Type": "String",
+        "Computed": true
+      },
+      "image_size": {
+        "Type": "String",
+        "Computed": true
+      },
+      "image_url": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "instance_id"
+        ]
+      },
+      "instance_id": {
+        "Type": "String",
+        "Optional": true,
+        "ConflictsWith": [
+          "image_url"
+        ]
+      },
+      "is_config": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "max_ram": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "min_disk": {
+        "Type": "Int",
+        "Optional": true,
+        "ConflictsWith": [
+          "instance_id"
+        ]
+      },
+      "min_ram": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "os_version": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tags": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "visibility": {
+        "Type": "String",
+        "Computed": true
       }
     },
     "opentelekomcloud_kms_key_v1": {
@@ -3299,11 +3800,7 @@
       },
       "is_enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "key_alias": {
         "Type": "String",
@@ -3319,11 +3816,7 @@
       },
       "pending_days": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "7"
-        }
+        "Optional": true
       },
       "realm": {
         "Type": "String",
@@ -3343,11 +3836,7 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "default_pool_id": {
         "Type": "String",
@@ -3361,11 +3850,6 @@
       "description": {
         "Type": "String",
         "Optional": true
-      },
-      "id": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
       },
       "loadbalancer_id": {
         "Type": "String",
@@ -3411,11 +3895,7 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "description": {
         "Type": "String",
@@ -3475,16 +3955,7 @@
       },
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
-      },
-      "id": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -3526,11 +3997,7 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "delay": {
         "Type": "Int",
@@ -3542,11 +4009,6 @@
         "Computed": true
       },
       "http_method": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
-      },
-      "id": {
         "Type": "String",
         "Optional": true,
         "Computed": true
@@ -3595,20 +4057,11 @@
       ],
       "admin_state_up": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "description": {
         "Type": "String",
         "Optional": true
-      },
-      "id": {
-        "Type": "String",
-        "Optional": true,
-        "Computed": true
       },
       "lb_method": {
         "Type": "String",
@@ -3656,6 +4109,30 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      }
+    },
+    "opentelekomcloud_lb_whitelist_v2": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "enable_whitelist": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "listener_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "whitelist": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "opentelekomcloud_maas_task_v1": {
@@ -3908,6 +4385,21 @@
           }
         }
       },
+      "core_data_volume_count": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "core_data_volume_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "core_data_volume_type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
       "core_node_num": {
         "Type": "Int",
         "Required": true
@@ -3966,6 +4458,21 @@
       },
       "log_collection": {
         "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "master_data_volume_count": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "master_data_volume_size": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "master_data_volume_type": {
+        "Type": "String",
         "Optional": true,
         "Computed": true
       },
@@ -4040,11 +4547,13 @@
       },
       "volume_size": {
         "Type": "Int",
-        "Required": true
+        "Optional": true,
+        "Computed": true
       },
       "volume_type": {
         "Type": "String",
-        "Required": true
+        "Optional": true,
+        "Computed": true
       },
       "vpc_id": {
         "Type": "String",
@@ -4217,8 +4726,7 @@
       },
       "pool": {
         "Type": "String",
-        "Required": true,
-        "DefaultFunc": "ENV(OS_POOL_NAME)"
+        "Optional": true
       },
       "port_id": {
         "Type": "String",
@@ -4602,11 +5110,7 @@
       },
       "enable_dhcp": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "gateway_ip": {
         "Type": "String",
@@ -4632,11 +5136,7 @@
       },
       "ip_version": {
         "Type": "Int",
-        "Optional": true,
-        "Default": {
-          "Type": "int",
-          "Value": "4"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -4689,10 +5189,6 @@
     },
     "opentelekomcloud_networking_vip_v2": {
       "device_owner": {
-        "Type": "String",
-        "Computed": true
-      },
-      "id": {
         "Type": "String",
         "Computed": true
       },
@@ -4848,6 +5344,10 @@
         "Type": "String",
         "Computed": true
       },
+      "tag": {
+        "Type": "Map",
+        "Optional": true
+      },
       "type": {
         "Type": "String",
         "Computed": true
@@ -4879,6 +5379,249 @@
         "Required": true
       }
     },
+    "opentelekomcloud_rds_instance_v3": {
+      "__timeouts__": [
+        "create",
+        "update"
+      ],
+      "availability_zone": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "backup_strategy": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "keep_days": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            },
+            "start_time": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "created": {
+        "Type": "String",
+        "Computed": true
+      },
+      "db": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "password": {
+              "Type": "String",
+              "Required": true
+            },
+            "port": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            },
+            "user_name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "version": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "flavor": {
+        "Type": "String",
+        "Required": true
+      },
+      "ha_replication_mode": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "nodes": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "availability_zone": {
+              "Type": "String",
+              "Computed": true
+            },
+            "id": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "role": {
+              "Type": "String",
+              "Computed": true
+            },
+            "status": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "param_group_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "private_ips": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "public_ips": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "security_group_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "subnet_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "tag": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "volume": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "disk_encryption_id": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "size": {
+              "Type": "Int",
+              "Required": true
+            },
+            "type": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "vpc_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "opentelekomcloud_rds_parametergroup_v3": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "configuration_parameters": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "description": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "readonly": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "restart_required": {
+              "Type": "Bool",
+              "Computed": true
+            },
+            "type": {
+              "Type": "String",
+              "Computed": true
+            },
+            "value": {
+              "Type": "String",
+              "Computed": true
+            },
+            "value_range": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "datastore": {
+        "Type": "List",
+        "Required": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "type": {
+              "Type": "String",
+              "Required": true
+            },
+            "version": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "values": {
+        "Type": "Map",
+        "Optional": true
+      }
+    },
     "opentelekomcloud_rts_software_config_v1": {
       "__timeouts__": [
         "create",
@@ -4891,10 +5634,6 @@
       "group": {
         "Type": "String",
         "Optional": true
-      },
-      "id": {
-        "Type": "String",
-        "Computed": true
       },
       "input_values": {
         "Type": "List",
@@ -5053,11 +5792,7 @@
     "opentelekomcloud_s3_bucket": {
       "acl": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "private"
-        }
+        "Optional": true
       },
       "arn": {
         "Type": "String",
@@ -5127,11 +5862,7 @@
       },
       "force_destroy": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "hosted_zone_id": {
         "Type": "String",
@@ -5238,19 +5969,11 @@
           "Info": {
             "enabled": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             },
             "mfa_delete": {
               "Type": "Bool",
-              "Optional": true,
-              "Default": {
-                "Type": "bool",
-                "Value": "false"
-              }
+              "Optional": true
             }
           }
         }
@@ -5299,11 +6022,7 @@
     "opentelekomcloud_s3_bucket_object": {
       "acl": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "private"
-        }
+        "Optional": true
       },
       "bucket": {
         "Type": "String",
@@ -5382,6 +6101,40 @@
         "Required": true
       }
     },
+    "opentelekomcloud_sdrs_protectiongroup_v1": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "domain_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "dr_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "source_availability_zone": {
+        "Type": "String",
+        "Required": true
+      },
+      "source_vpc_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "target_availability_zone": {
+        "Type": "String",
+        "Required": true
+      }
+    },
     "opentelekomcloud_sfs_file_system_v2": {
       "__timeouts__": [
         "create",
@@ -5401,15 +6154,12 @@
       },
       "access_type": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "cert"
-        }
+        "Optional": true
       },
       "availability_zone": {
         "Type": "String",
-        "Optional": true
+        "Optional": true,
+        "Computed": true
       },
       "description": {
         "Type": "String",
@@ -5447,11 +6197,7 @@
       },
       "share_proto": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "NFS"
-        }
+        "Optional": true
       },
       "size": {
         "Type": "Int",
@@ -5817,10 +6563,6 @@
         "create",
         "delete"
       ],
-      "id": {
-        "Type": "String",
-        "Computed": true
-      },
       "name": {
         "Type": "String",
         "Required": true
@@ -5896,14 +6638,10 @@
       },
       "dhcp_enable": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "dns_list": {
-        "Type": "Set",
+        "Type": "List",
         "Optional": true,
         "Computed": true,
         "Elem": {
@@ -5918,6 +6656,10 @@
       "name": {
         "Type": "String",
         "Required": true
+      },
+      "ntp_addresses": {
+        "Type": "String",
+        "Optional": true
       },
       "primary_dns": {
         "Type": "String",
@@ -5963,11 +6705,797 @@
       },
       "shared": {
         "Type": "Bool",
+        "Optional": true,
         "Computed": true
       },
       "status": {
         "Type": "String",
         "Computed": true
+      }
+    },
+    "opentelekomcloud_vpnaas_endpoint_group_v2": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "endpoints": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "type": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "value_specs": {
+        "Type": "Map",
+        "Optional": true
+      }
+    },
+    "opentelekomcloud_vpnaas_ike_policy_v2": {
+      "__timeouts__": [
+        "create"
+      ],
+      "auth_algorithm": {
+        "Type": "String",
+        "Optional": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "encryption_algorithm": {
+        "Type": "String",
+        "Optional": true
+      },
+      "ike_version": {
+        "Type": "String",
+        "Optional": true
+      },
+      "lifetime": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "units": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "value": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "pfs": {
+        "Type": "String",
+        "Optional": true
+      },
+      "phase1_negotiation_mode": {
+        "Type": "String",
+        "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "value_specs": {
+        "Type": "Map",
+        "Optional": true
+      }
+    },
+    "opentelekomcloud_vpnaas_ipsec_policy_v2": {
+      "__timeouts__": [
+        "create"
+      ],
+      "auth_algorithm": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "encapsulation_mode": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "encryption_algorithm": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "lifetime": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "units": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "value": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "pfs": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "transform_protocol": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "value_specs": {
+        "Type": "Map",
+        "Optional": true
+      }
+    },
+    "opentelekomcloud_vpnaas_service_v2": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "admin_state_up": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "external_v4_ip": {
+        "Type": "String",
+        "Computed": true
+      },
+      "external_v6_ip": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "router_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "status": {
+        "Type": "String",
+        "Computed": true
+      },
+      "subnet_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "value_specs": {
+        "Type": "Map",
+        "Optional": true
+      }
+    },
+    "opentelekomcloud_vpnaas_site_connection_v2": {
+      "__timeouts__": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "admin_state_up": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "description": {
+        "Type": "String",
+        "Optional": true
+      },
+      "dpd": {
+        "Type": "Set",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "action": {
+              "Type": "String",
+              "Optional": true,
+              "Computed": true
+            },
+            "interval": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            },
+            "timeout": {
+              "Type": "Int",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      },
+      "ikepolicy_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "initiator": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "ipsecpolicy_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "local_ep_group_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "local_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "mtu": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "peer_address": {
+        "Type": "String",
+        "Required": true
+      },
+      "peer_cidrs": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "peer_ep_group_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "peer_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "psk": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "value_specs": {
+        "Type": "Map",
+        "Optional": true
+      },
+      "vpnservice_id": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "opentelekomcloud_waf_ccattackprotection_rule_v1": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "action_category": {
+        "Type": "String",
+        "Required": true
+      },
+      "block_content": {
+        "Type": "String",
+        "Optional": true
+      },
+      "block_content_type": {
+        "Type": "String",
+        "Optional": true
+      },
+      "default": {
+        "Type": "Bool",
+        "Computed": true
+      },
+      "limit_num": {
+        "Type": "Int",
+        "Required": true
+      },
+      "limit_period": {
+        "Type": "Int",
+        "Required": true
+      },
+      "lock_time": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "policy_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "tag_category": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tag_contents": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "tag_index": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tag_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "opentelekomcloud_waf_certificate_v1": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "content": {
+        "Type": "String",
+        "Required": true
+      },
+      "key": {
+        "Type": "String",
+        "Required": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      }
+    },
+    "opentelekomcloud_waf_datamasking_rule_v1": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "category": {
+        "Type": "String",
+        "Required": true
+      },
+      "index": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "opentelekomcloud_waf_domain_v1": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "access_code": {
+        "Type": "String",
+        "Computed": true
+      },
+      "access_status": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "certificate_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "cname": {
+        "Type": "String",
+        "Computed": true
+      },
+      "hostname": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_id": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "protect_status": {
+        "Type": "Int",
+        "Computed": true
+      },
+      "protocol": {
+        "Type": "String",
+        "Computed": true
+      },
+      "proxy": {
+        "Type": "Bool",
+        "Required": true
+      },
+      "server": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "address": {
+              "Type": "String",
+              "Required": true
+            },
+            "back_protocol": {
+              "Type": "String",
+              "Required": true
+            },
+            "front_protocol": {
+              "Type": "String",
+              "Required": true
+            },
+            "port": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "sip_header_list": {
+        "Type": "List",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "sip_header_name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "sub_domain": {
+        "Type": "String",
+        "Computed": true
+      },
+      "txt_code": {
+        "Type": "String",
+        "Computed": true
+      }
+    },
+    "opentelekomcloud_waf_falsealarmmasking_rule_v1": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "policy_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "rule": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "opentelekomcloud_waf_policy_v1": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "action": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "category": {
+              "Type": "String",
+              "Required": true
+            }
+          }
+        }
+      },
+      "full_detection": {
+        "Type": "Bool",
+        "Optional": true,
+        "Computed": true
+      },
+      "hosts": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "level": {
+        "Type": "Int",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "options": {
+        "Type": "List",
+        "Optional": true,
+        "Computed": true,
+        "MaxItems": 1,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "antitamper": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            },
+            "cc": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            },
+            "common": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            },
+            "crawler": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            },
+            "crawler_engine": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            },
+            "crawler_other": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            },
+            "crawler_scanner": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            },
+            "crawler_script": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            },
+            "custom": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            },
+            "ignore": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            },
+            "privacy": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            },
+            "webattack": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            },
+            "webshell": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            },
+            "whiteblackip": {
+              "Type": "Bool",
+              "Optional": true,
+              "Computed": true
+            }
+          }
+        }
+      }
+    },
+    "opentelekomcloud_waf_preciseprotection_rule_v1": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "action_category": {
+        "Type": "String",
+        "Required": true
+      },
+      "conditions": {
+        "Type": "List",
+        "Required": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "category": {
+              "Type": "String",
+              "Required": true
+            },
+            "contents": {
+              "Type": "List",
+              "Required": true,
+              "Elem": {
+                "Type": "SchemaElements",
+                "ElementsType": "String"
+              }
+            },
+            "index": {
+              "Type": "String",
+              "Optional": true
+            },
+            "logic": {
+              "Type": "Int",
+              "Required": true
+            }
+          }
+        }
+      },
+      "end": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "priority": {
+        "Type": "Int",
+        "Optional": true
+      },
+      "start": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
+      },
+      "time": {
+        "Type": "Bool",
+        "Optional": true
+      }
+    },
+    "opentelekomcloud_waf_webtamperprotection_rule_v1": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "hostname": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "url": {
+        "Type": "String",
+        "Required": true
+      }
+    },
+    "opentelekomcloud_waf_whiteblackip_rule_v1": {
+      "__timeouts__": [
+        "create",
+        "delete"
+      ],
+      "addr": {
+        "Type": "String",
+        "Required": true
+      },
+      "policy_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "white": {
+        "Type": "Int",
+        "Optional": true
       }
     }
   },
@@ -6143,10 +7671,6 @@
         "Type": "String",
         "Computed": true
       },
-      "id": {
-        "Type": "String",
-        "Optional": true
-      },
       "internal": {
         "Type": "String",
         "Computed": true
@@ -6171,6 +7695,25 @@
       "vpc_id": {
         "Type": "String",
         "Optional": true
+      }
+    },
+    "opentelekomcloud_cce_node_ids_v3": {
+      "cluster_id": {
+        "Type": "String",
+        "Required": true
+      },
+      "ids": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true,
+        "Computed": true
       }
     },
     "opentelekomcloud_cce_node_v3": {
@@ -6321,19 +7864,11 @@
       },
       "sort_dir": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "asc"
-        }
+        "Optional": true
       },
       "sort_key": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "id"
-        }
+        "Optional": true
       },
       "swap": {
         "Type": "Int",
@@ -7173,11 +8708,7 @@
       },
       "enabled": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "true"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -7220,11 +8751,7 @@
       },
       "most_recent": {
         "Type": "Bool",
-        "Optional": true,
-        "Default": {
-          "Type": "bool",
-          "Value": "false"
-        }
+        "Optional": true
       },
       "name": {
         "Type": "String",
@@ -7265,19 +8792,11 @@
       },
       "sort_direction": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "asc"
-        }
+        "Optional": true
       },
       "sort_key": {
         "Type": "String",
-        "Optional": true,
-        "Default": {
-          "Type": "string",
-          "Value": "name"
-        }
+        "Optional": true
       },
       "tag": {
         "Type": "String",
@@ -7391,7 +8910,83 @@
         "Type": "String",
         "Optional": true,
         "Description": "The ID of the Tenant (Identity v2) or Project (Identity v3)\nto login with.",
-        "DefaultFunc": "MENV(OS_TENANT_ID,OS_PROJECT_ID)"
+        "Default": {
+          "Type": "string"
+        }
+      }
+    },
+    "opentelekomcloud_networking_port_v2": {
+      "admin_state_up": {
+        "Type": "Bool",
+        "Optional": true
+      },
+      "all_fixed_ips": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "all_security_group_ids": {
+        "Type": "Set",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "device_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "device_owner": {
+        "Type": "String",
+        "Optional": true
+      },
+      "fixed_ip": {
+        "Type": "String",
+        "Optional": true
+      },
+      "mac_address": {
+        "Type": "String",
+        "Optional": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true
+      },
+      "network_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "port_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "project_id": {
+        "Type": "String",
+        "Optional": true
+      },
+      "region": {
+        "Type": "String",
+        "Optional": true
+      },
+      "security_group_ids": {
+        "Type": "Set",
+        "Optional": true,
+        "Elem": {
+          "Type": "SchemaElements",
+          "ElementsType": "String"
+        }
+      },
+      "status": {
+        "Type": "String",
+        "Optional": true
+      },
+      "tenant_id": {
+        "Type": "String",
+        "Optional": true
       }
     },
     "opentelekomcloud_networking_secgroup_v2": {
@@ -7440,6 +9035,45 @@
         "Type": "String",
         "Optional": true,
         "Computed": true
+      }
+    },
+    "opentelekomcloud_rds_flavors_v3": {
+      "db_type": {
+        "Type": "String",
+        "Required": true
+      },
+      "db_version": {
+        "Type": "String",
+        "Required": true
+      },
+      "flavors": {
+        "Type": "List",
+        "Computed": true,
+        "Elem": {
+          "Type": "SchemaInfo",
+          "Info": {
+            "memory": {
+              "Type": "Int",
+              "Computed": true
+            },
+            "mode": {
+              "Type": "String",
+              "Computed": true
+            },
+            "name": {
+              "Type": "String",
+              "Computed": true
+            },
+            "vcpus": {
+              "Type": "String",
+              "Computed": true
+            }
+          }
+        }
+      },
+      "instance_mode": {
+        "Type": "String",
+        "Required": true
       }
     },
     "opentelekomcloud_rts_software_config_v1": {
@@ -7698,6 +9332,17 @@
       },
       "website_redirect_location": {
         "Type": "String",
+        "Computed": true
+      }
+    },
+    "opentelekomcloud_sdrs_domain_v1": {
+      "description": {
+        "Type": "String",
+        "Computed": true
+      },
+      "name": {
+        "Type": "String",
+        "Optional": true,
         "Computed": true
       }
     },
