@@ -9,7 +9,7 @@ The HCL format is used for [Nomad](https://www.nomadproject.io/)(`.nomad` files)
 ## DEPRECATION NOTICE
 This project contains the original source code of the intellij-hcl plugin. The code in this repository is kept static and can be used for historical reference only: no pull requests will be accepted.
 
-Though this repository is still used as issue tracker, so please create new issues [here](https://github.com/VladRassokhin/intellij-hcl/issues) rather than in [JetBrains tracker](https://youtrack.jetbrains.com/issues/IDEA) since plugin releases separately and it's simpler to track issues here.
+Please create new issues (feature requests and bug reports) in [IntelliJ IDEA tracker](https://youtrack.jetbrains.com/newIssue?project=IDEA&c=Subsystem%20Lang.%20HCL).
 
 TL/DR. Starting from plugin version 0.7.0, the sources belong to JetBrains and the plugin is closed-source. You can download the new versions of the **free** plugin from JetBrains from the [JetBrains plugin repository](https://plugins.jetbrains.com/plugin/7808).
 
@@ -78,3 +78,4 @@ git clone https://github.com/VladRassokhin/terraform-metadata "$HOME/.terraform.
 git -C "$HOME/.terraform.d/metadata-repo" pull
 # Don't forget to restart IntelliJ after that
 ```
+
