@@ -1,3 +1,12 @@
+# DEPRECATION NOTICE
+This project contains the original source code of the intellij-hcl plugin. The code in this repository is kept static and can be used for historical reference only: no pull requests will be accepted.
+
+Please create new issues (feature requests and bug reports) in [IntelliJ IDEA tracker](https://youtrack.jetbrains.com/newIssue?project=IDEA&c=Subsystem%20Lang.%20HCL).
+
+New sources can be found in [JetBrains/intellij-plugins](https://github.com/JetBrains/intellij-plugins/tree/master/terraform) repository under `terraform` directory.
+
+You can still download the new versions of the **free** plugin from JetBrains from the [JetBrains plugin repository](https://plugins.jetbrains.com/plugin/7808).
+
 # IntelliJ-HCL plugin
 
 Provides [HCL language](https://github.com/hashicorp/hcl) and [Terraform](https://terraform.io) configuration files (`.tf`) support for [IntelliJ Platform](https://www.jetbrains.org/pages/viewpage.action?pageId=983889)-based IDEs
@@ -5,13 +14,6 @@ Provides [HCL language](https://github.com/hashicorp/hcl) and [Terraform](https:
 The HCL format is used for [Nomad](https://www.nomadproject.io/)(`.nomad` files).
 
 [Plugin page](https://plugins.jetbrains.com/plugin/7808) in [IntelliJ platform plugin repository](https://plugins.jetbrains.com).
-
-## DEPRECATION NOTICE
-This project contains the original source code of the intellij-hcl plugin. The code in this repository is kept static and can be used for historical reference only: no pull requests will be accepted.
-
-Please create new issues (feature requests and bug reports) in [IntelliJ IDEA tracker](https://youtrack.jetbrains.com/newIssue?project=IDEA&c=Subsystem%20Lang.%20HCL).
-
-TL/DR. Starting from plugin version 0.7.0, the sources belong to JetBrains and the plugin is closed-source. You can download the new versions of the **free** plugin from JetBrains from the [JetBrains plugin repository](https://plugins.jetbrains.com/plugin/7808).
 
 ### Note from Plugin Author
 
